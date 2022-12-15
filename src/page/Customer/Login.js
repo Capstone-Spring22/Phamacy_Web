@@ -8,7 +8,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import {
   getDataByPath,
   deleteDataByPath,
-} from "../../src/services/data.service";
+} from "../../services/data.service";
 
 const Login = () => {
   const [apartment, setApartment] = useState([]);

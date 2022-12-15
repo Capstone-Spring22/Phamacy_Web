@@ -1,8 +1,8 @@
 import React from 'react';
 import { BsPlus } from "react-icons/bs";
-import Footer from "../page/Footer";
+import Footer from "./Footer";
 import { useHistory } from "react-router-dom";
-import Header from "./Header";
+import Header from "../Header/Header";
 const AddToCart = () => {
   let history = useHistory();
   

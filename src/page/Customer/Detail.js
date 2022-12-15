@@ -1,7 +1,7 @@
 import React from "react";
 
-import Footer from "../page/Footer";
-import Header from "./Header";
+import Footer from "./Footer";
+import Header from "../Header/Header";
 const DetailMedicine = () => {
   return (
     <>

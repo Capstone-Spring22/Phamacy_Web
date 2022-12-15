@@ -1,17 +1,17 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
-import "../App.css";
-import "../assets/css/style.css";
-import "../assets/css/bootstrap.min.css";
-import "../assets/css/magnific-popup.css";
-import "../assets/css/owl.theme.default.min.css";
-import "../assets/fonts/icomoon/style.css";
-import "../assets/css/themify-icons.css";
-import "../assets/css/jquery-ui.css";
-import "../assets/css/jquery-ui.min.css";
-import "../assets/css2/styles.css";
-import "../assets/css2/styleComment.css";
-import "../assets/css/aos.css";
+import "../../App.css";
+import "../../assets/css/style.css";
+import "../../assets/css/bootstrap.min.css";
+import "../../assets/css/magnific-popup.css";
+import "../../assets/css/owl.theme.default.min.css";
+import "../../assets/fonts/icomoon/style.css";
+import "../../assets/css/themify-icons.css";
+import "../../assets/css/jquery-ui.css";
+import "../../assets/css/jquery-ui.min.css";
+import "../../assets/css2/styles.css";
+import "../../assets/css2/styleComment.css";
+import "../../assets/css/aos.css";
 const Header = () => {
   let history = useHistory();
 

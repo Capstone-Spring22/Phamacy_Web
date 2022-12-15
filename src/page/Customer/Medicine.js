@@ -4,8 +4,8 @@ import { BsPlus } from "react-icons/bs";
 import {
   getDataByPath,
   deleteDataByPath,
-} from "../../src/services/data.service";
-import Header from "./Header";
+} from "../../services/data.service";
+import Header from "../Header/Header";
 const Medicine = () => {
   let history = useHistory();
   

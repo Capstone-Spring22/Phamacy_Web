@@ -5,16 +5,16 @@ import {
   Route,
   Switch,
 } from "react-router-dom";
-import AddToCart from "./page/AddToCart";
-import Checkout from "./page/Checkout";
-import Home from "./page/Home";
-import Medicine from "./page/Medicine";
-import DetailMedicine from "./page/Detail";
+import AddToCart from "./page/Customer/AddToCart";
+import Checkout from "./page/Customer/Checkout";
+import Home from "./page/Customer/Home";
+import Medicine from "./page/Customer/Medicine";
+import DetailMedicine from "./page/Customer/Detail";
 import SideBar from "./page/sidebar/SideBar";
 import Drug from "./page/Admin/Drug";
 import Employees from "./page/Admin/Employee";
 import Order from "./page/Admin/Order";
-import Login from "./page/Login";
+import Login from "./page/Customer/Login";
 
 function App() {
   return (
