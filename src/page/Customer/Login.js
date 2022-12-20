@@ -42,18 +42,18 @@ const Login = () => {
         <div className="row align-items-center justify-content-center">
           <div className="col-md-7">
             <h3>
-              Login to <strong>Phama</strong>
+              Login to <strong>Pharma</strong>
             </h3>
             <p className="mb-4">
               
             </p>
             <form action="#" method="post">
               <div className="form-group first">
-                <label htmlFor="username">Username</label>
+                <label htmlFor="username">Phone Number</label>
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="your-email@gmail.com"
+                  placeholder="Your Phone"
                   id="username"
                 />
               </div>

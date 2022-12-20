@@ -3539,10 +3539,10 @@ img {
 
 /* CSS */
 .button-80 {
-  background: rgb(249, 185, 185);
+  background: white;
   backface-visibility: hidden;
   border-radius: .375rem;
-  border-color: #f05555;
+  border-color: white;
   border-style: solid;
   border-width: .125rem;
   box-sizing: border-box;
@@ -3628,31 +3628,6 @@ p, li, a{
 
 /* COLUMNS */
 
-.col {
-	display: block;
-	float:left;
-	margin: 1% 0 1% 1.6%;
-}
-
-.col:first-of-type {
-  margin-left: 0;
-}
-
-.container{
-  width: 100%;
-  max-width: 940px;
-  margin: 0 auto;
-  position: relative;
-  text-align: center;
-}
-
-/* CLEARFIX */
-
-.cf:before,
-.cf:after {
-    content: " ";
-    display: table;
-}
 
 .cf:after {
     clear: both;
@@ -3681,14 +3656,14 @@ p, li, a{
 } 
 
 .button-81 {
-  background: rgb(148, 190, 239);
+  background: white;
   backface-visibility: hidden;
   border-radius: .375rem;
-  border-color: #0b23d8;
+  border-color: white;
   border-style: solid;
   border-width: .125rem;
   box-sizing: border-box;
-  color: #0d09ef;
+  color: #2626ce;
   cursor: pointer;
   display: inline-block;
   font-family: Circular,Helvetica,sans-serif;
@@ -3740,4 +3715,7 @@ p, li, a{
 
 .button-81:not(:disabled):active {
   transform: translateY(.125rem);
+}
+.button-1{
+  border: none;
 }

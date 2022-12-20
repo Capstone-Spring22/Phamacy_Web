@@ -11,6 +11,7 @@ import "../../assets/css/jquery-ui.css";
 import "../../assets/css/jquery-ui.min.css";
 import "../../assets/css2/styles.css";
 import "../../assets/css2/styleComment.css";
+import "../../assets/css2/styleCategory.css";
 import "../../assets/css/aos.css";
 const Header = () => {
   let history = useHistory();
