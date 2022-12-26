@@ -3287,7 +3287,10 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 #toggle:checked ~ div {
   display:none; 
   opacity: 0;
-  margin-right:10000
+  margin-right:10000;
+ 
+  
+  
 }
 #toggle:not(:checked) ~ div {
   opacity: 1;

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import SideBar from "../sidebar/SideBar";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
+import "../../assets/css2/dropDownAvartar.css";
 
 const Drug = () => {
   return (
@@ -56,6 +57,7 @@ const Drug = () => {
                     </a>
                   </li>
                   {/* User */}
+
                   <li className="nav-item navbar-dropdown dropdown-user dropdown">
                     <a
                       className="nav-link dropdown-toggle hide-arrow"
@@ -134,10 +136,35 @@ const Drug = () => {
                       </li>
                     </ul>
                   </li>
+                  
+
+                  <nav className="nav1">
+                    <input id="toggle" type="checkbox" defaultChecked />
+
+                    <button
+                      className="avatar avatar-online"
+                      style={{ border: "none", backgroundColor: "white" }}
+                    >
+                      <img
+                        src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
+                        alt=""
+                        className="w-px-40 h-auto rounded-circle"
+                      />
+                    </button>
+                    <div
+                      style={{
+                        width: 100,
+                        height: 200,
+                        backgroundColor: "white",
+                        
+                      }}
+                    ></div>
+                  </nav>
                   {/*/ User */}
                 </ul>
               </div>
             </nav>
+
             {/* / Navbar */}
             {/* Content wrapper */}
             <div

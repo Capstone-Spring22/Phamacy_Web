@@ -24,7 +24,8 @@ const DetailMedicine = () => {
                     Vitamin
                   </a>
                 </li>
-                <li className="breadcrumb-item active">Anica</li>
+                <li className="breadcrumb-item active">Thuốc Clopidogrel 75mg MV US Pharma phòng nhồi máu cơ tim, đột quỵ (30 viên)
+</li>
               </ol>
               {/* btn */}
               <div href="#" className="backToHome d-block">
@@ -100,9 +101,10 @@ const DetailMedicine = () => {
             <div className="col-12 col-md-6">
               <div className="single_product_desc">
                 <h4 className="title">
-                  <div href="#">Anica</div>
+                  <div href="#">Thuốc Clopidogrel 75mg MV US Pharma phòng nhồi máu cơ tim, đột quỵ (30 viên)
+</div>
                 </h4>
-                <h4 className="price">$ 39.99</h4>
+                <h4 className="price">29.000đ /Hộp</h4>
                 <p className="available">
                   Available: <span className="text-muted">In Stock</span>
                 </p>
@@ -147,7 +149,7 @@ const DetailMedicine = () => {
                     name="addtocart"
                     value={5}
                     className="btn cart-submit d-block"
-                    style={{ backgroundColor: "#51eaea" }}
+                    style={{ backgroundColor: "#2cbb9d" }}
                   >
                     Add to cart
                   </button>

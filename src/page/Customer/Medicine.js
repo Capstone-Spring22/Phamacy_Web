@@ -305,9 +305,9 @@ const Medicine = () => {
                           <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
                         </svg>
                         &nbsp; Filter
+
                       </button>
-                    
-                      
+                  
                       <div
                         style={{
                           height: 250,
@@ -315,6 +315,7 @@ const Medicine = () => {
                           backgroundColor: "#f9f9f9",
                           marginRight: 1000,
                         }}
+                        
                       >
                         <div className="col-12 col-md-8 col-lg-12">
                           <div className="shop_grid_product_area">
