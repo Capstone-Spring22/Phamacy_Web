@@ -69,7 +69,7 @@ export async function deleteDataByPathWithParam(path, accessToken, data) {
     }
     const res = await authAxios(option).delete(endpoint);
     return res;
-  } catch (error) {
+  } catch (error) {   
     return error.response;
   }
 }

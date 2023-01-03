@@ -64,6 +64,7 @@ const Home = () => {
           </Carousel.Item>
         </Carousel>
 
+
         <div className="site-section">
           <div className="container">
             <div className="title-section text-center col-12">
@@ -228,7 +229,11 @@ const Home = () => {
                           ADD TO CART
                         </a>
                       </div>
+
+                    
                     </div>
+                   
+                    
                   );
                 })}
                 {/* );
