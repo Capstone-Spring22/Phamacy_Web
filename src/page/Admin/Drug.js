@@ -23,6 +23,7 @@ const Drug = () => {
       setDrug(res.data.data);
     }
   }
+
   async function deleteDataMedicine(id) {
     const path = `users`;
     const res = await deleteDataByPath(path, "", id);
@@ -40,12 +41,14 @@ const Drug = () => {
     }
   }
 
+
   useEffect(() => {
     loadDataMedicine();
   }, []);
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
+        
         <div className="layout-container">
           <SideBar />
 

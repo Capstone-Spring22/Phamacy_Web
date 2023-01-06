@@ -19,6 +19,7 @@ export async function getDataByPath(path, accessToken, data) {
   }
 }
 
+
 export async function createDataByPath(path, accessToken, data) {
   try {
     let endpoint = "";
@@ -91,4 +92,5 @@ export async function updateDataByPath(path, accessToken, data) {
   } catch (error) {
     return error.response;
   }
+  
 }

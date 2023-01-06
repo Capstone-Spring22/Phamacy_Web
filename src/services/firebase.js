@@ -1,15 +1,15 @@
-import firebase from 'firebase/app'
-import 'firebase/auth'
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 
 var firebaseConfig = {
-  apiKey: "AIzaSyBvEvhIpO_0nmzqteggIUKZIytVZiJ3dqg",
-  authDomain: "chat-otp-d0351.firebaseapp.com",
-  projectId: "chat-otp-d0351",
-  storageBucket: "chat-otp-d0351.appspot.com",
-  messagingSenderId: "46809127369",
-  appId: "1:46809127369:web:eb43db6c288593234fb018"
+  apiKey: "AIzaSyBZnaUXTBhgzey44sbutDpfECzve4zhLN8",
+  authDomain: "chat-9c685.firebaseapp.com",
+  projectId: "chat-9c685",
+  storageBucket: "chat-9c685.appspot.com",
+  messagingSenderId: "63066469338",
+  appId: "1:63066469338:web:3640b174ff35e1a28746e3",
+  measurementId: "G-B3N5PENXRF"
   };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  
-export default firebase
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export default app;

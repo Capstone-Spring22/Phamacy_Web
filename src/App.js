@@ -19,8 +19,6 @@ import Login from "./page/Customer/Login";
 function App() {
   return (
     <div className="site-wrap">
-     
-      
       <BrowserRouter>
         <Switch>
           <Route path="/Home">
@@ -55,7 +53,6 @@ function App() {
           </Route>
         </Switch>
       </BrowserRouter>
-    
     </div>
   );
 }

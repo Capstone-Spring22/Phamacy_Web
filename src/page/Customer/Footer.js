@@ -1,7 +1,10 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 
+
+
 const Footer = () => {
+  
   return (
     <footer className="site-footer">
         <div className="container">

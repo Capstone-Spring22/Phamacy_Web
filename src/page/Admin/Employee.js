@@ -4,6 +4,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import "../../assets/css/core.css";
 
 const Employees = () => {
+ 
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
@@ -13,6 +14,7 @@ const Employees = () => {
           <div className="layout-page" style={{ backgroundColor: "#f5f5f9" }}>
             {/* Navbar */}
             <nav
+            
               className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
               id="layout-navbar"
             >
