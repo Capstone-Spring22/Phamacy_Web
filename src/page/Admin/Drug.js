@@ -41,14 +41,12 @@ const Drug = () => {
     }
   }
 
-
   useEffect(() => {
     loadDataMedicine();
   }, []);
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
-        
         <div className="layout-container">
           <SideBar />
 
@@ -214,34 +212,190 @@ const Drug = () => {
                 borderRadius: 5,
               }}
             >
+             
               <div className="content-wrapper">
                 {/* Content */}
                 <div className="container-xxl flex-grow-1 container-p-y">
-                  <h4 className="fw-bold py-3 mb-4">
+                 <div style={{display: 'flex'}}>   <h4 className="fw-bold py-3 mb-4">
                     <span className="text-muted fw-light">
                       Medicine Management
                     </span>
                   </h4>
+                  <>
+                <a className="dialog-btn btn btn-primary" href="#my-dialog" style={{marginLeft:800,height:40}} >
+                  add
+                </a>
+                <div className="dialog overlay" id="my-dialog">
+                  <a href="#" className="overlay-close" />
+
+                  <div className="row " style={{ width: 1000 }}>
+                    <div className="col-xl">
+                      <div className="card mb-4">
+                        <div className="card-header d-flex justify-content-between align-items-center">
+                          <h5 className="mb-0">Basic with Icons</h5>
+                          <small className="text-muted float-end">
+                            Merged input group
+                          </small>
+                        </div>
+                        <div className="card-body">
+                          <form>
+                            <div className="mb-3">
+                              <label
+                                className="form-label"
+                                htmlFor="basic-icon-default-fullname"
+                              >
+                                Name
+                              </label>
+                              <div className="input-group input-group-merge">
+                                <span
+                                  id="basic-icon-default-fullname2"
+                                  className="input-group-text"
+                                >
+                                  <i className="bx bx-user" />
+                                </span>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  id="basic-icon-default-fullname"
+                                  placeholder="John Doe"
+                                  aria-label="John Doe"
+                                  aria-describedby="basic-icon-default-fullname2"
+                                />
+                              </div>
+                            </div>
+                            <div className="mb-3">
+                              <label
+                                className="form-label"
+                                htmlFor="basic-icon-default-company"
+                              >
+                                Company
+                              </label>
+                              <div className="input-group input-group-merge">
+                                <span
+                                  id="basic-icon-default-company2"
+                                  className="input-group-text"
+                                >
+                                  <i className="bx bx-buildings" />
+                                </span>
+                                <input
+                                  type="text"
+                                  id="basic-icon-default-company"
+                                  className="form-control"
+                                  placeholder="ACME Inc."
+                                  aria-label="ACME Inc."
+                                  aria-describedby="basic-icon-default-company2"
+                                />
+                              </div>
+                            </div>
+                            <div className="mb-3">
+                              <label
+                                className="form-label"
+                                htmlFor="basic-icon-default-email"
+                              >
+                                Email
+                              </label>
+                              <div className="input-group input-group-merge">
+                                <span className="input-group-text">
+                                  <i className="bx bx-envelope" />
+                                </span>
+                                <input
+                                  type="text"
+                                  id="basic-icon-default-email"
+                                  className="form-control"
+                                  placeholder="john.doe"
+                                  aria-label="john.doe"
+                                  aria-describedby="basic-icon-default-email2"
+                                />
+                                <span
+                                  id="basic-icon-default-email2"
+                                  className="input-group-text"
+                                >
+                                  @gmail.com
+                                </span>
+                              </div>
+                              <div className="form-text">
+                                You can use letters, numbers &amp; periods
+                              </div>
+                            </div>
+                            <div className="mb-3">
+                              <label
+                                className="form-label"
+                                htmlFor="basic-icon-default-phone"
+                              >
+                                Phone No
+                              </label>
+                              <div className="input-group input-group-merge">
+                                <span
+                                  id="basic-icon-default-phone2"
+                                  className="input-group-text"
+                                >
+                                  <i className="bx bx-phone" />
+                                </span>
+                                <input
+                                  type="text"
+                                  id="basic-icon-default-phone"
+                                  className="form-control phone-mask"
+                                  placeholder="658 799 8941"
+                                  aria-label="658 799 8941"
+                                  aria-describedby="basic-icon-default-phone2"
+                                />
+                              </div>
+                            </div>
+                            <div className="mb-3">
+                              <label
+                                className="form-label"
+                                htmlFor="basic-icon-default-message"
+                              >
+                                Message
+                              </label>
+                              <div className="input-group input-group-merge">
+                                <span
+                                  id="basic-icon-default-message2"
+                                  className="input-group-text"
+                                >
+                                  <i className="bx bx-comment" />
+                                </span>
+                                <textarea
+                                  id="basic-icon-default-message"
+                                  className="form-control"
+                                  placeholder="Hi, Do you have a moment to talk Joe?"
+                                  aria-label="Hi, Do you have a moment to talk Joe?"
+                                  aria-describedby="basic-icon-default-message2"
+                                  defaultValue={""}
+                                />
+                              </div>
+                            </div>
+                            <button type="submit" className="btn btn-primary">
+                              Send
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </></div>
+               
                   {/* Basic Bootstrap Table */}
                   <div className="card" style={{ width: "100%" }}>
                     <h5 className="card-header">Medicine</h5>
-                    
-                          <div className="table-responsive text-nowrap">
-                            <table className="table">
-                              <thead>
-                                <tr>
-                                  <th>&nbsp; &nbsp;ID</th>
-                                  <th>Title</th>
-                                  <th>Quantity</th>
-                                  <th>Unit</th>
-                                  <th>Actions</th>
-                                </tr>
-                              </thead>
-                              <tbody className="table-border-bottom-0">
-                                {drug &&
-                      drug.length &&
-                      drug.map((e) => {
-                        return (
+
+                    <div className="table-responsive text-nowrap">
+                      <table className="table">
+                        <thead>
+                          <tr>
+                            <th>&nbsp; &nbsp;ID</th>
+                            <th>Title</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="table-border-bottom-0">
+                          {drug &&
+                            drug.length &&
+                            drug.map((e) => {
+                              return (
                                 <tr key={e.id}>
                                   <td>&nbsp; &nbsp;{e.id}</td>
                                   <td>{e.email}</td>
@@ -252,7 +406,13 @@ const Drug = () => {
                                     </span>
                                   </td>
                                   <td>
-                                    <button class="button-80" role="button" onClick={() => {deleteDataMedicine(e.id)}}>
+                                    <button
+                                      class="button-80"
+                                      role="button"
+                                      onClick={() => {
+                                        deleteDataMedicine(e.id);
+                                      }}
+                                    >
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="16"
@@ -282,40 +442,39 @@ const Drug = () => {
                                     </button>
                                   </td>
                                 </tr>
-                                );
-                      })}
-                              </tbody>    
-                            </table>
-                            <div className="pagination p12">
-                              <ul>
-                                <a href="#">
-                                  <li>Previous</li>
-                                </a>
-                                <a href="#">
-                                  <li>1</li>
-                                </a>
-                                <a href="#">
-                                  <li>2</li>
-                                </a>
-                                <a href="#">
-                                  <li>3</li>
-                                </a>
-                                <a href="#">
-                                  <li>4</li>
-                                </a>
-                                <a href="#">
-                                  <li>5</li>
-                                </a>
-                                <a className="is-active" href="#">
-                                  <li>6</li>
-                                </a>
-                                <a href="#">
-                                  <li>Next</li>
-                                </a>
-                              </ul>
-                            </div>
-                          </div>
-                    
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                      <div className="pagination p12">
+                        <ul>
+                          <a href="#">
+                            <li>Previous</li>
+                          </a>
+                          <a href="#">
+                            <li>1</li>
+                          </a>
+                          <a href="#">
+                            <li>2</li>
+                          </a>
+                          <a href="#">
+                            <li>3</li>
+                          </a>
+                          <a href="#">
+                            <li>4</li>
+                          </a>
+                          <a href="#">
+                            <li>5</li>
+                          </a>
+                          <a className="is-active" href="#">
+                            <li>6</li>
+                          </a>
+                          <a href="#">
+                            <li>Next</li>
+                          </a>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

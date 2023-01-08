@@ -176,6 +176,8 @@ const Home = () => {
             </div>
           </div>
         </div>
+     
+
 
         <section class="new_arrivals_area section_padding_10_0 clearfix">
           <div className="container">
