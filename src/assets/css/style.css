@@ -3766,3 +3766,14 @@ p, li, a{
   text-decoration: none;
   color: #333;
 }
+
+
+.hv:not(:disabled):hover {
+  transform: scale(1.05);
+  color: #fff;
+}
+
+.hv:not(:disabled):hover:active {
+  transform: scale(1.05) translateY(.125rem);
+  color: #fff;
+}

@@ -3256,12 +3256,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 .nav1 {
   position: relative;
   width: 100px;
-  
-
 }
-
-
-
 
 #toggle {
   position: absolute;
@@ -3273,29 +3268,14 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   cursor: pointer;
   height: 40px;
 }
-
-
-#toggle:not(:checked) ~ button::before {
-  transform: rotate(0deg) scale(0.75);
-}
-
-#toggle:focus ~ button{
-  background: white;
-  transition: background 0.45s;
-}
-
 #toggle:checked ~ div {
   display:none; 
   opacity: 0;
   margin-right:10000;
- 
-  
-  
+
 }
-#toggle:not(:checked) ~ div {
-  opacity: 1;
-  transition: opacity 0.3s ease-in-out;
-}
+
+
 
 
 

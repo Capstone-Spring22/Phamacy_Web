@@ -42,7 +42,7 @@ const Header = () => {
         <div className="d-flex align-items-center justify-content-between">
           <div className="logo">
             <div className="site-logo">
-              <a href="index.html" className="js-logo-clone">
+              <a href="index.html" className="js-logo-clone" >
                 Pharma
               </a>
             </div>

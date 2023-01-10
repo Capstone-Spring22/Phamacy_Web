@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import Footer from "./Footer";
 import { useHistory } from "react-router-dom";
 import { BsPlus } from "react-icons/bs";
-import { IoPhonePortraitOutline } from "react-icons/io5";
-import { AiOutlineContainer } from "react-icons/ai";
-import { FaUserNurse } from "react-icons/fa";
+
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import Carousel from "react-bootstrap/Carousel";
 import Header from "../Header/Header";
@@ -65,8 +63,8 @@ const Home = () => {
         </Carousel>
 
 
-        <div className="site-section">
-          <div className="container">
+        <div className="site-section" style={{marginBottom:-111}}>
+          <div className="container" >
             <div className="title-section text-center col-12">
               <h2 className="text-uppercase">Buy Medicines Easily In Phama</h2>
             </div>
@@ -130,7 +128,7 @@ const Home = () => {
             </section>
           </div>
         </div>
-        <div className="site-section">
+        <div className="site-section" >
           <div className="container">
             <div className="title-section text-center col-12">
               <h2 className="text-uppercase">Category</h2>
@@ -138,7 +136,7 @@ const Home = () => {
             <div className="row align-items-stretch section-overlap">
               {CATEGORIES.map((item, index) => {
                 return (
-                  <div className="col-md-2 col-lg-2 mb-2 mb-lg-2">
+                  <div className="col-md-2 col-lg-2 mb-2 mb-lg-2 hv">
                     <div
                       className="banner-wrap  h-100"
                       style={{ backgroundColor: "#e8f5fd" }}
@@ -149,6 +147,7 @@ const Home = () => {
                         style={{ textDecoration: "none", color: "black" }}
                       >
                         <img
+                        className="hv"
                           src={item.src}
                           style={{ height: 100, width: 100 }}
                         />
@@ -156,6 +155,7 @@ const Home = () => {
                         <br />
                         <br />
                         <h6
+                       
                           key={index}
                           style={{ color: "black", fontSize: 17 }}
                         >

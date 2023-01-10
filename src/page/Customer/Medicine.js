@@ -278,7 +278,7 @@ const Medicine = () => {
                       Dụng cu Yte
                     </button>
                  
-                      <label className="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" htmlFor="toggle" style={{ marginLeft:350,cursor:"pointer",fontSize: "20px",}}>
+                      <label className="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" htmlFor="toggle" style={{ marginLeft:400,cursor:"pointer",fontSize: "20px",}}>
                       <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="16"
@@ -309,11 +309,14 @@ const Medicine = () => {
                       </button>
                   
                       <div
+                     
                         style={{
                           height: 250,
-                          width: 1100,
+                          width: 1200,
                           backgroundColor: "#f9f9f9",
                           marginRight: 1000,
+                          marginTop:30
+                        
                         }}
                         
                       >

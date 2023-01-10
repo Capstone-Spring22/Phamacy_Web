@@ -7,7 +7,7 @@ const Order = () => {
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
-        <div className="layout-container">
+        <div className="layout-container" >
           <SideBar />
 
           <div className="layout-page" style={{ backgroundColor: "#f5f5f9" }}>
@@ -15,6 +15,7 @@ const Order = () => {
             <nav
               className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
               id="layout-navbar"
+              
             >
               <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
                 <a
@@ -29,7 +30,7 @@ const Order = () => {
                 id="navbar-collapse"
               >
                 {/* Search */}
-                <div className="navbar-nav align-items-center">
+                <div className="navbar-nav align-items-center" >
                   <div className="nav-item d-flex align-items-center">
                     <i className="bx bx-search fs-4 lh-0" />
                     <input

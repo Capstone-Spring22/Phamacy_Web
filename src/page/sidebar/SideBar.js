@@ -31,12 +31,13 @@ const Sidebar = () => {
           <aside
             id="layout-menu"
             className="layout-menu menu-vertical menu bg-menu-theme"
+           
           >
-            <div className="app-brand demo">
+            <div className="app-brand demo" >
               <a href="index.html" className="app-brand-link">
                 
                 <span className="app-brand-text demo menu-text fw-bolder ms-2">
-                  Phama
+                  BetterHealth
                 </span>
               </a>
               <a
