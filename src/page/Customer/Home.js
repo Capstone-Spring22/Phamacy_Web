@@ -95,7 +95,7 @@ const Home = () => {
                         <div class="icon d-flex justify-content-center align-items-center mb-4">
                           <img
                             src="https://nhathuoclongchau.com/frontend_v3/images/banner-html/home/info-ct.png"
-                            style={{ height: 100, width: 100 }}
+                            style={{ height: 100 , width: 100 }}
                           />
                         </div>
                         <h3 class="heading">
