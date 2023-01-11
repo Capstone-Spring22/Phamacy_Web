@@ -212,170 +212,213 @@ const Drug = () => {
                 borderRadius: 5,
               }}
             >
-             
               <div className="content-wrapper">
                 {/* Content */}
                 <div className="container-xxl flex-grow-1 container-p-y">
-                 <div style={{display: 'flex'}}>   <h4 className="fw-bold py-3 mb-4">
-                    <span className="text-muted fw-light">
-                      Medicine Management
-                    </span>
-                  </h4>
-                  <>
-                <a className="dialog-btn btn btn-primary" href="#my-dialog" style={{marginLeft:800,height:40}} >
-                  add
-                </a>
-                <div className="dialog overlay" id="my-dialog">
-                  <a href="#" className="overlay-close" />
+                  <div style={{ display: "flex" }}>
+                    {" "}
+                    <h4 className="fw-bold py-3 mb-4">
+                      <span className="text-muted fw-light">
+                        Medicine Management
+                      </span>
+                    </h4>
+                    <>
+                      <a
+                        className="dialog-btn btn btn-black"
+                        href="#my-dialog"
+                        style={{ marginLeft: 800, height: 40 }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+</svg>
+                      </a>
+                      <div className="dialog overlay" id="my-dialog">
+                        <a href="#" className="overlay-close" />
 
-                  <div className="row " style={{ width: 1000 }}>
-                    <div className="col-xl">
-                      <div className="card mb-4">
-                        <div className="card-header d-flex justify-content-between align-items-center">
-                          <h5 className="mb-0">Basic with Icons</h5>
-                          <small className="text-muted float-end">
-                            Merged input group
-                          </small>
-                        </div>
-                        <div className="card-body">
-                          <form>
-                            <div className="mb-3">
-                              <label
-                                className="form-label"
-                                htmlFor="basic-icon-default-fullname"
+                        <div className="row " style={{ width: 1000 }}>
+                          <div className="col-xl">
+                            <div className="card mb-4">
+                              <div
+                                className="card-header d-flex justify-content-between align-items-center"
+                                style={{ height: 50 }}
                               >
-                                Name
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <span
-                                  id="basic-icon-default-fullname2"
-                                  className="input-group-text"
-                                >
-                                  <i className="bx bx-user" />
-                                </span>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  id="basic-icon-default-fullname"
-                                  placeholder="John Doe"
-                                  aria-label="John Doe"
-                                  aria-describedby="basic-icon-default-fullname2"
-                                />
+                                <h5 className="mb-0">Add new Medicine</h5>
+                              </div>
+                              <div className="card-body">
+                                <form>
+                                  <div
+                                    style={{
+                                      display: "grid",
+                                      gridTemplateColumns: "auto auto",
+                                      padding: 30,
+                                    }}
+                                  >
+                                    <div
+                                      className="mb-3"
+                                      style={{ width: "95%" }}
+                                    >
+                                      <label
+                                        className="form-label"
+                                        htmlFor="basic-icon-default-fullname"
+                                      >
+                                        Name
+                                      </label>
+                                      <div className="input-group input-group-merge">
+                                        <span
+                                          id="basic-icon-default-fullname2"
+                                          className="input-group-text"
+                                        >
+                                          <i className="bx bx-user" />
+                                        </span>
+                                        <input
+                                          type="text"
+                                          className="form-control"
+                                          id="basic-icon-default-fullname"
+                                          placeholder="John Doe"
+                                          aria-label="John Doe"
+                                          aria-describedby="basic-icon-default-fullname2"
+                                        />
+                                      </div>
+                                    </div>
+                                    <div
+                                      className="mb-3"
+                                      style={{ width: "100%" }}
+                                    >
+                                      <label
+                                        className="form-label"
+                                        htmlFor="basic-icon-default-company"
+                                      >
+                                        Image
+                                      </label>
+                                      <div className="input-group input-group-merge">
+                                        <span
+                                          id="basic-icon-default-company2"
+                                          className="input-group-text"
+                                        >
+                                          <i className="bx bx-buildings" />
+                                        </span>
+                                        <input
+                                          type="text"
+                                          id="basic-icon-default-company"
+                                          className="form-control"
+                                          placeholder="ACME Inc."
+                                          aria-label="ACME Inc."
+                                          aria-describedby="basic-icon-default-company2"
+                                        />
+                                      </div>
+                                    </div>
+                                    <div
+                                      className="mb-3"
+                                      style={{ width: "95%" }}
+                                    >
+                                      <label
+                                        className="form-label"
+                                        htmlFor="basic-icon-default-email"
+                                      >
+                                        Quantity
+                                      </label>
+                                      <div className="input-group input-group-merge">
+                                        <span className="input-group-text">
+                                          <i className="bx bx-envelope" />
+                                        </span>
+                                        <input
+                                          type="text"
+                                          id="basic-icon-default-email"
+                                          className="form-control"
+                                          placeholder="john.doe"
+                                          aria-label="john.doe"
+                                          aria-describedby="basic-icon-default-email2"
+                                        />
+                                        <span
+                                          id="basic-icon-default-email2"
+                                          className="input-group-text"
+                                        >
+                                          @gmail.com
+                                        </span>
+                                      </div>
+                                      <div className="form-text">
+                                        You can use letters, numbers &amp;
+                                        periods
+                                      </div>
+                                    </div>
+                                    <div
+                                      className="mb-3"
+                                      style={{ width: "100%" }}
+                                    >
+                                      <label
+                                        className="form-label"
+                                        htmlFor="basic-icon-default-phone"
+                                      >
+                                        Price
+                                      </label>
+                                      <div className="input-group input-group-merge">
+                                        <span
+                                          id="basic-icon-default-phone2"
+                                          className="input-group-text"
+                                        >
+                                          <i className="bx bx-phone" />
+                                        </span>
+                                        <input
+                                          type="text"
+                                          id="basic-icon-default-phone"
+                                          className="form-control phone-mask"
+                                          placeholder="658 799 8941"
+                                          aria-label="658 799 8941"
+                                          aria-describedby="basic-icon-default-phone2"
+                                        />
+                                      </div>
+                                    </div>
+                                    <div
+                                      className="mb-3"
+                                      style={{ width: "95%" }}
+                                    >
+                                      <label
+                                        className="form-label"
+                                        htmlFor="basic-icon-default-message"
+                                      >
+                                        Unit
+                                      </label>
+                                      <div className="input-group input-group-merge">
+                                        <span
+                                          id="basic-icon-default-message2"
+                                          className="input-group-text"
+                                        >
+                                          <i className="bx bx-comment" />
+                                        </span>
+                                        <textarea
+                                          id="basic-icon-default-message"
+                                          className="form-control"
+                                          placeholder="Hi, Do you have a moment to talk Joe?"
+                                          aria-label="Hi, Do you have a moment to talk Joe?"
+                                          aria-describedby="basic-icon-default-message2"
+                                          defaultValue={""}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <button
+                                    type="submit"
+                                    className="btn btn-black"
+                                    style={{
+                                      marginLeft: "86%",
+                                      width: 100,
+                                      // backgroundColor: '#81ebc8',
+                                      // color: 'white'
+                                      // borderColor:'red'
+                                    }}
+                                  >
+                                    Save
+                                  </button>
+                                </form>
                               </div>
                             </div>
-                            <div className="mb-3">
-                              <label
-                                className="form-label"
-                                htmlFor="basic-icon-default-company"
-                              >
-                                Company
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <span
-                                  id="basic-icon-default-company2"
-                                  className="input-group-text"
-                                >
-                                  <i className="bx bx-buildings" />
-                                </span>
-                                <input
-                                  type="text"
-                                  id="basic-icon-default-company"
-                                  className="form-control"
-                                  placeholder="ACME Inc."
-                                  aria-label="ACME Inc."
-                                  aria-describedby="basic-icon-default-company2"
-                                />
-                              </div>
-                            </div>
-                            <div className="mb-3">
-                              <label
-                                className="form-label"
-                                htmlFor="basic-icon-default-email"
-                              >
-                                Email
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <span className="input-group-text">
-                                  <i className="bx bx-envelope" />
-                                </span>
-                                <input
-                                  type="text"
-                                  id="basic-icon-default-email"
-                                  className="form-control"
-                                  placeholder="john.doe"
-                                  aria-label="john.doe"
-                                  aria-describedby="basic-icon-default-email2"
-                                />
-                                <span
-                                  id="basic-icon-default-email2"
-                                  className="input-group-text"
-                                >
-                                  @gmail.com
-                                </span>
-                              </div>
-                              <div className="form-text">
-                                You can use letters, numbers &amp; periods
-                              </div>
-                            </div>
-                            <div className="mb-3">
-                              <label
-                                className="form-label"
-                                htmlFor="basic-icon-default-phone"
-                              >
-                                Phone No
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <span
-                                  id="basic-icon-default-phone2"
-                                  className="input-group-text"
-                                >
-                                  <i className="bx bx-phone" />
-                                </span>
-                                <input
-                                  type="text"
-                                  id="basic-icon-default-phone"
-                                  className="form-control phone-mask"
-                                  placeholder="658 799 8941"
-                                  aria-label="658 799 8941"
-                                  aria-describedby="basic-icon-default-phone2"
-                                />
-                              </div>
-                            </div>
-                            <div className="mb-3">
-                              <label
-                                className="form-label"
-                                htmlFor="basic-icon-default-message"
-                              >
-                                Message
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <span
-                                  id="basic-icon-default-message2"
-                                  className="input-group-text"
-                                >
-                                  <i className="bx bx-comment" />
-                                </span>
-                                <textarea
-                                  id="basic-icon-default-message"
-                                  className="form-control"
-                                  placeholder="Hi, Do you have a moment to talk Joe?"
-                                  aria-label="Hi, Do you have a moment to talk Joe?"
-                                  aria-describedby="basic-icon-default-message2"
-                                  defaultValue={""}
-                                />
-                              </div>
-                            </div>
-                            <button type="submit" className="btn btn-primary">
-                              Send
-                            </button>
-                          </form>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    </>
                   </div>
-                </div>
-              </></div>
-               
+
                   {/* Basic Bootstrap Table */}
                   <div className="card" style={{ width: "100%" }}>
                     <h5 className="card-header">Medicine</h5>

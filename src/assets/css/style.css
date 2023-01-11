@@ -62,13 +62,16 @@ a {
     box-shadow: none; }
   .btn.btn-primary:hover {
     background: transparent;
-    color: #51eaea; }
+    color: black; }
   .btn.btn-black {
-    background: #000;
+    background: black;
     color: #fff; }
     .btn.btn-black:hover, .btn.btn-black:active, .btn.btn-black:focus {
-      background-color: #51eaea;
-      color: #000; }
+      background-color: transparent;
+      color: black; outline: none;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    border-color:black ;}
 
 .form-control {
   height: 43px; }
@@ -3776,4 +3779,41 @@ p, li, a{
 .hv:not(:disabled):hover:active {
   transform: scale(1.05) translateY(.125rem);
   color: #fff;
+}
+
+
+
+
+
+
+/* CSS */
+.button-87 {
+  margin: 10px;
+  padding: 15px 30px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  border-radius: 10px;
+  display: block;
+  border: 0px;
+  font-weight: 700;
+  box-shadow: 0px 0px 14px -7px #81ebc8;
+  background-image: linear-gradient(45deg, #81ebc8 0%, #81ebc8  51%, #81ebc8  100%);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-87:hover {
+  background-position: right center;
+  /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+}
+
+.button-87:active {
+  transform: scale(0.95);
 }

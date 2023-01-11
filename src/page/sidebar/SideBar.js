@@ -36,7 +36,7 @@ const Sidebar = () => {
             <div className="app-brand demo" >
               <a href="index.html" className="app-brand-link">
                 
-                <span className="app-brand-text demo menu-text fw-bolder ms-2">
+                <span className="app-brand-text demo menu-text fw-bolder ms-2" >
                   BetterHealth
                 </span>
               </a>
