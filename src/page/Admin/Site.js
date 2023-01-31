@@ -594,7 +594,26 @@ const Site = () => {
                                       </div>
                                     </div>
 
-                                  
+                                    <button
+                                      type="submit"
+                                      className="button-28"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        createNewProducts();
+                                      }}
+                                      style={{
+                                        height: 30,
+                                        width: 80,
+                                        fontSize: 13,
+                                        paddingTop: 1,
+                                        marginLeft: "90%",
+                                        marginTop: "20px",
+                                        backgroundColor: "#11cdef",
+                                        color: "white",
+                                      }}
+                                    >
+                                      Save
+                                    </button>
                                   </form>
                                 </div>
                               </div>
