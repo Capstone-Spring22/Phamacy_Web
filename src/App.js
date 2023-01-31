@@ -12,7 +12,9 @@ import Medicine from "./page/Customer/Medicine";
 import DetailMedicine from "./page/Customer/Detail";
 import SideBar from "./page/sidebar/SideBar";
 import Drug from "./page/Admin/Drug";
+import Site from "./page/Admin/Site";
 import Employees from "./page/Admin/Employee";
+import Profile from "./page/Admin/Profile";
 import Order from "./page/Admin/Order";
 import Login from "./page/Customer/Login";
 
@@ -51,8 +53,16 @@ function App() {
           <Route path="/Order">
             <Order />
           </Route>
+          <Route path="/Site">
+            <Site />
+          </Route>
+          <Route path="/Profile">
+            <Profile />
+          </Route>
         </Switch>
       </BrowserRouter>
+
+      
     </div>
   );
 }

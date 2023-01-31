@@ -13,6 +13,7 @@ import "../../assets/css2/styles.css";
 import "../../assets/css2/styleComment.css";
 import "../../assets/css2/styleCategory.css";
 import "../../assets/css/aos.css";
+import { Link } from "react-router-dom";
 const Header = () => {
   let history = useHistory();
 
@@ -54,65 +55,65 @@ const Header = () => {
             >
               <ul className="site-menu js-clone-nav d-none d-lg-block">
                 <li className="active">
-                  <a activeClassName="active" href="/Home" exact>
+                  <Link activeClassName="active" to="/Home" exact>
                     <span>Home</span>
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a activeClassName="active" href="/Medicine">
+                  <Link activeClassName="active" to="/Medicine">
                     <span>Store</span>
-                  </a>
+                  </Link>
                 </li>
 
                 <li>
-                  <a activeClassName="active" href="/Drug">
+                  <Link activeClassName="active" to="/Drug">
                     <span>Admin</span>
-                  </a>
+                  </Link>
                 </li>
                 <li className="has-children">
-                  <a href="#">Category</a>
+                  <Link to="#">Category</Link>
                   <ul className="dropdown">
                     <li>
-                      <a href="#">Supplements</a>
+                      <Link to="#">Supplements</Link>
                     </li>
                     <li className="has-children">
-                      <a href="#">Vitamins</a>
+                      <Link to="#">Vitamins</Link>
                       <ul className="dropdown">
                         <li>
-                          <a href="#">Supplements</a>
+                          <Link to="#">Supplements</Link>
                         </li>
                         <li>
-                          <a href="#">Vitamins</a>
+                          <Link to="#">Vitamins</Link>
                         </li>
                         <li>
-                          <a href="#">Diet &amp; Nutrition</a>
+                          <Link to="#">Diet &amp; Nutrition</Link>
                         </li>
                         <li>
-                          <a href="#">Tea &amp; Coffee</a>
+                          <Link to="#">Tea &amp; Coffee</Link>
                         </li>
                       </ul>
                     </li>
                     <li>
-                      <a href="#">Diet &amp; Nutrition</a>
+                      <Link to="#">Diet &amp; Nutrition</Link>
                     </li>
                     <li>
-                      <a href="#">Tea &amp; Coffee</a>
+                      <Link to="#">Tea &amp; Coffee</Link>
                     </li>
                   </ul>
                 </li>
                 <li>
-                  <a href="about.html">News</a>
+                  <Link to="about.html">News</Link>
                 </li>
                 <li>
-                  <a activeClassName="active" href="/Login">
+                  <Link activeClassName="active" to="/Login">
                     <span>Login</span>
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </nav>
           </div>
           <div className="icons">
-            <a href="#" className="icons-btn d-inline-block js-search-open"></a>
+            <Link to="#" className="icons-btn d-inline-block js-search-open"></Link>
             <div className="search-box icons-btn d-inline-block js-search-open">
               <button className="btn-search">
                 <span className="icon-search" />
@@ -125,16 +126,16 @@ const Header = () => {
               />
             </div>
 
-            <a href="/ViewCart" className="icons-btn d-inline-block bag">
+            <Link to="/ViewCart" className="icons-btn d-inline-block bag">
               <span className="icon-shopping-bag" />
               <span className="number">2</span>
-            </a>
-            <a
+            </Link>
+            <Link
               href="#"
               className="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"
             >
               <span className="icon-menu" />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

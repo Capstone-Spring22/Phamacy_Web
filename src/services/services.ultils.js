@@ -5,6 +5,7 @@ export default function getOptions(accessToken) {
     headers = {
       Authorization: `Bearer ${accessToken}`,
     };
+    
   }
   const options = { headers };
   return options;

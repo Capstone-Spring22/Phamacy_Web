@@ -1,50 +1,127 @@
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBar";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";
-import { getDataByPath, deleteDataByPath } from "../../services/data.service";
-import { Link } from "react-router-dom";
+import {
+  getDataByPath,
+  deleteDataByPath,
+  createDataByPath,
+} from "../../services/data.service";
 
-const Drug = () => {
-  const [drug, setDrug] = useState([]);
+const Site = () => {
+  const [site, setSite] = useState([]);
+  const [city, setCity] = useState([]);
+  const [cityID, setCityID] = useState("");
+  const [districs, setDistrics] = useState([]);
+  const [districtID, setDistrictID] = useState([]);
+  const [ward, setWard] = useState([]);
+  const [wardID, setWardID] = useState([]);
+  const [siteName, setSiteName] = useState("");
+  const [id, setID] = useState("");
+  const [description, setDescription] = useState("");
+  const [contactInfo, setContactInfo] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   let history = useHistory();
 
   const viewDetail = () => {
     history.push("/ViewDetail");
   };
-
-  async function loadDataMedicine() {
+  const checkValidation = () => {
+    // if (id.trim() === "") {
+    //   Swal.fire("ID Can't Empty", "", "question");
+    //   return false;
+    // }
+    return true;
+  };
+  async function loadDataSite() {
     const path = `Site`;
     const res = await getDataByPath(path, "", "");
+
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
-      setDrug(res.data.data);
+      setSite(res.data);
+    }
+  }
+  const dataForCreate = () => {
+    return {
+      siteName: siteName,
+      description: description,
+      city: city,
+      imageUrl: imageUrl,
+      districs: districs,
+      ward: ward,
+      contactInfo: contactInfo,
+    };
+  };
+
+  async function createNewProducts() {
+    if (checkValidation()) {
+      const data = dataForCreate();
+      const path = "Site";
+      const res = await createDataByPath(path, "", data);
+      console.log("Check res", res);
+      if (res && res.status === 200) {
+        Swal.fire("Create Success", "", "success");
+      }
+    }
+  }
+  async function loadDataCity() {
+    const path = `Address/City`;
+    const res = await getDataByPath(path, "", "");
+
+    console.log("check Ct", city);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setCity(res.data);
     }
   }
 
-  async function deleteDataMedicine(id) {
-    const path = `users`;
-    const res = await deleteDataByPath(path, "", id);
-    console.log("Check path", res);
-    if (res !== null && res !== undefined && res.status === 204) {
-      console.log("Check", res);
-      loadDataMedicine();
-      Swal.fire("Deleted!", "Your file has been deleted.", "success");
-    } else {
-      Swal.fire(
-        "Remove fail!",
-        "Company still working in this semester.",
-        "error"
-      );
+  async function loadDataDistrics() {
+    const path = `Address/District/${cityID}`;
+    const res = await getDataByPath(path, "", "");
+    console.log("check d", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setDistrics(res.data);
     }
   }
+  async function loadDataWard() {
+    const path = `Address/Ward/${districtID}`;
+    const res = await getDataByPath(path, "", "");
+    console.log("check d", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setWard(res.data);
+    }
+  }
+  const handlecity = (event) => {
+    event.preventDefault();
+    const cityID = event.target.value;
+    setCityID(cityID);
+  };
+  const handleDistrict = (event) => {
+    event.preventDefault();
+    const districtID = event.target.value;
+    setDistrictID(districtID);
+  };
+  const handleWards = (event) => {
+    event.preventDefault();
+    const wardID = event.target.value;
+    setWardID(wardID);
+  };
 
   useEffect(() => {
-    loadDataMedicine();
+    loadDataSite();
   }, []);
+  useEffect(() => {
+    loadDataCity();
+  }, []);
+  useEffect(() => {
+    loadDataDistrics();
+  }, [cityID]);
+  useEffect(() => {
+    loadDataWard();
+  }, [districtID]);
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
@@ -99,9 +176,9 @@ const Drug = () => {
                   {/* User */}
 
                   <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                    <Link
+                    <a
                       className="nav-link dropdown-toggle hide-arrow"
-                      to="/Profile"
+                      href="javascript:void(0);"
                       data-bs-toggle="dropdown"
                     >
                       <div className="avatar avatar-online">
@@ -111,7 +188,7 @@ const Drug = () => {
                           className="w-px-40 h-auto rounded-circle"
                         />
                       </div>
-                    </Link>
+                    </a>
                     <ul className="dropdown-menu dropdown-menu-end">
                       <li>
                         <a className="dropdown-item" href="#">
@@ -230,9 +307,8 @@ const Drug = () => {
                           borderColor: "white",
                         }}
                       >
-                        <h3 className="fontagon">Medicine</h3>
+                        <h3 className="fontagon">Site</h3>
                       </h5>
-
                       <>
                         <a
                           className=" button-28"
@@ -294,15 +370,18 @@ const Drug = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-fullname"
                                         >
-                                          Name
+                                          Name Site
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
                                             type="text"
                                             className="form-control"
                                             id="basic-icon-default-fullname"
-                                            placeholder="Name"
-                                            aria-label="John Doe"
+                                            placeholder="Name Site"
+                                            value={siteName}
+                                            onChange={(e) => {
+                                              setSiteName(e.target.value);
+                                            }}
                                             aria-describedby="basic-icon-default-fullname2"
                                           />
                                         </div>
@@ -336,19 +415,35 @@ const Drug = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-email"
                                         >
-                                          Quantity
+                                          ContactInfo
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
                                             type="text"
                                             id="basic-icon-default-email"
                                             className="form-control"
-                                            placeholder="Quantity"
+                                            placeholder="john.doe"
                                             aria-label="john.doe"
                                             aria-describedby="basic-icon-default-email2"
+                                            value={contactInfo}
+                                            onChange={(e) => {
+                                              setContactInfo(e.target.value);
+                                            }}
                                           />
+                                          {/* <span
+                                            id="basic-icon-default-email2"
+                                            className="input-group-text"
+                                            style={{
+                                              backgroundColor: "#f6f9fc",
+                                            }}
+                                          >
+                                            @gmail.com
+                                          </span> */}
                                         </div>
-                                        <div className="form-text"></div>
+                                        <div className="form-text">
+                                          You can use letters, numbers &amp;
+                                          periods
+                                        </div>
                                       </div>
                                       <div
                                         className="mb-3"
@@ -358,174 +453,79 @@ const Drug = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
                                         >
-                                          Price
+                                          City
                                         </label>
                                         <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-phone"
-                                            className="form-control phone-mask"
-                                            placeholder="Pirce"
-                                            aria-label="658 799 8941"
-                                            aria-describedby="basic-icon-default-phone2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-message"
-                                        >
-                                          Unit
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            id="basic-icon-default-message"
-                                            className="form-control"
-                                            placeholder="Unit"
-                                            aria-label="Hi, Do you have a moment to talk Joe?"
-                                            aria-describedby="basic-icon-default-message2"
-                                            defaultValue={""}
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <button
-                                      type="submit"
-                                      className="button-28"
-                                      style={{
-                                        height: 30,
-                                        width: 80,
-                                        fontSize: 13,
-                                        paddingTop: 1,
-                                        marginLeft: "90%",
-                                        marginTop: "20px",
-                                        backgroundColor: "#11cdef",
-                                        color: "white",
-                                      }}
-                                    >
-                                      Save
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="dialog overlay" id="my-dialog2">
-                          <a href="#" className="overlay-close" />
-
-                          <div className="row " style={{ width: 1000 }}>
-                            <div className="col-xl">
-                              <div className="card mb-4">
-                                <div
-                                  className="card-header d-flex justify-content-between align-items-center"
-                                  style={{
-                                    height: 70,
-                                    backgroundColor: "white",
-                                    padding: "20px 24px",
-
-                                    borderColor: "#f4f4f4",
-                                  }}
-                                >
-                                  <h5 className="mb-0">Update Medicine</h5>
-                                </div>
-                                <div className="card-body">
-                                  <form>
-                                    <div
-                                      style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "auto auto",
-                                        padding: 30,
-                                      }}
-                                    >
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-fullname"
-                                        >
-                                          Name
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            className="form-control"
-                                            id="basic-icon-default-fullname"
-                                            placeholder="Name"
-                                            aria-label="John Doe"
-                                            aria-describedby="basic-icon-default-fullname2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "100%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-company"
-                                        >
-                                          Image
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-company"
-                                            className="form-control"
-                                            placeholder="Image"
-                                            aria-label="ACME Inc."
-                                            aria-describedby="basic-icon-default-company2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-email"
-                                        >
-                                          Quantity
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
+                                          <select
+                                            name="city"
                                             id="basic-icon-default-email"
                                             className="form-control"
-                                            placeholder="Quantity"
-                                            aria-label="john.doe"
-                                            aria-describedby="basic-icon-default-email2"
-                                          />
+                                            onClick={(e) => handlecity(e)}
+                                            value={cityID}
+                                            onChange={(e) => {
+                                              setCityID(e.target.value);
+                                            }}
+                                          >
+                                            {city &&
+                                              city.length &&
+                                              city.map((e, index) => {
+                                                return (
+                                                  <>
+                                                    {console.log(
+                                                      "display",
+                                                      city
+                                                    )}
+                                                    <option
+                                                      key={index}
+                                                      value={e.id}
+                                                      onClick={() => {
+                                                        setCity(e.id);
+                                                      }}
+                                                    >
+                                                      {e.cityName}
+                                                    </option>
+                                                  </>
+                                                );
+                                              })}
+                                          </select>
                                         </div>
-                                        <div className="form-text"></div>
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "100%" }}
+                                        style={{ width: "95%" }}
                                       >
                                         <label
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
                                         >
-                                          Price
+                                          District
                                         </label>
                                         <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-phone"
-                                            className="form-control phone-mask"
-                                            placeholder="658 799 8941"
-                                            aria-label="658 799 8941"
-                                            aria-describedby="basic-icon-default-phone2"
-                                          />
+                                          <select
+                                            id="basic-icon-default-email"
+                                            className="form-control"
+                                            onClick={(e) => handleDistrict(e)}
+                                            value={districtID}
+                                            onChange={(e) => {
+                                              setDistrictID(e.target.value);
+                                            }}
+                                          >
+                                            {districs &&
+                                              districs.length &&
+                                              districs.map((e, index) => {
+                                                return (
+                                                  <>
+                                                    <option
+                                                      key={index}
+                                                      value={e.id}
+                                                      //onChange={ loadDataDistrics()}
+                                                    >
+                                                      {e.districtName}
+                                                    </option>
+                                                  </>
+                                                );
+                                              })}
+                                          </select>
                                         </div>
                                       </div>
                                       <div
@@ -534,9 +534,48 @@ const Drug = () => {
                                       >
                                         <label
                                           className="form-label"
+                                          htmlFor="basic-icon-default-phone"
+                                        >
+                                          Ward
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <select
+                                            id="basic-icon-default-email"
+                                            className="form-control"
+                                            value={wardID}
+                                            onClick={(e) => handleWards(e)}
+                                            onChange={(e) => {
+                                              setWard(e.target.value);
+                                            }}
+                                          >
+                                            {ward &&
+                                              ward.length &&
+                                              ward.map((e, index) => {
+                                                return (
+                                                  <>
+                                                    <option
+                                                      key={index}
+                                                      value={e.id}
+                                                      //onChange={ loadDataDistrics()}
+                                                    >
+                                                      {e.wardName}
+                                                    </option>
+                                                  </>
+                                                );
+                                              })}
+                                          </select>
+                                        </div>
+                                      </div>
+
+                                      <div
+                                        className="mb-3"
+                                        style={{ width: "95%" }}
+                                      >
+                                        <label
+                                          className="form-label"
                                           htmlFor="basic-icon-default-message"
                                         >
-                                          Unit
+                                          Description
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <textarea
@@ -546,27 +585,16 @@ const Drug = () => {
                                             aria-label="Hi, Do you have a moment to talk Joe?"
                                             aria-describedby="basic-icon-default-message2"
                                             defaultValue={""}
+                                            value={description}
+                                            onChange={(e) => {
+                                              setDescription(e.target.value);
+                                            }}
                                           />
                                         </div>
                                       </div>
                                     </div>
 
-                                    <button
-                                      type="submit"
-                                      className="button-28"
-                                      style={{
-                                        height: 30,
-                                        width: 80,
-                                        fontSize: 13,
-                                        paddingTop: 1,
-                                        marginLeft: "90%",
-                                        marginTop: "20px",
-                                        backgroundColor: "#11cdef",
-                                        color: "white",
-                                      }}
-                                    >
-                                      Save
-                                    </button>
+                                  
                                   </form>
                                 </div>
                               </div>
@@ -602,7 +630,7 @@ const Drug = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Title
+                              Address
                             </th>
                             <th
                               style={{
@@ -634,13 +662,13 @@ const Drug = () => {
                           </tr>
                         </thead>
                         <tbody className="table-border-bottom-0">
-                          {drug &&
-                            drug.length &&
-                            drug.map((e) => {
+                          {site &&
+                            site.length &&
+                            site.map((e) => {
                               return (
                                 <tr key={e.id}>
                                   <td>&nbsp; &nbsp;{e.id}</td>
-                                  <td>{e.email}</td>
+                                  <td>{e.siteName}</td>
                                   <td>50</td>
                                   <td>
                                     <span className="badge bg-label-primary me-1">
@@ -648,29 +676,7 @@ const Drug = () => {
                                     </span>
                                   </td>
                                   <td>
-                                    <button
-                                      class="button-80"
-                                      role="button"
-                                      onClick={() => {
-                                        deleteDataMedicine(e.id);
-                                      }}
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        fill="currentColor"
-                                        class="bi bi-trash3-fill"
-                                        viewBox="0 0 16 16"
-                                      >
-                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                      </svg>
-                                    </button>
-                                    <a
-                                      class="button-81"
-                                      role="button"
-                                      href="#my-dialog2"
-                                    >
+                                    <button class="button-81" role="button">
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="16"
@@ -685,7 +691,7 @@ const Drug = () => {
                                           d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
                                         />
                                       </svg>
-                                    </a>
+                                    </button>
                                   </td>
                                 </tr>
                               );
@@ -735,4 +741,4 @@ const Drug = () => {
     </>
   );
 };
-export default Drug;
+export default Site;

@@ -11,6 +11,7 @@ const Login = () => {
   const [otp, setOtp] = useState("");
   const [result, setResult] = useState("");
   const navigate = useHistory();
+  
   function setUpRecapcha(number) {
     const recaptchaVerifier = new RecaptchaVerifier(
       "recaptcha-container",
