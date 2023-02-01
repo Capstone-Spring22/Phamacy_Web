@@ -9,42 +9,50 @@ import { getDataByPath, deleteDataByPath } from "../../services/data.service";
 import { Link } from "react-router-dom";
 
 const Drug = () => {
-  const [drug, setDrug] = useState([]);
+  // const [drug, setDrug] = useState([]);
   let history = useHistory();
 
   const viewDetail = () => {
     history.push("/ViewDetail");
   };
 
-  async function loadDataMedicine() {
-    const path = `Site`;
-    const res = await getDataByPath(path, "", "");
-    console.log("check", res);
-    if (res !== null && res !== undefined && res.status === 200) {
-      setDrug(res.data.data);
-    }
-  }
+  // async function loadDataMedicine() {
+  //   const path = `Site`;
+  //   const res = await getDataByPath(path, "", "");
+  //   console.log("check", res);
+  //   if (res !== null && res !== undefined && res.status === 200) {
+  //     setDrug(res.data.data);
+  //   }
+  // }
+  const drug = [
+    { name: "Paradon",price:"10000"},
+    { name: "Paradon",price:"10000"},
+    { name: "Paradon",price:"10000"},
+    { name: "Paradon",price:"10000"},
+    { name: "Paradon",price:"10000"},
+    
+  ]
 
-  async function deleteDataMedicine(id) {
-    const path = `users`;
-    const res = await deleteDataByPath(path, "", id);
-    console.log("Check path", res);
-    if (res !== null && res !== undefined && res.status === 204) {
-      console.log("Check", res);
-      loadDataMedicine();
-      Swal.fire("Deleted!", "Your file has been deleted.", "success");
-    } else {
-      Swal.fire(
-        "Remove fail!",
-        "Company still working in this semester.",
-        "error"
-      );
-    }
-  }
+  // async function deleteDataMedicine(id) {
+  //   const path = `users`;
+  //   const res = await deleteDataByPath(path, "", id);
+  //   console.log("Check path", res);
+  //   if (res !== null && res !== undefined && res.status === 204) {
+  //     console.log("Check", res);
+  //     loadDataMedicine();
+  //     Swal.fire("Deleted!", "Your file has been deleted.", "success");
+  //   } else {
+  //     Swal.fire(
+  //       "Remove fail!",
+  //       "Company still working in this semester.",
+  //       "error"
+  //     );
+  //   }
+  // }
 
-  useEffect(() => {
-    loadDataMedicine();
-  }, []);
+  // useEffect(() => {
+  //   loadDataMedicine();
+  // }, []);
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
@@ -230,7 +238,7 @@ const Drug = () => {
                           borderColor: "white",
                         }}
                       >
-                        <h3 className="fontagon">Medicine</h3>
+                        <h3 className="fontagon">Product</h3>
                       </h5>
 
                       <>
@@ -275,7 +283,7 @@ const Drug = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Add new Medicine</h5>
+                                  <h5 className="mb-0">Update new product</h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -593,7 +601,7 @@ const Drug = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              &nbsp; &nbsp;ID
+                              &nbsp; &nbsp;Name
                             </th>
                             <th
                               style={{
@@ -602,7 +610,7 @@ const Drug = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Title
+                              Price
                             </th>
                             <th
                               style={{
@@ -639,8 +647,8 @@ const Drug = () => {
                             drug.map((e) => {
                               return (
                                 <tr key={e.id}>
-                                  <td>&nbsp; &nbsp;{e.id}</td>
-                                  <td>{e.email}</td>
+                                  <td>&nbsp; &nbsp;{e.name}</td>
+                                  <td>{e.price}</td>
                                   <td>50</td>
                                   <td>
                                     <span className="badge bg-label-primary me-1">
@@ -651,9 +659,9 @@ const Drug = () => {
                                     <button
                                       class="button-80"
                                       role="button"
-                                      onClick={() => {
-                                        deleteDataMedicine(e.id);
-                                      }}
+                                      // onClick={() => {
+                                      //   deleteDataMedicine(e.id);
+                                      // }}
                                     >
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"

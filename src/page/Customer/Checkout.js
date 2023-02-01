@@ -201,7 +201,7 @@ const Home = () => {
                       <span>Product</span> <span>Total</span>
                     </li>
                     <li>
-                      <span>Cocktail Yellow dress</span> <span>$59.90</span>
+                      <span>Price</span> <span>$59.90</span>
                     </li>
                     <li>
                       <span>Subtotal</span> <span>$59.90</span>

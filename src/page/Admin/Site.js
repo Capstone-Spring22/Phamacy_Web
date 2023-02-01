@@ -176,19 +176,7 @@ const Site = () => {
                   {/* User */}
 
                   <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                    <a
-                      className="nav-link dropdown-toggle hide-arrow"
-                      href="javascript:void(0);"
-                      data-bs-toggle="dropdown"
-                    >
-                      <div className="avatar avatar-online">
-                        <img
-                          src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
-                          alt=""
-                          className="w-px-40 h-auto rounded-circle"
-                        />
-                      </div>
-                    </a>
+                  
                     <ul className="dropdown-menu dropdown-menu-end">
                       <li>
                         <a className="dropdown-item" href="#">
@@ -351,7 +339,7 @@ const Site = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Add new Medicine</h5>
+                                  <h5 className="mb-0">Add new Site</h5>
                                 </div>
                                 <div className="card-body">
                                   <form>

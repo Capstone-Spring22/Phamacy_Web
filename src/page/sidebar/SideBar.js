@@ -37,7 +37,7 @@ const Sidebar = () => {
           <Link to="/Home" className="app-brand-link">
             <span
               className="app-brand-text demo menu-text fw-bolder ms-2"
-              style={{ color: "#11cdef", fontSize: "20", lineHeight: "30" }}
+              style={{ color: "#0077c9", fontSize: "20", lineHeight: "30" }}
             >
               BetterHealth
             </span>
