@@ -24,6 +24,11 @@ const Profile = () => {
       setDrug(res.data.data);
     }
   }
+// làm side 
+// làm br thể hiện theo tính năng
+//phục vụ khách hang
+// thống kê doanh số
+
 
   async function deleteDataMedicine(id) {
     const path = `users`;

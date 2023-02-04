@@ -5,6 +5,7 @@ import SideBar from "../sidebar/SideBar";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";
+import ReactPaginate from "react-paginate";
 import {
   getDataByPath,
   deleteDataByPath,
@@ -16,19 +17,23 @@ const Site = () => {
   const [city, setCity] = useState([]);
   const [cityID, setCityID] = useState("");
   const [districs, setDistrics] = useState([]);
-  const [districtID, setDistrictID] = useState([]);
+  const [districtID, setDistrictID] = useState("");
   const [ward, setWard] = useState([]);
-  const [wardID, setWardID] = useState([]);
+  const [wardID, setWardID] = useState("");
   const [siteName, setSiteName] = useState("");
   const [id, setID] = useState("");
   const [description, setDescription] = useState("");
   const [contactInfo, setContactInfo] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [totalSite, setTotalSite] = useState([]);
+  const [homeAddress, setHomeAddress] = useState("");
   let history = useHistory();
 
   const viewDetail = () => {
     history.push("/ViewDetail");
   };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(7);
   const checkValidation = () => {
     // if (id.trim() === "") {
     //   Swal.fire("ID Can't Empty", "", "question");
@@ -37,24 +42,39 @@ const Site = () => {
     return true;
   };
   async function loadDataSite() {
-    const path = `Site`;
+    const path = `Site?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
-
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
-      setSite(res.data);
+      setSite(res.data.items);
+      setTotalSite(res.data.totalRecord);
     }
   }
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   const dataForCreate = () => {
     return {
       siteName: siteName,
       description: description,
-      city: city,
-      imageUrl: imageUrl,
-      districs: districs,
-      ward: ward,
       contactInfo: contactInfo,
+      imageUrl: imageUrl,
+      cityID: cityID,
+      districtID: districtID,
+      wardID: wardID,
+      homeAddress: homeAddress,
     };
+  };
+  const deleteForCreate = () => {
+    setSiteName("");
+    setDescription("");
+    setContactInfo("");
+    setImageUrl("");
+    setCityID("");
+    setDistrictID("");
+    setWardID("");
+    setHomeAddress("");
   };
 
   async function createNewProducts() {
@@ -63,8 +83,9 @@ const Site = () => {
       const path = "Site";
       const res = await createDataByPath(path, "", data);
       console.log("Check res", res);
-      if (res && res.status === 200) {
+      if (res && res.status === 201) {
         Swal.fire("Create Success", "", "success");
+        deleteForCreate();
       }
     }
   }
@@ -72,24 +93,22 @@ const Site = () => {
     const path = `Address/City`;
     const res = await getDataByPath(path, "", "");
 
-    console.log("check Ct", city);
     if (res !== null && res !== undefined && res.status === 200) {
       setCity(res.data);
     }
   }
 
   async function loadDataDistrics() {
-    const path = `Address/District/${cityID}`;
+    const path = `Address/${cityID}/District`;
     const res = await getDataByPath(path, "", "");
-    console.log("check d", res);
+
     if (res !== null && res !== undefined && res.status === 200) {
       setDistrics(res.data);
     }
   }
   async function loadDataWard() {
-    const path = `Address/Ward/${districtID}`;
+    const path = `Address/${districtID}/Ward`;
     const res = await getDataByPath(path, "", "");
-    console.log("check d", res);
     if (res !== null && res !== undefined && res.status === 200) {
       setWard(res.data);
     }
@@ -112,7 +131,7 @@ const Site = () => {
 
   useEffect(() => {
     loadDataSite();
-  }, []);
+  }, [currentPage, perPage]);
   useEffect(() => {
     loadDataCity();
   }, []);
@@ -176,7 +195,6 @@ const Site = () => {
                   {/* User */}
 
                   <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                  
                     <ul className="dropdown-menu dropdown-menu-end">
                       <li>
                         <a className="dropdown-item" href="#">
@@ -392,6 +410,10 @@ const Site = () => {
                                             placeholder="Image"
                                             aria-label="ACME Inc."
                                             aria-describedby="basic-icon-default-company2"
+                                            value={imageUrl}
+                                            onChange={(e) => {
+                                              setImageUrl(e.target.value);
+                                            }}
                                           />
                                         </div>
                                       </div>
@@ -403,15 +425,15 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-email"
                                         >
-                                          ContactInfo
+                                          Contact Info
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
                                             type="text"
                                             id="basic-icon-default-email"
                                             className="form-control"
-                                            placeholder="john.doe"
-                                            aria-label="john.doe"
+                                            placeholder="Contact Info"
+                                            aria-label="Contact Info"
                                             aria-describedby="basic-icon-default-email2"
                                             value={contactInfo}
                                             onChange={(e) => {
@@ -448,23 +470,16 @@ const Site = () => {
                                             name="city"
                                             id="basic-icon-default-email"
                                             className="form-control"
-                                            onClick={(e) => handlecity(e)}
+                                            onChange={(e) => handlecity(e)}
                                             value={cityID}
-                                            onChange={(e) => {
-                                              setCityID(e.target.value);
-                                            }}
                                           >
                                             {city &&
                                               city.length &&
                                               city.map((e, index) => {
                                                 return (
                                                   <>
-                                                    {console.log(
-                                                      "display",
-                                                      city
-                                                    )}
                                                     <option
-                                                      key={index}
+                                                      key={e.id}
                                                       value={e.id}
                                                       onClick={() => {
                                                         setCity(e.id);
@@ -492,11 +507,8 @@ const Site = () => {
                                           <select
                                             id="basic-icon-default-email"
                                             className="form-control"
-                                            onClick={(e) => handleDistrict(e)}
+                                            onChange={(e) => handleDistrict(e)}
                                             value={districtID}
-                                            onChange={(e) => {
-                                              setDistrictID(e.target.value);
-                                            }}
                                           >
                                             {districs &&
                                               districs.length &&
@@ -504,7 +516,7 @@ const Site = () => {
                                                 return (
                                                   <>
                                                     <option
-                                                      key={index}
+                                                      key={e.id}
                                                       value={e.id}
                                                       //onChange={ loadDataDistrics()}
                                                     >
@@ -531,10 +543,7 @@ const Site = () => {
                                             id="basic-icon-default-email"
                                             className="form-control"
                                             value={wardID}
-                                            onClick={(e) => handleWards(e)}
-                                            onChange={(e) => {
-                                              setWard(e.target.value);
-                                            }}
+                                            onChange={(e) => handleWards(e)}
                                           >
                                             {ward &&
                                               ward.length &&
@@ -542,7 +551,7 @@ const Site = () => {
                                                 return (
                                                   <>
                                                     <option
-                                                      key={index}
+                                                      key={e.id}
                                                       value={e.id}
                                                       //onChange={ loadDataDistrics()}
                                                     >
@@ -563,14 +572,39 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-message"
                                         >
+                                          Home Address
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <textarea
+                                            id="basic-icon-default-message"
+                                            className="form-control"
+                                            placeholder=" Home Address"
+                                            aria-label=" Home Address"
+                                            aria-describedby="basic-icon-default-message2"
+                                            defaultValue={""}
+                                            value={homeAddress}
+                                            onChange={(e) => {
+                                              setHomeAddress(e.target.value);
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="mb-3"
+                                        style={{ width: "95%" }}
+                                      >
+                                        <label
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-message"
+                                        >
                                           Description
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <textarea
                                             id="basic-icon-default-message"
                                             className="form-control"
-                                            placeholder="Hi, Do you have a moment to talk Joe?"
-                                            aria-label="Hi, Do you have a moment to talk Joe?"
+                                            placeholder="Description"
+                                            aria-label="Description"
                                             aria-describedby="basic-icon-default-message2"
                                             defaultValue={""}
                                             value={description}
@@ -705,34 +739,13 @@ const Site = () => {
                             })}
                         </tbody>
                       </table>
-                      <div className="pagination p12">
-                        <ul>
-                          <a href="#">
-                            <li>Previous</li>
-                          </a>
-                          <a href="#">
-                            <li>1</li>
-                          </a>
-                          <a href="#">
-                            <li>2</li>
-                          </a>
-                          <a href="#">
-                            <li>3</li>
-                          </a>
-                          <a href="#">
-                            <li>4</li>
-                          </a>
-                          <a href="#">
-                            <li>5</li>
-                          </a>
-                          <a className="is-active" href="#">
-                            <li>6</li>
-                          </a>
-                          <a href="#">
-                            <li>Next</li>
-                          </a>
-                        </ul>
-                      </div>
+                      <ReactPaginate
+                        className="pagination p12"
+                        pageCount={totalSite / perPage}
+                        onPageChange={(e) => handlePageChange(e.selected + 1)}
+                        currentPage={currentPage}
+                      />
+                      {console.log("display 2", currentPage)}
                     </div>
                   </div>
                 </div>

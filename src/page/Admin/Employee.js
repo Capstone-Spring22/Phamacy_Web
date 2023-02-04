@@ -1,14 +1,117 @@
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import SideBar from "../sidebar/SideBar";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
+import {
+  getDataByPath,
+  deleteDataByPath,
+  createDataByPath,
+} from "../../services/data.service";
+import ReactPaginate from "react-paginate";
 
 const Employees = () => {
- 
+  const [employees, setEmployees] = useState([]);
+  const [city, setCity] = useState([]);
+  const [cityID, setCityID] = useState("");
+  const [districs, setDistrics] = useState([]);
+  const [districtID, setDistrictID] = useState([]);
+  const [ward, setWard] = useState([]);
+  const [wardID, setWardID] = useState([]);
+  const [siteName, setSiteName] = useState("");
+  const [id, setID] = useState("");
+  const [description, setDescription] = useState("");
+  const [contactInfo, setContactInfo] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [totalEmployees, setTotalEmployees] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(5);
+  const [role, setRole] = useState("");
+  let history = useHistory();
+
+  const create = () => {
+    history.push("/NewEmployees");
+  };
+
+  async function loadDataEmployee() {
+    const path = `User?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const res = await getDataByPath(path, "", "");
+    console.log("check1", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setEmployees(res.data.items);
+      setTotalEmployees(res.data.totalRecord);
+    }
+  }
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  async function loadDataCity() {
+    const path = `Address/City`;
+    const res = await getDataByPath(path, "", "");
+
+    if (res !== null && res !== undefined && res.status === 200) {
+      setCity(res.data);
+    }
+  }
+
+  async function loadDataDistrics() {
+    const path = `Address/${cityID}/District`;
+    const res = await getDataByPath(path, "", "");
+
+    if (res !== null && res !== undefined && res.status === 200) {
+      setDistrics(res.data);
+    }
+  }
+  async function loadDataRole() {
+    const path = `Role`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setRole(res.data);
+    }
+  }
+  async function loadDataWard() {
+    const path = `Address/${districtID}/Ward`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setWard(res.data);
+    }
+  }
+  const handlecity = (event) => {
+    event.preventDefault();
+    const cityID = event.target.value;
+    setCityID(cityID);
+  };
+  const handleDistrict = (event) => {
+    event.preventDefault();
+    const districtID = event.target.value;
+    setDistrictID(districtID);
+  };
+  const handleWards = (event) => {
+    event.preventDefault();
+    const wardID = event.target.value;
+    setWardID(wardID);
+  };
+
+  useEffect(() => {
+    loadDataCity();
+  }, []);
+  useEffect(() => {
+    loadDataRole();
+  }, []);
+  useEffect(() => {
+    loadDataDistrics();
+  }, [cityID]);
+  useEffect(() => {
+    loadDataWard();
+  }, [districtID]);
+  useEffect(() => {
+    loadDataEmployee();
+  }, [currentPage, perPage]);
   return (
     <>
-     <div className="layout-wrapper layout-content-navbar">
+      <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
           <SideBar />
 
@@ -138,7 +241,6 @@ const Employees = () => {
                     </ul>
                   </li>
 
-              
                   {/*/ User */}
                 </ul>
               </div>
@@ -186,6 +288,9 @@ const Employees = () => {
                             marginLeft: "80%",
                             marginTop: "20px",
                           }}
+                          onClick={() => {
+                            create();
+                          }}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -200,300 +305,6 @@ const Employees = () => {
                           </svg>
                           &nbsp; Add
                         </a>
-                        <div className="dialog overlay" id="my-dialog">
-                          <a href="#" className="overlay-close" />
-
-                          <div className="row " style={{ width: 1000 }}>
-                            <div className="col-xl">
-                              <div className="card mb-4">
-                                <div
-                                  className="card-header d-flex justify-content-between align-items-center"
-                                  style={{
-                                    height: 70,
-                                    backgroundColor: "white",
-                                    padding: "20px 24px",
-
-                                    borderColor: "#f4f4f4",
-                                  }}
-                                >
-                                  <h5 className="mb-0">Update new Employees</h5>
-                                </div>
-                                <div className="card-body">
-                                  <form>
-                                    <div
-                                      style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "auto auto",
-                                        padding: 30,
-                                      }}
-                                    >
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-fullname"
-                                        >
-                                          Name
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            className="form-control"
-                                            id="basic-icon-default-fullname"
-                                            placeholder="Name"
-                                            aria-label="John Doe"
-                                            aria-describedby="basic-icon-default-fullname2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "100%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-company"
-                                        >
-                                          User Name
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-company"
-                                            className="form-control"
-                                            placeholder="User Name"
-                                            aria-label="ACME Inc."
-                                            aria-describedby="basic-icon-default-company2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-email"
-                                        >
-                                          Address
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            placeholder="Address"
-                                            aria-label="john.doe"
-                                            aria-describedby="basic-icon-default-email2"
-                                          />
-                                        </div>
-                                        <div className="form-text"></div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "100%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
-                                          Image 
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-phone"
-                                            className="form-control phone-mask"
-                                            placeholder="Image"
-                                            aria-label="658 799 8941"
-                                            aria-describedby="basic-icon-default-phone2"
-                                          />
-                                        </div>
-                                      </div>
-                                     
-                                    </div>
-
-                                    <button
-                                      type="submit"
-                                      className="button-28"
-                                      style={{
-                                        height: 30,
-                                        width: 80,
-                                        fontSize: 13,
-                                        paddingTop: 1,
-                                        marginLeft: "90%",
-                                        marginTop: "20px",
-                                        backgroundColor: "#11cdef",
-                                        color: "white",
-                                      }}
-                                    >
-                                      Save
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="dialog overlay" id="my-dialog2">
-                          <a href="#" className="overlay-close" />
-
-                          <div className="row " style={{ width: 1000 }}>
-                            <div className="col-xl">
-                              <div className="card mb-4">
-                                <div
-                                  className="card-header d-flex justify-content-between align-items-center"
-                                  style={{
-                                    height: 70,
-                                    backgroundColor: "white",
-                                    padding: "20px 24px",
-
-                                    borderColor: "#f4f4f4",
-                                  }}
-                                >
-                                  <h5 className="mb-0">Update Employees</h5>
-                                </div>
-                                <div className="card-body">
-                                  <form>
-                                    <div
-                                      style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "auto auto",
-                                        padding: 30,
-                                      }}
-                                    >
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-fullname"
-                                        >
-                                          Name
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            className="form-control"
-                                            id="basic-icon-default-fullname"
-                                            placeholder="Name"
-                                            aria-label="John Doe"
-                                            aria-describedby="basic-icon-default-fullname2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "100%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-company"
-                                        >
-                                          Image
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-company"
-                                            className="form-control"
-                                            placeholder="Image"
-                                            aria-label="ACME Inc."
-                                            aria-describedby="basic-icon-default-company2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-email"
-                                        >
-                                          Quantity
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            placeholder="Quantity"
-                                            aria-label="john.doe"
-                                            aria-describedby="basic-icon-default-email2"
-                                          />
-                                        </div>
-                                        <div className="form-text"></div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "100%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
-                                          Price
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-phone"
-                                            className="form-control phone-mask"
-                                            placeholder="658 799 8941"
-                                            aria-label="658 799 8941"
-                                            aria-describedby="basic-icon-default-phone2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-message"
-                                        >
-                                          Unit
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <textarea
-                                            id="basic-icon-default-message"
-                                            className="form-control"
-                                            placeholder="Hi, Do you have a moment to talk Joe?"
-                                            aria-label="Hi, Do you have a moment to talk Joe?"
-                                            aria-describedby="basic-icon-default-message2"
-                                            defaultValue={""}
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <button
-                                      type="submit"
-                                      className="button-28"
-                                      style={{
-                                        height: 30,
-                                        width: 80,
-                                        fontSize: 13,
-                                        paddingTop: 1,
-                                        marginLeft: "90%",
-                                        marginTop: "20px",
-                                        backgroundColor: "#11cdef",
-                                        color: "white",
-                                      }}
-                                    >
-                                      Save
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
                       </>
                     </div>
 
@@ -534,7 +345,7 @@ const Employees = () => {
                             >
                               Address
                             </th>
-                           
+
                             <th
                               style={{
                                 backgroundColor: "#f6f9fc",
@@ -547,123 +358,34 @@ const Employees = () => {
                           </tr>
                         </thead>
                         <tbody className="table-border-bottom-0">
-                          <tr>
-                            <td>&nbsp; &nbsp;001</td>
-                            <td>Phu</td>
-                            <td>221 vuon lai</td>
-                          
-                            <td>
-                              <button class="button-80" role="button">
-                                Delete
-                              </button>
-                              <button class="button-81" role="button">
-                                Update
-                              </button>
-                            </td>
-                           
-                          </tr>
-                          <tr>
-                            <td>&nbsp; &nbsp;002</td>
-                            <td>Long</td>
-                            <td>Tan Binh</td>
-                           
-                            <td>
-                              <button class="button-80" role="button">
-                                Delete
-                              </button>
-                              <button class="button-81" role="button">
-                                Update
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>&nbsp; &nbsp;003</td>
-                            <td>Quang</td>
-                            <td>Thu Duc</td>
-                          
-                            <td>
-                              <button class="button-80" role="button" >
-                                Delete
-                              </button>
-                              <button class="button-81" role="button">
-                                Update
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>&nbsp; &nbsp;004</td>
-                            <td>Đức</td>
-                            <td>Quan 9</td>
-                           
-                            <td>
-                              <button class="button-80" role="button">
-                                Delete
-                              </button>
-                              <button class="button-81" role="button">
-                                Update
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>&nbsp; &nbsp;005</td>
-                            <td>Nguyen</td>
-                            <td>Quan 10</td>
-                           
-                            <td>
-                              <button class="button-80" role="button">
-                                Delete
-                              </button>
-                              <button class="button-81" role="button">
-                                Update
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>&nbsp; &nbsp;006</td>
-                            <td>Lam</td>
-                            <td>Quan 9</td>
-                          
-                            <td>
-                              <button class="button-80" role="button">
-                                Delete
-                              </button>
-                              <button class="button-81" role="button">
-                                Update
-                              </button>
-                            </td>
-                          </tr>
-                         
+                          {employees &&
+                            employees.length &&
+                            employees.map((e) => {
+                              return (
+                                <tr key={e.id}>
+                                  <td>&nbsp; &nbsp;{e.fullname}</td>
+                                  <td>{e.username}</td>
+                                  <td>{e.siteName}</td>
+
+                                  <td>
+                                    <button class="button-80" role="button">
+                                      Delete
+                                    </button>
+                                    <button class="button-81" role="button">
+                                      Update
+                                    </button>
+                                  </td>
+                                </tr>
+                              );
+                            })}
                         </tbody>
-                       
                       </table>
-                      <div className="pagination p12">
-                        <ul>
-                          <a href="#">
-                            <li>Previous</li>
-                          </a>
-                          <a href="#">
-                            <li>1</li>
-                          </a>
-                          <a href="#">
-                            <li>2</li>
-                          </a>
-                          <a href="#">
-                            <li>3</li>
-                          </a>
-                          <a href="#">
-                            <li>4</li>
-                          </a>
-                          <a href="#">
-                            <li>5</li>
-                          </a>
-                          <a className="is-active" href="#">
-                            <li>6</li>
-                          </a>
-                          <a href="#">
-                            <li>Next</li>
-                          </a>
-                        </ul>
-                      </div>
+                      <ReactPaginate
+                        className="pagination p12"
+                        pageCount={totalEmployees / perPage}
+                        onPageChange={(e) => handlePageChange(e.selected + 1)}
+                        currentPage={currentPage}
+                      />
                     </div>
                   </div>
                 </div>

@@ -6,25 +6,7 @@ import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
-  const [apartment, setApartment] = useState([]);
-  let history = useHistory();
-
-  const viewDetail = () => {
-    history.push("/ViewDetail");
-  };
-
-  async function loadDataMedicine() {
-    const path = `posts`;
-    const res = await getDataByPath(path, "", "");
-    console.log("check", res);
-    if (res !== null && res !== undefined && res.status === 200) {
-      setApartment(res.data);
-    }
-  }
-
-  useEffect(() => {
-    loadDataMedicine();
-  }, []);
+  
 
   return (
     <>

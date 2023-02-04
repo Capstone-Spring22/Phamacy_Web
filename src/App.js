@@ -17,6 +17,7 @@ import Employees from "./page/Admin/Employee";
 import Profile from "./page/Admin/Profile";
 import Order from "./page/Admin/Order";
 import Login from "./page/Customer/Login";
+import NewEmployees from "./page/Admin/NewEmployee";
 
 function App() {
   return (
@@ -58,6 +59,9 @@ function App() {
           </Route>
           <Route path="/Profile">
             <Profile />
+          </Route>
+          <Route path="/NewEmployees">
+            <NewEmployees />
           </Route>
         </Switch>
       </BrowserRouter>
