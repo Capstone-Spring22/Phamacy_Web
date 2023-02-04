@@ -131,7 +131,7 @@ const Site = () => {
 
   useEffect(() => {
     loadDataSite();
-  }, [currentPage, perPage]);
+  }, [currentPage, perPage, site]);
   useEffect(() => {
     loadDataCity();
   }, []);
