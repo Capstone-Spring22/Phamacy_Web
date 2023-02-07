@@ -11,6 +11,7 @@ import {
   getDataByPath,
   deleteDataByPath,
   createDataByPath,
+  updateDataByPath,
 } from "../../services/data.service";
 
 const Site = () => {
@@ -22,12 +23,13 @@ const Site = () => {
   const [ward, setWard] = useState([]);
   const [wardID, setWardID] = useState("");
   const [siteName, setSiteName] = useState("");
-  const [id, setID] = useState("");
   const [description, setDescription] = useState("");
   const [contactInfo, setContactInfo] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [totalSite, setTotalSite] = useState([]);
   const [homeAddress, setHomeAddress] = useState("");
+  const [siteID, setSiteID] = useState("");
+
   let history = useHistory();
 
   const viewDetail = () => {
@@ -42,10 +44,10 @@ const Site = () => {
     // }
     return true;
   };
+
   async function loadDataSite() {
     const path = `Site?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
-    console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
       setSite(res.data.items);
       setTotalSite(res.data.totalRecord);
@@ -67,6 +69,7 @@ const Site = () => {
       homeAddress: homeAddress,
     };
   };
+
   const deleteForCreate = () => {
     setSiteName("");
     setDescription("");
@@ -87,9 +90,25 @@ const Site = () => {
       if (res && res.status === 201) {
         Swal.fire("Create Success", "", "success");
         deleteForCreate();
+      } 
+    }
+  }
+  async function loadDataSiteID(id) {
+    const path = `Site/${id}`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      console.log(id, res.data.isActivate);
+      const data = { siteID: id, status: !res.data.isActivate };
+      const path1 = "Site/Active";
+      const res1 = await updateDataByPath(path1, "", data);
+      if (res1 && res1.status === 200) {
+        Swal.fire("Update successfully!", "", "success");
+      }else if(res1 && res1.status === 400){
+        Swal.fire ('Cái này éo có nhân viên nên éo cho mở cửa! OK?', 'You failed!', 'error') 
       }
     }
   }
+
   async function loadDataCity() {
     const path = `Address/City`;
     const res = await getDataByPath(path, "", "");
@@ -734,7 +753,13 @@ const Site = () => {
                                         />
                                       </svg>
                                     </button>
-                                    <Switch />
+                                    <buton></buton>
+                                    <Switch
+                                      checked={e.isActivate}
+                                      onChange={async () => {
+                                        loadDataSiteID(e.id);
+                                      }}
+                                    />
                                   </td>
                                 </tr>
                               );
@@ -747,7 +772,6 @@ const Site = () => {
                         onPageChange={(e) => handlePageChange(e.selected + 1)}
                         currentPage={currentPage}
                       />
-                      {console.log("display 2", currentPage)}
                     </div>
                   </div>
                 </div>
