@@ -6,6 +6,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";
 import ReactPaginate from "react-paginate";
+import { Switch } from "antd";
 import {
   getDataByPath,
   deleteDataByPath,
@@ -662,7 +663,7 @@ const Site = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              &nbsp; &nbsp;ID
+                              &nbsp; &nbsp;Name
                             </th>
                             <th
                               style={{
@@ -671,7 +672,7 @@ const Site = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Address
+                              Contract Info
                             </th>
                             <th
                               style={{
@@ -708,8 +709,8 @@ const Site = () => {
                             site.map((e) => {
                               return (
                                 <tr key={e.id}>
-                                  <td>&nbsp; &nbsp;{e.id}</td>
-                                  <td>{e.siteName}</td>
+                                  <td>&nbsp; &nbsp;{e.siteName}</td>
+                                  <td>{e.contactInfo}</td>
                                   <td>50</td>
                                   <td>
                                     <span className="badge bg-label-primary me-1">
@@ -733,6 +734,7 @@ const Site = () => {
                                         />
                                       </svg>
                                     </button>
+                                    <Switch />
                                   </td>
                                 </tr>
                               );
