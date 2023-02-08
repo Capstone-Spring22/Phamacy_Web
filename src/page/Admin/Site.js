@@ -30,10 +30,16 @@ const Site = () => {
   const [homeAddress, setHomeAddress] = useState("");
   const [siteID, setSiteID] = useState("");
   const [siteUpdate, setSiteUpdate] = useState({
-    subCategoryName: "",
-    mainCategoryId: "",
+    siteName: "",
+    description: "",
+    contactInfo: "",
     imageUrl: "",
+    cityId: "",
+    districtId: "",
+    wardID: "",
+    homeAddress: "",
   });
+
   let history = useHistory();
 
   const viewDetail = () => {
@@ -48,10 +54,10 @@ const Site = () => {
     // }
     return true;
   };
-  
- const handleClick = (id) => {
-   console.log('display',id)
- }
+
+  const handleClick = (id) => {
+    console.log("display", id);
+  };
   async function loadDataSite() {
     const path = `Site?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -64,15 +70,31 @@ const Site = () => {
     const path = `Site/${id}`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
-      setCategoryUpdate(res.data);
+      setSiteID(res.data.id);
+      setSiteName(res.data.siteName);
+      setImageUrl(res.data.imageUrl);
+      setDescription(res.data.description);
+      setContactInfo(res.data.contactInfo);
+      console.log("display 2", id);
+    }
+  }
+  async function loadAddressByID(id) {
+    const path = `Address/${id}`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      // setSiteUpdate(res.data);
+      setCityID(res.data.cityId);
+      setDistrictID(res.data.districtId);
+      setWardID(res.data.wardId);
+      setHomeAddress(res.data.homeAddress);
       console.log("display 2", id);
     }
   }
   async function updateProducts() {
-    const data = categoryUpdate;
-    const path = `Site  `;
+    const data = dataForUpdate();
+    const path = `Site`;
     const res = await updateDataByPath(path, "", data);
-    console.log("checkRes", res);
+    // console.log("display", data.homeAddress);
     if (res && res.status === 200) {
       Swal.fire("Update successfully!", "", "success");
       window.location.reload();
@@ -81,7 +103,19 @@ const Site = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-
+  const dataForUpdate = () => {
+    return {
+      siteID: siteID,
+      siteName: siteName,
+      description: description,
+      contactInfo: contactInfo,
+      imageUrl: imageUrl,
+      cityID: cityID,
+      districtID: districtID,
+      wardID: wardID,
+      homeAddress: homeAddress,
+    };
+  };
   const dataForCreate = () => {
     return {
       siteName: siteName,
@@ -116,7 +150,7 @@ const Site = () => {
         Swal.fire("Create Success", "", "success");
         deleteForCreate();
         window.location.reload();
-      } 
+      }
     }
   }
   async function loadDataSiteID(id) {
@@ -129,8 +163,12 @@ const Site = () => {
       const res1 = await updateDataByPath(path1, "", data);
       if (res1 && res1.status === 200) {
         Swal.fire("Update successfully!", "", "success");
-      }else if(res1 && res1.status === 400){
-        Swal.fire ('Cái này éo có nhân viên nên éo cho mở cửa! OK?', 'You failed!', 'error') 
+      } else if (res1 && res1.status === 400) {
+        Swal.fire(
+          "Cái này éo có nhân viên nên éo cho mở cửa! OK?",
+          "You failed!",
+          "error"
+        );
       }
     }
   }
@@ -687,6 +725,316 @@ const Site = () => {
                             </div>
                           </div>
                         </div>
+                        <div className="dialog overlay" id="my-dialog2">
+                          <a href="#" className="overlay-close" />
+
+                          <div className="row " style={{ width: 1000 }}>
+                            <div className="col-xl">
+                              <div className="card mb-4">
+                                <div
+                                  className="card-header d-flex justify-content-between align-items-center"
+                                  style={{
+                                    height: 70,
+                                    backgroundColor: "white",
+                                    padding: "20px 24px",
+
+                                    borderColor: "#f4f4f4",
+                                  }}
+                                >
+                                  <h5 className="mb-0">Update Site</h5>
+                                </div>
+                                <div className="card-body">
+                                  <form>
+                                    <div
+                                      style={{
+                                        display: "grid",
+                                        gridTemplateColumns: "auto auto",
+                                        padding: 30,
+                                      }}
+                                    >
+                                      <div
+                                        className="mb-3"
+                                        style={{ width: "95%" }}
+                                      >
+                                        <label
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-fullname"
+                                        >
+                                          Name Site
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <input
+                                            type="text"
+                                            className="form-control"
+                                            id="basic-icon-default-fullname"
+                                            placeholder="Name Site"
+                                            value={siteName}
+                                            onChange={(e) => {
+                                              setSiteName(e.target.value);
+                                            }}
+                                            aria-describedby="basic-icon-default-fullname2"
+                                          />
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="mb-3"
+                                        style={{ width: "100%" }}
+                                      >
+                                        <label
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-company"
+                                        >
+                                          Image
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <input
+                                            type="text"
+                                            id="basic-icon-default-company"
+                                            className="form-control"
+                                            placeholder="Image"
+                                            aria-label="ACME Inc."
+                                            aria-describedby="basic-icon-default-company2"
+                                            value={imageUrl}
+                                            onChange={(e) => {
+                                              setImageUrl(e.target.value);
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="mb-3"
+                                        style={{ width: "95%" }}
+                                      >
+                                        <label
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-email"
+                                        >
+                                          Contact Info
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <input
+                                            type="text"
+                                            id="basic-icon-default-email"
+                                            className="form-control"
+                                            placeholder="Contact Info"
+                                            aria-label="Contact Info"
+                                            aria-describedby="basic-icon-default-email2"
+                                            value={contactInfo}
+                                            onChange={(e) => {
+                                              setContactInfo(e.target.value);
+                                            }}
+                                          />
+                                          {/* <span
+                                            id="basic-icon-default-email2"
+                                            className="input-group-text"
+                                            style={{
+                                              backgroundColor: "#f6f9fc",
+                                            }}
+                                          >
+                                            @gmail.com
+                                          </span> */}
+                                        </div>
+                                        <div className="form-text">
+                                          You can use letters, numbers &amp;
+                                          periods
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="mb-3"
+                                        style={{ width: "100%" }}
+                                      >
+                                        <label
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-phone"
+                                        >
+                                          City
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <select
+                                            name="city"
+                                            id="basic-icon-default-email"
+                                            className="form-control"
+                                            onChange={(e) => {
+                                              handlecity(e);
+                                            }}
+                                            value={cityID}
+                                          >
+                                            {city &&
+                                              city.length &&
+                                              city.map((e, index) => {
+                                                return (
+                                                  <>
+                                                    <option
+                                                      key={e.id}
+                                                      value={e.id}
+                                                      onClick={() => {
+                                                        setCity(e.id);
+                                                      }}
+                                                    >
+                                                      {e.cityName}
+                                                    </option>
+                                                  </>
+                                                );
+                                              })}
+                                          </select>
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="mb-3"
+                                        style={{ width: "95%" }}
+                                      >
+                                        <label
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-phone"
+                                        >
+                                          District
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <select
+                                            id="basic-icon-default-email"
+                                            className="form-control"
+                                            onChange={(e) => {
+                                              handleDistrict(e);
+                                            }}
+                                            value={districtID}
+                                          >
+                                            {districs &&
+                                              districs.length &&
+                                              districs.map((e, index) => {
+                                                return (
+                                                  <>
+                                                    <option
+                                                      key={e.id}
+                                                      value={e.id}
+                                                      // onClick={() => {
+                                                      //   setDistrictID(e.id);
+                                                      // }}
+                                                    >
+                                                      {e.districtName}
+                                                    </option>
+                                                  </>
+                                                );
+                                              })}
+                                          </select>
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="mb-3"
+                                        style={{ width: "95%" }}
+                                      >
+                                        <label
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-phone"
+                                        >
+                                          Ward
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <select
+                                            id="basic-icon-default-email"
+                                            className="form-control"
+                                            value={wardID}
+                                            onChange={(e) => {
+                                              handleWards(e);
+                                            }}
+                                          >
+                                            {ward &&
+                                              ward.length &&
+                                              ward.map((e, index) => {
+                                                return (
+                                                  <>
+                                                    <option
+                                                      key={e.id}
+                                                      value={e.id}
+                                                      // onClick={() => {
+                                                      //   setWardID(e.id);
+                                                      // }}
+                                                    >
+                                                      {e.wardName}
+                                                    </option>
+                                                  </>
+                                                );
+                                              })}
+                                          </select>
+                                        </div>
+                                      </div>
+
+                                      <div
+                                        className="mb-3"
+                                        style={{ width: "95%" }}
+                                      >
+                                        <label
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-message"
+                                        >
+                                          Home Address
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <textarea
+                                            id="basic-icon-default-message"
+                                            className="form-control"
+                                            placeholder=" Home Address"
+                                            aria-label=" Home Address"
+                                            aria-describedby="basic-icon-default-message2"
+                                            defaultValue={""}
+                                            value={homeAddress}
+                                            onChange={(e) => {
+                                              setHomeAddress(e.target.value);
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="mb-3"
+                                        style={{ width: "95%" }}
+                                      >
+                                        <label
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-message"
+                                        >
+                                          Description
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <textarea
+                                            id="basic-icon-default-message"
+                                            className="form-control"
+                                            placeholder="Description"
+                                            aria-label="Description"
+                                            aria-describedby="basic-icon-default-message2"
+                                            value={description}
+                                            onChange={(e) => {
+                                              setDescription(e.target.value);
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <button
+                                      type="submit"
+                                      className="button-28"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        updateProducts();
+                                      }}
+                                      style={{
+                                        height: 30,
+                                        width: 80,
+                                        fontSize: 13,
+                                        paddingTop: 1,
+                                        marginLeft: "90%",
+                                        marginTop: "20px",
+                                        backgroundColor: "#11cdef",
+                                        color: "white",
+                                      }}
+                                    >
+                                      Save
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </>
                     </div>
 
@@ -762,7 +1110,15 @@ const Site = () => {
                                     </span>
                                   </td>
                                   <td>
-                                    <button class="button-81" role="button">
+                                    <a
+                                      class="button-81"
+                                      role="button"
+                                      href="#my-dialog2"
+                                      onClick={() => {
+                                        loadDataSubCategoryID(e.id);
+                                        loadAddressByID(e.addressId);
+                                      }}
+                                    >
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="16"
@@ -777,7 +1133,7 @@ const Site = () => {
                                           d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
                                         />
                                       </svg>
-                                    </button>
+                                    </a>
                                     <buton></buton>
                                     <Switch
                                       checked={e.isActivate}
