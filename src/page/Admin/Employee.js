@@ -26,7 +26,7 @@ const Employees = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [totalEmployees, setTotalEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(5);
+  const [perPage, setPerPage] = useState(7);
   const [role, setRole] = useState("");
   let history = useHistory();
 

@@ -83,6 +83,7 @@ const NewEmployees = () => {
       if (res && res.status === 201) {
         Swal.fire("Create Success", "", "success");
         // deleteForCreate();
+        window.location.reload();
       }
     }
   }
@@ -574,17 +575,19 @@ const NewEmployees = () => {
                         Site
                       </label>
                       <div className="input-group input-group-merge">
+                        
                         <select
                           name="Site"
                           id="basic-icon-default-email"
                           className="form-control"
                           onChange={(e) => handleSite(e)}
-                        >
+                        >  
                           {site &&
                             site.length &&
                             site.map((e, index) => {
                               return (
                                 <>
+                               
                                   <option
                                     key={e.id}
                                     value={e.id}

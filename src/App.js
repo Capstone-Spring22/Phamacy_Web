@@ -18,7 +18,8 @@ import Profile from "./page/Admin/Profile";
 import Order from "./page/Admin/Order";
 import Login from "./page/Customer/Login";
 import NewEmployees from "./page/Admin/NewEmployee";
-
+import MainCategory from "./page/Admin/MainCategory";
+import SubCategory from "./page/Admin/SubCategory";
 function App() {
   return (
     <div className="site-wrap">
@@ -62,6 +63,12 @@ function App() {
           </Route>
           <Route path="/NewEmployees">
             <NewEmployees />
+          </Route>
+          <Route path="/MainCategory">
+            <MainCategory />
+          </Route>
+          <Route path="/SubCategory">
+            <SubCategory />
           </Route>
         </Switch>
       </BrowserRouter>

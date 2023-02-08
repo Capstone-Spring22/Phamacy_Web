@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useEffect, useState, useHistory } from "react";
+import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBar";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import "../../assets/css2/dropDownAvartar.css";
-import ReactPaginate from "react-paginate";
-import { Switch } from "antd";
 import {
   getDataByPath,
   deleteDataByPath,
@@ -14,33 +11,14 @@ import {
   updateDataByPath,
 } from "../../services/data.service";
 
-const Site = () => {
-  const [site, setSite] = useState([]);
-  const [city, setCity] = useState([]);
-  const [cityID, setCityID] = useState("");
-  const [districs, setDistrics] = useState([]);
-  const [districtID, setDistrictID] = useState("");
-  const [ward, setWard] = useState([]);
-  const [wardID, setWardID] = useState("");
-  const [siteName, setSiteName] = useState("");
-  const [description, setDescription] = useState("");
-  const [contactInfo, setContactInfo] = useState("");
+const MainCategory = () => {
+  const [category, setCategory] = useState([]);
+  const [categoryName, setCategoryName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [totalSite, setTotalSite] = useState([]);
-  const [homeAddress, setHomeAddress] = useState("");
-  const [siteID, setSiteID] = useState("");
-  const [siteUpdate, setSiteUpdate] = useState({
-    subCategoryName: "",
-    mainCategoryId: "",
+  const [categoryUpdate, setCategoryUpdate] = useState({
+    categoryName: "",
     imageUrl: "",
   });
-  let history = useHistory();
-
-  const viewDetail = () => {
-    history.push("/ViewDetail");
-  };
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(7);
   const checkValidation = () => {
     // if (id.trim() === "") {
     //   Swal.fire("ID Can't Empty", "", "question");
@@ -48,29 +26,31 @@ const Site = () => {
     // }
     return true;
   };
-  
- const handleClick = (id) => {
-   console.log('display',id)
- }
-  async function loadDataSite() {
-    const path = `Site?pageIndex=${currentPage}&pageItems=${perPage}`;
+  async function loadDataCategory() {
+    const path = `MainCategory`;
     const res = await getDataByPath(path, "", "");
+    console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
-      setSite(res.data.items);
-      setTotalSite(res.data.totalRecord);
+      setCategory(res.data);
     }
   }
-  async function loadDataSubCategoryID(id) {
-    const path = `Site/${id}`;
+  async function loadDataMainCategoryID(id) {
+    const path = `MainCategory/${id}`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setCategoryUpdate(res.data);
       console.log("display 2", id);
     }
   }
+  const dataForCreate = () => {
+    return {
+      categoryName: categoryName,
+      imageUrl: imageUrl,
+    };
+  };
   async function updateProducts() {
     const data = categoryUpdate;
-    const path = `Site  `;
+    const path = `MainCategory  `;
     const res = await updateDataByPath(path, "", data);
     console.log("checkRes", res);
     if (res && res.status === 200) {
@@ -78,114 +58,25 @@ const Site = () => {
       window.location.reload();
     }
   }
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const dataForCreate = () => {
-    return {
-      siteName: siteName,
-      description: description,
-      contactInfo: contactInfo,
-      imageUrl: imageUrl,
-      cityID: cityID,
-      districtID: districtID,
-      wardID: wardID,
-      homeAddress: homeAddress,
-    };
-  };
-
   const deleteForCreate = () => {
-    setSiteName("");
-    setDescription("");
-    setContactInfo("");
+    setCategoryName("");
     setImageUrl("");
-    setCityID("");
-    setDistrictID("");
-    setWardID("");
-    setHomeAddress("");
   };
-
-  async function createNewProducts() {
+  async function createNewCategory() {
     if (checkValidation()) {
       const data = dataForCreate();
-      const path = "Site";
+      const path = "MainCategory";
       const res = await createDataByPath(path, "", data);
       console.log("Check res", res);
       if (res && res.status === 201) {
         Swal.fire("Create Success", "", "success");
         deleteForCreate();
-        window.location.reload();
-      } 
-    }
-  }
-  async function loadDataSiteID(id) {
-    const path = `Site/${id}`;
-    const res = await getDataByPath(path, "", "");
-    if (res !== null && res !== undefined && res.status === 200) {
-      console.log(id, res.data.isActivate);
-      const data = { siteID: id, status: !res.data.isActivate };
-      const path1 = "Site/Active";
-      const res1 = await updateDataByPath(path1, "", data);
-      if (res1 && res1.status === 200) {
-        Swal.fire("Update successfully!", "", "success");
-      }else if(res1 && res1.status === 400){
-        Swal.fire ('Cái này éo có nhân viên nên éo cho mở cửa! OK?', 'You failed!', 'error') 
       }
     }
   }
-
-  async function loadDataCity() {
-    const path = `Address/City`;
-    const res = await getDataByPath(path, "", "");
-
-    if (res !== null && res !== undefined && res.status === 200) {
-      setCity(res.data);
-    }
-  }
-
-  async function loadDataDistrics() {
-    const path = `Address/${cityID}/District`;
-    const res = await getDataByPath(path, "", "");
-    if (res !== null && res !== undefined && res.status === 200) {
-      setDistrics(res.data);
-    }
-  }
-  async function loadDataWard() {
-    const path = `Address/${districtID}/Ward`;
-    const res = await getDataByPath(path, "", "");
-    if (res !== null && res !== undefined && res.status === 200) {
-      setWard(res.data);
-    }
-  }
-  const handlecity = (event) => {
-    event.preventDefault();
-    const cityID = event.target.value;
-    setCityID(cityID);
-  };
-  const handleDistrict = (event) => {
-    event.preventDefault();
-    const districtID = event.target.value;
-    setDistrictID(districtID);
-  };
-  const handleWards = (event) => {
-    event.preventDefault();
-    const wardID = event.target.value;
-    setWardID(wardID);
-  };
-
   useEffect(() => {
-    loadDataSite();
-  }, [currentPage, perPage, site]);
-  useEffect(() => {
-    loadDataCity();
+    loadDataCategory();
   }, []);
-  useEffect(() => {
-    loadDataDistrics();
-  }, [cityID]);
-  useEffect(() => {
-    loadDataWard();
-  }, [districtID]);
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
@@ -240,6 +131,19 @@ const Site = () => {
                   {/* User */}
 
                   <li className="nav-item navbar-dropdown dropdown-user dropdown">
+                    <Link
+                      className="nav-link dropdown-toggle hide-arrow"
+                      to="/Profile"
+                      data-bs-toggle="dropdown"
+                    >
+                      <div className="avatar avatar-online">
+                        <img
+                          src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
+                          alt=""
+                          className="w-px-40 h-auto rounded-circle"
+                        />
+                      </div>
+                    </Link>
                     <ul className="dropdown-menu dropdown-menu-end">
                       <li>
                         <a className="dropdown-item" href="#">
@@ -358,8 +262,9 @@ const Site = () => {
                           borderColor: "white",
                         }}
                       >
-                        <h3 className="fontagon">Site</h3>
+                        <h3 className="fontagon">MainCategory</h3>
                       </h5>
+
                       <>
                         <a
                           className=" button-28"
@@ -402,7 +307,7 @@ const Site = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Add new Site</h5>
+                                  <h5 className="mb-0">Add new Order</h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -421,17 +326,18 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-fullname"
                                         >
-                                          Name Site
+                                          Name
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
                                             type="text"
                                             className="form-control"
                                             id="basic-icon-default-fullname"
-                                            placeholder="Name Site"
-                                            value={siteName}
+                                            placeholder="Name"
+                                            aria-label="John Doe"
+                                            value={categoryName}
                                             onChange={(e) => {
-                                              setSiteName(e.target.value);
+                                              setCategoryName(e.target.value);
                                             }}
                                             aria-describedby="basic-icon-default-fullname2"
                                           />
@@ -450,212 +356,15 @@ const Site = () => {
                                         <div className="input-group input-group-merge">
                                           <input
                                             type="text"
+                                            value={imageUrl}
+                                            onChange={(e) => {
+                                              setImageUrl(e.target.value);
+                                            }}
                                             id="basic-icon-default-company"
                                             className="form-control"
                                             placeholder="Image"
                                             aria-label="ACME Inc."
                                             aria-describedby="basic-icon-default-company2"
-                                            value={imageUrl}
-                                            onChange={(e) => {
-                                              setImageUrl(e.target.value);
-                                            }}
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-email"
-                                        >
-                                          Contact Info
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            placeholder="Contact Info"
-                                            aria-label="Contact Info"
-                                            aria-describedby="basic-icon-default-email2"
-                                            value={contactInfo}
-                                            onChange={(e) => {
-                                              setContactInfo(e.target.value);
-                                            }}
-                                          />
-                                          {/* <span
-                                            id="basic-icon-default-email2"
-                                            className="input-group-text"
-                                            style={{
-                                              backgroundColor: "#f6f9fc",
-                                            }}
-                                          >
-                                            @gmail.com
-                                          </span> */}
-                                        </div>
-                                        <div className="form-text">
-                                          You can use letters, numbers &amp;
-                                          periods
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "100%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
-                                          City
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <select
-                                            name="city"
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            onChange={(e) => handlecity(e)}
-                                            value={cityID}
-                                          >
-                                            {city &&
-                                              city.length &&
-                                              city.map((e, index) => {
-                                                return (
-                                                  <>
-                                                    <option
-                                                      key={e.id}
-                                                      value={e.id}
-                                                      onClick={() => {
-                                                        setCity(e.id);
-                                                      }}
-                                                    >
-                                                      {e.cityName}
-                                                    </option>
-                                                  </>
-                                                );
-                                              })}
-                                          </select>
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
-                                          District
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <select
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            onChange={(e) => handleDistrict(e)}
-                                            value={districtID}
-                                          >
-                                            {districs &&
-                                              districs.length &&
-                                              districs.map((e, index) => {
-                                                return (
-                                                  <>
-                                                    <option
-                                                      key={e.id}
-                                                      value={e.id}
-                                                      //onChange={ loadDataDistrics()}
-                                                    >
-                                                      {e.districtName}
-                                                    </option>
-                                                  </>
-                                                );
-                                              })}
-                                          </select>
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
-                                          Ward
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <select
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            value={wardID}
-                                            onChange={(e) => handleWards(e)}
-                                          >
-                                            {ward &&
-                                              ward.length &&
-                                              ward.map((e, index) => {
-                                                return (
-                                                  <>
-                                                    <option
-                                                      key={e.id}
-                                                      value={e.id}
-                                                      //onChange={ loadDataDistrics()}
-                                                    >
-                                                      {e.wardName}
-                                                    </option>
-                                                  </>
-                                                );
-                                              })}
-                                          </select>
-                                        </div>
-                                      </div>
-
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-message"
-                                        >
-                                          Home Address
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <textarea
-                                            id="basic-icon-default-message"
-                                            className="form-control"
-                                            placeholder=" Home Address"
-                                            aria-label=" Home Address"
-                                            aria-describedby="basic-icon-default-message2"
-                                            defaultValue={""}
-                                            value={homeAddress}
-                                            onChange={(e) => {
-                                              setHomeAddress(e.target.value);
-                                            }}
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-message"
-                                        >
-                                          Description
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <textarea
-                                            id="basic-icon-default-message"
-                                            className="form-control"
-                                            placeholder="Description"
-                                            aria-label="Description"
-                                            aria-describedby="basic-icon-default-message2"
-                                            defaultValue={""}
-                                            value={description}
-                                            onChange={(e) => {
-                                              setDescription(e.target.value);
-                                            }}
                                           />
                                         </div>
                                       </div>
@@ -666,8 +375,119 @@ const Site = () => {
                                       className="button-28"
                                       onClick={(e) => {
                                         e.preventDefault();
-                                        createNewProducts();
+                                        createNewCategory();
                                       }}
+                                      style={{
+                                        height: 30,
+                                        width: 80,
+                                        fontSize: 13,
+                                        paddingTop: 1,
+                                        marginLeft: "90%",
+                                        marginTop: "20px",
+                                        backgroundColor: "#11cdef",
+                                        color: "white",
+                                      }}
+                                    >
+                                      Save
+                                    </button>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="dialog overlay" id="my-dialog2">
+                          <a href="#" className="overlay-close" />
+
+                          <div className="row " style={{ width: 1000 }}>
+                            <div className="col-xl">
+                              <div className="card mb-4">
+                                <div
+                                  className="card-header d-flex justify-content-between align-items-center"
+                                  style={{
+                                    height: 70,
+                                    backgroundColor: "white",
+                                    padding: "20px 24px",
+
+                                    borderColor: "#f4f4f4",
+                                  }}
+                                >
+                                  <h5 className="mb-0">Update Medicine</h5>
+                                </div>
+                                <div className="card-body">
+                                  <form>
+                                    <div
+                                      style={{
+                                        display: "grid",
+                                        gridTemplateColumns: "auto auto",
+                                        padding: 30,
+                                      }}
+                                    >
+                                      <div
+                                        className="mb-3"
+                                        style={{ width: "95%" }}
+                                      >
+                                        <label
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-fullname"
+                                        >
+                                          Name
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <input
+                                            type="text"
+                                            className="form-control"
+                                            id="basic-icon-default-fullname"
+                                            placeholder="Name"
+                                            aria-label="John Doe"
+                                            aria-describedby="basic-icon-default-fullname2"
+                                            value={categoryUpdate.categoryName}
+                                            onChange={(e) => {
+                                              setCategoryUpdate({
+                                                ...categoryUpdate,
+                                                categoryName  : e.target.value,
+                                              });
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="mb-3"
+                                        style={{ width: "100%" }}
+                                      >
+                                        <label
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-company"
+                                        >
+                                          Image
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <input
+                                            value={categoryUpdate.imageUrl}
+                                            onChange={(e) => {
+                                              setCategoryUpdate({
+                                                ...categoryUpdate,
+                                                imageUrl: e.target.value,
+                                              });
+                                            }}
+                                            type="text"
+                                            id="basic-icon-default-company"
+                                            className="form-control"
+                                            placeholder="Image"
+                                            aria-label="ACME Inc."
+                                            aria-describedby="basic-icon-default-company2"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <button
+                                      type="submit"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        updateProducts();
+                                      }}
+                                      className="button-28"
                                       style={{
                                         height: 30,
                                         width: 80,
@@ -716,53 +536,27 @@ const Site = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Contract Info
-                            </th>
-                            <th
-                              style={{
-                                backgroundColor: "#f6f9fc",
-                                borderColor: "white",
-                                color: "#bfc8d3",
-                              }}
-                            >
-                              Quantity
-                            </th>
-                            <th
-                              style={{
-                                backgroundColor: "#f6f9fc",
-                                borderColor: "white",
-                                color: "#bfc8d3",
-                              }}
-                            >
-                              Unit
-                            </th>
-                            <th
-                              style={{
-                                backgroundColor: "#f6f9fc",
-                                borderColor: "white",
-                                color: "#bfc8d3",
-                              }}
-                            >
                               Actions
                             </th>
                           </tr>
                         </thead>
                         <tbody className="table-border-bottom-0">
-                          {site &&
-                            site.length &&
-                            site.map((e) => {
+                          {category &&
+                            category.length &&
+                            category.map((e) => {
                               return (
                                 <tr key={e.id}>
-                                  <td>&nbsp; &nbsp;{e.siteName}</td>
-                                  <td>{e.contactInfo}</td>
-                                  <td>50</td>
+                                  <td>&nbsp; &nbsp;{e.categoryName}</td>
+
                                   <td>
-                                    <span className="badge bg-label-primary me-1">
-                                      Blister Packs
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <button class="button-81" role="button">
+                                    <a
+                                      class="button-81"
+                                      role="button"
+                                      href="#my-dialog2"
+                                      onClick={() =>
+                                        loadDataMainCategoryID(e.id)
+                                      }
+                                    >
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="16"
@@ -777,26 +571,41 @@ const Site = () => {
                                           d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
                                         />
                                       </svg>
-                                    </button>
-                                    <buton></buton>
-                                    <Switch
-                                      checked={e.isActivate}
-                                      onChange={async () => {
-                                        loadDataSiteID(e.id);
-                                      }}
-                                    />
+                                    </a>
                                   </td>
                                 </tr>
                               );
                             })}
                         </tbody>
                       </table>
-                      <ReactPaginate
-                        className="pagination p12"
-                        pageCount={totalSite / perPage}
-                        onPageChange={(e) => handlePageChange(e.selected + 1)}
-                        currentPage={currentPage}
-                      />
+                      <div className="pagination p12">
+                        <ul>
+                          <a href="#">
+                            <li>Previous</li>
+                          </a>
+                          <a href="#">
+                            <li>1</li>
+                          </a>
+                          <a href="#">
+                            <li>2</li>
+                          </a>
+                          <a href="#">
+                            <li>3</li>
+                          </a>
+                          <a href="#">
+                            <li>4</li>
+                          </a>
+                          <a href="#">
+                            <li>5</li>
+                          </a>
+                          <a className="is-active" href="#">
+                            <li>6</li>
+                          </a>
+                          <a href="#">
+                            <li>Next</li>
+                          </a>
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -812,4 +621,4 @@ const Site = () => {
     </>
   );
 };
-export default Site;
+export default MainCategory;
