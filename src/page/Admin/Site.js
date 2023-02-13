@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import SideBar from "../sidebar/SideBar";
+import SideBar from "../sidebar/SideBarAdmin";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";

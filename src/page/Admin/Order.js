@@ -1,6 +1,6 @@
 import { useEffect, useState,useHistory } from "react";
 import {Link} from "react-router-dom"
-import SideBar from "../sidebar/SideBar";
+import SideBar from "../sidebar/SideBarPharmacist";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 

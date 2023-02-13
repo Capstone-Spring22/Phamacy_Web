@@ -1,6 +1,6 @@
 import { useEffect, useState, useHistory } from "react";
 import { Link } from "react-router-dom";
-import SideBar from "../sidebar/SideBar";
+import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import ReactPaginate from "react-paginate";
@@ -108,6 +108,7 @@ const SubCategory = () => {
     setCurrentPage(page);
   };
   useEffect(() => {
+    
     loadDataCategory();
   }, [currentPage, perPage, subCategory]);
   useEffect(() => {

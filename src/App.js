@@ -10,7 +10,7 @@ import Checkout from "./page/Customer/Checkout";
 import Home from "./page/Customer/Home";
 import Medicine from "./page/Customer/Medicine";
 import DetailMedicine from "./page/Customer/Detail";
-import SideBar from "./page/sidebar/SideBar";
+import SideBar from "./page/sidebar/SideBarAdmin";
 import Drug from "./page/Admin/Drug";
 import Site from "./page/Admin/Site";
 import Employees from "./page/Admin/Employee";
@@ -21,6 +21,7 @@ import NewEmployees from "./page/Admin/NewEmployee";
 import MainCategory from "./page/Admin/MainCategory";
 import SubCategory from "./page/Admin/SubCategory";
 import LoginAdmin from "./page/Admin/loginAdmin";
+import NewDrug from "./page/Admin/NewDrug";
 function App() {
   return (
     <div className="site-wrap">
@@ -73,6 +74,9 @@ function App() {
           </Route>
           <Route path="/LoginAdmin">
             <LoginAdmin />
+          </Route>
+          <Route path="/NewDrug">
+            <NewDrug />
           </Route>
         </Switch>
       </BrowserRouter>

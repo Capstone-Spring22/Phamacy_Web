@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import Swal from "sweetalert2";
-import SideBar from "../sidebar/SideBar";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import "../../assets/css/theme-default.css";
@@ -14,14 +12,12 @@ import {
 import { Link } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 
-
 const LoginAdmin = () => {
   const navigate = useHistory();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleLogin = (e) => {
     e.preventDefault();
-   
   };
   async function loginWithUsernamePassword(username, password) {
     if (username.trim() !== "" && password.trim() !== "") {
@@ -38,18 +34,21 @@ const LoginAdmin = () => {
         if (localStorage) {
           localStorage.setItem("accessToken", res.data.token);
           localStorage.setItem("roleID", jwtDecode(res.data.token).Image);
-          const roleID = (jwtDecode(res.data.token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]);
+          const roleID = jwtDecode(res.data.token)[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          ];
           const decoded = jwtDecode(res.data.token);
-        
-          console.log("ss",roleID);
-         
+
+          console.log("ss", roleID);
 
           if (roleID === "Manager") {
             navigate.push("/Home");
           } else if (roleID === "Pharmacist") {
+            navigate.push("/Order");
+          } else if (roleID === "Admin") {
+            navigate.push("/Employees");
+          } else if (roleID === "Owner") {
             navigate.push("/Drug");
-          }else if (roleID === "Admin") {
-            navigate.push("/Site");
           }
         }
       }

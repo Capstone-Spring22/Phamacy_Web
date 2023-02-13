@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import SideBar from "../sidebar/SideBar";
+import SideBar from "../sidebar/SideBarAdmin";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
@@ -12,7 +12,7 @@ import {
 import ReactPaginate from "react-paginate";
 
 const Employees = () => {
-  const [employees, setEmployees] = useState([]);
+  const [employees, setEmployees] = useState(null);
   const [city, setCity] = useState([]);
   const [cityID, setCityID] = useState("");
   const [districs, setDistrics] = useState([]);
@@ -35,12 +35,16 @@ const Employees = () => {
   };
 
   async function loadDataEmployee() {
-    const path = `User?pageIndex=${currentPage}&pageItems=${perPage}`;
-    const res = await getDataByPath(path, "", "");
-    console.log("check1", res);
-    if (res !== null && res !== undefined && res.status === 200) {
-      setEmployees(res.data.items);
-      setTotalEmployees(res.data.totalRecord);
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+
+      const path = `User?pageIndex=${currentPage}&pageItems=${perPage}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("check1", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setEmployees(res.data.items);
+        setTotalEmployees(res.data.totalRecord);
+      }
     }
   }
   const handlePageChange = (page) => {
@@ -107,7 +111,11 @@ const Employees = () => {
     loadDataWard();
   }, [districtID]);
   useEffect(() => {
-    loadDataEmployee();
+    const accessToken = localStorage.getItem("accessToken");
+    console.log("display", accessToken);
+    if (employees === null) {
+      loadDataEmployee(accessToken);
+    }
   }, [currentPage, perPage]);
   return (
     <>

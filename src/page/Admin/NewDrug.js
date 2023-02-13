@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
-import SideBar from "../sidebar/SideBarAdmin";
+import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
@@ -12,7 +12,7 @@ import {
 } from "../../services/data.service";
 import ReactPaginate from "react-paginate";
 
-const NewEmployees = () => {
+const NewDrug = () => {
   const [site, setSite] = useState([]);
   const [siteID, setSiteID] = useState("");
   const [employees, setEmployees] = useState([]);
@@ -327,7 +327,7 @@ const NewEmployees = () => {
                     borderColor: "#f4f4f4",
                   }}
                 >
-                  <h5 className="mb-0">Add new Employees</h5>
+                  <h5 className="mb-0">Add new Drug</h5>
                 </div>
                 <div className="card-body">
                   <div
@@ -342,7 +342,7 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-fullname"
                       >
-                        Full Name
+                        Drug Name
                       </label>
                       <div className="input-group input-group-merge">
                         <input
@@ -361,7 +361,7 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-company"
                       >
-                        User Name
+                        SubCategory Name
                       </label>
                       <div className="input-group input-group-merge">
                         <input
@@ -380,7 +380,7 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-email"
                       >
-                        Phone Number
+                        Manufacturer Name
                       </label>
                       <div className="input-group input-group-merge">
                         <input
@@ -395,46 +395,91 @@ const NewEmployees = () => {
                       </div>
                       <div className="form-text"></div>
                     </div>
-                    <div className="mb-3" style={{ width: "100%" }}>
+
+                    <div className="col-md">
+                      <small className="text-light fw-semibold d-block">
+                        Inline Checkboxes
+                      </small>
+                      <div className="form-check form-check-inline mt-3">
+                        <input 
+                          className="form-check-input"
+                          type="checkbox"
+                          id="inlineCheckbox1"
+                          defaultValue="option1"
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="inlineCheckbox1"
+                        >
+                          Prescription
+                        </label>
+                      </div>
+                      <div className="form-check form-check-inline">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="inlineCheckbox2"
+                          defaultValue="option2"
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="inlineCheckbox2"
+                        >
+                          Batches
+                        </label>
+                      </div>
+                      
+                    </div>
+
+                    <div className="mb-3" style={{ width: "95%" }}>
                       <label
                         className="form-label"
                         htmlFor="basic-icon-default-email"
-                      >
-                        Email
-                      </label>
-                      <div className="input-group input-group-merge">
+                      ></label>
+                      <div className="form-check">
                         <input
-                          type="text"
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          placeholder="Email"
-                          aria-label="Email"
-                          aria-describedby="basic-icon-default-email2"
-                          onChange={(e) => setEmail(e.target.value)}
+                          className="form-check-input"
+                          type="checkbox"
+                          defaultValue=""
+                          id="defaultCheck3"
+                          defaultChecked=""
                         />
+                        <label
+                          className="form-check-label"
+                          htmlFor="defaultCheck3"
+                        >
+                          {" "}
+                          Prescription{" "}
+                        </label>
                       </div>
-                      <div className="form-text"></div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          defaultValue=""
+                          id="defaultCheck3"
+                          defaultChecked=""
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="defaultCheck3"
+                        >
+                          {" "}
+                          Batches{" "}
+                        </label>
+                      </div>
                     </div>
-                    <div className="mb-3" style={{ width: "95%" }}>
+
+                    {/* <div className="mb-3" style={{ width: "95%" }}>
                       <label
                         className="form-label"
                         htmlFor="basic-icon-default-phone"
                       >
-                        Image
+                        Khi thuộc tính quản lý theo lô dc kick hoạt, sản phẩm tạo xong sẽ không thay đổi
                       </label>
-                      <div className="input-group input-group-merge">
-                        <input
-                          type="text"
-                          id="basic-icon-default-phone"
-                          className="form-control phone-mask"
-                          placeholder="Image"
-                          aria-label="658 799 8941"
-                          aria-describedby="basic-icon-default-phone2"
-                          onChange={(e) => setImageUrl(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="mb-3" style={{ width: "100%" }}>
+                      
+                    </div> */}
+                    <div className="mb-3" style={{ width: "95%" }}>
                       <label
                         className="form-label"
                         htmlFor="basic-icon-default-phone"
@@ -575,19 +620,17 @@ const NewEmployees = () => {
                         Site
                       </label>
                       <div className="input-group input-group-merge">
-                        
                         <select
                           name="Site"
                           id="basic-icon-default-email"
                           className="form-control"
                           onChange={(e) => handleSite(e)}
-                        >  
+                        >
                           {site &&
                             site.length &&
                             site.map((e, index) => {
                               return (
                                 <>
-                               
                                   <option
                                     key={e.id}
                                     value={e.id}
@@ -670,4 +713,4 @@ const NewEmployees = () => {
     </div>
   );
 };
-export default NewEmployees;
+export default NewDrug;

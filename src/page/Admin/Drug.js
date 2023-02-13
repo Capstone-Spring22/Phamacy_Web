@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
-import SideBar from "../sidebar/SideBar";
+import SideBar from "../sidebar/SideBarOwner";
+import ReactPaginate from "react-paginate";
+
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";
@@ -9,50 +11,36 @@ import { getDataByPath, deleteDataByPath } from "../../services/data.service";
 import { Link } from "react-router-dom";
 
 const Drug = () => {
-  // const [drug, setDrug] = useState([]);
+  const [drug, setDrug] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(7);
+  const [totalRecord, setTotalRecord] = useState([]);
   let history = useHistory();
 
-  const viewDetail = () => {
-    history.push("/ViewDetail");
+  
+
+  const create = () => {
+    history.push("/NewDrug");
   };
 
-  // async function loadDataMedicine() {
-  //   const path = `Site`;
-  //   const res = await getDataByPath(path, "", "");
-  //   console.log("check", res);
-  //   if (res !== null && res !== undefined && res.status === 200) {
-  //     setDrug(res.data.data);
-  //   }
-  // }
-  const drug = [
-    { name: "Paradon",price:"10000"},
-    { name: "Paradon",price:"10000"},
-    { name: "Paradon",price:"10000"},
-    { name: "Paradon",price:"10000"},
-    { name: "Paradon",price:"10000"},
-    
-  ]
+  async function loadDataMedicine() {
+    const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
+    const res = await getDataByPath(path, "", "");
+    console.log("check", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setDrug(res.data.items);
+      setTotalRecord(res.data.totalRecord)
+    }
+  }
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+ 
+  useEffect(()=>{
+    loadDataMedicine();
+  },[currentPage, perPage, drug])
 
-  // async function deleteDataMedicine(id) {
-  //   const path = `users`;
-  //   const res = await deleteDataByPath(path, "", id);
-  //   console.log("Check path", res);
-  //   if (res !== null && res !== undefined && res.status === 204) {
-  //     console.log("Check", res);
-  //     loadDataMedicine();
-  //     Swal.fire("Deleted!", "Your file has been deleted.", "success");
-  //   } else {
-  //     Swal.fire(
-  //       "Remove fail!",
-  //       "Company still working in this semester.",
-  //       "error"
-  //     );
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   loadDataMedicine();
-  // }, []);
+ 
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
@@ -245,6 +233,9 @@ const Drug = () => {
                         <a
                           className=" button-28"
                           href="#my-dialog"
+                          onClick={() => {
+                            create();
+                          }}
                           style={{
                             height: 30,
                             width: 80,
@@ -649,11 +640,9 @@ const Drug = () => {
                                 <tr key={e.id}>
                                   <td>&nbsp; &nbsp;{e.name}</td>
                                   <td>{e.price}</td>
-                                  <td>50</td>
-                                  <td>
-                                    <span className="badge bg-label-primary me-1">
-                                      Blister Packs
-                                    </span>
+                                  <td>{e.sellQuantity}</td>
+                                  <td>{e.unitId}
+                                    
                                   </td>
                                   <td>
                                     <button
@@ -700,34 +689,12 @@ const Drug = () => {
                             })}
                         </tbody>
                       </table>
-                      <div className="pagination p12">
-                        <ul>
-                          <a href="#">
-                            <li>Previous</li>
-                          </a>
-                          <a href="#">
-                            <li>1</li>
-                          </a>
-                          <a href="#">
-                            <li>2</li>
-                          </a>
-                          <a href="#">
-                            <li>3</li>
-                          </a>
-                          <a href="#">
-                            <li>4</li>
-                          </a>
-                          <a href="#">
-                            <li>5</li>
-                          </a>
-                          <a className="is-active" href="#">
-                            <li>6</li>
-                          </a>
-                          <a href="#">
-                            <li>Next</li>
-                          </a>
-                        </ul>
-                      </div>
+                      <ReactPaginate
+                        className="pagination p12"
+                        pageCount={totalRecord / perPage}
+                        onPageChange={(e) => handlePageChange(e.selected + 1)}
+                        currentPage={currentPage}
+                      />
                     </div>
                   </div>
                 </div>
