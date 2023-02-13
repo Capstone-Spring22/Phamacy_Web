@@ -13,6 +13,8 @@ import {
 import ReactPaginate from "react-paginate";
 
 const NewDrug = () => {
+  const [addUnit, setAddUnit] = useState(false);
+  const [addNewUnit, setAddnewUnit] = useState(false);
   const [site, setSite] = useState([]);
   const [siteID, setSiteID] = useState("");
   const [employees, setEmployees] = useState([]);
@@ -176,19 +178,16 @@ const NewDrug = () => {
   useEffect(() => {
     loadDataEmployee();
   }, [currentPage, perPage]);
-  const [inputs, setInputs] = useState([{ value: '' }]);
+  const [inputs, setInputs] = useState([{ value: "" }]);
 
   const handleAddInput = () => {
-    setInputs([...inputs, { value: '' }]);
+    setInputs([...inputs, { value: "" }]);
   };
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
         <SideBar />
-        <div>
-     
-      <button onClick={handleAddInput}>Add Input</button>
-    </div>
+        <div></div>
         <div className="layout-page" style={{ backgroundColor: "#f4f6fb" }}>
           {/* Navbar */}
           <nav
@@ -321,132 +320,407 @@ const NewDrug = () => {
           {/* Content wrapper */}
 
           {inputs.map((input, index) => (
-          <div
-            className="row "
-            style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
-          >
-            <div className="col-xl">
-              <div className="card mb-4">
-                <div
-                  className="card-header d-flex justify-content-between align-items-center"
-                  style={{
-                    height: 70,
-                    backgroundColor: "white",
-                    padding: "20px 24px",
-
-                    borderColor: "#f4f4f4",
-                  }}
-                >
-                  <h5 className="mb-0">Add new Drug</h5>
-                </div>
-                <div className="card-body">
+            <div
+              className="row "
+              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+            >
+              <div className="col-xl">
+                <div className="card mb-4">
                   <div
+                    className="card-header d-flex justify-content-between align-items-center"
                     style={{
-                      display: "grid",
-                      gridTemplateColumns: "auto auto",
-                      padding: 30,
+                      height: 70,
+                      backgroundColor: "white",
+                      padding: "20px 24px",
+
+                      borderColor: "#f4f4f4",
                     }}
                   >
-                    <div className="mb-3" style={{ width: "95%" }}>
-                      <label
-                        className="form-label"
-                        htmlFor="basic-icon-default-fullname"
-                      >
-                        Drug Name
-                      </label>
-                      <div className="input-group input-group-merge">
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="basic-icon-default-fullname"
-                          placeholder="Name"
-                          aria-label="John Doe"
-                          aria-describedby="basic-icon-default-fullname2"
-                          onChange={(e) => setFullname(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="mb-3" style={{ width: "100%" }}>
-                      <label
-                        className="form-label"
-                        htmlFor="basic-icon-default-company"
-                      >
-                        SubCategory Name
-                      </label>
-                      <div className="input-group input-group-merge">
-                        <input
-                          type="text"
-                          id="basic-icon-default-company"
-                          className="form-control"
-                          placeholder="User Name"
-                          aria-label="ACME Inc."
-                          aria-describedby="basic-icon-default-company2"
-                          onChange={(e) => setUsername(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="mb-3" style={{ width: "95%" }}>
-                      <label
-                        className="form-label"
-                        htmlFor="basic-icon-default-email"
-                      >
-                        Manufacturer Name
-                      </label>
-                      <div className="input-group input-group-merge">
-                        <input
-                          type="text"
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          placeholder="Phone Number"
-                          aria-label="Phone Number"
-                          aria-describedby="basic-icon-default-email2"
-                          onChange={(e) => setPhone(e.target.value)}
-                        />
-                      </div>
-                      <div className="form-text"></div>
-                    </div>
-
-                    <div className="col-md">
-                      <small
-                        className="text-light fw-semibold d-block"
-                        style={{ color: "white" ,}}
-                      >
-                        Inline Checkboxes
-                      </small>
-                      <div className="form-check form-check-inline mt-3">
-                        <input
-                         style={{height: 20,width:20,backgroundColor:"#86a8c5", borderColor:"#86a8c5"}}
-                          className="form-check-input"
-                          type="checkbox"
-                          id="inlineCheckbox1"
-                          defaultValue="option1"
-                        />
+                    <h5 className="mb-0">Add new Drug</h5>
+                  </div>
+                  <div className="card-body">
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "auto auto",
+                        padding: 30,
+                      }}
+                    >
+                      <div className="mb-3" style={{ width: "95%" }}>
                         <label
-                          className="form-check-label"
-                          htmlFor="inlineCheckbox1"
+                          className="form-label"
+                          htmlFor="basic-icon-default-fullname"
                         >
-                          Prescription
+                          Drug Name
                         </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="basic-icon-default-fullname"
+                            placeholder="Name"
+                            aria-label="John Doe"
+                            aria-describedby="basic-icon-default-fullname2"
+                            onChange={(e) => setFullname(e.target.value)}
+                          />
+                        </div>
                       </div>
-                      <div className="form-check form-check-inline">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id="inlineCheckbox2"
-                          defaultValue="option2"
-                          style={{height: 20,width:20,backgroundColor:"#86a8c5", borderColor:"#86a8c5"}}
-                        
-                        />
+                      <div className="mb-3" style={{ width: "100%" }}>
                         <label
-                          className="form-check-label"
-                          htmlFor="inlineCheckbox2"
+                          className="form-label"
+                          htmlFor="basic-icon-default-company"
                         >
-                          Batches
+                          SubCategory Name
                         </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-company"
+                            className="form-control"
+                            placeholder="User Name"
+                            aria-label="ACME Inc."
+                            aria-describedby="basic-icon-default-company2"
+                            onChange={(e) => setUsername(e.target.value)}
+                          />
+                        </div>
                       </div>
-                    </div>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-email"
+                        >
+                          Manufacturer Name
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            placeholder="Phone Number"
+                            aria-label="Phone Number"
+                            aria-describedby="basic-icon-default-email2"
+                            onChange={(e) => setPhone(e.target.value)}
+                          />
+                        </div>
+                        <div className="form-text"></div>
+                      </div>
 
-                    {/* <div className="mb-3" style={{ width: "95%" }}>
+                      <div className="col-md">
+                        <small
+                          className="text-light fw-semibold d-block"
+                          style={{ color: "white" }}
+                        >
+                          Inline Checkboxes
+                        </small>
+                        <div className="form-check form-check-inline mt-3">
+                          <input
+                            style={{
+                              height: 20,
+                              width: 20,
+                              backgroundColor: "#86a8c5",
+                              borderColor: "#86a8c5",
+                            }}
+                            className="form-check-input"
+                            type="checkbox"
+                            id="inlineCheckbox1"
+                            defaultValue="option1"
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineCheckbox1"
+                          >
+                            Prescription
+                          </label>
+                        </div>
+                        <div className="form-check form-check-inline">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="inlineCheckbox2"
+                            defaultValue="option2"
+                            style={{
+                              height: 20,
+                              width: 20,
+                              backgroundColor: "#86a8c5",
+                              borderColor: "#86a8c5",
+                            }}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineCheckbox2"
+                          >
+                            Batches
+                          </label>
+                        </div>
+                      </div>
+                      {addUnit && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-company"
+                          >
+                            Unit
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-company"
+                              className="form-control"
+                              placeholder="User Name"
+                              aria-label="ACME Inc."
+                              aria-describedby="basic-icon-default-company2"
+                              onChange={(e) => setUsername(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {addUnit && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            Price
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              placeholder="Phone Number"
+                              aria-label="Phone Number"
+                              aria-describedby="basic-icon-default-email2"
+                              onChange={(e) => setPhone(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-text"></div>
+                        </div>
+                      )}
+                      {addUnit && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            Giá trị quy đổi
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              placeholder="Phone Number"
+                              aria-label="Phone Number"
+                              aria-describedby="basic-icon-default-email2"
+                              onChange={(e) => setPhone(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-text"></div>
+                        </div>
+                      )}
+                      {addUnit && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            BarCode
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              placeholder="Phone Number"
+                              aria-label="Phone Number"
+                              aria-describedby="basic-icon-default-email2"
+                              onChange={(e) => setPhone(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-text"></div>
+                        </div>
+                      )}
+                      {addUnit && (
+                        <div className="form-check form-check-inline">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="inlineCheckbox2"
+                            defaultValue="option2"
+                            style={{
+                              height: 20,
+                              width: 20,
+                              backgroundColor: "#86a8c5",
+                              borderColor: "#86a8c5",
+                            }}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineCheckbox2"
+                          >
+                            For sale
+                          </label>
+                        </div>
+                      )}
+                      {addUnit && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            Image
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              placeholder="Phone Number"
+                              aria-label="Phone Number"
+                              aria-describedby="basic-icon-default-email2"
+                              onChange={(e) => setPhone(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-text"></div>
+                        </div>
+                      )}
+
+                      {/* lan 2*/}
+
+                      {addNewUnit && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-company"
+                          >
+                            Unit
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-company"
+                              className="form-control"
+                              placeholder="User Name"
+                              aria-label="ACME Inc."
+                              aria-describedby="basic-icon-default-company2"
+                              onChange={(e) => setUsername(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {addNewUnit && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            Price
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              placeholder="Phone Number"
+                              aria-label="Phone Number"
+                              aria-describedby="basic-icon-default-email2"
+                              onChange={(e) => setPhone(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-text"></div>
+                        </div>
+                      )}
+                      {addNewUnit && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            Giá trị quy đổi
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              placeholder="Phone Number"
+                              aria-label="Phone Number"
+                              aria-describedby="basic-icon-default-email2"
+                              onChange={(e) => setPhone(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-text"></div>
+                        </div>
+                      )}
+                      {addNewUnit && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            BarCode
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              placeholder="Phone Number"
+                              aria-label="Phone Number"
+                              aria-describedby="basic-icon-default-email2"
+                              onChange={(e) => setPhone(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-text"></div>
+                        </div>
+                      )}
+                      {addNewUnit && (
+                        <div className="form-check form-check-inline">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="inlineCheckbox2"
+                            defaultValue="option2"
+                            style={{
+                              height: 20,
+                              width: 20,
+                              backgroundColor: "#86a8c5",
+                              borderColor: "#86a8c5",
+                            }}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineCheckbox2"
+                          >
+                            For sale
+                          </label>
+                        </div>
+                      )}
+                      {addNewUnit && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            Image
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              placeholder="Phone Number"
+                              aria-label="Phone Number"
+                              aria-describedby="basic-icon-default-email2"
+                              onChange={(e) => setPhone(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-text"></div>
+                        </div>
+                      )}
+                      {/* <div className="mb-3" style={{ width: "95%" }}>
                       <label
                         className="form-label"
                         htmlFor="basic-icon-default-phone"
@@ -455,34 +729,39 @@ const NewDrug = () => {
                       </label>
                       
                     </div> */}
-                  
-                  </div>
+                    </div>
+                    <button onClick={() => setAddUnit(!addUnit)}>
+                      Add lan 1
+                    </button>
+                    {addUnit &&(<button onClick={() => setAddnewUnit(!addNewUnit)}>
+                      Add lan 2
+                    </button>)}
 
-                  <button
-                    type="submit"
-                    className="button-28"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      createNewProducts();
-                    }}
-                    style={{
-                      height: 30,
-                      width: 80,
-                      fontSize: 13,
-                      paddingTop: 1,
-                      marginLeft: "90%",
-                      marginTop: "20px",
-                      backgroundColor: "#11cdef",
-                      color: "white",
-                    }}
-                  >
-                    Save
-                  </button>
+                    <button
+                      type="submit"
+                      className="button-28"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        createNewProducts();
+                      }}
+                      style={{
+                        height: 30,
+                        width: 80,
+                        fontSize: 13,
+                        paddingTop: 1,
+                        marginLeft: "90%",
+                        marginTop: "20px",
+                        backgroundColor: "#11cdef",
+                        color: "white",
+                      }}
+                    >
+                      Save
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-           ))}
+          ))}
         </div>
 
         <div className="layout-overlay layout-menu-toggle" />
