@@ -6,8 +6,6 @@ import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
-  
-   
   return (
     <>
       <aside
@@ -38,7 +36,7 @@ const Sidebar = () => {
         <ul className="menu-inner py-1">
           {/* Dashboard */}
           <li className="menu-item ">
-            <a href="index.html" className="menu-link">
+            <a href="#" className="menu-link">
               <svg
                 style={{ margin: "5" }}
                 xmlns="http://www.w3.org/2000/svg"

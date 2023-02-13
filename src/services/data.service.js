@@ -1,5 +1,7 @@
 import getOptions from "./services.ultils";
-import authAxios from "./authAxios";
+import axios from "axios";
+import  authAxios  from "./authAxios";
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 export async function getDataByPath(path, accessToken, data) {
   try {
@@ -93,4 +95,20 @@ export async function updateDataByPath(path, accessToken, data) {
     return error.response;
   }
   
+}
+export async function loginDataByPath(path, data) {
+  try {
+    let endpoint = "";
+    let body = {};
+    if (path !== "") {
+      endpoint = `${backendUrl}/${path}`;
+    }
+    if (data !== "") {
+      body = data;
+    }
+    const res = await axios.post(endpoint, body);
+    return res;
+  } catch (error) {
+    return error.response;
+  }
 }

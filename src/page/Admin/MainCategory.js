@@ -15,6 +15,7 @@ const MainCategory = () => {
   const [category, setCategory] = useState([]);
   const [categoryName, setCategoryName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [isOpen, setIsOpen] = useState(true);
   const [categoryUpdate, setCategoryUpdate] = useState({
     categoryName: "",
     imageUrl: "",
@@ -55,7 +56,7 @@ const MainCategory = () => {
     console.log("checkRes", res);
     if (res && res.status === 200) {
       Swal.fire("Update successfully!", "", "success");
-      window.location.reload();
+      setIsOpen(false);
     }
   }
   const deleteForCreate = () => {
@@ -69,14 +70,15 @@ const MainCategory = () => {
       const res = await createDataByPath(path, "", data);
       console.log("Check res", res);
       if (res && res.status === 201) {
-        Swal.fire("Create Success", "", "success");
+        Swal.fire("Update successfully!", "", "success");
         deleteForCreate();
+        setIsOpen(false);
       }
     }
   }
   useEffect(() => {
     loadDataCategory();
-  }, []);
+  }, [category]);
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
@@ -274,8 +276,11 @@ const MainCategory = () => {
                             width: 80,
                             fontSize: 13,
                             paddingTop: 5,
-                            marginLeft: "80%",
+                            marginLeft: "77%",
                             marginTop: "20px",
+                          }}
+                          onClick={()=>{
+                            setIsOpen(true);
                           }}
                         >
                           <svg
@@ -291,7 +296,10 @@ const MainCategory = () => {
                           </svg>
                           &nbsp; Add
                         </a>
-                        <div className="dialog overlay" id="my-dialog">
+                        <div
+                          className={`dialog overlay ${isOpen ? "" : "hidden"}`}
+                          id="my-dialog"
+                        >
                           <a href="#" className="overlay-close" />
 
                           <div className="row " style={{ width: 1000 }}>
@@ -307,7 +315,7 @@ const MainCategory = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Add new Order</h5>
+                                  <h5 className="mb-0">Add new Category</h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -396,7 +404,10 @@ const MainCategory = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="dialog overlay" id="my-dialog2">
+                        <div
+                          className={`dialog overlay ${isOpen ? "" : "hidden"}`}
+                          id="my-dialog2"
+                        >
                           <a href="#" className="overlay-close" />
 
                           <div className="row " style={{ width: 1000 }}>
@@ -412,7 +423,7 @@ const MainCategory = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Update Medicine</h5>
+                                  <h5 className="mb-0">Update Category</h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -445,7 +456,7 @@ const MainCategory = () => {
                                             onChange={(e) => {
                                               setCategoryUpdate({
                                                 ...categoryUpdate,
-                                                categoryName  : e.target.value,
+                                                categoryName: e.target.value,
                                               });
                                             }}
                                           />
@@ -553,9 +564,10 @@ const MainCategory = () => {
                                       class="button-81"
                                       role="button"
                                       href="#my-dialog2"
-                                      onClick={() =>
-                                        loadDataMainCategoryID(e.id)
-                                      }
+                                      onClick={() => {
+                                        loadDataMainCategoryID(e.id);
+                                        setIsOpen(true);
+                                      }}
                                     >
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"

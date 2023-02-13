@@ -102,7 +102,9 @@ const Header = () => {
                   </ul>
                 </li>
                 <li>
-                  <Link to="about.html">News</Link>
+                  <Link activeClassName="active" to="/LoginAdmin">
+                    <span>LoginAdmin</span>
+                  </Link>
                 </li>
                 <li>
                   <Link activeClassName="active" to="/Login">

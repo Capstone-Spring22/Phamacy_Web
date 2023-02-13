@@ -21,6 +21,7 @@ const SubCategory = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
+  const [isOpen, setIsOpen] = useState(true);
   const [categoryUpdate, setCategoryUpdate] = useState({
     subCategoryName: "",
     mainCategoryId: "",
@@ -52,7 +53,8 @@ const SubCategory = () => {
       if (res && res.status === 201) {
         Swal.fire("Create Success", "", "success");
         deleteForCreate();
-        window.location.reload();
+
+        setIsOpen(false);
       }
     }
   }
@@ -98,7 +100,7 @@ const SubCategory = () => {
     console.log("checkRes", res);
     if (res && res.status === 200) {
       Swal.fire("Update successfully!", "", "success");
-      window.location.reload();
+      setIsOpen(false);
     }
   }
 
@@ -107,7 +109,7 @@ const SubCategory = () => {
   };
   useEffect(() => {
     loadDataCategory();
-  }, [currentPage, perPage]);
+  }, [currentPage, perPage, subCategory]);
   useEffect(() => {
     loadDataMainCategory();
   }, []);
@@ -303,12 +305,15 @@ const SubCategory = () => {
                         <a
                           className=" button-28"
                           href="#my-dialog"
+                          onClick={()=>{
+                            setIsOpen(true);
+                          }}
                           style={{
                             height: 30,
                             width: 80,
                             fontSize: 13,
                             paddingTop: 5,
-                            marginLeft: "80%",
+                            marginLeft: "77%",
                             marginTop: "20px",
                           }}
                         >
@@ -325,7 +330,10 @@ const SubCategory = () => {
                           </svg>
                           &nbsp; Add
                         </a>
-                        <div className="dialog overlay" id="my-dialog">
+                        <div
+                          className={`dialog overlay ${isOpen ? "" : "hidden"}`}
+                          id="my-dialog"
+                        >
                           <a href="#" className="overlay-close" />
 
                           <div className="row " style={{ width: 1000 }}>
@@ -341,7 +349,7 @@ const SubCategory = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Add new Order</h5>
+                                  <h5 className="mb-0">Add new SubCategory</h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -472,7 +480,10 @@ const SubCategory = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="dialog overlay" id="my-dialog2">
+                        <div
+                          className={`dialog overlay ${isOpen ? "" : "hidden"}`}
+                          id="my-dialog2"
+                        >
                           <a href="#" className="overlay-close" />
 
                           <div className="row " style={{ width: 1000 }}>
@@ -687,9 +698,10 @@ const SubCategory = () => {
                                       class="button-81"
                                       role="button"
                                       href="#my-dialog2"
-                                      onClick={() =>
-                                        loadDataSubCategoryID(e.id)
-                                      }
+                                      onClick={() => {
+                                        loadDataSubCategoryID(e.id);
+                                        setIsOpen(true);
+                                      }}
                                     >
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"

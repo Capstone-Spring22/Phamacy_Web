@@ -15,7 +15,7 @@ import {
 } from "../../services/data.service";
 
 const Site = () => {
-  const [site, setSite] = useState([]);
+  const [site, setSite] = useState(null);
   const [city, setCity] = useState([]);
   const [cityID, setCityID] = useState("");
   const [districs, setDistrics] = useState([]);
@@ -58,13 +58,19 @@ const Site = () => {
   const handleClick = (id) => {
     console.log("display", id);
   };
+  
   async function loadDataSite() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
     const path = `Site?pageIndex=${currentPage}&pageItems=${perPage}`;
-    const res = await getDataByPath(path, "", "");
+    console.log("display2", getDataByPath);
+    const res = await getDataByPath(path, accessToken, "");
+     console.log('display31321',res)
     if (res !== null && res !== undefined && res.status === 200) {
       setSite(res.data.items);
+      
       setTotalSite(res.data.totalRecord);
-    }
+    }}
   }
   async function loadDataSubCategoryID(id) {
     const path = `Site/${id}`;
@@ -98,6 +104,7 @@ const Site = () => {
     if (res && res.status === 200) {
       Swal.fire("Update successfully!", "", "success");
       window.location.reload();
+
     }
   }
   const handlePageChange = (page) => {
@@ -213,7 +220,12 @@ const Site = () => {
   };
 
   useEffect(() => {
-    loadDataSite();
+    const accessToken = localStorage.getItem("accessToken");
+    console.log("display", accessToken);
+    if (site === null) {
+    
+      loadDataSite(accessToken);
+    }
   }, [currentPage, perPage, site]);
   useEffect(() => {
     loadDataCity();

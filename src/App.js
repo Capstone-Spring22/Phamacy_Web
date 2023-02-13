@@ -20,6 +20,7 @@ import Login from "./page/Customer/Login";
 import NewEmployees from "./page/Admin/NewEmployee";
 import MainCategory from "./page/Admin/MainCategory";
 import SubCategory from "./page/Admin/SubCategory";
+import LoginAdmin from "./page/Admin/loginAdmin";
 function App() {
   return (
     <div className="site-wrap">
@@ -69,6 +70,9 @@ function App() {
           </Route>
           <Route path="/SubCategory">
             <SubCategory />
+          </Route>
+          <Route path="/LoginAdmin">
+            <LoginAdmin />
           </Route>
         </Switch>
       </BrowserRouter>
