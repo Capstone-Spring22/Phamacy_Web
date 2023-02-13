@@ -176,11 +176,19 @@ const NewDrug = () => {
   useEffect(() => {
     loadDataEmployee();
   }, [currentPage, perPage]);
+  const [inputs, setInputs] = useState([{ value: '' }]);
+
+  const handleAddInput = () => {
+    setInputs([...inputs, { value: '' }]);
+  };
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
         <SideBar />
-
+        <div>
+     
+      <button onClick={handleAddInput}>Add Input</button>
+    </div>
         <div className="layout-page" style={{ backgroundColor: "#f4f6fb" }}>
           {/* Navbar */}
           <nav
@@ -311,6 +319,8 @@ const NewDrug = () => {
 
           {/* / Navbar */}
           {/* Content wrapper */}
+
+          {inputs.map((input, index) => (
           <div
             className="row "
             style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
@@ -397,11 +407,15 @@ const NewDrug = () => {
                     </div>
 
                     <div className="col-md">
-                      <small className="text-light fw-semibold d-block">
+                      <small
+                        className="text-light fw-semibold d-block"
+                        style={{ color: "white" ,}}
+                      >
                         Inline Checkboxes
                       </small>
                       <div className="form-check form-check-inline mt-3">
-                        <input 
+                        <input
+                         style={{height: 20,width:20,backgroundColor:"#86a8c5", borderColor:"#86a8c5"}}
                           className="form-check-input"
                           type="checkbox"
                           id="inlineCheckbox1"
@@ -420,52 +434,14 @@ const NewDrug = () => {
                           type="checkbox"
                           id="inlineCheckbox2"
                           defaultValue="option2"
+                          style={{height: 20,width:20,backgroundColor:"#86a8c5", borderColor:"#86a8c5"}}
+                        
                         />
                         <label
                           className="form-check-label"
                           htmlFor="inlineCheckbox2"
                         >
                           Batches
-                        </label>
-                      </div>
-                      
-                    </div>
-
-                    <div className="mb-3" style={{ width: "95%" }}>
-                      <label
-                        className="form-label"
-                        htmlFor="basic-icon-default-email"
-                      ></label>
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          defaultValue=""
-                          id="defaultCheck3"
-                          defaultChecked=""
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="defaultCheck3"
-                        >
-                          {" "}
-                          Prescription{" "}
-                        </label>
-                      </div>
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          defaultValue=""
-                          id="defaultCheck3"
-                          defaultChecked=""
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="defaultCheck3"
-                        >
-                          {" "}
-                          Batches{" "}
                         </label>
                       </div>
                     </div>
@@ -479,207 +455,7 @@ const NewDrug = () => {
                       </label>
                       
                     </div> */}
-                    <div className="mb-3" style={{ width: "95%" }}>
-                      <label
-                        className="form-label"
-                        htmlFor="basic-icon-default-phone"
-                      >
-                        City
-                      </label>
-                      <div className="input-group input-group-merge">
-                        <select
-                          name="city"
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          onChange={(e) => handlecity(e)}
-                          value={cityID}
-                        >
-                          {city &&
-                            city.length &&
-                            city.map((e, index) => {
-                              return (
-                                <>
-                                  <option
-                                    key={e.id}
-                                    value={e.id}
-                                    onClick={() => {
-                                      setCity(e.id);
-                                    }}
-                                  >
-                                    {e.cityName}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="mb-3" style={{ width: "95%" }}>
-                      <label
-                        className="form-label"
-                        htmlFor="basic-icon-default-phone"
-                      >
-                        District
-                      </label>
-                      <div className="input-group input-group-merge">
-                        <select
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          onChange={(e) => handleDistrict(e)}
-                          value={districtID}
-                        >
-                          {districs &&
-                            districs.length &&
-                            districs.map((e, index) => {
-                              return (
-                                <>
-                                  <option
-                                    key={e.id}
-                                    value={e.id}
-                                    //onChange={ loadDataDistrics()}
-                                  >
-                                    {e.districtName}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="mb-3" style={{ width: "100%" }}>
-                      <label
-                        className="form-label"
-                        htmlFor="basic-icon-default-phone"
-                      >
-                        Ward
-                      </label>
-                      <div className="input-group input-group-merge">
-                        <select
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          value={wardID}
-                          onChange={(e) => handleWards(e)}
-                        >
-                          {ward &&
-                            ward.length &&
-                            ward.map((e, index) => {
-                              return (
-                                <>
-                                  <option
-                                    key={e.id}
-                                    value={e.id}
-                                    //onChange={ loadDataDistrics()}
-                                  >
-                                    {e.wardName}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="mb-3" style={{ width: "95%" }}>
-                      <label
-                        className="form-label"
-                        htmlFor="basic-icon-default-phone"
-                      >
-                        Role
-                      </label>
-                      <div className="input-group input-group-merge">
-                        <select
-                          name="city"
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          onChange={(e) => handleRole(e)}
-                        >
-                          {role &&
-                            role.length &&
-                            role.map((e, index) => {
-                              return (
-                                <>
-                                  <option
-                                    key={e.roleID}
-                                    value={e.roleID}
-                                    onClick={() => {
-                                      setRole(e.roleID);
-                                    }}
-                                  >
-                                    {e.roleName}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="mb-3" style={{ width: "100%" }}>
-                      <label
-                        className="form-label"
-                        htmlFor="basic-icon-default-phone"
-                      >
-                        Site
-                      </label>
-                      <div className="input-group input-group-merge">
-                        <select
-                          name="Site"
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          onChange={(e) => handleSite(e)}
-                        >
-                          {site &&
-                            site.length &&
-                            site.map((e, index) => {
-                              return (
-                                <>
-                                  <option
-                                    key={e.id}
-                                    value={e.id}
-                                    onClick={() => {
-                                      setSite(e.id);
-                                    }}
-                                  >
-                                    {e.siteName}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="mb-3" style={{ width: "95%" }}>
-                      <label
-                        className="form-label"
-                        htmlFor="basic-icon-default-phone"
-                      >
-                        Gender
-                      </label>
-                      <div className="input-group input-group-merge">
-                        <select
-                          name="Site"
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          onChange={(e) => handleGender(e)}
-                        >
-                          {genders &&
-                            genders.length &&
-                            genders.map((e, index) => {
-                              return (
-                                <>
-                                  <option
-                                    key={e.name}
-                                    value={e.value}
-                                    onClick={() => {
-                                      setGender(e.value);
-                                    }}
-                                  >
-                                    {e.name}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
-                      </div>
-                    </div>
+                  
                   </div>
 
                   <button
@@ -706,6 +482,7 @@ const NewDrug = () => {
               </div>
             </div>
           </div>
+           ))}
         </div>
 
         <div className="layout-overlay layout-menu-toggle" />
