@@ -13,7 +13,7 @@ import {
 import ReactPaginate from "react-paginate";
 
 const NewEmployees = () => {
-  const [site, setSite] = useState([]);
+  const [site, setSite] = useState(null);
   const [siteID, setSiteID] = useState("");
   const [employees, setEmployees] = useState([]);
   const [city, setCity] = useState([]);
@@ -74,25 +74,31 @@ const NewEmployees = () => {
   };
 
   async function createNewProducts() {
-    if (checkValidation()) {
-      const data = dataForCreate();
-      const path = "User/Register";
-      const res = await createDataByPath(path, "", data);
-      console.log("Check res", res);
-      console.log("display", data);
-      if (res && res.status === 201) {
-        Swal.fire("Create Success", "", "success");
-        // deleteForCreate();
-        window.location.reload();
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      if (checkValidation()) {
+        const data = dataForCreate();
+        const path = "User/Register";
+        const res = await createDataByPath(path, accessToken, data);
+        console.log("Check res", res);
+        console.log("display", data);
+        if (res && res.status === 201) {
+          Swal.fire("Create Success", "", "success");
+          // deleteForCreate();
+          window.location.reload();
+        }
       }
     }
   }
   async function loadDataSite() {
-    const path = `Site?pageIndex=${currentPage}&pageItems=${perPage}`;
-    const res = await getDataByPath(path, "", "");
-    console.log("check", res);
-    if (res !== null && res !== undefined && res.status === 200) {
-      setSite(res.data.items);
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `Site?pageIndex=${currentPage}&pageItems=${perPage}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("check", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setSite(res.data.items);
+      }
     }
   }
   async function loadDataCity() {
@@ -162,7 +168,11 @@ const NewEmployees = () => {
     loadDataCity();
   }, []);
   useEffect(() => {
-    loadDataSite();
+    const accessToken = localStorage.getItem("accessToken");
+    console.log("display", accessToken);
+    if (site === null) {
+      loadDataSite(accessToken);
+    }
   }, []);
   useEffect(() => {
     loadDataRole();
@@ -174,7 +184,11 @@ const NewEmployees = () => {
     loadDataWard();
   }, [districtID]);
   useEffect(() => {
-    loadDataEmployee();
+    const accessToken = localStorage.getItem("accessToken");
+    console.log("display", accessToken);
+    if (site === null) {
+      loadDataEmployee(accessToken);
+    }
   }, [currentPage, perPage]);
   return (
     <div className="layout-wrapper layout-content-navbar">
@@ -575,19 +589,17 @@ const NewEmployees = () => {
                         Site
                       </label>
                       <div className="input-group input-group-merge">
-                        
                         <select
                           name="Site"
                           id="basic-icon-default-email"
                           className="form-control"
                           onChange={(e) => handleSite(e)}
-                        >  
+                        >
                           {site &&
                             site.length &&
                             site.map((e, index) => {
                               return (
                                 <>
-                               
                                   <option
                                     key={e.id}
                                     value={e.id}

@@ -16,40 +16,145 @@ const NewDrug = () => {
   const [addUnit, setAddUnit] = useState(false);
   const [addNewUnit, setAddnewUnit] = useState(false);
   const [addNewUnit2, setAddnewUnit2] = useState(false);
-  const [site, setSite] = useState([]);
-  const [siteID, setSiteID] = useState("");
-  const [employees, setEmployees] = useState([]);
-  const [city, setCity] = useState([]);
-  const [cityID, setCityID] = useState("");
-  const [districs, setDistrics] = useState([]);
-  const [districtID, setDistrictID] = useState([]);
-  const [ward, setWard] = useState([]);
-  const [wardID, setWardID] = useState([]);
-  const [siteName, setSiteName] = useState("");
-  const [id, setID] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [totalEmployees, setTotalEmployees] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(100);
-  const [role, setRole] = useState("");
-  const [fullname, setFullname] = useState("");
-  const [username, setUsername] = useState("");
-  const [gender, setGender] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [roleID, setRoleID] = useState("");
+  const [isBatches, setIsBatches] = useState(false);
+  const [isPrescription, setIsPrescription] = useState(false);
 
-  // Load Product
-  async function loadDataEmployee() {
-    const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
-    const res = await getDataByPath(path, "", "");
-    console.log("check1", res);
-    if (res !== null && res !== undefined && res.status === 200) {
-      setEmployees(res.data.items);
-      setTotalEmployees(res.data.totalRecord);
+  const [isSell, setIsSell] = useState(false);
+
+  const [product, setProduct] = useState({
+    name: "",
+    subCategoryId: "",
+    manufacturerId: "",
+    isPrescription: 0,
+    loadSellProduct: 1,
+    isBatches: 0,
+    productDetailModel: [
+      {
+        unitId: "",
+        unitLevel: 1,
+        quantitative: 1,
+        sellQuantity: 1,
+        price: "",
+        isSell: 0,
+        barCode: "",
+        imageURL: [
+          {
+            imageURL:"",
+            isFirstImage: 1,
+          },
+        ],
+      },
+    ],
+    descriptionModel: {
+      effect: "",
+      instruction: "",
+      sideEffect: "",
+      contraindications: "",
+      preserve: "",
+      ingredientModel: [
+        {
+          ingredientId: "",
+          content: "",
+          unitId: "",
+        },
+      ],
+    },
+  });
+
+  const handleBatchChange = (event) => {
+    setIsBatches(event.target.checked);
+
+    // Lấy giá trị cho batch tại đây
+    if (event.target.checked) {
+      setProduct((prevState) => ({
+        ...prevState,
+        isBatches: 1,
+      }));
+    } else {
+      setProduct((prevState) => ({
+        ...prevState,
+        isBatches: 0,
+      }));
+    }
+  };
+  const handlePrescriptionChange = (event) => {
+    setIsPrescription(event.target.checked);
+
+    // Lấy giá trị cho batch tại đây
+    if (event.target.checked) {
+      setProduct((prevState) => ({
+        ...prevState,
+        isPrescription: 1,
+      }));
+    } else {
+      setProduct((prevState) => ({
+        ...prevState,
+        isPrescription: 0,
+      }));
+    }
+  };
+
+  const handleSellChange = (event) => {
+    setIsSell(event.target.checked);
+
+    // Lấy giá trị cho batch tại đây
+    if (event.target.checked) {
+      setProduct({
+        ...product,
+        productDetailModel: [
+          {
+            ...product.productDetailModel[0],
+            isSell: 1,
+          },
+          ...product.productDetailModel.slice(1),
+        ],
+      });
+    } else {
+      setProduct({
+        ...product,
+        productDetailModel: [
+          {
+            ...product.productDetailModel[0],
+            isSell: 0,
+          },
+          ...product.productDetailModel.slice(1),
+        ],
+      });
+    }
+  };
+
+  async function createNewProducts() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      if (checkValidation()) {
+        const data = product;
+        const path = "Product";
+        const res = await createDataByPath(path, accessToken, data);
+        console.log("Check res", res);
+        console.log("display acc", accessToken);
+        console.log("display", data);
+        if (res && res.status === 201) {
+          Swal.fire("Create Success", "", "success");
+          // window.location.reload();
+        }
+      }
     }
   }
-  
+
+  // Load Product
+  //   async function loadData() {
+  //     if (localStorage && localStorage.getItem("accessToken")) {
+  //       const accessToken = localStorage.getItem("accessToken");
+  //     const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
+  //     const res = await getDataByPath(path, accessToken, "");
+  //     console.log("check1", res);
+  //     if (res !== null && res !== undefined && res.status === 200) {
+  //       setEmployees(res.data.items);
+  //       setTotalEmployees(res.data.totalRecord);
+  //     }
+  //   }
+  // }
+
   const genders = [
     { name: "Male", value: 0 },
     { name: "FeMale", value: 1 },
@@ -62,53 +167,9 @@ const NewDrug = () => {
     return true;
   };
   const dataForCreate = () => {
-    return {
-      username: username,
-      fullname: fullname,
-      phoneNo: phone,
-      email: email,
-      cityID: cityID,
-      districtID: districtID,
-      wardID: wardID,
-      homeNumber: "",
-      imageUrl: imageUrl,
-      dob: "",
-      roleId: roleID,
-      siteId: siteID,
-      gender: gender,
-    };
+    return {};
   };
 
-  async function createNewProducts() {
-    if (checkValidation()) {
-      const data = dataForCreate();
-      const path = "User/Register";
-      const res = await createDataByPath(path, "", data);
-      console.log("Check res", res);
-      console.log("display", data);
-      if (res && res.status === 201) {
-        Swal.fire("Create Success", "", "success");
-        // deleteForCreate();
-        window.location.reload();
-      }
-    }
-  }
-  async function loadDataSite() {
-    const path = `Site?pageIndex=${currentPage}&pageItems=${perPage}`;
-    const res = await getDataByPath(path, "", "");
-    console.log("check", res);
-    if (res !== null && res !== undefined && res.status === 200) {
-      setSite(res.data.items);
-    }
-  }
-  async function loadDataCity() {
-    const path = `Address/City`;
-    const res = await getDataByPath(path, "", "");
-
-    if (res !== null && res !== undefined && res.status === 200) {
-      setCity(res.data);
-    }
-  }
   const handleButtonAdd = () => {
     if (addUnit) {
       return <label>add</label>;
@@ -116,78 +177,10 @@ const NewDrug = () => {
       return <label>cc</label>;
     }
   };
-  async function loadDataDistrics() {
-    const path = `Address/${cityID}/District`;
-    const res = await getDataByPath(path, "", "");
 
-    if (res !== null && res !== undefined && res.status === 200) {
-      setDistrics(res.data);
-    }
-  }
-  async function loadDataRole() {
-    const path = `Role`;
-    const res = await getDataByPath(path, "", "");
-    if (res !== null && res !== undefined && res.status === 200) {
-      setRole(res.data);
-    }
-  }
-  async function loadDataWard() {
-    const path = `Address/${districtID}/Ward`;
-    const res = await getDataByPath(path, "", "");
-    if (res !== null && res !== undefined && res.status === 200) {
-      setWard(res.data);
-    }
-  }
-
-  const handlecity = (event) => {
-    event.preventDefault();
-    const cityID = event.target.value;
-    setCityID(cityID);
-  };
-  const handleDistrict = (event) => {
-    event.preventDefault();
-    const districtID = event.target.value;
-    setDistrictID(districtID);
-  };
-  const handleWards = (event) => {
-    event.preventDefault();
-    const wardID = event.target.value;
-    setWardID(wardID);
-  };
-  const handleGender = (event) => {
-    event.preventDefault();
-    const genderID = event.target.value;
-    setGender(genderID);
-  };
-  const handleSite = (event) => {
-    event.preventDefault();
-    const siteID = event.target.value;
-    setSiteID(siteID);
-  };
-  const handleRole = (event) => {
-    event.preventDefault();
-    const roleID = event.target.value;
-    setRoleID(roleID);
-  };
-
-  useEffect(() => {
-    loadDataCity();
-  }, []);
-  useEffect(() => {
-    loadDataSite();
-  }, []);
-  useEffect(() => {
-    loadDataRole();
-  }, []);
-  useEffect(() => {
-    loadDataDistrics();
-  }, [cityID]);
-  useEffect(() => {
-    loadDataWard();
-  }, [districtID]);
-  useEffect(() => {
-    loadDataEmployee();
-  }, [currentPage, perPage]);
+  // useEffect(() => {
+  //   loadDataEmployee();
+  // }, [currentPage, perPage]);
   const [inputs, setInputs] = useState([{ value: "" }]);
 
   const handleAddInput = () => {
@@ -371,7 +364,12 @@ const NewDrug = () => {
                             placeholder="Name"
                             aria-label="John Doe"
                             aria-describedby="basic-icon-default-fullname2"
-                            onChange={(e) => setFullname(e.target.value)}
+                            onChange={(e) =>
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                name: e.target.value,
+                              }))
+                            }
                           />
                         </div>
                       </div>
@@ -390,7 +388,12 @@ const NewDrug = () => {
                             placeholder="User Name"
                             aria-label="ACME Inc."
                             aria-describedby="basic-icon-default-company2"
-                            onChange={(e) => setUsername(e.target.value)}
+                            onChange={(e) =>
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                subCategoryId: e.target.value,
+                              }))
+                            }
                           />
                         </div>
                       </div>
@@ -409,7 +412,12 @@ const NewDrug = () => {
                             placeholder="Phone Number"
                             aria-label="Phone Number"
                             aria-describedby="basic-icon-default-email2"
-                            onChange={(e) => setPhone(e.target.value)}
+                            onChange={(e) =>
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                manufacturerId: e.target.value,
+                              }))
+                            }
                           />
                         </div>
                         <div className="form-text"></div>
@@ -430,6 +438,8 @@ const NewDrug = () => {
                               backgroundColor: "#86a8c5",
                               borderColor: "#86a8c5",
                             }}
+                            checked={isPrescription}
+                            onChange={handlePrescriptionChange}
                             className="form-check-input"
                             type="checkbox"
                             id="inlineCheckbox1"
@@ -444,6 +454,8 @@ const NewDrug = () => {
                         </div>
                         <div className="form-check form-check-inline">
                           <input
+                            checked={isBatches}
+                            onChange={handleBatchChange}
                             className="form-check-input"
                             type="checkbox"
                             id="inlineCheckbox2"
@@ -462,177 +474,519 @@ const NewDrug = () => {
                             Batches
                           </label>
                         </div>
-                       
                       </div>
-                      <div className="col-md"></div>
-                      <button
-                          type="submit"
-                          className="button-28"
-                          style={{
-                            height: 30,
-                            width: 80,
-                            fontSize: 13,
-                            paddingTop: 5,
-                           
-                            marginTop: "20px",
-                          }}
-                          onClick={() => setAddUnit(!addUnit)}
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-company"
                         >
-                          {addUnit ? <>-</> : <>+</>}
-                        </button>
-                      {addUnit && (
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="basic-icon-default-company"
-                          >
-                            Unit
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              id="basic-icon-default-company"
-                              className="form-control"
-                              placeholder="User Name"
-                              aria-label="ACME Inc."
-                              aria-describedby="basic-icon-default-company2"
-                              onChange={(e) => setUsername(e.target.value)}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      {addUnit && (
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="basic-icon-default-email"
-                          >
-                            Price
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              id="basic-icon-default-email"
-                              className="form-control"
-                              placeholder="Phone Number"
-                              aria-label="Phone Number"
-                              aria-describedby="basic-icon-default-email2"
-                              onChange={(e) => setPhone(e.target.value)}
-                            />
-                          </div>
-                          <div className="form-text"></div>
-                        </div>
-                      )}
-                      {addUnit && (
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="basic-icon-default-email"
-                          >
-                            Giá trị quy đổi
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              id="basic-icon-default-email"
-                              className="form-control"
-                              placeholder="Phone Number"
-                              aria-label="Phone Number"
-                              aria-describedby="basic-icon-default-email2"
-                              onChange={(e) => setPhone(e.target.value)}
-                            />
-                          </div>
-                          <div className="form-text"></div>
-                        </div>
-                      )}
-                      {addUnit && (
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="basic-icon-default-email"
-                          >
-                            BarCode
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              id="basic-icon-default-email"
-                              className="form-control"
-                              placeholder="Phone Number"
-                              aria-label="Phone Number"
-                              aria-describedby="basic-icon-default-email2"
-                              onChange={(e) => setPhone(e.target.value)}
-                            />
-                          </div>
-                          <div className="form-text"></div>
-                        </div>
-                      )}
-                      {addUnit && (
-                        <div className="form-check form-check-inline">
+                          effect
+                        </label>
+                        <div className="input-group input-group-merge">
                           <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id="inlineCheckbox2"
-                            defaultValue="option2"
-                            style={{
-                              height: 20,
-                              width: 20,
-                              backgroundColor: "#86a8c5",
-                              borderColor: "#86a8c5",
+                            type="text"
+                            id="basic-icon-default-company"
+                            className="form-control"
+                            placeholder="User Name"
+                            aria-label="ACME Inc."
+                            aria-describedby="basic-icon-default-company2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                descriptionModel: {
+                                  ...product.descriptionModel,
+                                  effect: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-email"
+                        >
+                          instruction
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            placeholder="Phone Number"
+                            aria-label="Phone Number"
+                            aria-describedby="basic-icon-default-email2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                descriptionModel: {
+                                  ...product.descriptionModel,
+                                  instruction: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="form-text"></div>
+                      </div>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-company"
+                        >
+                          sideEffect
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-company"
+                            className="form-control"
+                            placeholder="User Name"
+                            aria-label="ACME Inc."
+                            aria-describedby="basic-icon-default-company2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                descriptionModel: {
+                                  ...product.descriptionModel,
+                                  sideEffect: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-email"
+                        >
+                          contraindications
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            placeholder="Phone Number"
+                            aria-label="Phone Number"
+                            aria-describedby="basic-icon-default-email2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                descriptionModel: {
+                                  ...product.descriptionModel,
+                                  contraindications: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="form-text"></div>
+                      </div>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-company"
+                        >
+                          preserve
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-company"
+                            className="form-control"
+                            placeholder="User Name"
+                            aria-label="ACME Inc."
+                            aria-describedby="basic-icon-default-company2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                descriptionModel: {
+                                  ...product.descriptionModel,
+                                  preserve: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-company"
+                        >
+                          ingredientId
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-company"
+                            className="form-control"
+                            placeholder="User Name"
+                            aria-label="ACME Inc."
+                            aria-describedby="basic-icon-default-company2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                descriptionModel: {
+                                  ...product.descriptionModel,
+                                  ingredientModel: [
+                                    {
+                                      ...product.descriptionModel
+                                        .ingredientModel[0],
+                                      ingredientId: e.target.value,
+                                    },
+                                    ...product.descriptionModel.ingredientModel.slice(
+                                      1
+                                    ),
+                                  ],
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-email"
+                        >
+                          content
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            placeholder="Phone Number"
+                            aria-label="Phone Number"
+                            aria-describedby="basic-icon-default-email2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                descriptionModel: {
+                                  ...product.descriptionModel,
+                                  ingredientModel: [
+                                    {
+                                      ...product.descriptionModel
+                                        .ingredientModel[0],
+                                      content: e.target.value,
+                                    },
+                                    ...product.descriptionModel.ingredientModel.slice(
+                                      1
+                                    ),
+                                  ],
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="form-text"></div>
+                      </div>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-company"
+                        >
+                          unitId
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-company"
+                            className="form-control"
+                            placeholder="User Name"
+                            aria-label="ACME Inc."
+                            aria-describedby="basic-icon-default-company2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                descriptionModel: {
+                                  ...product.descriptionModel,
+                                  ingredientModel: [
+                                    {
+                                      ...product.descriptionModel
+                                        .ingredientModel[0],
+                                      unitId: e.target.value,
+                                    },
+                                    ...product.descriptionModel.ingredientModel.slice(
+                                      1
+                                    ),
+                                  ],
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                      {/* <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-company"
+                        >
+                          ingredientId
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-company"
+                            className="form-control"
+                            placeholder="User Name"
+                            aria-label="ACME Inc."
+                            aria-describedby="basic-icon-default-company2"
+                            onChange={(e) => setUsername(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-email"
+                        >
+                          content
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            placeholder="Phone Number"
+                            aria-label="Phone Number"
+                            aria-describedby="basic-icon-default-email2"
+                            onChange={(e) => setPhone(e.target.value)}
+                          />
+                        </div>
+                        <div className="form-text"></div>
+                      </div>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-company"
+                        >
+                          unitId
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-company"
+                            className="form-control"
+                            placeholder="User Name"
+                            aria-label="ACME Inc."
+                            aria-describedby="basic-icon-default-company2"
+                            onChange={(e) => setUsername(e.target.value)}
+                          />
+                        </div>
+                      </div> */}
+
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-company"
+                        >
+                          Unit
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-company"
+                            className="form-control"
+                            placeholder="User Name"
+                            aria-label="ACME Inc."
+                            aria-describedby="basic-icon-default-company2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                productDetailModel: [
+                                  {
+                                    ...product.productDetailModel[0],
+                                    unitId: e.target.value,
+                                  },
+                                  ...product.productDetailModel.slice(1),
+                                ],
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-email"
+                        >
+                          Price
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            placeholder="Phone Number"
+                            aria-label="Phone Number"
+                            aria-describedby="basic-icon-default-email2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                productDetailModel: [
+                                  {
+                                    ...product.productDetailModel[0],
+                                    price: e.target.value,
+                                  },
+                                  ...product.productDetailModel.slice(1),
+                                ],
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="form-text"></div>
+                      </div>
+
+                      {/* <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-email"
+                        >
+                          Giá trị quy đổi
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            placeholder="Phone Number"
+                            aria-label="Phone Number"
+                            aria-describedby="basic-icon-default-email2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                productDetailModel: {
+                                  ...product.productDetailModel,
+                                  unitId: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="form-text"></div>
+                      </div> */}
+
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-email"
+                        >
+                          BarCode
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            placeholder="Phone Number"
+                            aria-label="Phone Number"
+                            aria-describedby="basic-icon-default-email2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                productDetailModel: [
+                                  {
+                                    ...product.productDetailModel[0],
+                                    barCode: e.target.value,
+                                  },
+                                  ...product.productDetailModel.slice(1),
+                                ],
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="form-text"></div>
+                      </div>
+
+                      <div className="form-check form-check-inline">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="inlineCheckbox2"
+                          checked={isSell}
+                          onChange={handleSellChange}
+                          defaultValue="option2"
+                          style={{
+                            height: 20,
+                            width: 20,
+                            backgroundColor: "#86a8c5",
+                            borderColor: "#86a8c5",
+                          }}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="inlineCheckbox2"
+                        >
+                          For sale
+                        </label>
+                      </div>
+
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-email"
+                        >
+                          Image
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            placeholder="Phone Number"
+                            aria-label="Phone Number"
+                            aria-describedby="basic-icon-default-email2"
+                            onChange={(e) => {
+                              setProduct({
+                                ...product,
+                                productDetailModel: [
+                                  {
+                                    ...product.productDetailModel[0],
+                                    imageURL: [
+                                      {
+                                        ...product.productDetailModel[0]
+                                          .imageURL[0],
+                                        imageURL: e.target.value,
+                                      },
+                                    ],
+                                  },
+                                  ...product.productDetailModel.slice(1),
+                                ],
+                              });
                             }}
                           />
-                          <label
-                            className="form-check-label"
-                            htmlFor="inlineCheckbox2"
-                          >
-                            For sale
-                          </label>
                         </div>
-                      )}
-                      {addUnit && (
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="basic-icon-default-email"
-                          >
-                            Image
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              id="basic-icon-default-email"
-                              className="form-control"
-                              placeholder="Phone Number"
-                              aria-label="Phone Number"
-                              aria-describedby="basic-icon-default-email2"
-                              onChange={(e) => setPhone(e.target.value)}
-                            />
-                          </div>
-                          <div className="form-text"></div>
-                        </div>
-                      )}
+
+                        <div className="form-text"></div>
+                      </div>
+
                       <div className="col-md"></div>
-                      {addUnit && (
-                        <button
-                          type="submit"
-                          className="button-28"
-                          style={{
-                            height: 30,
-                            width: 80,
-                            fontSize: 13,
-                            paddingTop: 5,
-                           
-                            marginTop: "20px",
-                          }}
-                          onClick={() => setAddnewUnit(!addNewUnit)}
-                        >
-                          {addNewUnit ? <>-</> : <>+</>}
-                        </button>
-                      )}
+
+                      <button
+                        type="submit"
+                        className="button-28"
+                        style={{
+                          height: 30,
+                          width: 80,
+                          fontSize: 13,
+                          paddingTop: 5,
+
+                          marginTop: "20px",
+                        }}
+                        onClick={() => setAddnewUnit(!addNewUnit)}
+                      >
+                        {addNewUnit ? <>-</> : <>+</>}
+                      </button>
+
                       {/* lan 2*/}
 
-                      {addNewUnit && (
+                      {/* {addNewUnit && (
                         <div className="mb-3" style={{ width: "95%" }}>
                           <label
                             className="form-label"
@@ -775,7 +1129,7 @@ const NewDrug = () => {
                             width: 80,
                             fontSize: 13,
                             paddingTop: 5,
-                           
+
                             marginTop: "20px",
                           }}
                           onClick={() => setAddnewUnit2(!addNewUnit2)}
@@ -914,7 +1268,8 @@ const NewDrug = () => {
                           </div>
                           <div className="form-text"></div>
                         </div>
-                      )}
+                      )} */}
+
                       {/* <div className="mb-3" style={{ width: "95%" }}>
                       <label
                         className="form-label"
@@ -929,7 +1284,6 @@ const NewDrug = () => {
                     <button
                       type="submit"
                       className="button-28"
-                      
                       onClick={(e) => {
                         e.preventDefault();
                         createNewProducts();

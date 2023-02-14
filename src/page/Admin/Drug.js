@@ -11,36 +11,40 @@ import { getDataByPath, deleteDataByPath } from "../../services/data.service";
 import { Link } from "react-router-dom";
 
 const Drug = () => {
-  const [drug, setDrug] = useState([]);
+  const [drug, setDrug] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
   const [totalRecord, setTotalRecord] = useState([]);
   let history = useHistory();
-
-  
 
   const create = () => {
     history.push("/NewDrug");
   };
 
   async function loadDataMedicine() {
-    const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
-    const res = await getDataByPath(path, "", "");
-    console.log("check", res);
-    if (res !== null && res !== undefined && res.status === 200) {
-      setDrug(res.data.items);
-      setTotalRecord(res.data.totalRecord)
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
+      const res = await getDataByPath(path, accessToken, "");
+      if (res !== null && res !== undefined && res.status === 200) {
+        setDrug(res.data.items);
+        setTotalRecord(res.data.totalRecord);
+      }
     }
   }
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
- 
-  useEffect(()=>{
-    loadDataMedicine();
-  },[currentPage, perPage, drug])
 
- 
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    console.log("display", accessToken);
+    if (drug === null) {
+    
+      loadDataMedicine(accessToken);
+    }
+  }, [currentPage, perPage, drug]);
+
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
@@ -641,9 +645,7 @@ const Drug = () => {
                                   <td>&nbsp; &nbsp;{e.name}</td>
                                   <td>{e.price}</td>
                                   <td>{e.sellQuantity}</td>
-                                  <td>{e.unitId}
-                                    
-                                  </td>
+                                  <td>{e.unitId}</td>
                                   <td>
                                     <button
                                       class="button-80"
