@@ -65,11 +65,7 @@ const Header = () => {
                   </Link>
                 </li>
 
-                <li>
-                  <Link activeClassName="active" to="/Drug">
-                    <span>Admin</span>
-                  </Link>
-                </li>
+              
                 <li className="has-children">
                   <Link to="#">Category</Link>
                   <ul className="dropdown">

@@ -21,7 +21,7 @@ const LoginAdmin = () => {
   };
   async function loginWithUsernamePassword(username, password) {
     if (username.trim() !== "" && password.trim() !== "") {
-      const path = "User/Login";
+      const path = "Member/InternalUser/Login";
       const data = {
         username: username,
         password: password,
@@ -33,7 +33,9 @@ const LoginAdmin = () => {
       if (res && res.status === 200) {
         if (localStorage) {
           localStorage.setItem("accessToken", res.data.token);
-          localStorage.setItem("roleID", jwtDecode(res.data.token).Image);
+          localStorage.setItem("roleID", jwtDecode(res.data.token)[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          ]);
           const roleID = jwtDecode(res.data.token)[
             "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
           ];

@@ -15,6 +15,7 @@ import ReactPaginate from "react-paginate";
 const NewDrug = () => {
   const [addUnit, setAddUnit] = useState(false);
   const [addNewUnit, setAddnewUnit] = useState(false);
+  const [addNewUnit2, setAddnewUnit2] = useState(false);
   const [site, setSite] = useState([]);
   const [siteID, setSiteID] = useState("");
   const [employees, setEmployees] = useState([]);
@@ -37,8 +38,10 @@ const NewDrug = () => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [roleID, setRoleID] = useState("");
+
+  // Load Product
   async function loadDataEmployee() {
-    const path = `User?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
     console.log("check1", res);
     if (res !== null && res !== undefined && res.status === 200) {
@@ -46,6 +49,7 @@ const NewDrug = () => {
       setTotalEmployees(res.data.totalRecord);
     }
   }
+  
   const genders = [
     { name: "Male", value: 0 },
     { name: "FeMale", value: 1 },
@@ -105,7 +109,13 @@ const NewDrug = () => {
       setCity(res.data);
     }
   }
-
+  const handleButtonAdd = () => {
+    if (addUnit) {
+      return <label>add</label>;
+    } else {
+      return <label>cc</label>;
+    }
+  };
   async function loadDataDistrics() {
     const path = `Address/${cityID}/District`;
     const res = await getDataByPath(path, "", "");
@@ -452,7 +462,24 @@ const NewDrug = () => {
                             Batches
                           </label>
                         </div>
+                       
                       </div>
+                      <div className="col-md"></div>
+                      <button
+                          type="submit"
+                          className="button-28"
+                          style={{
+                            height: 30,
+                            width: 80,
+                            fontSize: 13,
+                            paddingTop: 5,
+                           
+                            marginTop: "20px",
+                          }}
+                          onClick={() => setAddUnit(!addUnit)}
+                        >
+                          {addUnit ? <>-</> : <>+</>}
+                        </button>
                       {addUnit && (
                         <div className="mb-3" style={{ width: "95%" }}>
                           <label
@@ -585,7 +612,24 @@ const NewDrug = () => {
                           <div className="form-text"></div>
                         </div>
                       )}
-
+                      <div className="col-md"></div>
+                      {addUnit && (
+                        <button
+                          type="submit"
+                          className="button-28"
+                          style={{
+                            height: 30,
+                            width: 80,
+                            fontSize: 13,
+                            paddingTop: 5,
+                           
+                            marginTop: "20px",
+                          }}
+                          onClick={() => setAddnewUnit(!addNewUnit)}
+                        >
+                          {addNewUnit ? <>-</> : <>+</>}
+                        </button>
+                      )}
                       {/* lan 2*/}
 
                       {addNewUnit && (
@@ -720,6 +764,157 @@ const NewDrug = () => {
                           <div className="form-text"></div>
                         </div>
                       )}
+
+                      <div className="col-md"></div>
+                      {addNewUnit && (
+                        <button
+                          type="submit"
+                          className="button-28"
+                          style={{
+                            height: 30,
+                            width: 80,
+                            fontSize: 13,
+                            paddingTop: 5,
+                           
+                            marginTop: "20px",
+                          }}
+                          onClick={() => setAddnewUnit2(!addNewUnit2)}
+                        >
+                          {addNewUnit2 ? <>-</> : <>+</>}
+                        </button>
+                      )}
+                      {addNewUnit2 && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-company"
+                          >
+                            Unit
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-company"
+                              className="form-control"
+                              placeholder="User Name"
+                              aria-label="ACME Inc."
+                              aria-describedby="basic-icon-default-company2"
+                              onChange={(e) => setUsername(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {addNewUnit2 && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            Price
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              placeholder="Phone Number"
+                              aria-label="Phone Number"
+                              aria-describedby="basic-icon-default-email2"
+                              onChange={(e) => setPhone(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-text"></div>
+                        </div>
+                      )}
+                      {addNewUnit2 && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            Giá trị quy đổi
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              placeholder="Phone Number"
+                              aria-label="Phone Number"
+                              aria-describedby="basic-icon-default-email2"
+                              onChange={(e) => setPhone(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-text"></div>
+                        </div>
+                      )}
+                      {addNewUnit2 && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            BarCode
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              placeholder="Phone Number"
+                              aria-label="Phone Number"
+                              aria-describedby="basic-icon-default-email2"
+                              onChange={(e) => setPhone(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-text"></div>
+                        </div>
+                      )}
+                      {addNewUnit2 && (
+                        <div className="form-check form-check-inline">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="inlineCheckbox2"
+                            defaultValue="option2"
+                            style={{
+                              height: 20,
+                              width: 20,
+                              backgroundColor: "#86a8c5",
+                              borderColor: "#86a8c5",
+                            }}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="inlineCheckbox2"
+                          >
+                            For sale
+                          </label>
+                        </div>
+                      )}
+                      {addNewUnit2 && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            Image
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              placeholder="Phone Number"
+                              aria-label="Phone Number"
+                              aria-describedby="basic-icon-default-email2"
+                              onChange={(e) => setPhone(e.target.value)}
+                            />
+                          </div>
+                          <div className="form-text"></div>
+                        </div>
+                      )}
                       {/* <div className="mb-3" style={{ width: "95%" }}>
                       <label
                         className="form-label"
@@ -730,16 +925,11 @@ const NewDrug = () => {
                       
                     </div> */}
                     </div>
-                    <button onClick={() => setAddUnit(!addUnit)}>
-                      Add lan 1
-                    </button>
-                    {addUnit &&(<button onClick={() => setAddnewUnit(!addNewUnit)}>
-                      Add lan 2
-                    </button>)}
 
                     <button
                       type="submit"
                       className="button-28"
+                      
                       onClick={(e) => {
                         e.preventDefault();
                         createNewProducts();
