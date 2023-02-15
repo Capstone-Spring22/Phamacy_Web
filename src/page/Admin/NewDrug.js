@@ -39,7 +39,7 @@ const NewDrug = () => {
         barCode: "",
         imageURL: [
           {
-            imageURL:"",
+            imageURL: "",
             isFirstImage: 1,
           },
         ],
@@ -141,6 +141,180 @@ const NewDrug = () => {
     }
   }
 
+  const updateProductDetailModel = (index, value) => {
+    setProduct((prevProduct) => {
+      const newProductDetailModel = [...prevProduct.productDetailModel];
+      newProductDetailModel[index] = {
+        ...newProductDetailModel[index],
+        ...value,
+      };
+      return {
+        ...prevProduct,
+        productDetailModel: newProductDetailModel,
+       
+      };
+    });
+  };
+
+  const handleInput1Change = (e) => {
+    const price1 = e.target.value;
+    updateProductDetailModel(0, { price: price1 });
+  };
+  // const handleInput2Change = (e) => {
+  //   const price2 = e.target.value;
+  //   updateProductDetailModel(1, { price: price2 });
+  // };
+  // // Sử dụng lại trong một hàm khác
+  // const handleInput3Change = (e) => {
+  //   const price3 = e.target.value;
+  //   updateProductDetailModel(2, { price: price3 });
+  // };
+  const handleInput1ChangeBarCode = (e) => {
+    const barCode1 = e.target.value;
+    updateProductDetailModel(0, { barCode: barCode1 });
+  };
+  // const handleInput2ChangeBarCode = (e) => {
+  //   const barCode2 = e.target.value;
+  //   updateProductDetailModel(0, { barCode: barCode2 });
+  // };
+  // const handleInput3ChangeBarCode = (e) => {
+  //   const barCode3 = e.target.value;
+  //   updateProductDetailModel(0, { barCode: barCode3 });
+  // };
+  const handleInput1ChangeUnit = (e) => {
+    const unitId1 = e.target.value;
+    updateProductDetailModel(0, { unitId: unitId1 });
+  };
+  // const handleInput2ChangeUnit = (e) => {
+  //   const unitId2 = e.target.value;
+  //   updateProductDetailModel(1, { unitId: unitId2 });
+  // };
+  // const handleInput3ChangeUnit = (e) => {
+  //   const unitId3 = e.target.value;
+  //   updateProductDetailModel(1, { unitId: unitId3 });
+  // };
+  const handleImageURL1Change = (e) => {
+    const imageURL1 = e.target.value;
+
+    setProduct((prevState) => {
+      const newProductDetailModel = [...prevState.productDetailModel];
+      newProductDetailModel[0].imageURL = [
+        {
+          ...newProductDetailModel[0].imageURL[0],
+          imageURL: imageURL1,
+        },
+      ];
+      return {
+        ...prevState,
+        productDetailModel: newProductDetailModel,
+      };
+    });
+  };
+
+ 
+  //   const handleImageURL2Change = (e) => {
+  //     const imageURL2 = e.target.value;
+  //     setProduct({
+  //       ...product,
+  //       productDetailModel: [
+  //         product.productDetailModel[0],
+  //         {
+  //           ...(product.productDetailModel[1] || {}), // Check if the element exists
+  //           imageURL: [
+  //             {
+  //               ...(product.productDetailModel[1]?.imageURL?.[0] || {}), // Check if the property exists
+  //               imageURL: imageURL2,
+  //               isFirstImage: 0,
+  //             },
+  //           ],
+  //         },
+  //         ...(product.productDetailModel[2]
+  //           ? [product.productDetailModel[2]]
+  //           : []), // Add the element if it exists
+  //       ],
+  //     });
+  //   };
+  
+
+  // const handleImageURL3Change = (e) => {
+  //   const imageURL3 = e.target.value;
+  //   setProduct({
+  //     ...product,
+  //     productDetailModel: [
+  //       product.productDetailModel[0],
+  //       product.productDetailModel[1],
+        
+  //       {
+  //         ...(product.productDetailModel[2] || {}),
+         
+       
+       
+  //         imageURL: [
+  //           ...(product.productDetailModel[2]?.imageURL || []),
+  //           {
+  //             imageURL: imageURL3,
+  //             isFirstImage: 0,
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   });
+  // };
+  const handleImageURL1Change1 = (e) => {
+    const imageURL1 = e.target.value;
+    setProduct({
+      ...product,
+      productDetailModel: [
+        {
+          ...product.productDetailModel[0],
+          imageURL: [
+            {
+              ...product.productDetailModel[0].imageURL[0],
+              imageURL: imageURL1,
+            },
+          ],
+        },
+      ],
+    });
+  };
+
+  // const handleImageURL2Change2 = (e) => {
+  //   const imageURL2 = e.target.value;
+  //   setProduct({
+  //     ...product,
+  //     productDetailModel: [
+  //       {
+  //         ...product.productDetailModel[0],
+  //         imageURL: [
+  //           ...product.productDetailModel[0].imageURL.slice(0, 1),
+  //           {
+  //             ...product.productDetailModel[0].imageURL[1],
+  //             imageURL: imageURL2,
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   });
+  // };
+
+  // const handleImageURL3Change3 = (e) => {
+  //   const imageURL3 = e.target.value;
+  //   setProduct({
+  //     ...product,
+  //     productDetailModel: [
+  //       {
+  //         ...product.productDetailModel[0],
+  //         imageURL: [
+  //           ...product.productDetailModel[0].imageURL.slice(0, 2),
+  //           {
+  //             ...product.productDetailModel[0].imageURL[2],
+  //             imageURL: imageURL3,
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   });
+  // };
   // Load Product
   //   async function loadData() {
   //     if (localStorage && localStorage.getItem("accessToken")) {
@@ -690,7 +864,7 @@ const NewDrug = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-company"
                         >
-                          unitId
+                          unitId Nguyên liệu
                         </label>
                         <div className="input-group input-group-merge">
                           <input
@@ -795,18 +969,7 @@ const NewDrug = () => {
                             placeholder="User Name"
                             aria-label="ACME Inc."
                             aria-describedby="basic-icon-default-company2"
-                            onChange={(e) =>
-                              setProduct({
-                                ...product,
-                                productDetailModel: [
-                                  {
-                                    ...product.productDetailModel[0],
-                                    unitId: e.target.value,
-                                  },
-                                  ...product.productDetailModel.slice(1),
-                                ],
-                              })
-                            }
+                            onChange={handleInput1ChangeUnit}
                           />
                         </div>
                       </div>
@@ -826,18 +989,7 @@ const NewDrug = () => {
                             placeholder="Phone Number"
                             aria-label="Phone Number"
                             aria-describedby="basic-icon-default-email2"
-                            onChange={(e) =>
-                              setProduct({
-                                ...product,
-                                productDetailModel: [
-                                  {
-                                    ...product.productDetailModel[0],
-                                    price: e.target.value,
-                                  },
-                                  ...product.productDetailModel.slice(1),
-                                ],
-                              })
-                            }
+                            onChange={handleInput1Change}
                           />
                         </div>
                         <div className="form-text"></div>
@@ -942,24 +1094,7 @@ const NewDrug = () => {
                             placeholder="Phone Number"
                             aria-label="Phone Number"
                             aria-describedby="basic-icon-default-email2"
-                            onChange={(e) => {
-                              setProduct({
-                                ...product,
-                                productDetailModel: [
-                                  {
-                                    ...product.productDetailModel[0],
-                                    imageURL: [
-                                      {
-                                        ...product.productDetailModel[0]
-                                          .imageURL[0],
-                                        imageURL: e.target.value,
-                                      },
-                                    ],
-                                  },
-                                  ...product.productDetailModel.slice(1),
-                                ],
-                              });
-                            }}
+                            onChange={handleImageURL1Change}
                           />
                         </div>
 
@@ -985,8 +1120,8 @@ const NewDrug = () => {
                       </button>
 
                       {/* lan 2*/}
-
-                      {/* {addNewUnit && (
+{/* 
+                      {addNewUnit && (
                         <div className="mb-3" style={{ width: "95%" }}>
                           <label
                             className="form-label"
@@ -1002,7 +1137,7 @@ const NewDrug = () => {
                               placeholder="User Name"
                               aria-label="ACME Inc."
                               aria-describedby="basic-icon-default-company2"
-                              onChange={(e) => setUsername(e.target.value)}
+                              onChange={handleInput3ChangeUnit}
                             />
                           </div>
                         </div>
@@ -1024,35 +1159,35 @@ const NewDrug = () => {
                               placeholder="Phone Number"
                               aria-label="Phone Number"
                               aria-describedby="basic-icon-default-email2"
-                              onChange={(e) => setPhone(e.target.value)}
+                              onChange={handleInput2Change}
                             />
                           </div>
                           <div className="form-text"></div>
                         </div>
-                      )}
-                      {addNewUnit && (
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="basic-icon-default-email"
-                          >
-                            Giá trị quy đổi
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              id="basic-icon-default-email"
-                              className="form-control"
-                              placeholder="Phone Number"
-                              aria-label="Phone Number"
-                              aria-describedby="basic-icon-default-email2"
-                              onChange={(e) => setPhone(e.target.value)}
-                            />
-                          </div>
-                          <div className="form-text"></div>
-                        </div>
-                      )}
-                      {addNewUnit && (
+                      )} */}
+                      {/* // {addNewUnit && (
+                      //   <div className="mb-3" style={{ width: "95%" }}>
+                      //     <label
+                      //       className="form-label"
+                      //       htmlFor="basic-icon-default-email"
+                      //     >
+                      //       Giá trị quy đổi
+                      //     </label>
+                      //     <div className="input-group input-group-merge">
+                      //       <input
+                      //         type="text"
+                      //         id="basic-icon-default-email"
+                      //         className="form-control"
+                      //         placeholder="Phone Number"
+                      //         aria-label="Phone Number"
+                      //         aria-describedby="basic-icon-default-email2"
+                      //         onChange={(e) => setPhone(e.target.value)}
+                      //       />
+                      //     </div>
+                      //     <div className="form-text"></div>
+                      //   </div>
+                      // )} */}
+                      {/* {addNewUnit && (
                         <div className="mb-3" style={{ width: "95%" }}>
                           <label
                             className="form-label"
@@ -1068,7 +1203,7 @@ const NewDrug = () => {
                               placeholder="Phone Number"
                               aria-label="Phone Number"
                               aria-describedby="basic-icon-default-email2"
-                              onChange={(e) => setPhone(e.target.value)}
+                              onChange={handleInput2ChangeBarCode}
                             />
                           </div>
                           <div className="form-text"></div>
@@ -1080,6 +1215,8 @@ const NewDrug = () => {
                             className="form-check-input"
                             type="checkbox"
                             id="inlineCheckbox2"
+                            checked={isSell}
+                            onChange={handleSellChange}
                             defaultValue="option2"
                             style={{
                               height: 20,
@@ -1112,7 +1249,7 @@ const NewDrug = () => {
                               placeholder="Phone Number"
                               aria-label="Phone Number"
                               aria-describedby="basic-icon-default-email2"
-                              onChange={(e) => setPhone(e.target.value)}
+                              onChange={handleImageURL2Change}
                             />
                           </div>
                           <div className="form-text"></div>
@@ -1153,7 +1290,18 @@ const NewDrug = () => {
                               placeholder="User Name"
                               aria-label="ACME Inc."
                               aria-describedby="basic-icon-default-company2"
-                              onChange={(e) => setUsername(e.target.value)}
+                              onChange={(e) =>
+                                setProduct({
+                                  ...product,
+                                  productDetailModel: [
+                                    {
+                                      ...product.productDetailModel[0],
+                                      unitId: e.target.value,
+                                    },
+                                    ...product.productDetailModel.slice(1),
+                                  ],
+                                })
+                              }
                             />
                           </div>
                         </div>
@@ -1175,13 +1323,13 @@ const NewDrug = () => {
                               placeholder="Phone Number"
                               aria-label="Phone Number"
                               aria-describedby="basic-icon-default-email2"
-                              onChange={(e) => setPhone(e.target.value)}
+                              onChange={handleInput3Change}
                             />
                           </div>
                           <div className="form-text"></div>
                         </div>
-                      )}
-                      {addNewUnit2 && (
+                      )} */}
+                      {/* {addNewUnit2 && (
                         <div className="mb-3" style={{ width: "95%" }}>
                           <label
                             className="form-label"
@@ -1202,8 +1350,8 @@ const NewDrug = () => {
                           </div>
                           <div className="form-text"></div>
                         </div>
-                      )}
-                      {addNewUnit2 && (
+                      )} */}
+                      {/* {addNewUnit2 && (
                         <div className="mb-3" style={{ width: "95%" }}>
                           <label
                             className="form-label"
@@ -1219,7 +1367,7 @@ const NewDrug = () => {
                               placeholder="Phone Number"
                               aria-label="Phone Number"
                               aria-describedby="basic-icon-default-email2"
-                              onChange={(e) => setPhone(e.target.value)}
+                              onChange={handleInput3ChangeBarCode}
                             />
                           </div>
                           <div className="form-text"></div>
@@ -1232,6 +1380,8 @@ const NewDrug = () => {
                             type="checkbox"
                             id="inlineCheckbox2"
                             defaultValue="option2"
+                            checked={isSell}
+                            onChange={handleSellChange}
                             style={{
                               height: 20,
                               width: 20,
@@ -1247,6 +1397,7 @@ const NewDrug = () => {
                           </label>
                         </div>
                       )}
+
                       {addNewUnit2 && (
                         <div className="mb-3" style={{ width: "95%" }}>
                           <label
@@ -1263,7 +1414,7 @@ const NewDrug = () => {
                               placeholder="Phone Number"
                               aria-label="Phone Number"
                               aria-describedby="basic-icon-default-email2"
-                              onChange={(e) => setPhone(e.target.value)}
+                              onChange={handleImageURL3Change}
                             />
                           </div>
                           <div className="form-text"></div>
