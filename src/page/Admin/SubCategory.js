@@ -20,7 +20,7 @@ const SubCategory = () => {
   const [mainCategory, setMainCategory] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(7);
+  const [perPage, setPerPage] = useState(2);
   const [isOpen, setIsOpen] = useState(true);
   const [categoryUpdate, setCategoryUpdate] = useState({
     subCategoryName: "",
@@ -110,7 +110,7 @@ const SubCategory = () => {
   useEffect(() => {
     
     loadDataCategory();
-  }, [currentPage, perPage, subCategory]);
+  }, [currentPage, perPage]);
   useEffect(() => {
     loadDataMainCategory();
   }, []);

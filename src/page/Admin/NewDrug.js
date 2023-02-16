@@ -14,13 +14,17 @@ import ReactPaginate from "react-paginate";
 
 const NewDrug = () => {
   const [addUnit, setAddUnit] = useState(false);
+  const [unit, setUnit] = useState([]);
+  const [unit2, setUnit2] = useState([]);
   const [addNewUnit, setAddnewUnit] = useState(false);
   const [addNewUnit2, setAddnewUnit2] = useState(false);
   const [isBatches, setIsBatches] = useState(false);
   const [isPrescription, setIsPrescription] = useState(false);
-
+  const [unitID, setUnitID] = useState("");
+  const [unitID2, setUnitID2] = useState("");
   const [isSell, setIsSell] = useState(false);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(7);
   const [product, setProduct] = useState({
     name: "",
     subCategoryId: "",
@@ -60,7 +64,25 @@ const NewDrug = () => {
       ],
     },
   });
-
+  async function loadDataUnit() {
+    const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setUnit(res.data.items);
+    }
+  }
+  async function loadDataUnit2() {
+    const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setUnit2(res.data.items);
+    }
+  }
+  const handleUnit = (event) => {
+    event.preventDefault();
+    const unitID = event.target.value;
+    setUnitID(unitID);
+  };
   const handleBatchChange = (event) => {
     setIsBatches(event.target.checked);
 
@@ -151,7 +173,6 @@ const NewDrug = () => {
       return {
         ...prevProduct,
         productDetailModel: newProductDetailModel,
-       
       };
     });
   };
@@ -211,7 +232,6 @@ const NewDrug = () => {
     });
   };
 
- 
   //   const handleImageURL2Change = (e) => {
   //     const imageURL2 = e.target.value;
   //     setProduct({
@@ -234,7 +254,6 @@ const NewDrug = () => {
   //       ],
   //     });
   //   };
-  
 
   // const handleImageURL3Change = (e) => {
   //   const imageURL3 = e.target.value;
@@ -243,12 +262,10 @@ const NewDrug = () => {
   //     productDetailModel: [
   //       product.productDetailModel[0],
   //       product.productDetailModel[1],
-        
+
   //       {
   //         ...(product.productDetailModel[2] || {}),
-         
-       
-       
+
   //         imageURL: [
   //           ...(product.productDetailModel[2]?.imageURL || []),
   //           {
@@ -356,7 +373,12 @@ const NewDrug = () => {
   //   loadDataEmployee();
   // }, [currentPage, perPage]);
   const [inputs, setInputs] = useState([{ value: "" }]);
-
+  useEffect(() => {
+    loadDataUnit();
+  }, []);
+  useEffect(() => {
+    loadDataUnit2();
+  }, []);
   const handleAddInput = () => {
     setInputs([...inputs, { value: "" }]);
   };
@@ -862,19 +884,17 @@ const NewDrug = () => {
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
                           className="form-label"
-                          htmlFor="basic-icon-default-company"
+                          htmlFor="basic-icon-default-phone"
                         >
-                          unitId Nguyên liệu
+                          Unit Nguyen lieu
                         </label>
                         <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            id="basic-icon-default-company"
+                          <select
+                            name="unit"
+                            id="basic-icon-default-email"
                             className="form-control"
-                            placeholder="User Name"
-                            aria-label="ACME Inc."
-                            aria-describedby="basic-icon-default-company2"
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              setUnitID(e.target.value);
                               setProduct({
                                 ...product,
                                 descriptionModel: {
@@ -890,11 +910,31 @@ const NewDrug = () => {
                                     ),
                                   ],
                                 },
-                              })
-                            }
-                          />
+                              });
+                            }}
+                            value={unitID}
+                          >
+                            {unit &&
+                              unit.length &&
+                              unit.map((e, index) => {
+                                return (
+                                  <>
+                                    <option
+                                      key={e.id}
+                                      value={e.id}
+                                      onClick={() => {
+                                        setUnit(e.id);
+                                      }}
+                                    >
+                                      {e.unitName}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
                         </div>
                       </div>
+
                       {/* <div className="mb-3" style={{ width: "95%" }}>
                         <label
                           className="form-label"
@@ -954,23 +994,44 @@ const NewDrug = () => {
                         </div>
                       </div> */}
 
+                     
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
                           className="form-label"
-                          htmlFor="basic-icon-default-company"
+                          htmlFor="basic-icon-default-phone"
                         >
                           Unit
                         </label>
                         <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            id="basic-icon-default-company"
+                          <select
+                            name="unit"
+                            id="basic-icon-default-email"
                             className="form-control"
-                            placeholder="User Name"
-                            aria-label="ACME Inc."
-                            aria-describedby="basic-icon-default-company2"
-                            onChange={handleInput1ChangeUnit}
-                          />
+                            onChange={(e) => {
+                              setUnitID2(e.target.value);
+                              const unitId1 = e.target.value;
+                              updateProductDetailModel(0, { unitId: unitId1 });
+                            }}
+                            value={unitID2}
+                          >
+                            {unit2 &&
+                              unit2.length &&
+                              unit2.map((e, index) => {
+                                return (
+                                  <>
+                                    <option
+                                      key={e.id}
+                                      value={e.id}
+                                      onClick={() => {
+                                        setUnit2(e.id);
+                                      }}
+                                    >
+                                      {e.unitName}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
                         </div>
                       </div>
 
@@ -1120,7 +1181,7 @@ const NewDrug = () => {
                       </button>
 
                       {/* lan 2*/}
-{/* 
+                      {/* 
                       {addNewUnit && (
                         <div className="mb-3" style={{ width: "95%" }}>
                           <label

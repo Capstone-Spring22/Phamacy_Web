@@ -26,21 +26,23 @@ const Drug = () => {
       const accessToken = localStorage.getItem("accessToken");
       const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
       const res = await getDataByPath(path, accessToken, "");
+      console.log('display2',currentPage)
       if (res !== null && res !== undefined && res.status === 200) {
         setDrug(res.data.items);
         setTotalRecord(res.data.totalRecord);
+       
       }
     }
   }
   const handlePageChange = (page) => {
     setCurrentPage(page);
+     console.log('display',currentPage)
+     loadDataMedicine()
   };
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    console.log("display", accessToken);
     if (drug === null) {
-    
       loadDataMedicine(accessToken);
     }
   }, [currentPage, perPage, drug]);
