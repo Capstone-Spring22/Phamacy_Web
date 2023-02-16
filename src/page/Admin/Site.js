@@ -46,7 +46,7 @@ const Site = () => {
     history.push("/ViewDetail");
   };
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(7);
+  const [perPage, setPerPage] = useState(1);
   const checkValidation = () => {
     // if (id.trim() === "") {
     //   Swal.fire("ID Can't Empty", "", "question");
@@ -226,7 +226,7 @@ const Site = () => {
     
       loadDataSite(accessToken);
     }
-  }, [currentPage, perPage, site]);
+  }, [currentPage, perPage,site]);
   useEffect(() => {
     loadDataCity();
   }, []);

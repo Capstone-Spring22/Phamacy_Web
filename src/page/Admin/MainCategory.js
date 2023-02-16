@@ -279,7 +279,7 @@ const MainCategory = () => {
                             marginLeft: "77%",
                             marginTop: "20px",
                           }}
-                          onClick={()=>{
+                          onClick={() => {
                             setIsOpen(true);
                           }}
                         >

@@ -26,7 +26,7 @@ const Drug = () => {
       const accessToken = localStorage.getItem("accessToken");
       const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
       const res = await getDataByPath(path, accessToken, "");
-      console.log('display2',currentPage)
+       console.log('display',res)
       if (res !== null && res !== undefined && res.status === 200) {
         setDrug(res.data.items);
         setTotalRecord(res.data.totalRecord);
@@ -37,7 +37,6 @@ const Drug = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
      console.log('display',currentPage)
-     loadDataMedicine()
   };
 
   useEffect(() => {
