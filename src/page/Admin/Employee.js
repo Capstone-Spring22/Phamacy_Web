@@ -44,6 +44,7 @@ const Employees = () => {
       if (res !== null && res !== undefined && res.status === 200) {
         setEmployees(res.data.items);
         setTotalEmployees(res.data.totalRecord);
+        console.log('display',currentPage)
       }
     }
   }
@@ -111,11 +112,9 @@ const Employees = () => {
     loadDataWard();
   }, [districtID]);
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    console.log("display", accessToken);
-    if (employees === null) {
-      loadDataEmployee(accessToken);
-    }
+   
+      loadDataEmployee();
+ 
   }, [currentPage, perPage]);
   return (
     <>
@@ -391,7 +390,7 @@ const Employees = () => {
                       <ReactPaginate
                         className="pagination p12"
                         pageCount={totalEmployees / perPage}
-                        onPageChange={(e) => handlePageChange(e.selected + 1)}
+                        onPageChange={(e) =>    setCurrentPage(e.selected + 1)}
                         currentPage={currentPage}
                       />
                     </div>

@@ -104,9 +104,7 @@ const SubCategory = () => {
     }
   }
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+ 
   useEffect(() => {
     
     loadDataCategory();
@@ -728,7 +726,7 @@ const SubCategory = () => {
                       <ReactPaginate
                         className="pagination p12"
                         pageCount={totalSite / perPage}
-                        onPageChange={(e) => handlePageChange(e.selected + 1)}
+                        onPageChange={(e) => setCurrentPage(e.selected + 1)}
                         currentPage={currentPage}
                       />
                     </div>

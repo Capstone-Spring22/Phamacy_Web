@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
+import ReactPaginate from "react-paginate";
 import {
   getDataByPath,
   deleteDataByPath,
@@ -15,6 +16,9 @@ const MainCategory = () => {
   const [category, setCategory] = useState([]);
   const [categoryName, setCategoryName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [totalSite, setTotalSite] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(2);
   const [isOpen, setIsOpen] = useState(true);
   const [categoryUpdate, setCategoryUpdate] = useState({
     categoryName: "",
@@ -28,11 +32,13 @@ const MainCategory = () => {
     return true;
   };
   async function loadDataCategory() {
-    const path = `MainCategory`;
+    const path = `MainCategory?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
-      setCategory(res.data);
+      setCategory(res.data.items);
+      setTotalSite(res.data.totalRecord);
+       console.log('display',currentPage)
     }
   }
   async function loadDataMainCategoryID(id) {
@@ -59,6 +65,9 @@ const MainCategory = () => {
       setIsOpen(false);
     }
   }
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
   const deleteForCreate = () => {
     setCategoryName("");
     setImageUrl("");
@@ -78,7 +87,7 @@ const MainCategory = () => {
   }
   useEffect(() => {
     loadDataCategory();
-  }, [category]);
+  }, [currentPage, perPage]);
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
@@ -590,34 +599,12 @@ const MainCategory = () => {
                             })}
                         </tbody>
                       </table>
-                      <div className="pagination p12">
-                        <ul>
-                          <a href="#">
-                            <li>Previous</li>
-                          </a>
-                          <a href="#">
-                            <li>1</li>
-                          </a>
-                          <a href="#">
-                            <li>2</li>
-                          </a>
-                          <a href="#">
-                            <li>3</li>
-                          </a>
-                          <a href="#">
-                            <li>4</li>
-                          </a>
-                          <a href="#">
-                            <li>5</li>
-                          </a>
-                          <a className="is-active" href="#">
-                            <li>6</li>
-                          </a>
-                          <a href="#">
-                            <li>Next</li>
-                          </a>
-                        </ul>
-                      </div>
+                      <ReactPaginate
+                        className="pagination p12"
+                        pageCount={totalSite / perPage}
+                        onPageChange={(e) => handlePageChange(e.selected + 1)}
+                        currentPage={currentPage}
+                      />
                     </div>
                   </div>
                 </div>

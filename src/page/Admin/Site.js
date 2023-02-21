@@ -70,6 +70,7 @@ const Site = () => {
       setSite(res.data.items);
       
       setTotalSite(res.data.totalRecord);
+       console.log('display',currentPage)
     }}
   }
   async function loadDataSubCategoryID(id) {
@@ -97,16 +98,18 @@ const Site = () => {
     }
   }
   async function updateProducts() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
     const data = dataForUpdate();
     const path = `Site`;
-    const res = await updateDataByPath(path, "", data);
+    const res = await updateDataByPath(path, accessToken, data);
     // console.log("display", data.homeAddress);
     if (res && res.status === 200) {
       Swal.fire("Update successfully!", "", "success");
       window.location.reload();
 
     }
-  }
+  }}
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -148,10 +151,12 @@ const Site = () => {
   };
 
   async function createNewProducts() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
     if (checkValidation()) {
       const data = dataForCreate();
       const path = "Site";
-      const res = await createDataByPath(path, "", data);
+      const res = await createDataByPath(path, accessToken, data);
       console.log("Check res", res);
       if (res && res.status === 201) {
         Swal.fire("Create Success", "", "success");
@@ -159,26 +164,29 @@ const Site = () => {
         window.location.reload();
       }
     }
-  }
+  }}
   async function loadDataSiteID(id) {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
     const path = `Site/${id}`;
-    const res = await getDataByPath(path, "", "");
+    const res = await getDataByPath(path, accessToken, "");
     if (res !== null && res !== undefined && res.status === 200) {
       console.log(id, res.data.isActivate);
       const data = { siteID: id, status: !res.data.isActivate };
       const path1 = "Site/Active";
-      const res1 = await updateDataByPath(path1, "", data);
+      const res1 = await updateDataByPath(path1, accessToken, data);
       if (res1 && res1.status === 200) {
         Swal.fire("Update successfully!", "", "success");
+        history.push("/Site");
       } else if (res1 && res1.status === 400) {
         Swal.fire(
           "Cái này éo có nhân viên nên éo cho mở cửa! OK?",
           "You failed!",
           "error"
         );
-      }
+        }
     }
-  }
+  }}
 
   async function loadDataCity() {
     const path = `Address/City`;
@@ -220,13 +228,13 @@ const Site = () => {
   };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    console.log("display", accessToken);
-    if (site === null) {
+   
+ 
     
-      loadDataSite(accessToken);
-    }
-  }, [currentPage, perPage,site]);
+      loadDataSite();
+    
+  }, [currentPage, perPage]);
+
   useEffect(() => {
     loadDataCity();
   }, []);

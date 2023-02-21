@@ -16,7 +16,10 @@ const NewDrug = () => {
   const [ingredientCount, setIngredientCount] = useState(1);
   const [unitCount, setUnitCount] = useState(1);
   const [imageInputCount, setImageInputCount] = useState(1);
-
+  const [manufactuner, setManufactuner] = useState([]);
+  const [manufactunerID, setManufactunerID] = useState([]);
+  const [productIngredient, setProductIngredient] = useState([]);
+  const [productIngredientID, setProductIngredientID] = useState([]);
   const [addUnit, setAddUnit] = useState(false);
   const [unit, setUnit] = useState([]);
   const [unit2, setUnit2] = useState([]);
@@ -75,6 +78,25 @@ const NewDrug = () => {
       setUnit(res.data.items);
     }
   }
+  async function loadDataManufacturer() {
+    const path = `Manufacturer?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setManufactuner(res.data.items);
+    }
+  }
+  async function loadDataProductIngredient() {
+    const path = `ProductIngredient?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setProductIngredient(res.data.items);
+    }
+  }
+  const handleProductIngredient = (event) => {
+    event.preventDefault();
+    const productIngredientID = event.target.value;
+    setProductIngredientID(productIngredientID);
+  };
   async function loadDataUnit2() {
     const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -86,6 +108,16 @@ const NewDrug = () => {
     event.preventDefault();
     const unitID = event.target.value;
     setUnitID(unitID);
+  };
+  const handleUnit2 = (event) => {
+    event.preventDefault();
+    const unitID2 = event.target.value;
+    setUnitID2(unitID2);
+  };
+  const handleManufactuner = (event) => {
+    event.preventDefault();
+    const manufactunerID = event.target.value;
+    setManufactunerID(manufactunerID);
   };
   const handleBatchChange = (event) => {
     setIsBatches(event.target.checked);
@@ -154,6 +186,12 @@ const NewDrug = () => {
   }, []);
   useEffect(() => {
     loadDataUnit2();
+  }, []);
+  useEffect(() => {
+    loadDataManufacturer();
+  }, []);
+  useEffect(() => {
+    loadDataProductIngredient();
   }, []);
 
   const handleAddIngredient = () => {
@@ -358,15 +396,15 @@ const NewDrug = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-fullname"
                       >
-                        Drug Name
+                        Tên Sản Phẩm
                       </label>
                       <div className="input-group input-group-merge">
                         <input
                           type="text"
                           className="form-control"
                           id="basic-icon-default-fullname"
-                          placeholder="Name"
-                          aria-label="John Doe"
+                          placeholder="Tên Sản Phẩm"
+                          aria-label="Tên Sản Phẩm"
                           aria-describedby="basic-icon-default-fullname2"
                           onChange={(e) =>
                             setProduct((prevState) => ({
@@ -382,15 +420,15 @@ const NewDrug = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-company"
                       >
-                        SubCategory Name
+                        Tên Loại Con Sản Phẩm
                       </label>
                       <div className="input-group input-group-merge">
                         <input
                           type="text"
                           id="basic-icon-default-company"
                           className="form-control"
-                          placeholder="User Name"
-                          aria-label="ACME Inc."
+                          placeholder="Tên Loại Con Sản Phẩm"
+                          aria-label="Tên Loại Con Sản Phẩm"
                           aria-describedby="basic-icon-default-company2"
                           onChange={(e) =>
                             setProduct((prevState) => ({
@@ -401,30 +439,43 @@ const NewDrug = () => {
                         />
                       </div>
                     </div>
-                    <div className="mb-3" style={{ width: "95%" }}>
+                    <div className="mb-3" style={{ width: "100%" }}>
                       <label
                         className="form-label"
-                        htmlFor="basic-icon-default-email"
+                        htmlFor="basic-icon-default-phone"
                       >
-                        Manufacturer Name
+                        Tên Nhà Sản Xuất
                       </label>
                       <div className="input-group input-group-merge">
-                        <input
-                          type="text"
+                        <select
+                          name="city"
                           id="basic-icon-default-email"
                           className="form-control"
-                          placeholder="Phone Number"
-                          aria-label="Phone Number"
-                          aria-describedby="basic-icon-default-email2"
-                          onChange={(e) =>
-                            setProduct((prevState) => ({
-                              ...prevState,
-                              manufacturerId: e.target.value,
-                            }))
-                          }
-                        />
+                          onChange={(e) => handleManufactuner(e)}
+                          value={manufactunerID}
+                        >
+                          {manufactuner &&
+                            manufactuner.length &&
+                            manufactuner.map((e, index) => {
+                              return (
+                                <>
+                                  <option
+                                    key={e.id}
+                                    value={e.id}
+                                    onChange={(e) =>
+                                      setProduct((prevState) => ({
+                                        ...prevState,
+                                        manufacturerId: e.target.value,
+                                      }))
+                                    }
+                                  >
+                                    {e.manufacturerName}
+                                  </option>
+                                </>
+                              );
+                            })}
+                        </select>
                       </div>
-                      <div className="form-text"></div>
                     </div>
 
                     <div className="col-md">
@@ -453,7 +504,7 @@ const NewDrug = () => {
                           className="form-check-label"
                           htmlFor="inlineCheckbox1"
                         >
-                          Prescription
+                          Thuốc kê đơn
                         </label>
                       </div>
                       <div className="form-check form-check-inline">
@@ -475,7 +526,7 @@ const NewDrug = () => {
                           className="form-check-label"
                           htmlFor="inlineCheckbox2"
                         >
-                          Batches
+                          Lô Hàng
                         </label>
                       </div>
                     </div>
@@ -484,15 +535,15 @@ const NewDrug = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-company"
                       >
-                        effect
+                        Công dung
                       </label>
                       <div className="input-group input-group-merge">
                         <input
                           type="text"
                           id="basic-icon-default-company"
                           className="form-control"
-                          placeholder="User Name"
-                          aria-label="ACME Inc."
+                          placeholder="Công dung"
+                          aria-label="Công dung"
                           aria-describedby="basic-icon-default-company2"
                           onChange={(e) =>
                             setProduct({
@@ -511,15 +562,15 @@ const NewDrug = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-email"
                       >
-                        instruction
+                        Hướng dẫn sử dụng
                       </label>
                       <div className="input-group input-group-merge">
                         <input
                           type="text"
                           id="basic-icon-default-email"
                           className="form-control"
-                          placeholder="Phone Number"
-                          aria-label="Phone Number"
+                          placeholder="Hướng dẫn sử dụng"
+                          aria-label="Hướng dẫn sử dụng"
                           aria-describedby="basic-icon-default-email2"
                           onChange={(e) =>
                             setProduct({
@@ -539,15 +590,15 @@ const NewDrug = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-company"
                       >
-                        sideEffect
+                        Tác Dụng Phụ
                       </label>
                       <div className="input-group input-group-merge">
                         <input
                           type="text"
                           id="basic-icon-default-company"
                           className="form-control"
-                          placeholder="User Name"
-                          aria-label="ACME Inc."
+                          placeholder="Tác Dụng Phụ"
+                          aria-label="Tác Dụng Phụ"
                           aria-describedby="basic-icon-default-company2"
                           onChange={(e) =>
                             setProduct({
@@ -566,15 +617,15 @@ const NewDrug = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-email"
                       >
-                        contraindications
+                        Chống chỉ định
                       </label>
                       <div className="input-group input-group-merge">
                         <input
                           type="text"
                           id="basic-icon-default-email"
                           className="form-control"
-                          placeholder="Phone Number"
-                          aria-label="Phone Number"
+                          placeholder="Chống chỉ định"
+                          aria-label="Chống chỉ định"
                           aria-describedby="basic-icon-default-email2"
                           onChange={(e) =>
                             setProduct({
@@ -594,15 +645,15 @@ const NewDrug = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-company"
                       >
-                        preserve
+                        Bảo quản
                       </label>
                       <div className="input-group input-group-merge">
                         <input
                           type="text"
                           id="basic-icon-default-company"
                           className="form-control"
-                          placeholder="User Name"
-                          aria-label="ACME Inc."
+                          placeholder=" Bảo quản"
+                          aria-label=" Bảo quản"
                           aria-describedby="basic-icon-default-company2"
                           onChange={(e) =>
                             setProduct({
@@ -619,493 +670,8 @@ const NewDrug = () => {
 
                     <div className="col-md"></div>
 
-                    {Array.from({ length: unitCount }, (_, i) => i + 1).map(
-                      (index) => (
-                        <div
-                          key={index}
-                          className="mb-3"
-                          style={{ width: "95%" }}
-                        >
-                          <label
-                            className="form-label"
-                            htmlFor={`unitId${index}`}
-                          >
-                            Unit Id đơn vị cho hàng
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              id={`unitId${index}`}
-                              className="form-control"
-                              placeholder="Unit Id"
-                              aria-label="Unit Id"
-                              aria-describedby={`unitId${index}2`}
-                              onChange={(e) =>
-                                setProduct({
-                                  ...product,
-                                  productDetailModel: [
-                                    ...product.productDetailModel.slice(
-                                      0,
-                                      index - 1
-                                    ),
-                                    {
-                                      ...product.productDetailModel[index - 1],
-                                      unitId: e.target.value,
-                                      unitLevel: index,
-                                    },
-                                    ...product.productDetailModel.slice(index),
-                                  ],
-                                })
-                              }
-                            />
-                          </div>
-                          <label
-                            className="form-label"
-                            htmlFor={`unitId${index}`}
-                          >
-                            Quantitative
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              id={`quantitative${index}`}
-                              className="form-control"
-                              placeholder="Unit Id"
-                              aria-label="Unit Id"
-                              aria-describedby={`quantitative${index}2`}
-                              onChange={(e) =>
-                                setProduct({
-                                  ...product,
-                                  productDetailModel: [
-                                    ...product.productDetailModel.slice(
-                                      0,
-                                      index - 1
-                                    ),
-                                    {
-                                      ...product.productDetailModel[index - 1],
-                                      quantitative: e.target.value,
-                                    },
-                                    ...product.productDetailModel.slice(index),
-                                  ],
-                                })
-                              }
-                            />
-                          </div>
-                          <label
-                            className="form-label"
-                            htmlFor={`unitId${index}`}
-                          >
-                            Sell Quantity
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              id={`sellQuantity${index}`}
-                              className="form-control"
-                              placeholder="Unit Id"
-                              aria-label="Unit Id"
-                              aria-describedby={`sellQuantity${index}2`}
-                              onChange={(e) =>
-                                setProduct({
-                                  ...product,
-                                  productDetailModel: [
-                                    ...product.productDetailModel.slice(
-                                      0,
-                                      index - 1
-                                    ),
-                                    {
-                                      ...product.productDetailModel[index - 1],
-                                      sellQuantity: e.target.value,
-                                    },
-                                    ...product.productDetailModel.slice(index),
-                                  ],
-                                })
-                              }
-                            />
-                          </div>
-                          <label
-                            className="form-label"
-                            htmlFor={`unitId${index}`}
-                          >
-                            Price
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              id={`price${index}`}
-                              className="form-control"
-                              placeholder="Unit Id"
-                              aria-label="Unit Id"
-                              aria-describedby={`price${index}2`}
-                              onChange={(e) =>
-                                setProduct({
-                                  ...product,
-                                  productDetailModel: [
-                                    ...product.productDetailModel.slice(
-                                      0,
-                                      index - 1
-                                    ),
-                                    {
-                                      ...product.productDetailModel[index - 1],
-                                      price: e.target.value,
-                                    },
-                                    ...product.productDetailModel.slice(index),
-                                  ],
-                                })
-                              }
-                            />
-                          </div>
-                          <label
-                            className="form-label"
-                            htmlFor={`unitId${index}`}
-                          >
-                            BarCode
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              id={`barCode${index}`}
-                              className="form-control"
-                              placeholder="Unit Id"
-                              aria-label="Unit Id"
-                              aria-describedby={`barCode${index}2`}
-                              onChange={(e) =>
-                                setProduct({
-                                  ...product,
-                                  productDetailModel: [
-                                    ...product.productDetailModel.slice(
-                                      0,
-                                      index - 1
-                                    ),
-                                    {
-                                      ...product.productDetailModel[index - 1],
-                                      barCode: e.target.value,
-                                    },
-                                    ...product.productDetailModel.slice(index),
-                                  ],
-                                })
-                              }
-                            />
-                          </div>
-                          <div className="form-check form-check-inline">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id={`isVisible${index}`}
-                              checked={
-                                product.productDetailModel[index - 1].isVisible
-                              }
-                              onChange={(e) =>
-                                setProduct({
-                                  ...product,
-                                  productDetailModel: [
-                                    ...product.productDetailModel.slice(
-                                      0,
-                                      index - 1
-                                    ),
-                                    {
-                                      ...product.productDetailModel[index - 1],
-                                      isVisible: e.target.checked ? 1 : 0,
-                                    },
-                                    ...product.productDetailModel.slice(index),
-                                  ],
-                                })
-                              }
-                              defaultValue="option2"
-                              style={{
-                                height: 20,
-                                width: 20,
-                                backgroundColor: "#86a8c5",
-                                borderColor: "#86a8c5",
-                              }}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor={`isSell${index}`}
-                            >
-                              is Visible
-                            </label>
-                          </div>
-                          <div className="form-check form-check-inline">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id={`isSell${index}`}
-                              checked={
-                                product.productDetailModel[index - 1].isSell
-                              }
-                              onChange={(e) =>
-                                setProduct({
-                                  ...product,
-                                  productDetailModel: [
-                                    ...product.productDetailModel.slice(
-                                      0,
-                                      index - 1
-                                    ),
-                                    {
-                                      ...product.productDetailModel[index - 1],
-                                      isSell: e.target.checked ? 1 : 0,
-                                    },
-                                    ...product.productDetailModel.slice(index),
-                                  ],
-                                })
-                              }
-                              defaultValue="option2"
-                              style={{
-                                height: 20,
-                                width: 20,
-                                backgroundColor: "#86a8c5",
-                                borderColor: "#86a8c5",
-                              }}
-                            />
-                            <label
-                              className="form-check-label"
-                              htmlFor={`isSell${index}`}
-                            >
-                              For sale
-                            </label>
-                          </div>
-                          {/* {Array.from(
-                            { length: imageInputCount },
-                            (_, j) => j + 1
-                          ).map((index) => (
-                            <div
-                              className="mb-3"
-                              key={index}
-                              style={{ width: "95%" }}
-                            >
-                              <label
-                                className="form-label"
-                                htmlFor={`image${index}`}
-                              >
-                                Image {index + 1}
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <input
-                                  type="file"
-                                  id={`image${index}`}
-                                  className="form-control"
-                                  placeholder="Phone Number"
-                                  aria-label="Phone Number"
-                                  aria-describedby={`image${index}`}
-                                  onChange={(e) => {
-                                    setProduct({
-                                      ...product,
-                                      productDetailModel: [
-                                        {
-                                          ...product.productDetailModel[0],
-                                          imageURL: [
-                                            ...product.productDetailModel[0].imageURL.slice(
-                                              0,
-                                              index
-                                            ),
-                                            {
-                                              ...product.productDetailModel[0]
-                                                .imageURL[index],
-                                              imageURL: e.target.value,
-                                            },
-                                            ...product.productDetailModel[0].imageURL.slice(
-                                              index + 1
-                                            ),
-                                          ],
-                                        },
-                                        ...product.productDetailModel.slice(1),
-                                      ],
-                                    });
-                                  }}
-                                />
-                              </div>
-                              <div className="form-text"></div>
-                            </div> */}
-                          {/* ))} */}
-                          {/* <button onClick={handleAddImage}>Thêm ảnh</button> */}
-                          <div className="mb-3" style={{ width: "95%" }}>
-                      <label
-                        className="form-label"
-                        htmlFor="basic-icon-default-email"
-                      >
-                        Image
-                      </label>
-                      <div className="input-group input-group-merge">
-                        <input 
-                          type="text"
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          placeholder="Phone Number"
-                          aria-label="Phone Number"
-                          aria-describedby="basic-icon-default-email2"
-                          onChange={(e) => {
-                            setProduct({
-                              ...product,
-                              productDetailModel: [
-                                ...product.productDetailModel.slice(
-                                  0,
-                                  index - 1
-                                ),
-                                {
-                                  ...product.productDetailModel[index - 1],
-                                  imageURL: [
-                                    {
-                                      ...product.productDetailModel[index - 1]
-                                        .imageURL[0],
-                                      imageURL: e.target.value,
-                                    },
-                                  ],
-                                },
-                                ...product.productDetailModel.slice(index),
-                              ],
-                            })
-                           
-                          }}
-                        />
-                      </div>
-
-                      <div className="form-text"></div>
-                    </div>
-                        </div>
-                      )
-                    )}
-
-                    {Array.from(
-                      { length: ingredientCount },
-                      (_, i) => i + 1
-                    ).map((index) => (
-                      <div
-                        key={index}
-                        className="mb-3"
-                        style={{ width: "95%" }}
-                      >
-                        <label
-                          className="form-label"
-                          htmlFor={`ingredientId${index}`}
-                        >
-                          ingredientId
-                        </label>
-                        <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            id={`ingredientId${index}`}
-                            className="form-control"
-                            placeholder="User Name"
-                            aria-label="ACME Inc."
-                            aria-describedby={`ingredientId${index}2`}
-                            onChange={(e) =>
-                              setProduct({
-                                ...product,
-                                descriptionModel: {
-                                  ...product.descriptionModel,
-                                  ingredientModel: [
-                                    ...product.descriptionModel.ingredientModel.slice(
-                                      0,
-                                      index - 1
-                                    ),
-                                    {
-                                      ...product.descriptionModel
-                                        .ingredientModel[index - 1],
-                                      ingredientId: e.target.value,
-                                    },
-                                    ...product.descriptionModel.ingredientModel.slice(
-                                      index
-                                    ),
-                                  ],
-                                },
-                              })
-                            }
-                          />
-                        </div>
-                        <div className="form-text"></div>
-
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor={`content${index}`}
-                          >
-                            content
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              id={`content${index}`}
-                              className="form-control"
-                              placeholder="Phone Number"
-                              aria-label="Phone Number"
-                              aria-describedby={`content${index}2`}
-                              onChange={(e) =>
-                                setProduct({
-                                  ...product,
-                                  descriptionModel: {
-                                    ...product.descriptionModel,
-                                    ingredientModel: [
-                                      ...product.descriptionModel.ingredientModel.slice(
-                                        0,
-                                        index - 1
-                                      ),
-                                      {
-                                        ...product.descriptionModel
-                                          .ingredientModel[index - 1],
-                                        content: e.target.value,
-                                      },
-                                      ...product.descriptionModel.ingredientModel.slice(
-                                        index
-                                      ),
-                                    ],
-                                  },
-                                })
-                              }
-                            />
-                          </div>
-                          <div className="form-text"></div>
-                        </div>
-
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor={`unitId${index}`}
-                          >
-                            unitId
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              id={`unitId${index}`}
-                              className="form-control"
-                              placeholder="User Name"
-                              aria-label="ACME Inc."
-                              aria-describedby={`unitId${index}2`}
-                              onChange={(e) =>
-                                setProduct({
-                                  ...product,
-                                  descriptionModel: {
-                                    ...product.descriptionModel,
-                                    ingredientModel: [
-                                      ...product.descriptionModel.ingredientModel.slice(
-                                        0,
-                                        index - 1
-                                      ),
-                                      {
-                                        ...product.descriptionModel
-                                          .ingredientModel[index - 1],
-                                        unitId: e.target.value,
-                                      },
-                                      ...product.descriptionModel.ingredientModel.slice(
-                                        index
-                                      ),
-                                    ],
-                                  },
-                                })
-                              }
-                            />
-                          </div>
-                          <div className="form-text"></div>
-                        </div>
-                      </div>
-                    ))}
+                    <div className="col-md"></div>
                   </div>
-                  <button onClick={handleAddUnit}> them đơn vị</button>
-                  <button onClick={handleAddIngredient}>
-                    {" "}
-                    them nguyen lieu
-                  </button>
 
                   <button
                     type="submit"
@@ -1129,6 +695,643 @@ const NewDrug = () => {
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+          <div
+            className="row "
+            style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+          >
+            <div className="col-xl">
+              <div className="card mb-4">
+                <div
+                  className="card-header d-flex justify-content-between align-items-center"
+                  style={{
+                    height: 70,
+                    backgroundColor: "white",
+                    padding: "20px 24px",
+
+                    borderColor: "#f4f4f4",
+                  }}
+                >
+                  <h5 className="mb-0">Add new Drug</h5>
+                </div>
+                <div className="card-body">
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "auto auto",
+                      padding: 30,
+                    }}
+                  >
+                    {Array.from({ length: unitCount }, (_, i) => i + 1).map(
+                      (index) => (
+                        <div>
+                          <div
+                            style={{
+                              display: "grid",
+                              gridTemplateColumns: "auto auto",
+                              padding: 30,
+                            }}
+                          >
+                            <div
+                              key={index}
+                              className="mb-3"
+                              style={{ width: "100%" }}
+                            >
+                              <label
+                                className="form-label"
+                                htmlFor="basic-icon-default-phone"
+                              >
+                                Unit Id đơn vị cho hàng
+                              </label>
+                              <div className="input-group input-group-merge">
+                                <select
+                                  name="city"
+                                  id="basic-icon-default-email"
+                                  className="form-control"
+                                  onChange={(e) => handleUnit(e)}
+                                  value={unitID}
+                                >
+                                  {unit &&
+                                    unit.length &&
+                                    unit.map((e, index) => {
+                                      return (
+                                        <>
+                                          <option
+                                            key={e.id}
+                                            value={e.id}
+                                            onChange={(e) =>
+                                              setProduct({
+                                                ...product,
+                                                productDetailModel: [
+                                                  ...product.productDetailModel.slice(
+                                                    0,
+                                                    index - 1
+                                                  ),
+                                                  {
+                                                    ...product
+                                                      .productDetailModel[
+                                                      index - 1
+                                                    ],
+                                                    unitId: e.target.value,
+                                                    unitLevel: index,
+                                                  },
+                                                  ...product.productDetailModel.slice(
+                                                    index
+                                                  ),
+                                                ],
+                                              })
+                                            }
+                                          >
+                                            {e.unitName}
+                                          </option>
+                                        </>
+                                      );
+                                    })}
+                                </select>
+                              </div>
+                            </div>
+                            <div
+                              key={index}
+                              className="mb-3"
+                              style={{ width: "95%" }}
+                            >
+                              <label
+                                className="form-label"
+                                htmlFor={`unitId${index}`}
+                              >
+                                Quantitative
+                              </label>
+                              <div className="input-group input-group-merge">
+                                <input
+                                  type="text"
+                                  id={`quantitative${index}`}
+                                  className="form-control"
+                                  placeholder="Unit Id"
+                                  aria-label="Unit Id"
+                                  aria-describedby={`quantitative${index}2`}
+                                  onChange={(e) =>
+                                    setProduct({
+                                      ...product,
+                                      productDetailModel: [
+                                        ...product.productDetailModel.slice(
+                                          0,
+                                          index - 1
+                                        ),
+                                        {
+                                          ...product.productDetailModel[
+                                            index - 1
+                                          ],
+                                          quantitative: e.target.value,
+                                        },
+                                        ...product.productDetailModel.slice(
+                                          index
+                                        ),
+                                      ],
+                                    })
+                                  }
+                                />
+                              </div>
+                            </div>
+                            <div
+                              key={index}
+                              className="mb-3"
+                              style={{ width: "95%" }}
+                            >
+                              <label
+                                className="form-label"
+                                htmlFor={`unitId${index}`}
+                              >
+                                Sell Quantity
+                              </label>
+                              <div className="input-group input-group-merge">
+                                <input
+                                  type="text"
+                                  id={`sellQuantity${index}`}
+                                  className="form-control"
+                                  placeholder="Unit Id"
+                                  aria-label="Unit Id"
+                                  aria-describedby={`sellQuantity${index}2`}
+                                  onChange={(e) =>
+                                    setProduct({
+                                      ...product,
+                                      productDetailModel: [
+                                        ...product.productDetailModel.slice(
+                                          0,
+                                          index - 1
+                                        ),
+                                        {
+                                          ...product.productDetailModel[
+                                            index - 1
+                                          ],
+                                          sellQuantity: e.target.value,
+                                        },
+                                        ...product.productDetailModel.slice(
+                                          index
+                                        ),
+                                      ],
+                                    })
+                                  }
+                                />
+                              </div>
+                            </div>
+                            <div
+                              key={index}
+                              className="mb-3"
+                              style={{ width: "95%" }}
+                            >
+                              <label
+                                className="form-label"
+                                htmlFor={`unitId${index}`}
+                              >
+                                Price
+                              </label>
+                              <div className="input-group input-group-merge">
+                                <input
+                                  type="text"
+                                  id={`price${index}`}
+                                  className="form-control"
+                                  placeholder="Unit Id"
+                                  aria-label="Unit Id"
+                                  aria-describedby={`price${index}2`}
+                                  onChange={(e) =>
+                                    setProduct({
+                                      ...product,
+                                      productDetailModel: [
+                                        ...product.productDetailModel.slice(
+                                          0,
+                                          index - 1
+                                        ),
+                                        {
+                                          ...product.productDetailModel[
+                                            index - 1
+                                          ],
+                                          price: e.target.value,
+                                        },
+                                        ...product.productDetailModel.slice(
+                                          index
+                                        ),
+                                      ],
+                                    })
+                                  }
+                                />
+                              </div>
+                            </div>
+                            <div
+                              key={index}
+                              className="mb-3"
+                              style={{ width: "95%" }}
+                            >
+                              <label
+                                className="form-label"
+                                htmlFor={`unitId${index}`}
+                              >
+                                BarCode
+                              </label>
+                              <div className="input-group input-group-merge">
+                                <input
+                                  type="text"
+                                  id={`barCode${index}`}
+                                  className="form-control"
+                                  placeholder="Unit Id"
+                                  aria-label="Unit Id"
+                                  aria-describedby={`barCode${index}2`}
+                                  onChange={(e) =>
+                                    setProduct({
+                                      ...product,
+                                      productDetailModel: [
+                                        ...product.productDetailModel.slice(
+                                          0,
+                                          index - 1
+                                        ),
+                                        {
+                                          ...product.productDetailModel[
+                                            index - 1
+                                          ],
+                                          barCode: e.target.value,
+                                        },
+                                        ...product.productDetailModel.slice(
+                                          index
+                                        ),
+                                      ],
+                                    })
+                                  }
+                                />
+                              </div>
+
+                              <div className="form-check form-check-inline">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  id={`isVisible${index}`}
+                                  checked={
+                                    product.productDetailModel[index - 1]
+                                      .isVisible
+                                  }
+                                  onChange={(e) =>
+                                    setProduct({
+                                      ...product,
+                                      productDetailModel: [
+                                        ...product.productDetailModel.slice(
+                                          0,
+                                          index - 1
+                                        ),
+                                        {
+                                          ...product.productDetailModel[
+                                            index - 1
+                                          ],
+                                          isVisible: e.target.checked ? 1 : 0,
+                                        },
+                                        ...product.productDetailModel.slice(
+                                          index
+                                        ),
+                                      ],
+                                    })
+                                  }
+                                  defaultValue="option2"
+                                  style={{
+                                    height: 20,
+                                    width: 20,
+                                    backgroundColor: "#86a8c5",
+                                    borderColor: "#86a8c5",
+                                  }}
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={`isSell${index}`}
+                                >
+                                  is Visible
+                                </label>
+                              </div>
+                              <div className="form-check form-check-inline">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  id={`isSell${index}`}
+                                  checked={
+                                    product.productDetailModel[index - 1].isSell
+                                  }
+                                  onChange={(e) =>
+                                    setProduct({
+                                      ...product,
+                                      productDetailModel: [
+                                        ...product.productDetailModel.slice(
+                                          0,
+                                          index - 1
+                                        ),
+                                        {
+                                          ...product.productDetailModel[
+                                            index - 1
+                                          ],
+                                          isSell: e.target.checked ? 1 : 0,
+                                        },
+                                        ...product.productDetailModel.slice(
+                                          index
+                                        ),
+                                      ],
+                                    })
+                                  }
+                                  defaultValue="option2"
+                                  style={{
+                                    height: 20,
+                                    width: 20,
+                                    backgroundColor: "#86a8c5",
+                                    borderColor: "#86a8c5",
+                                  }}
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor={`isSell${index}`}
+                                >
+                                  For sale
+                                </label>
+                              </div>
+
+                              <div className="mb-3" style={{ width: "95%" }}>
+                                <label
+                                  className="form-label"
+                                  htmlFor="basic-icon-default-email"
+                                >
+                                  Image
+                                </label>
+                                <div className="input-group input-group-merge">
+                                  <input
+                                    type="text"
+                                    id="basic-icon-default-email"
+                                    className="form-control"
+                                    placeholder="Phone Number"
+                                    aria-label="Phone Number"
+                                    aria-describedby="basic-icon-default-email2"
+                                    onChange={(e) => {
+                                      setProduct({
+                                        ...product,
+                                        productDetailModel: [
+                                          ...product.productDetailModel.slice(
+                                            0,
+                                            index - 1
+                                          ),
+                                          {
+                                            ...product.productDetailModel[
+                                              index - 1
+                                            ],
+                                            imageURL: [
+                                              {
+                                                ...product.productDetailModel[
+                                                  index - 1
+                                                ].imageURL[0],
+                                                imageURL: e.target.value,
+                                              },
+                                            ],
+                                          },
+                                          ...product.productDetailModel.slice(
+                                            index
+                                          ),
+                                        ],
+                                      });
+                                    }}
+                                  />
+                                </div>
+
+                                <div className="form-text"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                  <button
+                    className="button-28"
+                    style={{
+                      height: 30,
+                      width: 80,
+                      fontSize: 13,
+                      paddingTop: 1,
+                      marginLeft: "90%",
+                      marginTop: "20px",
+                      backgroundColor: "#11cdef",
+                      color: "white",
+                    }}
+                    onClick={handleAddUnit}
+                  >
+                    {" "}
+                    them đơn vị
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className="row "
+            style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+          >
+            <div className="col-xl">
+              <div className="card mb-4">
+                <div
+                  className="card-header d-flex justify-content-between align-items-center"
+                  style={{
+                    height: 70,
+                    backgroundColor: "white",
+                    padding: "20px 24px",
+
+                    borderColor: "#f4f4f4",
+                  }}
+                >
+                  <h5 className="mb-0">Add new Drug</h5>
+                </div>
+
+                {Array.from({ length: ingredientCount }, (_, i) => i + 1).map(
+                  (index) => (
+                    <div>
+                      <div className="card-body">
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: "auto auto",
+                            padding: 30,
+                          }}
+                        >
+                          <div className="form-text"></div>
+                          <div className="mb-3" style={{ width: "95%" }}>
+                            <label
+                              className="form-label"
+                              htmlFor={`unitId${index}`}
+                            >
+                              unitId
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <select
+                                name="city"
+                                id="basic-icon-default-email"
+                                className="form-control"
+                                onChange={(e) => handleProductIngredient(e)}
+                                value={productIngredientID}
+                              >
+                                {productIngredient &&
+                                  productIngredient.length &&
+                                  productIngredient.map((e, index) => {
+                                    return (
+                                      <>
+                                        <option
+                                          key={e.id}
+                                          value={e.id}
+                                          onChange={(e) =>
+                                            setProduct({
+                                              ...product,
+                                              descriptionModel: {
+                                                ...product.descriptionModel,
+                                                ingredientModel: [
+                                                  ...product.descriptionModel.ingredientModel.slice(
+                                                    0,
+                                                    index - 1
+                                                  ),
+                                                  {
+                                                    ...product.descriptionModel
+                                                      .ingredientModel[
+                                                      index - 1
+                                                    ],
+                                                    ingredientId:
+                                                      e.target.value,
+                                                  },
+                                                  ...product.descriptionModel.ingredientModel.slice(
+                                                    index
+                                                  ),
+                                                ],
+                                              },
+                                            })
+                                          }
+                                        >
+                                          {e.ingredientName}
+                                        </option>
+                                      </>
+                                    );
+                                  })}
+                              </select>
+                            </div>
+                          </div>
+                          <div className="mb-3" style={{ width: "95%" }}>
+                            <label
+                              className="form-label"
+                              htmlFor={`content${index}`}
+                            >
+                              content
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <input
+                                type="text"
+                                id={`content${index}`}
+                                className="form-control"
+                                placeholder="Phone Number"
+                                aria-label="Phone Number"
+                                aria-describedby={`content${index}2`}
+                                onChange={(e) =>
+                                  setProduct({
+                                    ...product,
+                                    descriptionModel: {
+                                      ...product.descriptionModel,
+                                      ingredientModel: [
+                                        ...product.descriptionModel.ingredientModel.slice(
+                                          0,
+                                          index - 1
+                                        ),
+                                        {
+                                          ...product.descriptionModel
+                                            .ingredientModel[index - 1],
+                                          content: e.target.value,
+                                        },
+                                        ...product.descriptionModel.ingredientModel.slice(
+                                          index
+                                        ),
+                                      ],
+                                    },
+                                  })
+                                }
+                              />
+                            </div>
+                            <div className="form-text"></div>
+                          </div>
+
+                          <div className="mb-3" style={{ width: "95%" }}>
+                            <label
+                              className="form-label"
+                              htmlFor={`unitId${index}`}
+                            >
+                              unitId
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <select
+                                name="city"
+                                id="basic-icon-default-email"
+                                className="form-control"
+                                onChange={(e) => handleUnit2(e)}
+                                value={unitID2}
+                              >
+                                {unit2 &&
+                                  unit2.length &&
+                                  unit2.map((e, index) => {
+                                    return (
+                                      <>
+                                        <option
+                                          key={e.id}
+                                          value={e.id}
+                                          onChange={(e) =>
+                                            setProduct({
+                                              ...product,
+                                              descriptionModel: {
+                                                ...product.descriptionModel,
+                                                ingredientModel: [
+                                                  ...product.descriptionModel.ingredientModel.slice(
+                                                    0,
+                                                    index - 1
+                                                  ),
+                                                  {
+                                                    ...product.descriptionModel
+                                                      .ingredientModel[
+                                                      index - 1
+                                                    ],
+                                                    unitId: e.target.value,
+                                                  },
+                                                  ...product.descriptionModel.ingredientModel.slice(
+                                                    index
+                                                  ),
+                                                ],
+                                              },
+                                            })
+                                          }
+                                        >
+                                          {e.unitName}
+                                        </option>
+                                      </>
+                                    );
+                                  })}
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  )
+                )}
+                 <button
+                style={{
+                  height: 30,
+                  width: 80,
+                  fontSize: 13,
+                  paddingTop: 1,
+                  marginLeft: "90%",
+                  marginTop: "20px",
+                  backgroundColor: "#11cdef",
+                  color: "white",
+                }}
+                className="button-28"
+                onClick={handleAddIngredient}
+              >
+                {" "}
+                them nguyen lieu
+              </button>
+              </div>
+             
             </div>
           </div>
         </div>

@@ -30,21 +30,17 @@ const Drug = () => {
       if (res !== null && res !== undefined && res.status === 200) {
         setDrug(res.data.items);
         setTotalRecord(res.data.totalRecord);
-       
+        console.log('display',currentPage)
       }
     }
   }
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-     console.log('display',currentPage)
-  };
+
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (drug === null) {
-      loadDataMedicine(accessToken);
-    }
-  }, [currentPage, perPage, drug]);
+  
+      loadDataMedicine();
+    
+  }, [currentPage, perPage]);
 
   return (
     <>
@@ -695,7 +691,7 @@ const Drug = () => {
                       <ReactPaginate
                         className="pagination p12"
                         pageCount={totalRecord / perPage}
-                        onPageChange={(e) => handlePageChange(e.selected + 1)}
+                        onPageChange={(e) => setCurrentPage(e.selected + 1)}
                         currentPage={currentPage}
                       />
                     </div>
