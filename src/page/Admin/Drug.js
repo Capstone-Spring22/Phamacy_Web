@@ -17,7 +17,14 @@ const Drug = () => {
   const [totalRecord, setTotalRecord] = useState([]);
   let history = useHistory();
 
-  const create = () => {
+  const update = (myId) => {
+    localStorage.setItem('id', myId);
+
+    history.push("/UpdateDrug");
+  };
+  const create = (myId) => {
+    localStorage.setItem('id', myId);
+
     history.push("/NewDrug");
   };
 
@@ -234,9 +241,8 @@ const Drug = () => {
                         <a
                           className=" button-28"
                           href="#my-dialog"
-                          onClick={() => {
-                            create();
-                          }}
+                          onClick={create}
+                          
                           style={{
                             height: 30,
                             width: 80,
@@ -666,6 +672,9 @@ const Drug = () => {
                                       class="button-81"
                                       role="button"
                                       href="#my-dialog2"
+                                      onClick={() => {
+                                        update(e.id);
+                                      }}
                                     >
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"

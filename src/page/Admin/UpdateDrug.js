@@ -7,12 +7,15 @@ import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
 import {
   getDataByPath,
+  updateDataByPath,
   deleteDataByPath,
   createDataByPath,
 } from "../../services/data.service";
 import ReactPaginate from "react-paginate";
 
-const NewDrug = () => {
+const UpdateDrug = () => {
+  const myId = localStorage.getItem("id");
+
   const [ingredientCount, setIngredientCount] = useState(1);
   const [unitCount, setUnitCount] = useState(1);
   const [imageInputCount, setImageInputCount] = useState(1);
@@ -23,8 +26,7 @@ const NewDrug = () => {
   const [addUnit, setAddUnit] = useState(false);
   const [unit, setUnit] = useState([]);
   const [unit2, setUnit2] = useState([]);
-  const [addNewUnit, setAddnewUnit] = useState(false);
-  const [addNewUnit2, setAddnewUnit2] = useState(false);
+
   const [isBatches, setIsBatches] = useState(false);
   const [isPrescription, setIsPrescription] = useState(false);
   const [unitID, setUnitID] = useState("");
@@ -33,44 +35,45 @@ const NewDrug = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
   const [product, setProduct] = useState({
+    id: "",
     name: "",
     subCategoryId: "",
     manufacturerId: "",
     isPrescription: 0,
-    isBatches: 0,
     productDetailModel: [
       {
-        unitId: "",
-        unitLevel: 1,
-        quantitative: "",
+        id: "",
         sellQuantity: "",
         price: "",
         isSell: 0,
         isVisible: 0,
         barCode: "",
-        imageURL: [
-          {
-            imageURL: "",
-            isFirstImage: 1,
-          },
-        ],
+        imageModels: [{ id: "", imageUrl: "", isFirstImage: 1 }],
       },
     ],
     descriptionModel: {
+      id: "",
       effect: "",
       instruction: "",
       sideEffect: "",
       contraindications: "",
       preserve: "",
-      ingredientModel: [
-        {
-          ingredientId: "",
-          content: "",
-          unitId: "",
-        },
-      ],
+      ingredientModel: [{ id: "", ingredientId: "", content: "", unitId: "" }],
     },
   });
+  async function loadDataDrugByID() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `Product/Update/${myId}`;
+      const res = await getDataByPath(path, accessToken, "");
+
+      if (res !== null && res !== undefined && res.status === 200) {
+        setProduct(res.data);
+        setUnitCount(res.data.productDetailModel.length);
+        setIngredientCount(res.data.descriptionModel.ingredientModel.length);
+      }
+    }
+  }
   async function loadDataUnit() {
     const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -86,7 +89,7 @@ const NewDrug = () => {
     }
   }
   async function loadDataProductIngredient() {
-    const path = `ProductIngredient?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `ProductIngredient?pageIndex=1&pageItems=20`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setProductIngredient(res.data.items);
@@ -112,6 +115,7 @@ const NewDrug = () => {
   const handleUnit2 = (event) => {
     event.preventDefault();
     const unitID2 = event.target.value;
+    console.log("display", event.target.value);
     setUnitID2(unitID2);
   };
   const handleManufactuner = (event) => {
@@ -152,20 +156,15 @@ const NewDrug = () => {
     }
   };
 
-  async function createNewProducts() {
+  async function updateProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      if (checkValidation()) {
-        const data = product;
-        const path = "Product";
-        const res = await createDataByPath(path, accessToken, data);
-        console.log("Check res", res);
-        console.log("display acc", accessToken);
-        console.log("display", data);
-        if (res && res.status === 201) {
-          Swal.fire("Create Success", "", "success");
-          // window.location.reload();
-        }
+      const data = product;
+      const path = `Product`;
+      const res = await updateDataByPath(path, accessToken, data);
+      // console.log("display", data.homeAddress);
+      if (res && res.status === 200) {
+        Swal.fire("Update successfully!", "", "success");
       }
     }
   }
@@ -181,6 +180,9 @@ const NewDrug = () => {
   // useEffect(() => {
   //   loadDataEmployee();
   // }, [currentPage, perPage]);
+  useEffect(() => {
+    loadDataDrugByID();
+  }, []);
   useEffect(() => {
     loadDataUnit();
   }, []);
@@ -224,7 +226,7 @@ const NewDrug = () => {
           price: "",
           isVisible: 0,
           isSell: 0,
-          imageURL: [{ imageURL: "", isFirstImage: 0 }],
+          imageModels: [{ id: "", imageUrl: "", isFirstImage: 1 }],
         },
       ],
     });
@@ -395,7 +397,7 @@ const NewDrug = () => {
                     borderColor: "#f4f4f4",
                   }}
                 >
-                  <h5 className="mb-0">Add new Drug</h5>
+                  <h5 className="mb-0">Cập nhật sản phẩm</h5>
                 </div>
                 <div className="card-body">
                   <div
@@ -418,6 +420,7 @@ const NewDrug = () => {
                           className="form-control"
                           id="basic-icon-default-fullname"
                           placeholder="Tên Sản Phẩm"
+                          value={product.name}
                           aria-label="Tên Sản Phẩm"
                           aria-describedby="basic-icon-default-fullname2"
                           onChange={(e) =>
@@ -440,6 +443,7 @@ const NewDrug = () => {
                         <input
                           type="text"
                           id="basic-icon-default-company"
+                          value={product.subCategoryId}
                           className="form-control"
                           placeholder="Tên Loại Con Sản Phẩm"
                           aria-label="Tên Loại Con Sản Phẩm"
@@ -453,7 +457,7 @@ const NewDrug = () => {
                         />
                       </div>
                     </div>
-                    <div className="mb-3" style={{ width: "100%" }}>
+                    <div className="mb-3" style={{ width: "95%" }}>
                       <label
                         className="form-label"
                         htmlFor="basic-icon-default-phone"
@@ -466,7 +470,7 @@ const NewDrug = () => {
                           id="basic-icon-default-email"
                           className="form-control"
                           onChange={(e) => handleManufactuner(e)}
-                          value={manufactunerID}
+                          value={product.manufacturerId}
                         >
                           {manufactuner &&
                             manufactuner.length &&
@@ -507,7 +511,7 @@ const NewDrug = () => {
                             backgroundColor: "#86a8c5",
                             borderColor: "#86a8c5",
                           }}
-                          checked={isPrescription}
+                          checked={product.isPrescription}
                           onChange={handlePrescriptionChange}
                           className="form-check-input"
                           type="checkbox"
@@ -523,7 +527,7 @@ const NewDrug = () => {
                       </div>
                       <div className="form-check form-check-inline">
                         <input
-                          checked={isBatches}
+                          checked={product.isBatches}
                           onChange={handleBatchChange}
                           className="form-check-input"
                           type="checkbox"
@@ -559,6 +563,7 @@ const NewDrug = () => {
                           placeholder="Công dung"
                           aria-label="Công dung"
                           aria-describedby="basic-icon-default-company2"
+                          value={product.descriptionModel.effect}
                           onChange={(e) =>
                             setProduct({
                               ...product,
@@ -586,6 +591,7 @@ const NewDrug = () => {
                           placeholder="Hướng dẫn sử dụng"
                           aria-label="Hướng dẫn sử dụng"
                           aria-describedby="basic-icon-default-email2"
+                          value={product.descriptionModel.instruction}
                           onChange={(e) =>
                             setProduct({
                               ...product,
@@ -614,6 +620,7 @@ const NewDrug = () => {
                           placeholder="Tác Dụng Phụ"
                           aria-label="Tác Dụng Phụ"
                           aria-describedby="basic-icon-default-company2"
+                          value={product.descriptionModel.sideEffect}
                           onChange={(e) =>
                             setProduct({
                               ...product,
@@ -641,6 +648,7 @@ const NewDrug = () => {
                           placeholder="Chống chỉ định"
                           aria-label="Chống chỉ định"
                           aria-describedby="basic-icon-default-email2"
+                          value={product.descriptionModel.contraindications}
                           onChange={(e) =>
                             setProduct({
                               ...product,
@@ -669,6 +677,7 @@ const NewDrug = () => {
                           placeholder=" Bảo quản"
                           aria-label=" Bảo quản"
                           aria-describedby="basic-icon-default-company2"
+                          value={product.descriptionModel.preserve}
                           onChange={(e) =>
                             setProduct({
                               ...product,
@@ -692,7 +701,7 @@ const NewDrug = () => {
                     className="button-28"
                     onClick={(e) => {
                       e.preventDefault();
-                      createNewProducts();
+                      updateProducts();
                     }}
                     style={{
                       height: 30,
@@ -727,7 +736,7 @@ const NewDrug = () => {
                     borderColor: "#f4f4f4",
                   }}
                 >
-                  <h5 className="mb-0">Add new Drug</h5>
+                  <h5 className="mb-0">Cập nhật đơn vị của sản phẩm</h5>
                 </div>
                 <div className="card-body">
                   <div
@@ -750,22 +759,20 @@ const NewDrug = () => {
                             <div
                               key={index}
                               className="mb-3"
-                              style={{ width: "100%" }}
+                              style={{ width: "95%" }}
                             >
                               <label
                                 className="form-label"
                                 htmlFor="basic-icon-default-phone"
                               >
-                                Unit Id đơn vị cho hàng
+                                đơn vị tính cho sản phẩm
                               </label>
                               <div className="input-group input-group-merge">
                                 <select
                                   name="city"
                                   id="basic-icon-default-email"
                                   className="form-control"
-                                  value={
-                                    product.productDetailModel[index - 1].unitId
-                                  }
+                                  placeholder="đơn vị tính cho sản phẩm"
                                   onChange={(e) => {
                                     handleUnit(e);
                                     setProduct({
@@ -788,17 +795,16 @@ const NewDrug = () => {
                                       ],
                                     });
                                   }}
+                                  value={
+                                    product.productDetailModel[index - 1].unitId
+                                  }
                                 >
                                   {unit &&
                                     unit.length &&
                                     unit.map((e, index) => {
                                       return (
                                         <>
-                                          <option
-                                            key={e.id}
-                                            value={e.id}
-                                         
-                                          >
+                                          <option key={e.id} value={e.id}>
                                             {e.unitName}
                                           </option>
                                         </>
@@ -816,16 +822,20 @@ const NewDrug = () => {
                                 className="form-label"
                                 htmlFor={`unitId${index}`}
                               >
-                                Quantitative
+                                Định lượng
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
                                   type="text"
                                   id={`quantitative${index}`}
                                   className="form-control"
-                                  placeholder="Unit Id"
+                                  placeholder="Định lượng"
                                   aria-label="Unit Id"
                                   aria-describedby={`quantitative${index}2`}
+                                  value={
+                                    product.productDetailModel[index - 1]
+                                      .quantitative
+                                  }
                                   onChange={(e) =>
                                     setProduct({
                                       ...product,
@@ -858,16 +868,20 @@ const NewDrug = () => {
                                 className="form-label"
                                 htmlFor={`unitId${index}`}
                               >
-                                Sell Quantity
+                                Số lượng bán
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
                                   type="text"
                                   id={`sellQuantity${index}`}
                                   className="form-control"
-                                  placeholder="Unit Id"
+                                  placeholder="Số lượng bán"
                                   aria-label="Unit Id"
                                   aria-describedby={`sellQuantity${index}2`}
+                                  value={
+                                    product.productDetailModel[index - 1]
+                                      .sellQuantity
+                                  }
                                   onChange={(e) =>
                                     setProduct({
                                       ...product,
@@ -900,16 +914,19 @@ const NewDrug = () => {
                                 className="form-label"
                                 htmlFor={`unitId${index}`}
                               >
-                                Price
+                                Giá
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
                                   type="text"
                                   id={`price${index}`}
                                   className="form-control"
-                                  placeholder="Unit Id"
+                                  placeholder="Giá"
                                   aria-label="Unit Id"
                                   aria-describedby={`price${index}2`}
+                                  value={
+                                    product.productDetailModel[index - 1].price
+                                  }
                                   onChange={(e) =>
                                     setProduct({
                                       ...product,
@@ -942,16 +959,20 @@ const NewDrug = () => {
                                 className="form-label"
                                 htmlFor={`unitId${index}`}
                               >
-                                BarCode
+                                Mã vạch
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
                                   type="text"
                                   id={`barCode${index}`}
                                   className="form-control"
-                                  placeholder="Unit Id"
+                                  placeholder="Mã vạch"
                                   aria-label="Unit Id"
                                   aria-describedby={`barCode${index}2`}
+                                  value={
+                                    product.productDetailModel[index - 1]
+                                      .barCode
+                                  }
                                   onChange={(e) =>
                                     setProduct({
                                       ...product,
@@ -1068,16 +1089,20 @@ const NewDrug = () => {
                                   className="form-label"
                                   htmlFor="basic-icon-default-email"
                                 >
-                                  Image
+                                  Hình ảnh
                                 </label>
                                 <div className="input-group input-group-merge">
                                   <input
                                     type="text"
                                     id="basic-icon-default-email"
                                     className="form-control"
-                                    placeholder="Phone Number"
+                                    placeholder="Hình Ảnh"
                                     aria-label="Phone Number"
                                     aria-describedby="basic-icon-default-email2"
+                                    value={
+                                      product.productDetailModel[index - 1]
+                                        .imageModels[0].imageUrl
+                                    }
                                     onChange={(e) => {
                                       setProduct({
                                         ...product,
@@ -1090,12 +1115,12 @@ const NewDrug = () => {
                                             ...product.productDetailModel[
                                               index - 1
                                             ],
-                                            imageURL: [
+                                            imageModels: [
                                               {
                                                 ...product.productDetailModel[
                                                   index - 1
-                                                ].imageURL[0],
-                                                imageURL: e.target.value,
+                                                ].imageModels[0],
+                                                imageUrl: e.target.value,
                                               },
                                             ],
                                           },
@@ -1153,7 +1178,7 @@ const NewDrug = () => {
                     borderColor: "#f4f4f4",
                   }}
                 >
-                  <h5 className="mb-0">Add new Drug</h5>
+                  <h5 className="mb-0">Cập nhật thành phần của sản phẩm</h5>
                 </div>
 
                 {Array.from({ length: ingredientCount }, (_, i) => i + 1).map(
@@ -1173,7 +1198,7 @@ const NewDrug = () => {
                               className="form-label"
                               htmlFor={`unitId${index}`}
                             >
-                              unitId
+                              Mã thành phần
                             </label>
                             <div className="input-group input-group-merge">
                               <select
@@ -1214,11 +1239,7 @@ const NewDrug = () => {
                                   productIngredient.map((e, index) => {
                                     return (
                                       <>
-                                        <option
-                                          key={e.id}
-                                          value={e.id}
-                                          
-                                        >
+                                        <option key={e.id} value={e.id}>
                                           {e.ingredientName}
                                         </option>
                                       </>
@@ -1242,6 +1263,11 @@ const NewDrug = () => {
                                 placeholder="Phone Number"
                                 aria-label="Phone Number"
                                 aria-describedby={`content${index}2`}
+                                value={
+                                  product.descriptionModel.ingredientModel[
+                                    index - 1
+                                  ].content
+                                }
                                 onChange={(e) =>
                                   setProduct({
                                     ...product,
@@ -1315,11 +1341,7 @@ const NewDrug = () => {
                                   unit2.map((e, index) => {
                                     return (
                                       <>
-                                        <option
-                                          key={e.id}
-                                          value={e.id}
-                                         
-                                        >
+                                        <option key={e.id} value={e.id}>
                                           {e.unitName}
                                         </option>
                                       </>
@@ -1350,6 +1372,14 @@ const NewDrug = () => {
                   {" "}
                   them nguyen lieu
                 </button>
+                <button
+                  onClick={() => {
+                    console.log("display", product);
+                  }}
+                >
+                  {" "}
+                  xem hàng
+                </button>
               </div>
             </div>
           </div>
@@ -1360,4 +1390,4 @@ const NewDrug = () => {
     </div>
   );
 };
-export default NewDrug;
+export default UpdateDrug;

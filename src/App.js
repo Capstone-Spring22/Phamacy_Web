@@ -22,6 +22,7 @@ import MainCategory from "./page/Admin/MainCategory";
 import SubCategory from "./page/Admin/SubCategory";
 import LoginAdmin from "./page/Admin/loginAdmin";
 import NewDrug from "./page/Admin/NewDrug";
+import UpdateDrug from "./page/Admin/UpdateDrug";
 function App() {
   return (
     <div className="site-wrap">
@@ -77,6 +78,9 @@ function App() {
           </Route>
           <Route path="/NewDrug">
             <NewDrug />
+          </Route>
+          <Route path="/UpdateDrug">
+            <UpdateDrug />
           </Route>
         </Switch>
       </BrowserRouter>
