@@ -122,7 +122,7 @@ const Employees = () => {
         <div className="layout-container">
           <SideBar />
 
-          <div className="layout-page" style={{ backgroundColor: "#f4f6fb" }}>
+          <div className="layout-page" style={{ backgroundColor: "#f4f6fb", marginLeft:260 }}>
             {/* Navbar */}
             <nav
               className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"

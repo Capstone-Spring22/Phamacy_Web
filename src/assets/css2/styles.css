@@ -5440,3 +5440,43 @@ h2 {
   .dialog.overlay.hidden {
     display: none;
   }
+  .loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .loading-spinner {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 3px solid #eee;
+    border-top-color: #333;
+    animation: loading-spinner 1s ease-in-out infinite;
+  }
+  
+  .loading-text {
+    margin-top: 20px;
+    font-size: 30px;
+    font-weight: bold;
+  }
+  
+    .pill {
+      width: 80px;
+      height: 40px;
+      border-radius: 200px;
+      border: 2px solid #fff;
+      background: linear-gradient(to right, #d3d6d6 50%, #0080ff 50%);
+      animation: spin 2s linear infinite;
+    }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
