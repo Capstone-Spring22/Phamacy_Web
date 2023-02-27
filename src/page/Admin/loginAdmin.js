@@ -44,7 +44,7 @@ const LoginAdmin = () => {
           console.log("ss", roleID);
 
           if (roleID === "Manager") {
-            navigate.push("/Home");
+            navigate.push("/ImportProduct");
           } else if (roleID === "Pharmacist") {
             navigate.push("/Order");
           } else if (roleID === "Admin") {

@@ -23,6 +23,9 @@ import SubCategory from "./page/Admin/SubCategory";
 import LoginAdmin from "./page/Admin/loginAdmin";
 import NewDrug from "./page/Admin/NewDrug";
 import UpdateDrug from "./page/Admin/UpdateDrug";
+import ImportProduct from "./page/Admin/ImportProduct";
+import AddImportProduct from "./page/Admin/AddImportProduct";
+import UpdateImportProduct from "./page/Admin/UpdateImportProduct";
 function App() {
   return (
     <div className="site-wrap">
@@ -81,6 +84,15 @@ function App() {
           </Route>
           <Route path="/UpdateDrug">
             <UpdateDrug />
+          </Route>
+          <Route path="/ImportProduct">
+            <ImportProduct />
+          </Route>
+          <Route path="/AddImportProduct">
+            <AddImportProduct />
+          </Route>
+          <Route path="/UpdateImportProduct">
+            <UpdateImportProduct />
           </Route>
         </Switch>
       </BrowserRouter>
