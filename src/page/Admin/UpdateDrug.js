@@ -48,7 +48,6 @@ const UpdateDrug = () => {
         isSell: 0,
         isVisible: 0,
         barCode: "",
-        imageModels: [{ id: "", imageUrl: "", isFirstImage: 1 }],
       },
     ],
     descriptionModel: {
@@ -60,6 +59,7 @@ const UpdateDrug = () => {
       preserve: "",
       ingredientModel: [{ id: "", ingredientId: "", content: "", unitId: "" }],
     },
+    imageModels: [{ id: "", imageUrl: "" }],
   });
   async function loadDataDrugByID() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -69,8 +69,10 @@ const UpdateDrug = () => {
 
       if (res !== null && res !== undefined && res.status === 200) {
         setProduct(res.data);
+         console.log('display',res.data)
         setUnitCount(res.data.productDetailModel.length);
         setIngredientCount(res.data.descriptionModel.ingredientModel.length);
+        setImageInputCount(res.data.imageModels.length)
       }
     }
   }
@@ -250,7 +252,10 @@ const UpdateDrug = () => {
       <div className="layout-container">
         <SideBar />
         <div></div>
-        <div className="layout-page" style={{ backgroundColor: "#f4f6fb", marginLeft:260 }}>
+        <div
+          className="layout-page"
+          style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
+        >
           {/* Navbar */}
           <nav
             className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
@@ -989,62 +994,7 @@ const UpdateDrug = () => {
                               />
                             </div>
                           </div>
-                          <div
-                            className="mb-3"
-                            style={{ width: "20%", marginRight: 20 }}
-                          >
-                            <label
-                              className="form-label"
-                              htmlFor="basic-icon-default-email"
-                            >
-                              Hình ảnh
-                            </label>
-                            {product.productDetailModel[index - 1].imageModels.map((image, idx) => (
-                            <div className="input-group input-group-merge">
-                              <input
-                                type="text"
-                                id="basic-icon-default-email"
-                                className="form-control"
-                                placeholder="Hình Ảnh"
-                                aria-label="Phone Number"
-                                aria-describedby="basic-icon-default-email2"
-                                value={
-                                  product.productDetailModel[index - 1].imageModels
-                                    .map((image) => image.imageUrl)
-                                    
-                                }
-                                onChange={(e) => {
-                                  setProduct({
-                                    ...product,
-                                    productDetailModel: [
-                                      ...product.productDetailModel.slice(
-                                        0,
-                                        index - 1
-                                      ),
-                                      {
-                                        ...product.productDetailModel[
-                                          index - 1
-                                        ],
-                                        imageModels: [
-                                          {
-                                            ...product.productDetailModel[
-                                              index - 1
-                                            ].imageModels[0],
-                                            imageUrl: e.target.value,
-                                          },
-                                        ],
-                                      },
-                                      ...product.productDetailModel.slice(
-                                        index
-                                      ),
-                                    ],
-                                  });
-                                }}
-                              />
-                            </div>
-))}
-                            <div className="form-text"></div>
-                          </div>
+                          
                           <div
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}
@@ -1143,7 +1093,6 @@ const UpdateDrug = () => {
                               </label>
                             </div>
                           </div>
-                        
                         </div>
                         <hr />
                       </div>
@@ -1209,7 +1158,7 @@ const UpdateDrug = () => {
                     <div>
                       <div className="card-body">
                         <div
-                           style={{
+                          style={{
                             display: "flex",
                             marginLeft: 100,
                             padding: 30,
@@ -1217,7 +1166,10 @@ const UpdateDrug = () => {
                           }}
                         >
                           <div className="form-text"></div>
-                          <div className="mb-3" style={{ width: "30%", marginRight: 20 }}>
+                          <div
+                            className="mb-3"
+                            style={{ width: "30%", marginRight: 20 }}
+                          >
                             <label
                               className="form-label"
                               htmlFor={`unitId${index}`}
@@ -1272,7 +1224,10 @@ const UpdateDrug = () => {
                               </select>
                             </div>
                           </div>
-                          <div className="mb-3" style={{ width: "30%", marginRight: 20 }}>
+                          <div
+                            className="mb-3"
+                            style={{ width: "30%", marginRight: 20 }}
+                          >
                             <label
                               className="form-label"
                               htmlFor={`content${index}`}
@@ -1319,7 +1274,10 @@ const UpdateDrug = () => {
                             <div className="form-text"></div>
                           </div>
 
-                          <div className="mb-3" style={{ width: "30%", marginRight: 20 }}>
+                          <div
+                            className="mb-3"
+                            style={{ width: "30%", marginRight: 20 }}
+                          >
                             <label
                               className="form-label"
                               htmlFor={`unitId${index}`}
@@ -1396,7 +1354,101 @@ const UpdateDrug = () => {
                   {" "}
                   them nguyen lieu
                 </button> */}
-              
+              </div>
+            </div>
+          </div>
+          <div>
+            <div
+              className="row "
+              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+            >
+              <div className="col-xl">
+                <div className="card mb-4">
+                  <div
+                    className="card-header d-flex justify-content-between align-items-center"
+                    style={{
+                      height: 70,
+                      backgroundColor: "white",
+                      padding: "20px 24px",
+
+                      borderColor: "#f4f4f4",
+                    }}
+                  >
+                    <h5 className="mb-0">Thêm Ảnh Cho Sản Phẩm</h5>
+                  </div>
+
+                  {Array.from({ length: imageInputCount }, (_, i) => i + 1).map(
+                    (index) => (
+                      <div
+                        className="mb-3"
+                        style={{ width: "20%", marginRight: 20 }}
+                      >
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-email"
+                        >
+                          Image
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            placeholder="Phone Number"
+                            aria-label="Phone Number"
+                            aria-describedby="basic-icon-default-email2"
+                            value={product.imageModels[index-1].imageUrl}
+                            onChange={(e) => {
+                              setProduct({
+                                ...product,
+                                imageModel: [
+                                  ...product.imageModel.slice(0, index - 1),
+                                  {
+                                    ...product.imageModel[index - 1],
+                                    imageURL: e.target.value,
+                                  },
+                                  ...product.imageModel.slice(index),
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+
+                        <div className="form-text"></div>
+                      </div>
+                    )
+                  )}
+                  <button
+                    style={{
+                      height: 50,
+                      width: 200,
+                      fontSize: 13,
+                      paddingTop: 1,
+                      marginLeft: "44%",
+                      marginBottom: "20px",
+                      backgroundColor: "#fff",
+                    }}
+                    className="button-28"
+                    onClick={handleAddImage}
+                  >
+                    {" "}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-plus-lg"
+                      viewBox="0 0 16 16"
+                      style={{ marginRight: 10 }}
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
+                      />
+                    </svg>
+                    thêm ảnh
+                  </button>
+                </div>
               </div>
             </div>
           </div>

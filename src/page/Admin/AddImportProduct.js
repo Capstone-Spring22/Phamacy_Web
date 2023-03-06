@@ -196,23 +196,7 @@ const AddImportProduct = () => {
     loadDataProductIngredient();
   }, []);
   const [numBatches, setNumBatches] = useState(1);
-  const handleAddIngredient = () => {
-    setProduct({
-      ...product,
-      descriptionModel: {
-        ...product.descriptionModel,
-        ingredientModel: [
-          ...product.descriptionModel.ingredientModel,
-          {
-            ingredientId: "",
-            content: "",
-            unitId: "",
-          },
-        ],
-      },
-    });
-    setIngredientCount(ingredientCount + 1);
-  };
+
   const handleAddUnit = () => {
     setProduct({
       ...product,
@@ -567,7 +551,6 @@ const AddImportProduct = () => {
                       height: 70,
                       backgroundColor: "white",
                       padding: "20px 24px",
-
                       borderColor: "#f4f4f4",
                     }}
                   >

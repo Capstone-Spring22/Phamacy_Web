@@ -32,7 +32,7 @@ const NewDrug = () => {
   const [isSell, setIsSell] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
-  
+
   const [product, setProduct] = useState({
     name: "",
     subCategoryId: "",
@@ -49,12 +49,6 @@ const NewDrug = () => {
         isSell: 0,
         isVisible: 0,
         barCode: "",
-        imageURL: [
-          {
-            imageURL: "",
-            isFirstImage: 1,
-          },
-        ],
       },
     ],
     descriptionModel: {
@@ -71,6 +65,12 @@ const NewDrug = () => {
         },
       ],
     },
+    imageModel: [
+      {
+        imageURL: "",
+        isFirstImage: true,
+      },
+    ],
   });
   async function loadDataUnit() {
     const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
@@ -153,6 +153,19 @@ const NewDrug = () => {
     }
   };
   const [selectedOption, setSelectedOption] = useState(null);
+  {
+    unit &&
+      unit.length &&
+      unit.map((e, index) => {
+        return (
+          <>
+            <option key={e.id} value={e.id}>
+              {e.unitName}
+            </option>
+          </>
+        );
+      });
+  }
   const options = productIngredient.map((e) => ({
     label: e.ingredientName,
     value: e.id,
@@ -216,6 +229,7 @@ const NewDrug = () => {
     });
     setIngredientCount(ingredientCount + 1);
   };
+
   const handleAddUnit = () => {
     setProduct({
       ...product,
@@ -229,7 +243,6 @@ const NewDrug = () => {
           price: "",
           isVisible: 0,
           isSell: 0,
-          imageURL: [{ imageURL: "", isFirstImage: 0 }],
         },
       ],
     });
@@ -238,12 +251,7 @@ const NewDrug = () => {
   const handleAddImage = () => {
     setProduct({
       ...product,
-      productDetailModel: [
-        ...product.productDetailModel,
-        {
-          imageURL: [{ imageURL: "", isFirstImage: 0 }],
-        },
-      ],
+      imageModel: [...product.imageModel, { imageURL: "", isFirstImage: 0 }],
     });
     setImageInputCount(imageInputCount + 1);
   };
@@ -769,7 +777,7 @@ const NewDrug = () => {
                   </div>{" "}
                   {Array.from({ length: unitCount }, (_, i) => i + 1).map(
                     (index) => (
-                      <div className="card-body">
+                      <div key={index} className="card-body">
                         <div>
                           <div
                             style={{
@@ -780,7 +788,6 @@ const NewDrug = () => {
                             }}
                           >
                             <div
-                              key={index}
                               className="mb-3"
                               style={{ width: "20%", marginRight: 20 }}
                             >
@@ -836,7 +843,6 @@ const NewDrug = () => {
                               </div>
                             </div>
                             <div
-                              key={index}
                               className="mb-3"
                               style={{ width: "20%", marginRight: 20 }}
                             >
@@ -878,7 +884,6 @@ const NewDrug = () => {
                               </div>
                             </div>
                             <div
-                              key={index}
                               className="mb-3"
                               style={{ width: "20%", marginRight: 20 }}
                             >
@@ -920,7 +925,6 @@ const NewDrug = () => {
                               </div>
                             </div>
                             <div
-                              key={index}
                               className="mb-3"
                               style={{ width: "20%", marginRight: 20 }}
                             >
@@ -962,7 +966,6 @@ const NewDrug = () => {
                               </div>
                             </div>
                             <div
-                              key={index}
                               className="mb-3"
                               style={{ width: "20%", marginRight: 20 }}
                             >
@@ -1003,61 +1006,8 @@ const NewDrug = () => {
                                 />
                               </div>
                             </div>
-                            <div
-                              className="mb-3"
-                              style={{ width: "20%", marginRight: 20 }}
-                            >
-                              <label
-                                className="form-label"
-                                htmlFor="basic-icon-default-email"
-                              >
-                                Image
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <input
-                                  type="text"
-                                  id="basic-icon-default-email"
-                                  className="form-control"
-                                  placeholder="Phone Number"
-                                  aria-label="Phone Number"
-                                  aria-describedby="basic-icon-default-email2"
-                                  onChange={(e) => {
-                                    setProduct({
-                                      ...product,
-                                      productDetailModel: [
-                                        ...product.productDetailModel.slice(
-                                          0,
-                                          index - 1
-                                        ),
-                                        {
-                                          ...product.productDetailModel[
-                                            index - 1
-                                          ],
-                                          imageURL: [
-                                            {
-                                              ...product.productDetailModel[
-                                                index - 1
-                                              ].imageURL[0],
-                                              imageURL: e.target.value,
-                                            },
-                                          ],
-                                        },
-                                        ...product.productDetailModel.slice(
-                                          index
-                                        ),
-                                      ],
-                                    });
-                                  }}
-                                />
-                              </div>
 
-                              <div className="form-text"></div>
-                            </div>
-                            <div
-                              key={index}
-                              className="mb-3"
-                              style={{ width: "20%" }}
-                            >
+                            <div className="mb-3" style={{ width: "20%" }}>
                               <div className="form-check form-check-inline">
                                 <small
                                   className=" fw-semibold d-block"
@@ -1212,7 +1162,6 @@ const NewDrug = () => {
                   {Array.from({ length: ingredientCount }, (_, i) => i + 1).map(
                     (index) => (
                       <div>
-                       
                         <div className="card-body">
                           <div
                             style={{
@@ -1223,47 +1172,50 @@ const NewDrug = () => {
                             }}
                           >
                             <div className="form-text"></div>
-                            <div className="mb-3"   style={{ width: "30%", marginRight: 20 }}>
-                            <label
+                            <div
+                              className="mb-3"
+                              style={{ width: "30%", marginRight: 20 }}
+                            >
+                              <label
                                 htmlFor="exampleDataList"
                                 className="form-label"
                               >
                                 Datalist example
                               </label>
-                            <Select
-                            
-                          value={selectedOption}
-                          onChange={(selectedOption) => {
-                            setSelectedOption(selectedOption);
-                            setProduct({
-                              ...product,
-                              descriptionModel: {
-                                ...product.descriptionModel,
-                                ingredientModel: [
-                                  ...product.descriptionModel.ingredientModel.slice(
-                                    0,
+                              <Select
+                                label={
+                                  (product.descriptionModel.ingredientModel[
                                     index - 1
-                                  ),
-                                  {
-                                    ...product.descriptionModel.ingredientModel[
-                                      index - 1
-                                    ],
-                                    ingredientId: selectedOption.value,
-                                  },
-                                  ...product.descriptionModel.ingredientModel.slice(
-                                    index
-                                  ),
-                                ],
-                              },
-                            });
-                          }}
-                          options={options}
-                        />
-                             
-                              
+                                  ].ingredientId
+                                  )
+                                }
+                                onChange={(selectedOption) => {
+                                  setSelectedOption(selectedOption);
+                                  setProduct({
+                                    ...product,
+                                    descriptionModel: {
+                                      ...product.descriptionModel,
+                                      ingredientModel: [
+                                        ...product.descriptionModel.ingredientModel.slice(
+                                          0,
+                                          index - 1
+                                        ),
+                                        {
+                                          ...product.descriptionModel
+                                            .ingredientModel[index - 1],
+                                          ingredientId: selectedOption.value,
+                                        },
+                                        ...product.descriptionModel.ingredientModel.slice(
+                                          index
+                                        ),
+                                      ],
+                                    },
+                                  });
+                                }}
+                                options={options}
+                              />
                             </div>
 
-                          
                             <div
                               className="mb-3"
                               style={{ width: "30%", marginRight: 20 }}
@@ -1322,7 +1274,6 @@ const NewDrug = () => {
                                   id="basic-icon-default-email"
                                   className="form-control"
                                   onChange={(e) => {
-                                    handleUnit2(e);
                                     setProduct({
                                       ...product,
                                       descriptionModel: {
@@ -1402,8 +1353,102 @@ const NewDrug = () => {
                   </button>
                 </div>
               </div>
+            </div> <div>
+            <div
+              className="row "
+              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+            >
+              <div className="col-xl">
+                <div className="card mb-4">
+                  <div
+                    className="card-header d-flex justify-content-between align-items-center"
+                    style={{
+                      height: 70,
+                      backgroundColor: "white",
+                      padding: "20px 24px",
+
+                      borderColor: "#f4f4f4",
+                    }}
+                  >
+                    <h5 className="mb-0">Thêm Nguyên Liệu Cho Sản Phẩm</h5>
+                  </div>
+
+                  {Array.from({ length: imageInputCount }, (_, i) => i + 1).map(
+                    (index) => (
+                      <div
+                        className="mb-3"
+                        style={{ width: "20%", marginRight: 20 }}
+                      >
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-email"
+                        >
+                          Image
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            placeholder="Phone Number"
+                            aria-label="Phone Number"
+                            aria-describedby="basic-icon-default-email2"
+                            onChange={(e) => {
+                              setProduct({
+                                ...product,
+                                imageModel: [
+                                  ...product.imageModel.slice(0, index - 1),
+                                  {
+                                    ...product.imageModel[index - 1],
+                                    imageURL: e.target.value,
+                                  },
+                                  ...product.imageModel.slice(index),
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+
+                        <div className="form-text"></div>
+                      </div>
+                    )
+                  )}
+                  <button
+                    style={{
+                      height: 50,
+                      width: 200,
+                      fontSize: 13,
+                      paddingTop: 1,
+                      marginLeft: "44%",
+                      marginBottom: "20px",
+                      backgroundColor: "#fff",
+                    }}
+                    className="button-28"
+                    onClick={handleAddImage}
+                  >
+                    {" "}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-plus-lg"
+                      viewBox="0 0 16 16"
+                      style={{ marginRight: 10 }}
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
+                      />
+                    </svg>
+                    thêm ảnh
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
+          </div>
+         
         </div>
         <div className="layout-overlay layout-menu-toggle" />
       </div>
