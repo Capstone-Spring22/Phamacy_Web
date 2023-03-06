@@ -21,7 +21,7 @@ const Sidebar = () => {
       <aside
         id="layout-menu"
         className="layout-menu menu-vertical menu bg-menu-theme"
-        style={{ backgroundColor: "#ffffff" }}
+        style={{ backgroundColor: "#ffffff",position: "fixed",height:1000 }}
       >
         <div className="app-brand demo">
           <Link to="/Home" className="app-brand-link">

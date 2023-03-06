@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-
+import Select from "react-select";
 import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
@@ -32,6 +32,7 @@ const NewDrug = () => {
   const [isSell, setIsSell] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
+  
   const [product, setProduct] = useState({
     name: "",
     subCategoryId: "",
@@ -151,7 +152,11 @@ const NewDrug = () => {
       }));
     }
   };
-
+  const [selectedOption, setSelectedOption] = useState(null);
+  const options = productIngredient.map((e) => ({
+    label: e.ingredientName,
+    value: e.id,
+  }));
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -398,7 +403,7 @@ const NewDrug = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Add new Drug</h5>
+                    <h5 className="mb-0">THêm Thuốc MớiI</h5>
                   </div>
                   <div className="card-body">
                     <div
@@ -507,8 +512,8 @@ const NewDrug = () => {
                             style={{
                               height: 20,
                               width: 20,
-                              backgroundColor: "#86a8c5",
-                              borderColor: "#86a8c5",
+                              backgroundColor: "#82AAE3",
+                              borderColor: "#82AAE3",
                             }}
                             checked={isPrescription}
                             onChange={handlePrescriptionChange}
@@ -535,8 +540,8 @@ const NewDrug = () => {
                             style={{
                               height: 20,
                               width: 20,
-                              backgroundColor: "#86a8c5",
-                              borderColor: "#86a8c5",
+                              backgroundColor: "#82AAE3",
+                              borderColor: "#82AAE3",
                             }}
                           />
                           <label
@@ -547,6 +552,61 @@ const NewDrug = () => {
                           </label>
                         </div>
                       </div>
+
+                      <div className="col-md"></div>
+
+                      <div className="col-md"></div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="button-28"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        createNewProducts();
+                      }}
+                      style={{
+                        height: 35,
+                        width: 100,
+                        fontSize: 13,
+                        paddingTop: 1,
+                        marginLeft: "90%",
+                        marginTop: "20px",
+                        backgroundColor: "#82AAE3",
+                        color: "white",
+                      }}
+                    >
+                      LƯU
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              className="row "
+              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+            >
+              <div className="col-xl">
+                <div className="card mb-4">
+                  <div
+                    className="card-header d-flex justify-content-between align-items-center"
+                    style={{
+                      height: 70,
+                      backgroundColor: "white",
+                      padding: "20px 24px",
+                      borderColor: "#f4f4f4",
+                    }}
+                  >
+                    <h5 className="mb-0">Thêm Công Dụng Cho Sản Phẩm</h5>
+                  </div>{" "}
+                  <div className="card-body">
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "auto auto",
+                        padding: 30,
+                      }}
+                    >
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
                           className="form-label"
@@ -555,7 +615,7 @@ const NewDrug = () => {
                           Công dung
                         </label>
                         <div className="input-group input-group-merge">
-                          <input
+                          <textarea
                             type="text"
                             id="basic-icon-default-company"
                             className="form-control"
@@ -582,7 +642,7 @@ const NewDrug = () => {
                           Hướng dẫn sử dụng
                         </label>
                         <div className="input-group input-group-merge">
-                          <input
+                          <textarea
                             type="text"
                             id="basic-icon-default-email"
                             className="form-control"
@@ -610,7 +670,7 @@ const NewDrug = () => {
                           Tác Dụng Phụ
                         </label>
                         <div className="input-group input-group-merge">
-                          <input
+                          <textarea
                             type="text"
                             id="basic-icon-default-company"
                             className="form-control"
@@ -637,7 +697,7 @@ const NewDrug = () => {
                           Chống chỉ định
                         </label>
                         <div className="input-group input-group-merge">
-                          <input
+                          <textarea
                             type="text"
                             id="basic-icon-default-email"
                             className="form-control"
@@ -665,7 +725,7 @@ const NewDrug = () => {
                           Bảo quản
                         </label>
                         <div className="input-group input-group-merge">
-                          <input
+                          <textarea
                             type="text"
                             id="basic-icon-default-company"
                             className="form-control"
@@ -684,32 +744,7 @@ const NewDrug = () => {
                           />
                         </div>
                       </div>
-
-                      <div className="col-md"></div>
-
-                      <div className="col-md"></div>
                     </div>
-
-                    <button
-                      type="submit"
-                      className="button-28"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        createNewProducts();
-                      }}
-                      style={{
-                        height: 30,
-                        width: 80,
-                        fontSize: 13,
-                        paddingTop: 1,
-                        marginLeft: "90%",
-                        marginTop: "20px",
-                        backgroundColor: "#11cdef",
-                        color: "white",
-                      }}
-                    >
-                      Save
-                    </button>
                   </div>
                 </div>
               </div>
@@ -1062,8 +1097,8 @@ const NewDrug = () => {
                                   style={{
                                     height: 20,
                                     width: 20,
-                                    backgroundColor: "#86a8c5",
-                                    borderColor: "#86a8c5",
+                                    backgroundColor: "#82AAE3",
+                                    borderColor: "#82AAE3",
                                   }}
                                 />
                                 <label
@@ -1105,8 +1140,8 @@ const NewDrug = () => {
                                   style={{
                                     height: 20,
                                     width: 20,
-                                    backgroundColor: "#86a8c5",
-                                    borderColor: "#86a8c5",
+                                    backgroundColor: "#82AAE3",
+                                    borderColor: "#82AAE3",
                                   }}
                                 />
                                 <label
@@ -1171,12 +1206,13 @@ const NewDrug = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Add new Drug</h5>
+                    <h5 className="mb-0">Thêm Nguyên Liệu Cho Sản Phẩm</h5>
                   </div>
 
                   {Array.from({ length: ingredientCount }, (_, i) => i + 1).map(
                     (index) => (
                       <div>
+                       
                         <div className="card-body">
                           <div
                             style={{
@@ -1187,64 +1223,47 @@ const NewDrug = () => {
                             }}
                           >
                             <div className="form-text"></div>
-                            <div
-                              className="mb-3"
-                              style={{ width: "30%", marginRight: 20 }}
-                            >
-                              <label
+                            <div className="mb-3"   style={{ width: "30%", marginRight: 20 }}>
+                            <label
+                                htmlFor="exampleDataList"
                                 className="form-label"
-                                htmlFor={`unitId${index}`}
                               >
-                                unitId
+                                Datalist example
                               </label>
-                              <div className="input-group input-group-merge">
-                                <select
-                                  name="city"
-                                  id="basic-icon-default-email"
-                                  className="form-control"
-                                  onChange={(e) => {
-                                    handleProductIngredient(e);
-                                    setProduct({
-                                      ...product,
-                                      descriptionModel: {
-                                        ...product.descriptionModel,
-                                        ingredientModel: [
-                                          ...product.descriptionModel.ingredientModel.slice(
-                                            0,
-                                            index - 1
-                                          ),
-                                          {
-                                            ...product.descriptionModel
-                                              .ingredientModel[index - 1],
-                                            ingredientId: e.target.value,
-                                          },
-                                          ...product.descriptionModel.ingredientModel.slice(
-                                            index
-                                          ),
-                                        ],
-                                      },
-                                    });
-                                  }}
-                                  value={
-                                    product.descriptionModel.ingredientModel[
+                            <Select
+                            
+                          value={selectedOption}
+                          onChange={(selectedOption) => {
+                            setSelectedOption(selectedOption);
+                            setProduct({
+                              ...product,
+                              descriptionModel: {
+                                ...product.descriptionModel,
+                                ingredientModel: [
+                                  ...product.descriptionModel.ingredientModel.slice(
+                                    0,
+                                    index - 1
+                                  ),
+                                  {
+                                    ...product.descriptionModel.ingredientModel[
                                       index - 1
-                                    ].ingredientId
-                                  }
-                                >
-                                  {productIngredient &&
-                                    productIngredient.length &&
-                                    productIngredient.map((e, index) => {
-                                      return (
-                                        <>
-                                          <option key={e.id} value={e.id}>
-                                            {e.ingredientName}
-                                          </option>
-                                        </>
-                                      );
-                                    })}
-                                </select>
-                              </div>
+                                    ],
+                                    ingredientId: selectedOption.value,
+                                  },
+                                  ...product.descriptionModel.ingredientModel.slice(
+                                    index
+                                  ),
+                                ],
+                              },
+                            });
+                          }}
+                          options={options}
+                        />
+                             
+                              
                             </div>
+
+                          
                             <div
                               className="mb-3"
                               style={{ width: "30%", marginRight: 20 }}
@@ -1253,14 +1272,14 @@ const NewDrug = () => {
                                 className="form-label"
                                 htmlFor={`content${index}`}
                               >
-                                content
+                                DUNG TÍCH
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
                                   type="text"
                                   id={`content${index}`}
                                   className="form-control"
-                                  placeholder="Phone Number"
+                                  placeholder="DUNG TÍCH"
                                   aria-label="Phone Number"
                                   aria-describedby={`content${index}2`}
                                   onChange={(e) =>
@@ -1295,7 +1314,7 @@ const NewDrug = () => {
                                 className="form-label"
                                 htmlFor={`unitId${index}`}
                               >
-                                unitId
+                                ĐƠN VỊ CHO DUNG TICH
                               </label>
                               <div className="input-group input-group-merge">
                                 <select

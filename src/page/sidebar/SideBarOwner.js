@@ -21,13 +21,11 @@ const Sidebar = () => {
       <aside
         id="layout-menu"
         className="layout-menu menu-vertical menu bg-menu-theme"
-        style={{ backgroundColor: "#ffffff",position: "fixed",height:1000 }}
+        style={{ backgroundImage: "#ffffff",position: "fixed",height:1000,border:"1px solid #ecf0f2" }}
       >
         <div className="app-brand demo">
           <Link to="/Home" className="app-brand-link">
-            <span
-              className="app-brand-text demo menu-text fw-bolder ms-2"
-              style={{ color: "#0077c9", fontSize: "20", lineHeight: "30" }}
+            <span style={{ color: "#82AAE3", fontSize: "30px", lineHeight: "60px",fontWeight:600 }}
             >
               BetterHealth
             </span>

@@ -4238,9 +4238,9 @@ a {
 }
 
 .button-28:hover {
-  color: #11cdef;
+  color: #82AAE3;
   background-color: transparent;
-
+ border: 1px solid #82AAE3;
   transform: translateY(-2px);
 }
 
@@ -4255,4 +4255,19 @@ a {
   font-weight: 600;
   line-height: 25.5px;
   text-align: left;
+}
+.button-batches{
+width: 40px;
+height: 40px;
+margin-top:30px;
+background-color: white;
+border:none;
+box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+
+}
+.button-batches:hover {
+  color: #82AAE3;
+  background-color: transparent;
+ border: 1px solid #82AAE3;
+  transform: translateY(-2px);
 }

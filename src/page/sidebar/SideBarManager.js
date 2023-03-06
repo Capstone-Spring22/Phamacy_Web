@@ -21,7 +21,7 @@ const Sidebar = () => {
       <aside
         id="layout-menu"
         className="layout-menu menu-vertical menu bg-menu-theme"
-        style={{ backgroundColor: "#ffffff" }}
+        style={{ backgroundColor: "#ffffff",position: "fixed",height:1000 }}
       >
         <div className="app-brand demo">
           <Link to="/Home" className="app-brand-link">
@@ -67,8 +67,6 @@ const Sidebar = () => {
           <li className="menu-header small text-uppercase">
             <span className="menu-header-text">Management</span>
           </li>
-          Manager
-        </ul>
         <li  className="menu-item" >
             <Link to="/ImportProduct" className="menu-link">
               <svg
@@ -117,6 +115,9 @@ const Sidebar = () => {
               <div data-i18n="Support">Logout</div>
             </Link>
           </li>
+      
+        </ul>
+       
       </aside>
     </>
   );

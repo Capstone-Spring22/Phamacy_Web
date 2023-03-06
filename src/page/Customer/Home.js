@@ -55,7 +55,7 @@ const Home = () => {
           <Carousel.Item>
             <img
               className="d-block w-100"
-              src="https://images.fpt.shop/unsafe/fit-in/1600x400/filters:quality(80):fill(white)/nhathuoclongchau.com/upload/slide/1670988143-DNwb-dac-quyen-mua-hang-1k.jpg"
+              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1677728079-Ssmc-brauer-tang-de-khang.png"
               style={{ height: 400 }}
               alt="Third slide"
             />
@@ -66,7 +66,7 @@ const Home = () => {
         <div className="site-section" style={{marginBottom:-111}}>
           <div className="container" >
             <div className="title-section text-center col-12">
-              <h2 className="text-uppercase">Buy Medicines Easily In Phama</h2>
+              <h2 className="text-uppercase" style={{}}>Mua Thuốc Dễ Dàng </h2>
             </div>
             <section class="ftco-section ftco-no-pt ftco-no-pb">
               <div class="container">

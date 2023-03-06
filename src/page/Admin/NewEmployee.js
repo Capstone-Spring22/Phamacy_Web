@@ -190,6 +190,7 @@ const NewEmployees = () => {
       loadDataEmployee(accessToken);
     }
   }, [currentPage, perPage]);
+  
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
