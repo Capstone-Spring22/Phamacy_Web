@@ -136,6 +136,7 @@ const UpdateImportProduct = () => {
       }));
     }
   };
+  
   const handlePrescriptionChange = (event) => {
     setIsPrescription(event.target.checked);
 

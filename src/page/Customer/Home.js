@@ -62,11 +62,12 @@ const Home = () => {
           </Carousel.Item>
         </Carousel>
 
-
-        <div className="site-section" style={{marginBottom:-111}}>
-          <div className="container" >
+        <div className="site-section" style={{ marginBottom: -111 }}>
+          <div className="container">
             <div className="title-section text-center col-12">
-              <h2 className="text-uppercase" style={{}}>Mua Thuốc Dễ Dàng </h2>
+              <h2 className="text-uppercase" style={{}}>
+                Mua Thuốc Dễ Dàng{" "}
+              </h2>
             </div>
             <section class="ftco-section ftco-no-pt ftco-no-pb">
               <div class="container">
@@ -95,7 +96,7 @@ const Home = () => {
                         <div class="icon d-flex justify-content-center align-items-center mb-4">
                           <img
                             src="https://nhathuoclongchau.com/frontend_v3/images/banner-html/home/info-ct.png"
-                            style={{ height: 100 , width: 100 }}
+                            style={{ height: 100, width: 100 }}
                           />
                         </div>
                         <h3 class="heading">
@@ -128,7 +129,7 @@ const Home = () => {
             </section>
           </div>
         </div>
-        <div className="site-section" >
+        <div className="site-section">
           <div className="container">
             <div className="title-section text-center col-12">
               <h2 className="text-uppercase">Category</h2>
@@ -147,7 +148,7 @@ const Home = () => {
                         style={{ textDecoration: "none", color: "black" }}
                       >
                         <img
-                        className="hv"
+                          className="hv"
                           src={item.src}
                           style={{ height: 100, width: 100 }}
                         />
@@ -155,7 +156,6 @@ const Home = () => {
                         <br />
                         <br />
                         <h6
-                       
                           key={index}
                           style={{ color: "black", fontSize: 17 }}
                         >
@@ -176,8 +176,6 @@ const Home = () => {
             </div>
           </div>
         </div>
-     
-
 
         <section class="new_arrivals_area section_padding_10_0 clearfix">
           <div className="container">
@@ -205,7 +203,7 @@ const Home = () => {
                       {/* Product Image */}
                       <div
                         className="product-img "
-                        style={{borderRadius:5,height:280}}
+                        style={{ borderRadius: 5, height: 280 }}
                         onClick={() => {
                           viewDetail();
                         }}
@@ -231,11 +229,7 @@ const Home = () => {
                           ADD TO CART
                         </a>
                       </div>
-
-                    
                     </div>
-                   
-                    
                   );
                 })}
                 {/* );
@@ -287,7 +281,7 @@ const Home = () => {
                 apartment.length  &&
                 apartment.map((e) => {
                   return ( */}
-                   {ListNewProduct.map((item, index) => {
+                {ListNewProduct.map((item, index) => {
                   return (
                     <div
                       className=" col-md-2 single_gallery_item women wow fadeInUpBig "
@@ -296,7 +290,7 @@ const Home = () => {
                       {/* Product Image */}
                       <div
                         className="product-img "
-                        style={{borderRadius:5,height:280}}
+                        style={{ borderRadius: 5, height: 280 }}
                         onClick={() => {
                           viewDetail();
                         }}

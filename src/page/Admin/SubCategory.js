@@ -20,7 +20,7 @@ const SubCategory = () => {
   const [mainCategory, setMainCategory] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(2);
+  const [perPage, setPerPage] = useState(7);
   const [isOpen, setIsOpen] = useState(true);
   const [categoryUpdate, setCategoryUpdate] = useState({
     subCategoryName: "",
@@ -34,7 +34,7 @@ const SubCategory = () => {
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
       setSubCategory(res.data.items);
-      setTotalSite(res.data.totalRecord);
+      
     }
   }
   const checkValidation = () => {
@@ -86,11 +86,12 @@ const SubCategory = () => {
     setMainCategoryId(mainCategoryId);
   };
   async function loadDataMainCategory() {
-    const path = `MainCategory`;
+    const path = `MainCategory?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
       setMainCategory(res.data);
+    
     }
   }
   async function updateProducts() {
@@ -111,7 +112,7 @@ const SubCategory = () => {
   }, [currentPage, perPage]);
   useEffect(() => {
     loadDataMainCategory();
-  }, []);
+  }, [currentPage, perPage]);
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">

@@ -18,7 +18,7 @@ const MainCategory = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [totalSite, setTotalSite] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(2);
+  const [perPage, setPerPage] = useState(7);
   const [isOpen, setIsOpen] = useState(true);
   const [categoryUpdate, setCategoryUpdate] = useState({
     categoryName: "",

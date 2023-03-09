@@ -7,8 +7,11 @@ export default function authAxios(options) {
   return axios.create({
     baseURL: process.env.REACT_APP_BACKEND_URL,
     headers: {
+     
       "Content-Type": "application/json",
       ...headers,
     },
+   
   });
 }
+

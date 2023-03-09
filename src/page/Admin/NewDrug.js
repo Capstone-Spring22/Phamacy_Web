@@ -10,6 +10,7 @@ import {
   deleteDataByPath,
   createDataByPath,
 } from "../../services/data.service";
+import axios from "axios";
 import ReactPaginate from "react-paginate";
 
 const NewDrug = () => {
@@ -32,7 +33,7 @@ const NewDrug = () => {
   const [isSell, setIsSell] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
-
+  const [changeImg, setChangeImg] = useState("");
   const [product, setProduct] = useState({
     name: "",
     subCategoryId: "",
@@ -68,10 +69,11 @@ const NewDrug = () => {
     imageModel: [
       {
         imageURL: "",
-        isFirstImage: true,
+        isFirstImage: 0,
       },
     ],
   });
+
   async function loadDataUnit() {
     const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -174,16 +176,46 @@ const NewDrug = () => {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
       if (checkValidation()) {
-        const data = product;
+        const selectedImageIndex = product.imageModel.findIndex(
+          (image) => image.isFirstImage !== null
+        );
+        const data = {
+          ...product,
+          imageModel: product.imageModel.map((image, index) => ({
+            ...image,
+            imageURL: changeImg,
+            isFirstImage: index === selectedImageIndex,
+          })),
+        };
         const path = "Product";
         const res = await createDataByPath(path, accessToken, data);
         console.log("Check res", res);
         console.log("display acc", accessToken);
         console.log("display", data);
+        console.log("res", changeImg);
         if (res && res.status === 201) {
           Swal.fire("Create Success", "", "success");
           // window.location.reload();
         }
+      }
+    }
+  }
+
+  async function createNewURL(e) {
+    if (checkValidation()) {
+      const file = e.target.files[0]; // Get the uploaded file object
+      const data = new FormData();
+      data.append("file", file);
+
+      // Convert the FormData object to JSON
+      const res = await axios.post(
+        "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
+        data
+      );
+
+      if (res && res.status === 200) {
+        Swal.fire("Create Success", "", "success");
+        setChangeImg(res.data);
       }
     }
   }
@@ -1180,14 +1212,13 @@ const NewDrug = () => {
                                 htmlFor="exampleDataList"
                                 className="form-label"
                               >
-                                Datalist example
+                                TÊN NGUYÊN LIỆU
                               </label>
                               <Select
                                 label={
-                                  (product.descriptionModel.ingredientModel[
+                                  product.descriptionModel.ingredientModel[
                                     index - 1
                                   ].ingredientId
-                                  )
                                 }
                                 onChange={(selectedOption) => {
                                   setSelectedOption(selectedOption);
@@ -1353,102 +1384,155 @@ const NewDrug = () => {
                   </button>
                 </div>
               </div>
-            </div> <div>
-            <div
-              className="row "
-              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
-            >
-              <div className="col-xl">
-                <div className="card mb-4">
-                  <div
-                    className="card-header d-flex justify-content-between align-items-center"
-                    style={{
-                      height: 70,
-                      backgroundColor: "white",
-                      padding: "20px 24px",
+            </div>{" "}
+            <div>
+              <div
+                className="row "
+                style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+              >
+                <div className="col-xl">
+                  <div className="card mb-4">
+                    <div
+                      className="card-header d-flex justify-content-between align-items-center"
+                      style={{
+                        height: 70,
+                        backgroundColor: "white",
+                        padding: "20px 24px",
 
-                      borderColor: "#f4f4f4",
-                    }}
-                  >
-                    <h5 className="mb-0">Thêm Nguyên Liệu Cho Sản Phẩm</h5>
-                  </div>
-
-                  {Array.from({ length: imageInputCount }, (_, i) => i + 1).map(
-                    (index) => (
-                      <div
-                        className="mb-3"
-                        style={{ width: "20%", marginRight: 20 }}
-                      >
-                        <label
-                          className="form-label"
-                          htmlFor="basic-icon-default-email"
-                        >
-                          Image
-                        </label>
-                        <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            placeholder="Phone Number"
-                            aria-label="Phone Number"
-                            aria-describedby="basic-icon-default-email2"
-                            onChange={(e) => {
-                              setProduct({
-                                ...product,
-                                imageModel: [
-                                  ...product.imageModel.slice(0, index - 1),
-                                  {
-                                    ...product.imageModel[index - 1],
-                                    imageURL: e.target.value,
-                                  },
-                                  ...product.imageModel.slice(index),
-                                ],
-                              });
-                            }}
-                          />
-                        </div>
-
-                        <div className="form-text"></div>
-                      </div>
-                    )
-                  )}
-                  <button
-                    style={{
-                      height: 50,
-                      width: 200,
-                      fontSize: 13,
-                      paddingTop: 1,
-                      marginLeft: "44%",
-                      marginBottom: "20px",
-                      backgroundColor: "#fff",
-                    }}
-                    className="button-28"
-                    onClick={handleAddImage}
-                  >
-                    {" "}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      class="bi bi-plus-lg"
-                      viewBox="0 0 16 16"
-                      style={{ marginRight: 10 }}
+                        borderColor: "#f4f4f4",
+                      }}
                     >
-                      <path
-                        fill-rule="evenodd"
-                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
-                      />
-                    </svg>
-                    thêm ảnh
-                  </button>
+                      <h5 className="mb-0">Thêm Nguyên Liệu Cho Sản Phẩm</h5>
+                    </div>
+
+                    {Array.from(
+                      { length: imageInputCount },
+                      (_, i) => i + 1
+                    ).map((index) => (
+                      <div>
+                        <div className="card-body">
+                          <div
+                            style={{
+                              display: "flex",
+                              marginLeft: 100,
+                              padding: 30,
+                              flexWrap: "wrap",
+                            }}
+                          >
+                            <div className="form-text"></div>
+                            <div
+                              className="mb-3"
+                              style={{ width: "90%", marginRight: 20 }}
+                            >
+                              <label
+                                className="form-label"
+                                htmlFor="basic-icon-default-email"
+                              >
+                                HÌNH ẢNH
+                              </label>
+                              <div className="input-group input-group-merge">
+                                <input
+                                  type="file"
+                                  id="basic-icon-default-email"
+                                  className="form-control"
+                                  placeholder="Hình Ảnh"
+                                  aria-label="Phone Number"
+                                  aria-describedby="basic-icon-default-email2"
+                                  onChange={(e) => {
+                                    createNewURL(e);
+                                    setProduct({
+                                      ...product,
+                                      imageModel: [
+                                        ...product.imageModel.slice(
+                                          0,
+                                          index - 1
+                                        ),
+                                        {
+                                          ...product.imageModel[index - 1],
+                                          imageURL: changeImg,
+                                        },
+                                        ...product.imageModel.slice(index),
+                                      ],
+                                    });
+                                  }}
+                                />
+                              </div>
+
+                              <div className="form-text"></div>
+                             
+                              <div>
+                              {/* <img src={changeImg}/> */}
+                                <label htmlFor={`isFirstImage-${index}`}>
+                                 
+                                  <input
+                                    type="radio"
+                                    name={`isFirstImage`}
+                                    id={`isFirstImage-${index}`}
+                                    value={`${index}`}
+                                    checked={
+                                      product.imageModel.length === 1
+                                        ? true
+                                        : product.imageModel[index - 1]
+                                            .isFirstImage ===
+                                          index - 1
+                                    }
+                                    onChange={(e) => {
+                                      const newImageModel = [
+                                        ...product.imageModel,
+                                      ];
+                                      newImageModel.forEach((image, i) => {
+                                        newImageModel[i].isFirstImage =
+                                          i === index - 1 ? index - 1 : null;
+                                      });
+                                      setProduct({
+                                        ...product,
+                                        imageModel: newImageModel,
+                                      });
+                                    }}
+                                  />
+                                  Chọn làm hình đại diện
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    <button
+                      style={{
+                        height: 50,
+                        width: 200,
+                        fontSize: 13,
+                        paddingTop: 1,
+                        marginLeft: "44%",
+                        marginBottom: "20px",
+                        backgroundColor: "#fff",
+                      }}
+                      className="button-28"
+                      onClick={handleAddImage}
+                    >
+                      {" "}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-plus-lg"
+                        viewBox="0 0 16 16"
+                        style={{ marginRight: 10 }}
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
+                        />
+                      </svg>
+                      thêm ảnh
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          </div>
-         
         </div>
         <div className="layout-overlay layout-menu-toggle" />
       </div>
