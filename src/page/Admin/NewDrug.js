@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import Select from "react-select";
 import SideBar from "../sidebar/SideBarOwner";
+import Creatable, { useCreatable } from "react-select/creatable";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
@@ -32,8 +33,10 @@ const NewDrug = () => {
   const [unitID2, setUnitID2] = useState("");
   const [isSell, setIsSell] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(7);
+  const [perPage, setPerPage] = useState(100);
   const [changeImg, setChangeImg] = useState("");
+  const [newIngredient, setNewIngredient] = useState([]);
+  const resDataRef = useRef(null);
   const [product, setProduct] = useState({
     name: "",
     subCategoryId: "",
@@ -183,7 +186,6 @@ const NewDrug = () => {
           ...product,
           imageModel: product.imageModel.map((image, index) => ({
             ...image,
-            imageURL: changeImg,
             isFirstImage: index === selectedImageIndex,
           })),
         };
@@ -200,6 +202,25 @@ const NewDrug = () => {
       }
     }
   }
+  async function createNewIngredient(value) {
+    console.log("display 123", value);
+
+    if (checkValidation()) {
+      const data = {
+        ingredient_Name: value,
+      };
+      const path = "ProductIngredient";
+      const res = await createDataByPath(path, "", data);
+      console.log("Check res", res);
+
+      if (res && res.status === 201) {
+        loadDataProductIngredient();
+        // window.location.reload();
+      }
+    }
+  }
+
+
 
   async function createNewURL(e) {
     if (checkValidation()) {
@@ -212,10 +233,12 @@ const NewDrug = () => {
         "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
         data
       );
-
+      
+         console.log('display',res.data)
       if (res && res.status === 200) {
-        Swal.fire("Create Success", "", "success");
-        setChangeImg(res.data);
+        // Swal.fire("Create Success", "", "success");
+         setChangeImg(res.data)
+         console.log('display',changeImg)
       }
     }
   }
@@ -1214,12 +1237,15 @@ const NewDrug = () => {
                               >
                                 TÊN NGUYÊN LIỆU
                               </label>
-                              <Select
+                              <Creatable
                                 label={
                                   product.descriptionModel.ingredientModel[
                                     index - 1
                                   ].ingredientId
                                 }
+                                onCreateOption={(input) => {
+                                  createNewIngredient(input);
+                                }}
                                 onChange={(selectedOption) => {
                                   setSelectedOption(selectedOption);
                                   setProduct({
@@ -1440,7 +1466,7 @@ const NewDrug = () => {
                                   aria-describedby="basic-icon-default-email2"
                                   onChange={(e) => {
                                     createNewURL(e);
-                                    setProduct({
+                                     setProduct({
                                       ...product,
                                       imageModel: [
                                         ...product.imageModel.slice(
@@ -1459,11 +1485,9 @@ const NewDrug = () => {
                               </div>
 
                               <div className="form-text"></div>
-                             
+
                               <div>
-                              {/* <img src={changeImg}/> */}
                                 <label htmlFor={`isFirstImage-${index}`}>
-                                 
                                   <input
                                     type="radio"
                                     name={`isFirstImage`}
@@ -1492,6 +1516,9 @@ const NewDrug = () => {
                                   />
                                   Chọn làm hình đại diện
                                 </label>
+                                <img
+                                  src={product.imageModel[index - 1].imageURL}
+                                />
                               </div>
                             </div>
                           </div>
