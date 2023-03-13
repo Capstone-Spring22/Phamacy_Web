@@ -47,11 +47,9 @@ const NewDrug = () => {
       {
         unitId: "",
         unitLevel: 1,
-        quantitative: "",
-        sellQuantity: "",
+        quantitative: 1,
         price: "",
         isSell: 0,
-        isVisible: 0,
         barCode: "",
       },
     ],
@@ -72,7 +70,7 @@ const NewDrug = () => {
     imageModel: [
       {
         imageURL: "",
-        isFirstImage: null,
+        isFirstImage: true,
       },
     ],
   });
@@ -183,6 +181,7 @@ const NewDrug = () => {
           (image) => image.isFirstImage !== null
         );
         const data = {
+          // product
           ...product,
           imageModel: product.imageModel.map((image, index) => ({
             ...image,
@@ -207,7 +206,7 @@ const NewDrug = () => {
       const file = e.target.files[0];
       const data = new FormData();
       data.append("file", file);
-  
+
       const res = await axios.post(
         "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
         data
@@ -215,17 +214,18 @@ const NewDrug = () => {
       console.log("display", res.data);
       if (res && res.status === 200) {
         const newImageModel = [...product.imageModel];
-        newImageModel[index] = {
-          ...newImageModel[index],
+        newImageModel[index - 1] = {
+          ...newImageModel[index - 1],
           imageURL: res.data,
         };
-        setProduct((prevState) => ({ ...prevState, imageModel: newImageModel }));
+        setProduct((prevState) => ({
+          ...prevState,
+          imageModel: newImageModel,
+        }));
       }
     }
   }
-  
-  
-  
+
   async function createNewIngredient(value) {
     console.log("display 123", value);
 
@@ -294,9 +294,7 @@ const NewDrug = () => {
           unitId: "",
           unitLevel: "",
           quantitative: "",
-          sellQuantity: 0,
           price: "",
-          isVisible: 0,
           isSell: 0,
         },
       ],
@@ -306,7 +304,7 @@ const NewDrug = () => {
   const handleAddImage = () => {
     setProduct({
       ...product,
-      imageModel: [...product.imageModel, { imageURL: "", isFirstImage: 0 }],
+      imageModel: [...product.imageModel, { imageURL: "", isFirstImage: null }],
     });
     setImageInputCount(imageInputCount + 1);
   };
@@ -466,7 +464,7 @@ const NewDrug = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">THêm Thuốc MớiI</h5>
+                    <h5 className="mb-0">Thêm Thuốc Mới</h5>
                   </div>
                   <div className="card-body">
                     <div
@@ -915,6 +913,7 @@ const NewDrug = () => {
                                   placeholder="Định Lượng"
                                   aria-label="Unit Id"
                                   aria-describedby={`quantitative${index}2`}
+                                  value={ product.productDetailModel[index-1].quantitative}
                                   onChange={(e) =>
                                     setProduct({
                                       ...product,
@@ -927,7 +926,7 @@ const NewDrug = () => {
                                           ...product.productDetailModel[
                                             index - 1
                                           ],
-                                          quantitative: e.target.value,
+                                          quantitative: index === 1 ? '1' : e.target.value,
                                         },
                                         ...product.productDetailModel.slice(
                                           index
@@ -938,7 +937,7 @@ const NewDrug = () => {
                                 />
                               </div>
                             </div>
-                            <div
+                            {/* <div
                               className="mb-3"
                               style={{ width: "20%", marginRight: 20 }}
                             >
@@ -978,7 +977,7 @@ const NewDrug = () => {
                                   }
                                 />
                               </div>
-                            </div>
+                            </div> */}
                             <div
                               className="mb-3"
                               style={{ width: "20%", marginRight: 20 }}
@@ -1070,48 +1069,6 @@ const NewDrug = () => {
                                 >
                                   Inline Checkboxes
                                 </small>
-                                <input
-                                  className="form-check-input"
-                                  type="checkbox"
-                                  id={`isVisible${index}`}
-                                  checked={
-                                    product.productDetailModel[index - 1]
-                                      .isVisible
-                                  }
-                                  onChange={(e) =>
-                                    setProduct({
-                                      ...product,
-                                      productDetailModel: [
-                                        ...product.productDetailModel.slice(
-                                          0,
-                                          index - 1
-                                        ),
-                                        {
-                                          ...product.productDetailModel[
-                                            index - 1
-                                          ],
-                                          isVisible: e.target.checked ? 1 : 0,
-                                        },
-                                        ...product.productDetailModel.slice(
-                                          index
-                                        ),
-                                      ],
-                                    })
-                                  }
-                                  defaultValue="option2"
-                                  style={{
-                                    height: 20,
-                                    width: 20,
-                                    backgroundColor: "#82AAE3",
-                                    borderColor: "#82AAE3",
-                                  }}
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor={`isSell${index}`}
-                                >
-                                  is Visible
-                                </label>
                               </div>
                               <div className="form-check form-check-inline">
                                 <input
@@ -1480,11 +1437,7 @@ const NewDrug = () => {
                                     id={`isFirstImage-${index}`}
                                     value={`${index}`}
                                     checked={
-                                      product.imageModel.length === 1
-                                        ? true
-                                        : product.imageModel[index - 1]
-                                            .isFirstImage ===
-                                          index - 1
+                                      product.imageModel[index - 1].isFirstImage
                                     }
                                     onChange={(e) => {
                                       const newImageModel = [
@@ -1503,6 +1456,7 @@ const NewDrug = () => {
                                   Chọn làm hình đại diện
                                 </label>
                                 <img
+                                  style={{ height: 100, width: 100 }}
                                   src={product.imageModel[index - 1].imageURL}
                                 />
                               </div>
