@@ -34,9 +34,9 @@ const NewDrug = () => {
   const [isSell, setIsSell] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(100);
-  const [changeImg, setChangeImg] = useState("");
   const [newIngredient, setNewIngredient] = useState([]);
   const resDataRef = useRef(null);
+  const [changeImg, setChangeImg] = useState("");
   const [product, setProduct] = useState({
     name: "",
     subCategoryId: "",
@@ -72,7 +72,7 @@ const NewDrug = () => {
     imageModel: [
       {
         imageURL: "",
-        isFirstImage: 0,
+        isFirstImage: null,
       },
     ],
   });
@@ -202,6 +202,30 @@ const NewDrug = () => {
       }
     }
   }
+  async function createNewURL(e, index) {
+    if (checkValidation()) {
+      const file = e.target.files[0];
+      const data = new FormData();
+      data.append("file", file);
+  
+      const res = await axios.post(
+        "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
+        data
+      );
+      console.log("display", res.data);
+      if (res && res.status === 200) {
+        const newImageModel = [...product.imageModel];
+        newImageModel[index] = {
+          ...newImageModel[index],
+          imageURL: res.data,
+        };
+        setProduct((prevState) => ({ ...prevState, imageModel: newImageModel }));
+      }
+    }
+  }
+  
+  
+  
   async function createNewIngredient(value) {
     console.log("display 123", value);
 
@@ -219,30 +243,6 @@ const NewDrug = () => {
       }
     }
   }
-
-
-
-  async function createNewURL(e) {
-    if (checkValidation()) {
-      const file = e.target.files[0]; // Get the uploaded file object
-      const data = new FormData();
-      data.append("file", file);
-
-      // Convert the FormData object to JSON
-      const res = await axios.post(
-        "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
-        data
-      );
-      
-         console.log('display',res.data)
-      if (res && res.status === 200) {
-        // Swal.fire("Create Success", "", "success");
-         setChangeImg(res.data)
-         console.log('display',changeImg)
-      }
-    }
-  }
-
   const checkValidation = () => {
     // if (id.trim() === "") {
     //   Swal.fire("ID Can't Empty", "", "question");
@@ -1224,6 +1224,8 @@ const NewDrug = () => {
                               marginLeft: 100,
                               padding: 30,
                               flexWrap: "wrap",
+                              marginTop: -30,
+                              marginBottom: -40,
                             }}
                           >
                             <div className="form-text"></div>
@@ -1464,23 +1466,7 @@ const NewDrug = () => {
                                   placeholder="Hình Ảnh"
                                   aria-label="Phone Number"
                                   aria-describedby="basic-icon-default-email2"
-                                  onChange={(e) => {
-                                    createNewURL(e);
-                                     setProduct({
-                                      ...product,
-                                      imageModel: [
-                                        ...product.imageModel.slice(
-                                          0,
-                                          index - 1
-                                        ),
-                                        {
-                                          ...product.imageModel[index - 1],
-                                          imageURL: changeImg,
-                                        },
-                                        ...product.imageModel.slice(index),
-                                      ],
-                                    });
-                                  }}
+                                  onChange={(e) => createNewURL(e, index)}
                                 />
                               </div>
 

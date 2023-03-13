@@ -20,7 +20,6 @@ const Drug = () => {
 
   const update = (myId) => {
     localStorage.setItem("id", myId);
-
     history.push("/UpdateDrug");
   };
   const create = (myId) => {

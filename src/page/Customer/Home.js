@@ -39,7 +39,7 @@ const Home = () => {
           <Carousel.Item interval={1000}>
             <img
               className="d-block w-100"
-              src="https://images.fpt.shop/unsafe/fit-in/1600x400/filters:quality(80):fill(white)/nhathuoclongchau.com/upload/slide/1670468707-psqD-santen-1000-shop.png"
+              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1678417597-7D25-kem-chong-nang-2023.png"
               style={{ height: 400 }}
               alt="First slide"
             />
@@ -48,7 +48,7 @@ const Home = () => {
             <img
               className="d-block w-100 "
               style={{ height: 400 }}
-              src="https://images.fpt.shop/unsafe/fit-in/1600x400/filters:quality(80):fill(white)/nhathuoclongchau.com/upload/slide/1670988843-j0YT-abbott-1000-shop.png"
+              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1677150972-hsMN-cam-cum.png"
               alt="Second slide"
             />
           </Carousel.Item>
@@ -242,7 +242,7 @@ const Home = () => {
           <Carousel.Item interval={1000}>
             <img
               className="d-block w-100"
-              src="https://images.fpt.shop/unsafe/fit-in/1600x400/filters:quality(80):fill(white)/nhathuoclongchau.com/upload/slide/1670468707-psqD-santen-1000-shop.png"
+              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1676971969-r79p-co-qua-anh-duoc-ve-nha-8-3.png"
               style={{ height: 400 }}
               alt="First slide"
             />
@@ -251,14 +251,14 @@ const Home = () => {
             <img
               className="d-block w-100 "
               style={{ height: 400 }}
-              src="https://images.fpt.shop/unsafe/fit-in/1600x400/filters:quality(80):fill(white)/nhathuoclongchau.com/upload/slide/1670468502-rwBT-hoang-gia-royal-1000-shop.png"
+              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1677728079-Ssmc-brauer-tang-de-khang.png"
               alt="Second slide"
             />
           </Carousel.Item>
           <Carousel.Item>
             <img
               className="d-block w-100"
-              src="https://images.fpt.shop/unsafe/fit-in/1600x400/filters:quality(80):fill(white)/nhathuoclongchau.com/upload/slide/1670471568-TkWI-davimin-1000-shop.jpg"
+              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1678076840-UxPd-sua-abbott.png"
               style={{ height: 400 }}
               alt="Third slide"
             />
