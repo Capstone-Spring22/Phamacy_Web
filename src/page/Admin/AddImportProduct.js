@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import React, { Fragment } from "react";
 import Swal from "sweetalert2";
-
+import Select from "react-select";
 import SideBar from "../sidebar/SideBarManager";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
@@ -19,7 +19,7 @@ const AddImportProduct = () => {
   const [imageInputCount, setImageInputCount] = useState(1);
   const [manufactuner, setManufactuner] = useState([]);
   const [manufactunerID, setManufactunerID] = useState([]);
-  
+
   const [productIngredient, setProductIngredient] = useState([]);
   const [productIngredientID, setProductIngredientID] = useState([]);
   const [addUnit, setAddUnit] = useState(false);
@@ -31,13 +31,15 @@ const AddImportProduct = () => {
   const [isPrescription, setIsPrescription] = useState(false);
   const [unitID, setUnitID] = useState("");
   const [unitID2, setUnitID2] = useState("");
+  const [productID, setProductID] = useState("");
   const [isSell, setIsSell] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
-  const [drug, setDrug] = useState(null);
+  const [drug, setDrug] = useState([]);
   const [drugId, setDrugId] = useState("");
   const [totalRecord, setTotalRecord] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [productRef, setProductRef] = useState([]);
   const [product, setProduct] = useState({
     productImportDetails: [
       {
@@ -92,6 +94,18 @@ const AddImportProduct = () => {
       }),
     });
   };
+  // const options = () => {
+  //   if(drug == null){
+
+  //   }else{
+  //     drug.map((e)=>({
+  //       label: e.name,
+  //       value: e.id,
+  //     }))
+  //   }
+
+  // };
+
   async function loadDataProductIngredient() {
     const path = `ProductIngredient?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -99,10 +113,10 @@ const AddImportProduct = () => {
       setProductIngredient(res.data.items);
     }
   }
-  const handleProductIngredient = (event) => {
+  const handleProduct = (event) => {
     event.preventDefault();
-    const productIngredientID = event.target.value;
-    setProductIngredientID(productIngredientID);
+    const productID = event.target.value;
+    setProductID(productID);
   };
   async function loadDataUnit2() {
     const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
@@ -111,21 +125,7 @@ const AddImportProduct = () => {
       setUnit2(res.data.items);
     }
   }
-  const handleUnit = (event) => {
-    event.preventDefault();
-    const unitID = event.target.value;
-    setUnitID(unitID);
-  };
-  const handleUnit2 = (event) => {
-    event.preventDefault();
-    const unitID2 = event.target.value;
-    setUnitID2(unitID2);
-  };
-  const handleProduct = (event) => {
-    event.preventDefault();
-    const manufactunerID = event.target.value;
-    setManufactunerID(manufactunerID);
-  };
+
   const handleBatchChange = (event) => {
     setIsBatches(event.target.checked);
 
@@ -188,12 +188,31 @@ const AddImportProduct = () => {
         console.log("display", currentPage);
       }
     }
- 
   }
- 
+  async function loadDataDrugID(Id) {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+       console.log('Id',Id)
+      const path = `Product/View/${Id}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("display", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setProductRef(res.data.productUnitReferences);
+      }
+    }
+  }
+
   useEffect(() => {
     loadDataDrug();
-  }, [currentPage, perPage]);
+  }, []);
+  const options = drug.map((e) => ({
+    label: e.name,
+    value: e.id,
+  }));
+  const options2 = productRef.map((e) => ({
+    label: e.unitName,
+    value: e.id,
+  }));
   const checkValidation = () => {
     // if (id.trim() === "") {
     //   Swal.fire("ID Can't Empty", "", "question");
@@ -602,35 +621,15 @@ const AddImportProduct = () => {
                                   className="form-label"
                                   htmlFor="basic-icon-default-phone"
                                 >
-                                   sản phẩm
+                                  sản phẩm
                                 </label>
-                                <div className="input-group input-group-merge">
-                                  <input
-                                    name="city"
-                                    id="basic-icon-default-email"
-                                    className="form-control"
-                                    onChange={(e) => {
-                                      setProduct({
-                                        ...product,
-                                        productImportDetails: [
-                                          ...product.productImportDetails.slice(
-                                            0,
-                                            index - 1
-                                          ),
-                                          {
-                                            ...product.productImportDetails[
-                                              index - 1
-                                            ],
-                                            productId: e.target.value,
-                                          },
-                                          ...product.productImportDetails.slice(
-                                            index
-                                          ),
-                                        ],
-                                      });
-                                    }}
-                                  ></input>
-                                </div>
+                                <Select
+                                  onChange={(selectedOption) => {
+                                    // setSelectedOption(selectedOption);
+                                    loadDataDrugID(selectedOption.value);
+                                  }}
+                                  options={options}
+                                />
                               </div>
                               <div
                                 className="mb-3"
@@ -640,14 +639,13 @@ const AddImportProduct = () => {
                                   className="form-label"
                                   htmlFor="basic-icon-default-phone"
                                 >
-                                   Đơn vị
+                                  Đơn vị
                                 </label>
-                                <div className="input-group input-group-merge">
-                                  <input
-                                    name="city"
-                                    id="basic-icon-default-email"
-                                    className="form-control"
-                                    onChange={(e) => {
+                              
+                                  <Select
+                                    onChange={(selectedOption) => {
+                                      // setSelectedOption(selectedOption);
+
                                       setProduct({
                                         ...product,
                                         productImportDetails: [
@@ -659,7 +657,7 @@ const AddImportProduct = () => {
                                             ...product.productImportDetails[
                                               index - 1
                                             ],
-                                            productId: e.target.value,
+                                            productId: selectedOption.value,
                                           },
                                           ...product.productImportDetails.slice(
                                             index
@@ -667,8 +665,9 @@ const AddImportProduct = () => {
                                         ],
                                       });
                                     }}
-                                  ></input>
-                                </div>
+                                    options={options2}
+                                  />
+                              
                               </div>
                               <div
                                 className="mb-3"
@@ -941,7 +940,7 @@ const AddImportProduct = () => {
                                 </React.Fragment>
                               ))}
                               <button
-                              className="button-batches"
+                                className="button-batches"
                                 onClick={() => {
                                   setProduct({
                                     ...product,
@@ -973,7 +972,7 @@ const AddImportProduct = () => {
                                   });
                                 }}
                               >
-                             +
+                                +
                               </button>
                             </div>
                           </div>
