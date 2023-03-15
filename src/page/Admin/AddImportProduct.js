@@ -192,7 +192,7 @@ const AddImportProduct = () => {
   async function loadDataDrugID(Id) {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-       console.log('Id',Id)
+      console.log("Id", Id);
       const path = `Product/View/${Id}`;
       const res = await getDataByPath(path, accessToken, "");
       console.log("display", res);
@@ -258,7 +258,8 @@ const AddImportProduct = () => {
       ],
     });
     setUnitCount(unitCount + 1);
-  };const [activeItem, setActiveItem] = useState("ImportProduct");
+  };
+  const [activeItem, setActiveItem] = useState("ImportProduct");
   const handleAddImage = () => {
     setProduct({
       ...product,
@@ -275,7 +276,7 @@ const AddImportProduct = () => {
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
-      <SideBar activeItem={activeItem}/>
+        <SideBar activeItem={activeItem} />
 
         <div
           className="layout-page"
@@ -490,7 +491,7 @@ const AddImportProduct = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-phone"
                         >
-                          Thuế 
+                          Thuế
                         </label>
                         <div className="input-group input-group-merge">
                           <input
@@ -643,34 +644,44 @@ const AddImportProduct = () => {
                                 >
                                   Đơn vị
                                 </label>
-                              
-                                  <Select
-                                    onChange={(selectedOption) => {
-                                      // setSelectedOption(selectedOption);
 
-                                      setProduct({
-                                        ...product,
-                                        productImportDetails: [
-                                          ...product.productImportDetails.slice(
-                                            0,
+                                <Select
+                                  onChange={(selectedOption) => {
+                                    // setSelectedOption(selectedOption);
+
+                                    setProduct({
+                                      ...product,
+                                      productImportDetails: [
+                                        ...product.productImportDetails.slice(
+                                          0,
+                                          index - 1
+                                        ),
+                                        {
+                                          ...product.productImportDetails[
                                             index - 1
-                                          ),
-                                          {
-                                            ...product.productImportDetails[
-                                              index - 1
-                                            ],
-                                            productId: selectedOption.value,
-                                          },
-                                          ...product.productImportDetails.slice(
-                                            index
-                                          ),
-                                        ],
-                                      });
-                                    }}
-                                    options={options2}
-                                  />
-                              
+                                          ],
+                                          productId: selectedOption.value,
+                                        },
+                                        ...product.productImportDetails.slice(
+                                          index
+                                        ),
+                                      ],
+                                    });
+                                  }}
+                                  options={options2}
+                                />
                               </div>
+                              {/* <button
+                                onClick={(index) => {
+                                  let sumQuantity = 0;
+                                  const productBatches =
+                                    product.productImportDetails[index-1]
+                                      .productBatches;
+                                  productBatches.forEach((batch) => {
+                                    sumQuantity += batch.quantity;
+                                  });
+                                }}
+                              >1212</button> */}
                               <div
                                 className="mb-3"
                                 style={{ width: "30%", marginRight: 20 }}
@@ -689,6 +700,13 @@ const AddImportProduct = () => {
                                     placeholder="Định Lượng"
                                     aria-label="Unit Id"
                                     aria-describedby={`quantitative${index}2`}
+                                    value={product.productImportDetails[
+                                      index - 1
+                                    ].productBatches.reduce(
+                                      (total, curent) =>
+                                        total + curent.quantity,
+                                      0
+                                    )}
                                     onChange={(e) => {
                                       setProduct({
                                         ...product,
@@ -701,7 +719,14 @@ const AddImportProduct = () => {
                                             ...product.productImportDetails[
                                               index - 1
                                             ],
-                                            quantity: e.target.value,
+                                            quantity:
+                                              product.productImportDetails[
+                                                index - 1
+                                              ].productBatches.reduce(
+                                                (total, curent) =>
+                                                  total + curent.quantity,
+                                                0
+                                              ),
                                           },
                                           ...product.productImportDetails.slice(
                                             index
@@ -753,7 +778,6 @@ const AddImportProduct = () => {
                                   />
                                 </div>
                               </div>
-
                               {Array.from(
                                 { length: currentNumBatches },
                                 (_, j) => j + 1
@@ -919,7 +943,9 @@ const AddImportProduct = () => {
                                                     ].productBatches[
                                                       batchIndex - 1
                                                     ],
-                                                    quantity: e.target.value,
+                                                    quantity: parseInt(
+                                                      e.target.value
+                                                    ),
                                                   },
                                                   ...product.productImportDetails[
                                                     index - 1
