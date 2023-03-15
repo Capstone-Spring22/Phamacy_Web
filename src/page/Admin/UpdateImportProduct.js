@@ -167,7 +167,7 @@ const UpdateImportProduct = () => {
           Swal.fire("Update Success", "", "success");
           // window.location.reload();
         } else {
-          Swal.fire("như lol đây là bản nháp", "You failed!", "error");
+          Swal.fire("Đã Được Xác Nhận Không Được Sửa", "You failed!", "error");
         }
       }
     }
@@ -217,6 +217,7 @@ const UpdateImportProduct = () => {
     });
     setIngredientCount(ingredientCount + 1);
   };
+  const [activeItem, setActiveItem] = useState("ImportProduct");
   const handleAddUnit = () => {
     setProduct({
       ...product,
@@ -242,7 +243,7 @@ const UpdateImportProduct = () => {
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
-        <SideBar />
+      <SideBar activeItem={activeItem}/>
 
         <div className="layout-page"     style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}>
           {/* Navbar */}
@@ -538,7 +539,7 @@ const UpdateImportProduct = () => {
                         paddingTop: 1,
                         marginLeft: "90%",
                         marginTop: "20px",
-                        backgroundColor: "#11cdef",
+                        backgroundColor: "#82AAE3",
                         color: "white",
                       }}
                     >
@@ -726,17 +727,22 @@ const UpdateImportProduct = () => {
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
-                                  type="text"
+                                  type="date"
                                   id={`price${index}`}
                                   className="form-control"
                                   placeholder="Unit Id"
                                   aria-label="Unit Id"
                                   aria-describedby={`price${index}2`}
+                                
                                   value={product.productImportDetails[
                                     index - 1
                                   ].productBatches.map(
                                     (productBatch) => productBatch.expireDate
-                                  ).join(", ")}
+                                  ).join(", ") ? new Date(product.productImportDetails[
+                                    index - 1
+                                  ].productBatches.map(
+                                    (productBatch) => productBatch.expireDate
+                                  ).join(", ")).toISOString().substr(0, 10) : ''}
                                   onChange={(e) => {
                                     setProduct({
                                       ...product,
@@ -780,7 +786,7 @@ const UpdateImportProduct = () => {
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
-                                  type="text"
+                                  type="date"
                                   id={`barCode${index}`}
                                   className="form-control"
                                   placeholder="Unit Id"
@@ -791,7 +797,13 @@ const UpdateImportProduct = () => {
                                   ].productBatches.map(
                                     (productBatch) =>
                                       productBatch.manufactureDate
-                                  ).join(", ")}
+                                  ).join(", ") ? new Date(product.productImportDetails[
+                                    index - 1
+                                  ].productBatches.map(
+                                    (productBatch) =>
+                                      productBatch.manufactureDate
+                                  ).join(", ")).toISOString().substr(0, 10) : ''}
+                                  
                                   onChange={(e) => {
                                     setProduct({
                                       ...product,

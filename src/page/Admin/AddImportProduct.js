@@ -258,7 +258,7 @@ const AddImportProduct = () => {
       ],
     });
     setUnitCount(unitCount + 1);
-  };
+  };const [activeItem, setActiveItem] = useState("ImportProduct");
   const handleAddImage = () => {
     setProduct({
       ...product,
@@ -275,7 +275,7 @@ const AddImportProduct = () => {
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
-        <SideBar />
+      <SideBar activeItem={activeItem}/>
 
         <div
           className="layout-page"
@@ -427,7 +427,7 @@ const AddImportProduct = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Add new Import Product</h5>
+                    <h5 className="mb-0">Thêm Sản Phẩm Nhập Kho</h5>
                   </div>
                   <div className="card-body">
                     <div
@@ -449,7 +449,7 @@ const AddImportProduct = () => {
                             type="text"
                             className="form-control"
                             id="basic-icon-default-fullname"
-                            placeholder="Tên Sản Phẩm"
+                            placeholder="Ghi chú"
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
                             onChange={(e) =>
@@ -473,7 +473,7 @@ const AddImportProduct = () => {
                             type="text"
                             id="basic-icon-default-company"
                             className="form-control"
-                            placeholder="Tên Loại Con Sản Phẩm"
+                            placeholder="Tổng giá sản phẩm"
                             aria-label="Tên Loại Con Sản Phẩm"
                             aria-describedby="basic-icon-default-company2"
                             onChange={(e) =>
@@ -490,12 +490,13 @@ const AddImportProduct = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-phone"
                         >
-                          Thuế
+                          Thuế 
                         </label>
                         <div className="input-group input-group-merge">
                           <input
                             type="text"
                             name="city"
+                            placeholder="Thuế"
                             id="basic-icon-default-email"
                             className="form-control"
                             onChange={(e) =>
@@ -518,6 +519,7 @@ const AddImportProduct = () => {
                           <input
                             type="text"
                             name="city"
+                            placeholder="Phí ship"
                             id="basic-icon-default-email"
                             className="form-control"
                             onChange={(e) =>
@@ -542,7 +544,7 @@ const AddImportProduct = () => {
                             type="text"
                             id="basic-icon-default-company"
                             className="form-control"
-                            placeholder="Công dung"
+                            placeholder="Tổng giá"
                             aria-label="Công dung"
                             aria-describedby="basic-icon-default-company2"
                             onChange={(e) =>
@@ -564,17 +566,17 @@ const AddImportProduct = () => {
                         createNewProducts();
                       }}
                       style={{
-                        height: 30,
-                        width: 80,
+                        height: 35,
+                        width: 100,
                         fontSize: 13,
                         paddingTop: 1,
                         marginLeft: "90%",
                         marginTop: "20px",
-                        backgroundColor: "#11cdef",
+                        backgroundColor: "#82AAE3",
                         color: "white",
                       }}
                     >
-                      Save
+                      Lưu
                     </button>
                   </div>
                 </div>
@@ -767,9 +769,9 @@ const AddImportProduct = () => {
                                     </label>
                                     <div className="input-group input-group-merge">
                                       <input
-                                        type="text"
+                                        type="date"
                                         className="form-control"
-                                        placeholder="expireDate"
+                                        placeholder="Hạn sử dụng"
                                         aria-label="expireDate"
                                         onChange={(e) => {
                                           setProduct({
@@ -824,9 +826,9 @@ const AddImportProduct = () => {
                                     </label>
                                     <div className="input-group input-group-merge">
                                       <input
-                                        type="text"
+                                        type="date"
                                         className="form-control"
-                                        placeholder="manufactureDate"
+                                        placeholder="Ngày sản xuất"
                                         aria-label="Unit Id"
                                         onChange={(e) => {
                                           setProduct({

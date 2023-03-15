@@ -350,7 +350,7 @@ const NewDiscount = () => {
                         </label>
                         <div className="input-group input-group-merge">
                           <input
-                            type="text"
+                            type="date"
                             id="basic-icon-default-company"
                             className="form-control"
                             placeholder="Công dung"
@@ -374,7 +374,7 @@ const NewDiscount = () => {
                         </label>
                         <div className="input-group input-group-merge">
                           <input
-                            type="text"
+                            type="date"
                             id="basic-icon-default-company"
                             className="form-control"
                             placeholder="Công dung"
