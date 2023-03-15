@@ -167,7 +167,7 @@ const UpdateImportProduct = () => {
           Swal.fire("Update Success", "", "success");
           // window.location.reload();
         } else {
-          Swal.fire("Đã Được Xác Nhận Không Được Sửa", "You failed!", "error");
+          Swal.fire("Đã Được Xác Nhận Không Được Sửaa", "You failed!", "error");
         }
       }
     }
