@@ -602,7 +602,45 @@ const AddImportProduct = () => {
                                   className="form-label"
                                   htmlFor="basic-icon-default-phone"
                                 >
-                                  Id sản phẩm
+                                   sản phẩm
+                                </label>
+                                <div className="input-group input-group-merge">
+                                  <input
+                                    name="city"
+                                    id="basic-icon-default-email"
+                                    className="form-control"
+                                    onChange={(e) => {
+                                      setProduct({
+                                        ...product,
+                                        productImportDetails: [
+                                          ...product.productImportDetails.slice(
+                                            0,
+                                            index - 1
+                                          ),
+                                          {
+                                            ...product.productImportDetails[
+                                              index - 1
+                                            ],
+                                            productId: e.target.value,
+                                          },
+                                          ...product.productImportDetails.slice(
+                                            index
+                                          ),
+                                        ],
+                                      });
+                                    }}
+                                  ></input>
+                                </div>
+                              </div>
+                              <div
+                                className="mb-3"
+                                style={{ width: "30%", marginRight: 20 }}
+                              >
+                                <label
+                                  className="form-label"
+                                  htmlFor="basic-icon-default-phone"
+                                >
+                                   Đơn vị
                                 </label>
                                 <div className="input-group input-group-merge">
                                   <input
