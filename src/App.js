@@ -26,6 +26,9 @@ import UpdateDrug from "./page/Admin/UpdateDrug";
 import ImportProduct from "./page/Admin/ImportProduct";
 import AddImportProduct from "./page/Admin/AddImportProduct";
 import UpdateImportProduct from "./page/Admin/UpdateImportProduct";
+import ProductDiscount from "./page/Admin/ProductDiscount";
+import NewDiscount from "./page/Admin/NewDiscount";
+import UpdateDiscount from "./page/Admin/UpdateDiscount";
 function App() {
   return (
     <div className="site-wrap">
@@ -94,10 +97,17 @@ function App() {
           <Route path="/UpdateImportProduct">
             <UpdateImportProduct />
           </Route>
+          <Route path="/ProductDiscount">
+            <ProductDiscount />
+          </Route>
+          <Route path="/NewDiscount">
+            <NewDiscount />
+          </Route>
+          <Route path="/UpdateDiscount">
+            <UpdateDiscount />
+          </Route>
         </Switch>
       </BrowserRouter>
-
-      
     </div>
   );
 }

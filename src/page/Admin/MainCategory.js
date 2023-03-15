@@ -5,13 +5,14 @@ import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import ReactPaginate from "react-paginate";
+import { Dropdown } from "react-bootstrap";
 import {
   getDataByPath,
   deleteDataByPath,
   createDataByPath,
   updateDataByPath,
 } from "../../services/data.service";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 const MainCategory = () => {
   const [category, setCategory] = useState([]);
   const [categoryName, setCategoryName] = useState("");
@@ -38,7 +39,7 @@ const MainCategory = () => {
     if (res !== null && res !== undefined && res.status === 200) {
       setCategory(res.data.items);
       setTotalSite(res.data.totalRecord);
-       console.log('display',currentPage)
+      console.log("display", currentPage);
     }
   }
   async function loadDataMainCategoryID(id) {
@@ -49,6 +50,25 @@ const MainCategory = () => {
       console.log("display 2", id);
     }
   }
+  const [user, setUser] = useState([]);
+
+  async function loadDataUserByID() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+
+      const path = `User/24b2951b-fb99-411d-a15a-40d54d9130c5`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("res", res.data.username);
+      console.log("user", user);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setUser(res.data);
+      }
+    }
+  }
+  useEffect(() => {
+    loadDataUserByID();
+  }, []);
+  
   const dataForCreate = () => {
     return {
       categoryName: categoryName,
@@ -72,9 +92,11 @@ const MainCategory = () => {
     setCategoryName("");
     setImageUrl("");
   };
+  const [activeItem, setActiveItem] = useState("MainCategory");
   async function createNewCategory() {
     if (checkValidation()) {
       const data = dataForCreate();
+      console.log("data", data);
       const path = "MainCategory";
       const res = await createDataByPath(path, "", data);
       console.log("Check res", res);
@@ -92,9 +114,12 @@ const MainCategory = () => {
     <>
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
-          <SideBar />
+          <SideBar activeItem={activeItem} />
 
-          <div className="layout-page" style={{ backgroundColor: "#f4f6fb", marginLeft:260 }}>
+          <div
+            className="layout-page"
+            style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
+          >
             {/* Navbar */}
             <nav
               className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
@@ -140,110 +165,12 @@ const MainCategory = () => {
                     </a>
                   </li>
                   {/* User */}
+               
 
-                  <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                    <Link
-                      className="nav-link dropdown-toggle hide-arrow"
-                      to="/Profile"
-                      data-bs-toggle="dropdown"
-                    >
-                      <div className="avatar avatar-online">
-                        <img
-                          src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
-                          alt=""
-                          className="w-px-40 h-auto rounded-circle"
-                        />
-                      </div>
-                    </Link>
-                    <ul className="dropdown-menu dropdown-menu-end">
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <div className="d-flex">
-                            <div className="flex-shrink-0 me-3">
-                              <div className="avatar avatar-online">
-                                <img
-                                  src="../assets/img/avatars/1.png"
-                                  alt=""
-                                  className="w-px-40 h-auto rounded-circle"
-                                />
-                              </div>
-                            </div>
-                            <div className="flex-grow-1">
-                              <span className="fw-semibold d-block">
-                                John Doe
-                              </span>
-                              <small className="text-muted">Admin</small>
-                            </div>
-                          </div>
-                        </a>
-                      </li>
-                      <li>
-                        <div className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <i className="bx bx-user me-2" />
-                          <span className="align-middle">My Profile</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <i className="bx bx-cog me-2" />
-                          <span className="align-middle">Settings</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <span className="d-flex align-items-center align-middle">
-                            <i className="flex-shrink-0 bx bx-credit-card me-2" />
-                            <span className="flex-grow-1 align-middle">
-                              Billing
-                            </span>
-                            <span className="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">
-                              4
-                            </span>
-                          </span>
-                        </a>
-                      </li>
-                      <li>
-                        <div className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <a
-                          className="dropdown-item"
-                          href="auth-login-basic.html"
-                        >
-                          <i className="bx bx-power-off me-2" />
-                          <span className="align-middle">Log Out</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-
-                  <nav className="nav1">
-                    <input id="toggle" type="checkbox" defaultChecked />
-
-                    <button
-                      className="avatar avatar-online"
-                      style={{ border: "none", backgroundColor: "white" }}
-                    >
-                      <img
-                        src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
-                        alt=""
-                        className="w-px-40 h-auto rounded-circle"
-                      />
-                    </button>
-                    <div
-                      style={{
-                        width: 100,
-                        height: 200,
-                        backgroundColor: "white",
-                      }}
-                    ></div>
-                  </nav>
                   {/*/ User */}
                 </ul>
               </div>
+              
             </nav>
 
             {/* / Navbar */}
@@ -273,7 +200,7 @@ const MainCategory = () => {
                           borderColor: "white",
                         }}
                       >
-                        <h3 className="fontagon">MainCategory</h3>
+                        <h3 className="fontagon">Quản Lý Danh Mục</h3>
                       </h5>
 
                       <>
@@ -285,8 +212,10 @@ const MainCategory = () => {
                             width: 80,
                             fontSize: 13,
                             paddingTop: 5,
-                            marginLeft: "77%",
+                            marginLeft: "70%",
                             marginTop: "20px",
+                            backgroundColor: "#82AAE3",
+                            color: "white",
                           }}
                           onClick={() => {
                             setIsOpen(true);
@@ -303,8 +232,9 @@ const MainCategory = () => {
                             <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                           </svg>
-                          &nbsp; Add
+                          &nbsp; Lưu
                         </a>
+                        
                         <div
                           className={`dialog overlay ${isOpen ? "" : "hidden"}`}
                           id="my-dialog"
@@ -324,7 +254,7 @@ const MainCategory = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Add new Category</h5>
+                                  <h5 className="mb-0">Thêm Danh Mục Mới</h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -343,17 +273,21 @@ const MainCategory = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-fullname"
                                         >
-                                          Name
+                                          Tên
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
                                             type="text"
                                             className="form-control"
                                             id="basic-icon-default-fullname"
-                                            placeholder="Name"
+                                            placeholder="Tên Của Danh Mục"
                                             aria-label="John Doe"
                                             value={categoryName}
                                             onChange={(e) => {
+                                              console.log(
+                                                "categoryName",
+                                                categoryName
+                                              );
                                               setCategoryName(e.target.value);
                                             }}
                                             aria-describedby="basic-icon-default-fullname2"
@@ -401,11 +335,11 @@ const MainCategory = () => {
                                         paddingTop: 1,
                                         marginLeft: "90%",
                                         marginTop: "20px",
-                                        backgroundColor: "#11cdef",
+                                        backgroundColor: "#82AAE3",
                                         color: "white",
                                       }}
                                     >
-                                      Save
+                                      Lưu
                                     </button>
                                   </form>
                                 </div>
@@ -432,7 +366,7 @@ const MainCategory = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Update Category</h5>
+                                  <h5 className="mb-0">Cập Nhật Danh Mục </h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -451,14 +385,14 @@ const MainCategory = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-fullname"
                                         >
-                                          Name
+                                          Tên
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
                                             type="text"
                                             className="form-control"
                                             id="basic-icon-default-fullname"
-                                            placeholder="Name"
+                                            placeholder="Tên Danh Mục"
                                             aria-label="John Doe"
                                             aria-describedby="basic-icon-default-fullname2"
                                             value={categoryUpdate.categoryName}
@@ -479,7 +413,7 @@ const MainCategory = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-company"
                                         >
-                                          Image
+                                          Hình Ảnh
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
@@ -493,7 +427,7 @@ const MainCategory = () => {
                                             type="text"
                                             id="basic-icon-default-company"
                                             className="form-control"
-                                            placeholder="Image"
+                                            placeholder="Hình ảnh của danh mục"
                                             aria-label="ACME Inc."
                                             aria-describedby="basic-icon-default-company2"
                                           />
@@ -515,7 +449,7 @@ const MainCategory = () => {
                                         paddingTop: 1,
                                         marginLeft: "90%",
                                         marginTop: "20px",
-                                        backgroundColor: "#11cdef",
+                                        backgroundColor: "#82AAE3",
                                         color: "white",
                                       }}
                                     >

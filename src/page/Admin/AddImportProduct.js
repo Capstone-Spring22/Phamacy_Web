@@ -19,6 +19,7 @@ const AddImportProduct = () => {
   const [imageInputCount, setImageInputCount] = useState(1);
   const [manufactuner, setManufactuner] = useState([]);
   const [manufactunerID, setManufactunerID] = useState([]);
+  
   const [productIngredient, setProductIngredient] = useState([]);
   const [productIngredientID, setProductIngredientID] = useState([]);
   const [addUnit, setAddUnit] = useState(false);
@@ -33,7 +34,10 @@ const AddImportProduct = () => {
   const [isSell, setIsSell] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
-
+  const [drug, setDrug] = useState(null);
+  const [drugId, setDrugId] = useState("");
+  const [totalRecord, setTotalRecord] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [product, setProduct] = useState({
     productImportDetails: [
       {
@@ -117,7 +121,7 @@ const AddImportProduct = () => {
     const unitID2 = event.target.value;
     setUnitID2(unitID2);
   };
-  const handleManufactuner = (event) => {
+  const handleProduct = (event) => {
     event.preventDefault();
     const manufactunerID = event.target.value;
     setManufactunerID(manufactunerID);
@@ -172,6 +176,24 @@ const AddImportProduct = () => {
     }
   }
 
+  async function loadDataDrug() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("display", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setDrug(res.data.items);
+        setTotalRecord(res.data.totalRecord);
+        console.log("display", currentPage);
+      }
+    }
+ 
+  }
+ 
+  useEffect(() => {
+    loadDataDrug();
+  }, [currentPage, perPage]);
   const checkValidation = () => {
     // if (id.trim() === "") {
     //   Swal.fire("ID Can't Empty", "", "question");

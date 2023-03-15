@@ -5,7 +5,7 @@ import { getDataByPath, deleteDataByPath } from "../../services/data.service";
 import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
 
-const Sidebar = () => {
+const Sidebar = ({activeItem}) => {
   const navigate = useHistory();
   const handleLogout = async () => {
     try {
@@ -42,10 +42,25 @@ const Sidebar = () => {
           </a>
         </div>
         <br />
-
+        <li className="menu-header small text-uppercase">
+          <span className="menu-header-text">Welcome</span>
+        </li>
+        <div className="header-sidebar">
+          <img
+            className="header-img"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKzFBa7k745EPUvthXNsgIMvUDAILqSAMT4IbTrhOIIA&s"
+          />
+          <div className="header-sidebar-name">Phu159123</div>
+        </div>
         <div className="menu-inner-shadow" />
         <ul className="menu-inner py-1">
           {/* Dashboard */}
+       
+          {/* Layouts */}
+
+          <li className="menu-header small text-uppercase">
+            <span className="menu-header-text">Management</span>
+          </li>
           <li className="menu-item ">
             <a href="#" className="menu-link">
               <svg
@@ -62,12 +77,7 @@ const Sidebar = () => {
               <div data-i18n="Analytics">Dashboard</div>
             </a>
           </li>
-          {/* Layouts */}
-
-          <li className="menu-header small text-uppercase">
-            <span className="menu-header-text">Management</span>
-          </li>
-        <li  className="menu-item" >
+        <li  className={`menu-item ${activeItem == "ImportProduct" ? "active" : ""}`} >
             <Link to="/ImportProduct" className="menu-link">
               <svg
                 style={{ margin: "5" }}

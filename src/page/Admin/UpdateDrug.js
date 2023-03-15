@@ -20,7 +20,7 @@ const UpdateDrug = () => {
   const [unitCount, setUnitCount] = useState(1);
   const [imageInputCount, setImageInputCount] = useState(1);
   const [manufactuner, setManufactuner] = useState([]);
-  const [manufactunerID, setManufactunerID] = useState([]);
+  const [manufactunerID, setManufactunerID] = useState("");
   const [productIngredient, setProductIngredient] = useState([]);
   const [productIngredientID, setProductIngredientID] = useState([]);
   const [addUnit, setAddUnit] = useState(false);
@@ -33,6 +33,8 @@ const UpdateDrug = () => {
   const [unitID2, setUnitID2] = useState("");
   const [isSell, setIsSell] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [subCategory, setSubCategory] = useState([]);
+  const [subCategoryID, setSubCategoryID] = useState("");
   const [perPage, setPerPage] = useState(7);
   const [product, setProduct] = useState({
     id: "",
@@ -69,13 +71,22 @@ const UpdateDrug = () => {
 
       if (res !== null && res !== undefined && res.status === 200) {
         setProduct(res.data);
-         console.log('display',res.data)
+        console.log("display", res.data);
         setUnitCount(res.data.productDetailModel.length);
         setIngredientCount(res.data.descriptionModel.ingredientModel.length);
-        setImageInputCount(res.data.imageModels.length)
+        setImageInputCount(res.data.imageModels.length);
       }
     }
   }
+  useEffect(() => {
+    loadDataCategory();
+  }, [currentPage, perPage]);
+  const handleSubCategory = (e) => {
+    e.preventDefault();
+    const subCategoryID = e.target.value;
+    setSubCategoryID(subCategoryID);
+    console.log("subCategoryID", subCategoryID);
+  };
   async function loadDataUnit() {
     const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -95,6 +106,14 @@ const UpdateDrug = () => {
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setProductIngredient(res.data.items);
+    }
+  }
+  async function loadDataCategory() {
+    const path = `SubCategory?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const res = await getDataByPath(path, "", "");
+    console.log("check", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setSubCategory(res.data.items);
     }
   }
   const handleProductIngredient = (event) => {
@@ -445,21 +464,32 @@ const UpdateDrug = () => {
                         Tên Loại Con Sản Phẩm
                       </label>
                       <div className="input-group input-group-merge">
-                        <input
-                          type="text"
-                          id="basic-icon-default-company"
-                          value={product.subCategoryId}
+                        <select
+                          name="city"
+                          id="basic-icon-default-email"
                           className="form-control"
-                          placeholder="Tên Loại Con Sản Phẩm"
-                          aria-label="Tên Loại Con Sản Phẩm"
-                          aria-describedby="basic-icon-default-company2"
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            handleSubCategory(e);
+
                             setProduct((prevState) => ({
                               ...prevState,
                               subCategoryId: e.target.value,
-                            }))
-                          }
-                        />
+                            }));
+                          }}
+                          value={product.subCategoryId}
+                        >
+                          {subCategory &&
+                            subCategory.length &&
+                            subCategory.map((e, index) => {
+                              return (
+                                <>
+                                  <option key={e.id} value={e.id}>
+                                    {e.subCategoryName}
+                                  </option>
+                                </>
+                              );
+                            })}
+                        </select>
                       </div>
                     </div>
                     <div className="mb-3" style={{ width: "95%" }}>
@@ -474,7 +504,13 @@ const UpdateDrug = () => {
                           name="city"
                           id="basic-icon-default-email"
                           className="form-control"
-                          onChange={(e) => handleManufactuner(e)}
+                          onChange={(e) => {
+                            handleManufactuner(e);
+                            setProduct((prevState) => ({
+                              ...prevState,
+                              manufacturerId: e.target.value,
+                            }));
+                          }}
                           value={product.manufacturerId}
                         >
                           {manufactuner &&
@@ -482,16 +518,7 @@ const UpdateDrug = () => {
                             manufactuner.map((e, index) => {
                               return (
                                 <>
-                                  <option
-                                    key={e.id}
-                                    value={e.id}
-                                    onChange={(e) =>
-                                      setProduct((prevState) => ({
-                                        ...prevState,
-                                        manufacturerId: e.target.value,
-                                      }))
-                                    }
-                                  >
+                                  <option key={e.id} value={e.id}>
                                     {e.manufacturerName}
                                   </option>
                                 </>
@@ -553,6 +580,61 @@ const UpdateDrug = () => {
                         </label>
                       </div>
                     </div>
+
+                    <div className="col-md"></div>
+
+                    <div className="col-md"></div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="button-28"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      updateProducts();
+                    }}
+                    style={{
+                      height: 30,
+                      width: 80,
+                      fontSize: 13,
+                      paddingTop: 1,
+                      marginLeft: "90%",
+                      marginTop: "20px",
+                      backgroundColor: "#11cdef",
+                      color: "white",
+                    }}
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            className="row "
+            style={{ width: 1200, marginTop: 10, marginLeft: 25 }}
+          >
+            <div className="col-xl">
+              <div className="card mb-4">
+                <div
+                  className="card-header d-flex justify-content-between align-items-center"
+                  style={{
+                    height: 70,
+                    backgroundColor: "white",
+                    padding: "20px 24px",
+                    borderColor: "#f4f4f4",
+                  }}
+                >
+                  <h5 className="mb-0">Thêm Công Dụng Cho Sản Phẩm</h5>
+                </div>{" "}
+                <div className="card-body">
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "auto auto",
+                      padding: 30,
+                    }}
+                  >
                     <div className="mb-3" style={{ width: "95%" }}>
                       <label
                         className="form-label"
@@ -561,7 +643,7 @@ const UpdateDrug = () => {
                         Công dung
                       </label>
                       <div className="input-group input-group-merge">
-                        <input
+                        <textarea
                           type="text"
                           id="basic-icon-default-company"
                           className="form-control"
@@ -589,7 +671,7 @@ const UpdateDrug = () => {
                         Hướng dẫn sử dụng
                       </label>
                       <div className="input-group input-group-merge">
-                        <input
+                        <textarea
                           type="text"
                           id="basic-icon-default-email"
                           className="form-control"
@@ -618,7 +700,7 @@ const UpdateDrug = () => {
                         Tác Dụng Phụ
                       </label>
                       <div className="input-group input-group-merge">
-                        <input
+                        <textarea
                           type="text"
                           id="basic-icon-default-company"
                           className="form-control"
@@ -646,7 +728,7 @@ const UpdateDrug = () => {
                         Chống chỉ định
                       </label>
                       <div className="input-group input-group-merge">
-                        <input
+                        <textarea
                           type="text"
                           id="basic-icon-default-email"
                           className="form-control"
@@ -675,7 +757,7 @@ const UpdateDrug = () => {
                         Bảo quản
                       </label>
                       <div className="input-group input-group-merge">
-                        <input
+                        <textarea
                           type="text"
                           id="basic-icon-default-company"
                           className="form-control"
@@ -695,32 +777,7 @@ const UpdateDrug = () => {
                         />
                       </div>
                     </div>
-
-                    <div className="col-md"></div>
-
-                    <div className="col-md"></div>
                   </div>
-
-                  <button
-                    type="submit"
-                    className="button-28"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      updateProducts();
-                    }}
-                    style={{
-                      height: 30,
-                      width: 80,
-                      fontSize: 13,
-                      paddingTop: 1,
-                      marginLeft: "90%",
-                      marginTop: "20px",
-                      backgroundColor: "#11cdef",
-                      color: "white",
-                    }}
-                  >
-                    Save
-                  </button>
                 </div>
               </div>
             </div>
@@ -994,7 +1051,7 @@ const UpdateDrug = () => {
                               />
                             </div>
                           </div>
-                          
+
                           <div
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}
@@ -1379,42 +1436,60 @@ const UpdateDrug = () => {
 
                   {Array.from({ length: imageInputCount }, (_, i) => i + 1).map(
                     (index) => (
-                      <div
-                        className="mb-3"
-                        style={{ width: "20%", marginRight: 20 }}
-                      >
-                        <label
-                          className="form-label"
-                          htmlFor="basic-icon-default-email"
-                        >
-                          Image
-                        </label>
-                        <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            placeholder="Phone Number"
-                            aria-label="Phone Number"
-                            aria-describedby="basic-icon-default-email2"
-                            value={product.imageModels[index-1].imageUrl}
-                            onChange={(e) => {
-                              setProduct({
-                                ...product,
-                                imageModel: [
-                                  ...product.imageModel.slice(0, index - 1),
-                                  {
-                                    ...product.imageModel[index - 1],
-                                    imageURL: e.target.value,
-                                  },
-                                  ...product.imageModel.slice(index),
-                                ],
-                              });
+                      <div>
+                        <div className="card-body">
+                          <div
+                            style={{
+                              display: "flex",
+                              marginLeft: 100,
+                              padding: 30,
+                              flexWrap: "wrap",
                             }}
-                          />
-                        </div>
+                          >
+                            <div
+                              className="mb-3"
+                              style={{ width: "20%", marginRight: 20 }}
+                            >
+                              <label
+                                className="form-label"
+                                htmlFor="basic-icon-default-email"
+                              >
+                                Image
+                              </label>
+                              <div className="input-group input-group-merge">
+                                <input
+                                  type="text"
+                                  id="basic-icon-default-email"
+                                  className="form-control"
+                                  placeholder="Phone Number"
+                                  aria-label="Phone Number"
+                                  aria-describedby="basic-icon-default-email2"
+                                  value={
+                                    product.imageModels[index - 1].imageUrl
+                                  }
+                                  onChange={(e) => {
+                                    setProduct({
+                                      ...product,
+                                      imageModel: [
+                                        ...product.imageModel.slice(
+                                          0,
+                                          index - 1
+                                        ),
+                                        {
+                                          ...product.imageModel[index - 1],
+                                          imageURL: e.target.value,
+                                        },
+                                        ...product.imageModel.slice(index),
+                                      ],
+                                    });
+                                  }}
+                                />
+                              </div>
 
-                        <div className="form-text"></div>
+                              <div className="form-text"></div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )
                   )}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import Swal from "sweetalert2";
-import SideBar from "../sidebar/SideBarManager";
+
+import SideBar from "../sidebar/SideBarOwner";
 import ReactPaginate from "react-paginate";
 
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -10,7 +10,7 @@ import "../../assets/css2/dropDownAvartar.css";
 import { getDataByPath, deleteDataByPath } from "../../services/data.service";
 import { Link } from "react-router-dom";
 
-const Drug = () => {
+const ProductDiscount = () => {
   const [drug, setDrug] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
@@ -21,17 +21,17 @@ const Drug = () => {
   const update = (myId) => {
     localStorage.setItem("id", myId);
 
-    history.push("/UpdateImportProduct");
+    history.push("/UpdateDiscount");
   };
   const create = () => {
 
-    history.push("/AddImportProduct");
+    history.push("/NewDiscount");
   };
-
+ 
   async function loadDataMedicine() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      const path = `ProductImport?pageIndex=${currentPage}&pageItems=${perPage}`;
+      const path = `ProductDiscount?pageIndex=${currentPage}&pageItems=${perPage}`;
       const res = await getDataByPath(path, accessToken, "");
       console.log("display", res);
       if (res !== null && res !== undefined && res.status === 200) {
@@ -40,24 +40,17 @@ const Drug = () => {
         console.log("display", currentPage);
       }
     }
-    setIsLoading(false);
+
   }
-  const [activeItem, setActiveItem] = useState("ImportProduct");
+
   useEffect(() => {
     loadDataMedicine();
   }, [currentPage, perPage]);
-
+ const [activeItem, setActiveItem] = useState("ProductDiscount");
   return (
     <>
       <div>
-        {isLoading ? (
-          <div>
-            <div className="loading">
-              <div className="pill"></div>
-              <div className="loading-text">Loading...</div>
-            </div>
-          </div>
-        ) : (
+        
           <div>
             {" "}
             <div className="layout-wrapper layout-content-navbar">
@@ -124,12 +117,12 @@ const Drug = () => {
                             <h5
                               className="card-header"
                               style={{
-                                padding: "20px 24px",
+                                padding: "20px 21px",
                                 backgroundColor: "#ffffff",
                                 borderColor: "white",
                               }}
                             >
-                              <h3 className="fontagon">Import Product</h3>
+                              <h3 className="fontagon">Quản Lý Giảm Giá</h3>
                             </h5>
 
                             <>
@@ -142,8 +135,10 @@ const Drug = () => {
                                   width: 80,
                                   fontSize: 13,
                                   paddingTop: 5,
-                                  marginLeft: "70%",
+                                  marginLeft: "74%",
                                   marginTop: "20px",
+                                  backgroundColor: "#82AAE3",
+                                  color: "white",
                                 }}
                               >
                                 <svg
@@ -157,7 +152,7 @@ const Drug = () => {
                                   <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
                                   <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                                 </svg>
-                                &nbsp; Add
+                                &nbsp; Lưu
                               </a>
 
 
@@ -181,7 +176,7 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    &nbsp; &nbsp;Manager Name
+                                    &nbsp; &nbsp;Tên
                                   </th>
                                   <th
                                     style={{
@@ -190,7 +185,7 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    Import Date
+                                    Giảm Giá (%)
                                   </th>
                                   <th
                                     style={{
@@ -199,7 +194,43 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    Total Price
+                                    Số tiền Giảm Giá
+                                  </th>
+                                  <th
+                                    style={{
+                                      backgroundColor: "#f6f9fc",
+                                      borderColor: "white",
+                                      color: "#bfc8d3",
+                                    }}
+                                  >
+                                    Tổng SP
+                                  </th>
+                                  <th
+                                    style={{
+                                      backgroundColor: "#f6f9fc",
+                                      borderColor: "white",
+                                      color: "#bfc8d3",
+                                    }}
+                                  >
+                                    Ngày Bắt Đầu
+                                  </th>
+                                  <th
+                                    style={{
+                                      backgroundColor: "#f6f9fc",
+                                      borderColor: "white",
+                                      color: "#bfc8d3",
+                                    }}
+                                  >
+                                   Ngày Kết Thúc
+                                  </th>
+                                  <th
+                                    style={{
+                                      backgroundColor: "#f6f9fc",
+                                      borderColor: "white",
+                                      color: "#bfc8d3",
+                                    }}
+                                  >
+                                    Trạng thái
                                   </th>
                                  
                                   <th
@@ -227,10 +258,14 @@ const Drug = () => {
                                             textOverflow: "ellipsis",
                                           }}
                                         >
-                                          &nbsp; &nbsp;{e.managerName}
+                                          &nbsp; &nbsp;{e.title}
                                         </td>
-                                        <td>{e.importDate}</td>
-                                        <td>{e.totalPrice}</td>
+                                        <td>{e.discountPercent}</td>
+                                        <td>{e.discountMoney}</td>
+                                        <td>{e.totalProduct}</td>
+                                        <td>{e.startDate}</td>
+                                        <td>{e.endDate}</td>
+                                        <td>{e.status}</td>
                                         <td>
                                           <a
                                             class="button-81"
@@ -282,9 +317,9 @@ const Drug = () => {
               </div>
             </div>
           </div>
-        )}
+        
       </div>
     </>
   );
 };
-export default Drug;
+export default ProductDiscount;

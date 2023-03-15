@@ -34,7 +34,6 @@ const SubCategory = () => {
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
       setSubCategory(res.data.items);
-      
     }
   }
   const checkValidation = () => {
@@ -85,15 +84,16 @@ const SubCategory = () => {
     const mainCategoryId = event.target.value;
     setMainCategoryId(mainCategoryId);
   };
+
   async function loadDataMainCategory() {
     const path = `MainCategory?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
-      setMainCategory(res.data);
-    
+      setMainCategory(res.data.items);
     }
   }
+
   async function updateProducts() {
     const data = categoryUpdate;
     const path = `SubCategory  `;
@@ -104,22 +104,23 @@ const SubCategory = () => {
       setIsOpen(false);
     }
   }
-
- 
+  const [activeItem, setActiveItem] = useState("SubCategory");
   useEffect(() => {
-    
     loadDataCategory();
   }, [currentPage, perPage]);
   useEffect(() => {
     loadDataMainCategory();
   }, [currentPage, perPage]);
+
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
-          <SideBar />
-
-          <div className="layout-page" style={{ backgroundColor: "#f4f6fb", marginLeft:260 }}>
+        <SideBar activeItem={activeItem}/>
+          <div
+            className="layout-page"
+            style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
+          >
             {/* Navbar */}
             <nav
               className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
@@ -298,14 +299,14 @@ const SubCategory = () => {
                           borderColor: "white",
                         }}
                       >
-                        <h3 className="fontagon">SubCategory</h3>
+                        <h3 className="fontagon">Quản Lý Danh Mục Phụ</h3>
                       </h5>
 
                       <>
                         <a
                           className=" button-28"
                           href="#my-dialog"
-                          onClick={()=>{
+                          onClick={() => {
                             setIsOpen(true);
                           }}
                           style={{
@@ -313,8 +314,10 @@ const SubCategory = () => {
                             width: 80,
                             fontSize: 13,
                             paddingTop: 5,
-                            marginLeft: "77%",
+                            marginLeft: "70%",
                             marginTop: "20px",
+                            backgroundColor: "#82AAE3",
+                            color: "white",
                           }}
                         >
                           <svg
@@ -328,7 +331,7 @@ const SubCategory = () => {
                             <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                           </svg>
-                          &nbsp; Add
+                          &nbsp; Thêm
                         </a>
                         <div
                           className={`dialog overlay ${isOpen ? "" : "hidden"}`}
@@ -349,7 +352,9 @@ const SubCategory = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Add new SubCategory</h5>
+                                  <h5 className="mb-0">
+                                    Thêm Danh Mục Phụ Mới
+                                  </h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -368,7 +373,7 @@ const SubCategory = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-fullname"
                                         >
-                                          subCategoryName
+                                          Tên Danh Mục Phụ
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
@@ -381,7 +386,7 @@ const SubCategory = () => {
                                             }}
                                             className="form-control"
                                             id="basic-icon-default-fullname"
-                                            placeholder="Name"
+                                            placeholder="Tên"
                                             aria-label="John Doe"
                                             aria-describedby="basic-icon-default-fullname2"
                                           />
@@ -395,14 +400,14 @@ const SubCategory = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-company"
                                         >
-                                          Image
+                                          Hình Ảnh
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
                                             type="text"
                                             id="basic-icon-default-company"
                                             className="form-control"
-                                            placeholder="Image"
+                                            placeholder="Hình Ảnh Của Danh Mục"
                                             aria-label="ACME Inc."
                                             aria-describedby="basic-icon-default-company2"
                                             value={imageUrl}
@@ -420,7 +425,7 @@ const SubCategory = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
                                         >
-                                          Sub Category
+                                          Danh Mục
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <select
@@ -499,7 +504,7 @@ const SubCategory = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Update SubCategory</h5>
+                                  <h5 className="mb-0">Cập Nhật Danh Mục Phụ</h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -518,14 +523,14 @@ const SubCategory = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-fullname"
                                         >
-                                          Name
+                                          Tên Danh Mục Phụ
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
                                             type="text"
                                             className="form-control"
                                             id="basic-icon-default-fullname"
-                                            placeholder="Name"
+                                            placeholder="Tên"
                                             aria-label="John Doe"
                                             aria-describedby="basic-icon-default-fullname2"
                                             onChange={(e) => {
@@ -548,14 +553,14 @@ const SubCategory = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-company"
                                         >
-                                          Image
+                                          Hình Ảnh
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
                                             type="text"
                                             id="basic-icon-default-company"
                                             className="form-control"
-                                            placeholder="Image"
+                                            placeholder="Hình Ảnh Của Danh Mục Phụ"
                                             aria-label="ACME Inc."
                                             value={categoryUpdate.imageUrl}
                                             onChange={(e) => {
@@ -576,7 +581,7 @@ const SubCategory = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
                                         >
-                                          Sub Category
+                                          Danh Mục
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <select

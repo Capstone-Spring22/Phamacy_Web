@@ -19,14 +19,15 @@ const NewDrug = () => {
   const [unitCount, setUnitCount] = useState(1);
   const [imageInputCount, setImageInputCount] = useState(1);
   const [manufactuner, setManufactuner] = useState([]);
-  const [manufactunerID, setManufactunerID] = useState([]);
+  const [manufactunerId, setManufactunerId] = useState("");
   const [productIngredient, setProductIngredient] = useState([]);
   const [productIngredientID, setProductIngredientID] = useState([]);
   const [addUnit, setAddUnit] = useState(false);
   const [unit, setUnit] = useState([]);
   const [unit2, setUnit2] = useState([]);
-  const [addNewUnit, setAddnewUnit] = useState(false);
-  const [addNewUnit2, setAddnewUnit2] = useState(false);
+
+  const [categorySelected, setCategorySelected] = useState(false);
+  const [manufactunerSelected, setManufactunerSelected] = useState(false);
   const [isBatches, setIsBatches] = useState(false);
   const [isPrescription, setIsPrescription] = useState(false);
   const [unitID, setUnitID] = useState("");
@@ -36,6 +37,8 @@ const NewDrug = () => {
   const [perPage, setPerPage] = useState(100);
   const [newIngredient, setNewIngredient] = useState([]);
   const resDataRef = useRef(null);
+  const [subCategory, setSubCategory] = useState([]);
+  const [subCategoryID, setSubCategoryID] = useState("");
   const [changeImg, setChangeImg] = useState("");
   const [product, setProduct] = useState({
     name: "",
@@ -82,6 +85,15 @@ const NewDrug = () => {
       setUnit(res.data.items);
     }
   }
+  
+  async function loadDataCategory() {
+    const path = `SubCategory?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const res = await getDataByPath(path, "", "");
+    console.log("check", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setSubCategory(res.data.items);
+    }
+  }
   async function loadDataManufacturer() {
     const path = `Manufacturer?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -89,6 +101,15 @@ const NewDrug = () => {
       setManufactuner(res.data.items);
     }
   }
+  useEffect(() => {
+    loadDataCategory();
+  }, [currentPage, perPage]);
+  const handleSubCategory = (e) => {
+    e.preventDefault();
+    const subCategoryID = e.target.value;
+    setSubCategoryID(subCategoryID);
+    console.log("subCategoryID", subCategoryID);
+  };
   async function loadDataProductIngredient() {
     const path = `ProductIngredient?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -118,10 +139,11 @@ const NewDrug = () => {
     const unitID2 = event.target.value;
     setUnitID2(unitID2);
   };
-  const handleManufactuner = (event) => {
-    event.preventDefault();
-    const manufactunerID = event.target.value;
-    setManufactunerID(manufactunerID);
+  const handleManufactuner = (e) => {
+    e.preventDefault();
+    const manufactunerId = e.target.value;
+    setManufactunerId(manufactunerId);
+    console.log("manufactunerID", manufactunerId);
   };
   const handleBatchChange = (event) => {
     setIsBatches(event.target.checked);
@@ -503,23 +525,39 @@ const NewDrug = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-company"
                         >
-                          Tên Loại Con Sản Phẩm
+                          Tên Danh Mục Sản Phẩm
                         </label>
+
                         <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            id="basic-icon-default-company"
+                          <select
+                            name="city"
+                            id="basic-icon-default-email"
                             className="form-control"
-                            placeholder="Tên Loại Con Sản Phẩm"
-                            aria-label="Tên Loại Con Sản Phẩm"
-                            aria-describedby="basic-icon-default-company2"
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              handleSubCategory(e);
+                              setCategorySelected(true);
                               setProduct((prevState) => ({
                                 ...prevState,
                                 subCategoryId: e.target.value,
-                              }))
-                            }
-                          />
+                              }));
+                            }}
+                            value={product.subCategoryId}
+                          >
+                            {!categorySelected && (
+                              <option value="">--- Chọn Danh Mục </option>
+                            )}
+                            {subCategory &&
+                              subCategory.length &&
+                              subCategory.map((e, index) => {
+                                return (
+                                  <>
+                                    <option key={e.id} value={e.id}>
+                                      {e.subCategoryName}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
                         </div>
                       </div>
                       <div className="mb-3" style={{ width: "95%" }}>
@@ -534,24 +572,24 @@ const NewDrug = () => {
                             name="city"
                             id="basic-icon-default-email"
                             className="form-control"
-                            onChange={(e) => handleManufactuner(e)}
-                            value={manufactunerID}
+                            onChange={(e) => {
+                              handleManufactuner(e);
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                manufacturerId: e.target.value,
+                              }));
+                            }}
+                            value={product.manufactunerId}
                           >
+                            {!manufactunerSelected && (
+                              <option value="">--- Chọn Nhà Sản Xuất</option>
+                            )}
                             {manufactuner &&
                               manufactuner.length &&
                               manufactuner.map((e, index) => {
                                 return (
                                   <>
-                                    <option
-                                      key={e.id}
-                                      value={e.id}
-                                      onChange={(e) =>
-                                        setProduct((prevState) => ({
-                                          ...prevState,
-                                          manufacturerId: e.target.value,
-                                        }))
-                                      }
-                                    >
+                                    <option key={e.id} value={e.id}>
                                       {e.manufacturerName}
                                     </option>
                                   </>
@@ -645,7 +683,7 @@ const NewDrug = () => {
             </div>
             <div
               className="row "
-              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+              style={{ width: 1200, marginTop: 10, marginLeft: 25 }}
             >
               <div className="col-xl">
                 <div className="card mb-4">
@@ -812,7 +850,7 @@ const NewDrug = () => {
             </div>
             <div
               className="row "
-              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+              style={{ width: 1200, marginTop: 10, marginLeft: 25 }}
             >
               <div className="col-xl">
                 <div className="card mb-4">
@@ -848,7 +886,7 @@ const NewDrug = () => {
                                 className="form-label"
                                 htmlFor="basic-icon-default-phone"
                               >
-                                Unit Id đơn vị cho hàng
+                                Đơn vị cho hàng
                               </label>
                               <div className="input-group input-group-merge">
                                 <select
@@ -913,7 +951,10 @@ const NewDrug = () => {
                                   placeholder="Định Lượng"
                                   aria-label="Unit Id"
                                   aria-describedby={`quantitative${index}2`}
-                                  value={ product.productDetailModel[index-1].quantitative}
+                                  value={
+                                    product.productDetailModel[index - 1]
+                                      .quantitative
+                                  }
                                   onChange={(e) =>
                                     setProduct({
                                       ...product,
@@ -926,7 +967,8 @@ const NewDrug = () => {
                                           ...product.productDetailModel[
                                             index - 1
                                           ],
-                                          quantitative: index === 1 ? '1' : e.target.value,
+                                          quantitative:
+                                            index === 1 ? "1" : e.target.value,
                                         },
                                         ...product.productDetailModel.slice(
                                           index
@@ -986,7 +1028,7 @@ const NewDrug = () => {
                                 className="form-label"
                                 htmlFor={`unitId${index}`}
                               >
-                                Price
+                                Giá
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
@@ -1154,7 +1196,7 @@ const NewDrug = () => {
             </div>
             <div
               className="row "
-              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+              style={{ width: 1200, marginTop: 10, marginLeft: 25 }}
             >
               <div className="col-xl">
                 <div className="card mb-4">
@@ -1373,7 +1415,7 @@ const NewDrug = () => {
             <div>
               <div
                 className="row "
-                style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+                style={{ width: 1200, marginTop: 10, marginLeft: 25 }}
               >
                 <div className="col-xl">
                   <div className="card mb-4">
@@ -1390,33 +1432,34 @@ const NewDrug = () => {
                       <h5 className="mb-0">Thêm Nguyên Liệu Cho Sản Phẩm</h5>
                     </div>
 
-                    {Array.from(
-                      { length: imageInputCount },
-                      (_, i) => i + 1
-                    ).map((index) => (
-                      <div>
-                        <div className="card-body">
-                          <div
-                            style={{
-                              display: "flex",
-                              marginLeft: 100,
-                              padding: 30,
-                              flexWrap: "wrap",
-                            }}
-                          >
-                            <div className="form-text"></div>
-                            <div
-                              className="mb-3"
-                              style={{ width: "90%", marginRight: 20 }}
-                            >
-                              <label
-                                className="form-label"
-                                htmlFor="basic-icon-default-email"
+                    <div>
+                      <div className="card-body">
+                        <div
+                          style={{
+                            display:"flex",
+                            marginLeft: 200,
+                            padding: 70,
+                            marginBottom: -59,
+                            flexWrap:"wrap"
+                          }}
+                        >
+                          {Array.from(
+                            { length: imageInputCount },
+                            (_, i) => i + 1
+                          ).map((index) => (
+                            <div style={{marginRight:300}}>
+                              <div
+                                className="mb-3"
+                                style={{ width: "30%", marginRight: 20 }}
                               >
-                                HÌNH ẢNH
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <input
+                                <label
+                                  className="form-label"
+                                  htmlFor="basic-icon-default-email"
+                                >
+                        
+                                </label>
+                                <div className="input-group input-group-merge">
+                                  {/* <input
                                   type="file"
                                   id="basic-icon-default-email"
                                   className="form-control"
@@ -1424,47 +1467,65 @@ const NewDrug = () => {
                                   aria-label="Phone Number"
                                   aria-describedby="basic-icon-default-email2"
                                   onChange={(e) => createNewURL(e, index)}
-                                />
+                                /> */}
+                                  <form className="form1" method="POST">
+                                    <input
+                                      type="file"
+                                      multiple
+                                      onChange={(e) => createNewURL(e, index)}
+                                    />
+
+                                    <img
+                                      src={
+                                        product.imageModel[index - 1].imageURL
+                                      }
+                                    />
+                                  </form>
+                                </div>
                               </div>
-
-                              <div className="form-text"></div>
-
-                              <div>
-                                <label htmlFor={`isFirstImage-${index}`}>
-                                  <input
-                                    type="radio"
-                                    name={`isFirstImage`}
-                                    id={`isFirstImage-${index}`}
-                                    value={`${index}`}
-                                    checked={
-                                      product.imageModel[index - 1].isFirstImage
-                                    }
-                                    onChange={(e) => {
-                                      const newImageModel = [
-                                        ...product.imageModel,
-                                      ];
-                                      newImageModel.forEach((image, i) => {
-                                        newImageModel[i].isFirstImage =
-                                          i === index - 1 ? index - 1 : null;
-                                      });
-                                      setProduct({
-                                        ...product,
-                                        imageModel: newImageModel,
-                                      });
-                                    }}
-                                  />
-                                  Chọn làm hình đại diện
-                                </label>
-                                <img
-                                  style={{ height: 100, width: 100 }}
-                                  src={product.imageModel[index - 1].imageURL}
-                                />
+                              <div
+                                className="mb-3"
+                                style={{
+                                  width: "30%",
+                                  marginTop: 70,
+                                  marginLeft: -230,
+                                }}
+                              >
+                                <div>
+                                  <label htmlFor={`isFirstImage-${index}`}>
+                                    <input
+                                      type="radio"
+                                      name={`isFirstImage`}
+                                      id={`isFirstImage-${index}`}
+                                      value={`${index}`}
+                                      checked={
+                                        product.imageModel[index - 1]
+                                          .isFirstImage
+                                      }
+                                      onChange={(e) => {
+                                        const newImageModel = [
+                                          ...product.imageModel,
+                                        ];
+                                        newImageModel.forEach((image, i) => {
+                                          newImageModel[i].isFirstImage =
+                                            i === index - 1 ? index - 1 : null;
+                                        });
+                                        setProduct({
+                                          ...product,
+                                          imageModel: newImageModel,
+                                        });
+                                      }}
+                                    />
+                             
+                                  </label>
+                                </div>
                               </div>
                             </div>
-                          </div>
+                          ))}
                         </div>
                       </div>
-                    ))}
+                    </div>
+
                     <button
                       style={{
                         height: 50,

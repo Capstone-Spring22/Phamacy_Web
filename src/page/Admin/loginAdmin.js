@@ -33,16 +33,25 @@ const LoginAdmin = () => {
       if (res && res.status === 200) {
         if (localStorage) {
           localStorage.setItem("accessToken", res.data.token);
-          localStorage.setItem("roleID", jwtDecode(res.data.token)[
-            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-          ]);
+          localStorage.setItem(
+            "roleID",
+            jwtDecode(res.data.token)[
+              "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+            ]
+          );
+          localStorage.setItem(
+            "userID",
+            jwtDecode(res.data.token)[
+              "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+            ]
+          );
           const roleID = jwtDecode(res.data.token)[
             "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
           ];
           const decoded = jwtDecode(res.data.token);
 
-          console.log("ss", roleID);
-
+          console.log("ss", jwtDecode(res.data.token));
+          
           if (roleID === "Manager") {
             navigate.push("/ImportProduct");
           } else if (roleID === "Pharmacist") {
@@ -78,7 +87,7 @@ const LoginAdmin = () => {
                     </a>
                   </div>
                   {/* /Logo */}
-                  <h4 className="mb-2">Welcome to Sneat! 👋</h4>
+                  <h4 className="mb-2">Welcome to BetterHealth! 👋</h4>
                   <p className="mb-4">
                     Please sign-in to your account and start the adventure
                   </p>
@@ -145,7 +154,8 @@ const LoginAdmin = () => {
                     </div>
                     <div className="mb-3">
                       <button
-                        className="btn btn-primary d-grid w-100"
+                        className="btn button-28 d-grid w-100"
+                        style={{ backgroundColor: "#82AAE3", color: "white" }}
                         type="submit"
                         onClick={() =>
                           loginWithUsernamePassword(username, password)

@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 const Drug = () => {
   const [drug, setDrug] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(7);
+  const [perPage, setPerPage] = useState(3);
   const [totalRecord, setTotalRecord] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   let history = useHistory();
@@ -42,7 +42,7 @@ const Drug = () => {
     }
     setIsLoading(false);
   }
-
+  const [activeItem, setActiveItem] = useState("Drug");
   useEffect(() => {
     loadDataMedicine();
   }, [currentPage, perPage]);
@@ -62,7 +62,7 @@ const Drug = () => {
             {" "}
             <div className="layout-wrapper layout-content-navbar">
               <div className="layout-container">
-                <SideBar />
+              <SideBar activeItem={activeItem}/>
 
                 <div
                   className="layout-page"
@@ -490,6 +490,15 @@ const Drug = () => {
                                 }}
                               >
                                 <tr>
+                                <th
+                                    style={{
+                                      backgroundColor: "#f6f9fc",
+                                      borderColor: "white",
+                                      color: "#bfc8d3",
+                                    }}
+                                  >
+                                    Image
+                                  </th>
                                   <th
                                     style={{
                                       backgroundColor: "#f6f9fc",
@@ -524,8 +533,9 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    Unit
+                                    Price AfterDiscount
                                   </th>
+                                
                                   <th
                                     style={{
                                       backgroundColor: "#f6f9fc",
@@ -543,6 +553,7 @@ const Drug = () => {
                                   drug.map((e) => {
                                     return (
                                       <tr key={e.id}>
+                                          <td><img src={e.imageModel.imageURL} style={{height:90,width:70,borderRadius:7}} /></td>
                                         <td
                                           style={{
                                             width: 10,
@@ -555,7 +566,8 @@ const Drug = () => {
                                         </td>
                                         <td>{e.price}</td>
                                         <td>{e.sellQuantity}</td>
-                                        <td>{e.unitId}</td>
+                                        <td><del>{e.price}</del>/{e.priceAfterDiscount}</td>
+                                      
                                         <td>
                                           <a
                                             class="button-81"
