@@ -277,14 +277,14 @@ const NewDiscount = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-company"
                         >
-                          reason
+                          Lí Do
                         </label>
                         <div className="input-group input-group-merge">
                           <input
                             type="text"
                             id="basic-icon-default-company"
                             className="form-control"
-                            placeholder="Tên Loại Con Sản Phẩm"
+                            placeholder=" Lí Do"
                             aria-label="Tên Loại Con Sản Phẩm"
                             aria-describedby="basic-icon-default-company2"
                             onChange={(e) =>
@@ -307,6 +307,7 @@ const NewDiscount = () => {
                           <input
                             type="text"
                             name="city"
+                            placeholder=" Giảm Giá (%)"
                             id="basic-icon-default-email"
                             className="form-control"
                             onChange={(e) =>
@@ -329,6 +330,7 @@ const NewDiscount = () => {
                           <input
                             type="text"
                             name="city"
+                            placeholder="  Số tiền giảm"
                             id="basic-icon-default-email"
                             className="form-control"
                             onChange={(e) =>
@@ -355,6 +357,7 @@ const NewDiscount = () => {
                             className="form-control"
                             placeholder="Công dung"
                             aria-label="Công dung"
+                            
                             aria-describedby="basic-icon-default-company2"
                             onChange={(e) =>
                               setProduct((prevState) => ({
@@ -405,7 +408,7 @@ const NewDiscount = () => {
                         paddingTop: 1,
                         marginLeft: "90%",
                         marginTop: "20px",
-                        backgroundColor: "#11cdef",
+                        backgroundColor: "#82AAE3",
                         color: "white",
                       }}
                     >

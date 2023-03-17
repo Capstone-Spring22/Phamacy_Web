@@ -70,8 +70,7 @@ const UpdateImportProduct = () => {
         setProduct(res.data);
         setUnitCount(res.data.productImportDetails.length);
       }
-    }
-  }
+    }}
   async function loadDataUnit() {
     const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -136,7 +135,7 @@ const UpdateImportProduct = () => {
       }));
     }
   };
-  
+
   const handlePrescriptionChange = (event) => {
     setIsPrescription(event.target.checked);
 
@@ -243,9 +242,12 @@ const UpdateImportProduct = () => {
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
-      <SideBar activeItem={activeItem}/>
+        <SideBar activeItem={activeItem} />
 
-        <div className="layout-page"     style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}>
+        <div
+          className="layout-page"
+          style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
+        >
           {/* Navbar */}
           <nav
             className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
@@ -733,16 +735,29 @@ const UpdateImportProduct = () => {
                                   placeholder="Unit Id"
                                   aria-label="Unit Id"
                                   aria-describedby={`price${index}2`}
-                                
-                                  value={product.productImportDetails[
-                                    index - 1
-                                  ].productBatches.map(
-                                    (productBatch) => productBatch.expireDate
-                                  ).join(", ") ? new Date(product.productImportDetails[
-                                    index - 1
-                                  ].productBatches.map(
-                                    (productBatch) => productBatch.expireDate
-                                  ).join(", ")).toISOString().substr(0, 10) : ''}
+                                  value={
+                                    product.productImportDetails[
+                                      index - 1
+                                    ].productBatches
+                                      .map(
+                                        (productBatch) =>
+                                          productBatch.expireDate
+                                      )
+                                      .join(", ")
+                                      ? new Date(
+                                          product.productImportDetails[
+                                            index - 1
+                                          ].productBatches
+                                            .map(
+                                              (productBatch) =>
+                                                productBatch.expireDate
+                                            )
+                                            .join(", ")
+                                        )
+                                          .toISOString()
+                                          .substr(0, 10)
+                                      : ""
+                                  }
                                   onChange={(e) => {
                                     setProduct({
                                       ...product,
@@ -792,18 +807,29 @@ const UpdateImportProduct = () => {
                                   placeholder="Unit Id"
                                   aria-label="Unit Id"
                                   aria-describedby={`barCode${index}2`}
-                                  value={product.productImportDetails[
-                                    index - 1
-                                  ].productBatches.map(
-                                    (productBatch) =>
-                                      productBatch.manufactureDate
-                                  ).join(", ") ? new Date(product.productImportDetails[
-                                    index - 1
-                                  ].productBatches.map(
-                                    (productBatch) =>
-                                      productBatch.manufactureDate
-                                  ).join(", ")).toISOString().substr(0, 10) : ''}
-                                  
+                                  value={
+                                    product.productImportDetails[
+                                      index - 1
+                                    ].productBatches
+                                      .map(
+                                        (productBatch) =>
+                                          productBatch.manufactureDate
+                                      )
+                                      .join(", ")
+                                      ? new Date(
+                                          product.productImportDetails[
+                                            index - 1
+                                          ].productBatches
+                                            .map(
+                                              (productBatch) =>
+                                                productBatch.manufactureDate
+                                            )
+                                            .join(", ")
+                                        )
+                                          .toISOString()
+                                          .substr(0, 10)
+                                      : ""
+                                  }
                                   onChange={(e) => {
                                     setProduct({
                                       ...product,
@@ -854,9 +880,11 @@ const UpdateImportProduct = () => {
                                   aria-describedby="basic-icon-default-email2"
                                   value={product.productImportDetails[
                                     index - 1
-                                  ].productBatches.map(
-                                    (productBatch) => productBatch.quantity
-                                  ).join(", ")}
+                                  ].productBatches
+                                    .map(
+                                      (productBatch) => productBatch.quantity
+                                    )
+                                    .join(", ")}
                                   onChange={(e) => {
                                     setProduct({
                                       ...product,

@@ -10,6 +10,7 @@ import {
   createDataByPath,
   updateDataByPath,
 } from "../../services/data.service";
+import axios from "axios";
 import Swal from "sweetalert2";
 import MainCategory from "./MainCategory";
 const SubCategory = () => {
@@ -104,6 +105,41 @@ const SubCategory = () => {
       setIsOpen(false);
     }
   }
+  async function createNewURL(e) {
+    if (checkValidation()) {
+      const file = e.target.files[0];
+      const data = new FormData();
+      data.append("file", file);
+
+      const res = await axios.post(
+        "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
+        data
+      );
+      console.log("display", res.data);
+      if (res && res.status === 200) {
+        setCategoryUpdate({
+          ...categoryUpdate,
+          imageUrl: res.data,
+        });
+      }
+    }
+  }
+  async function createNewURLAdd(e) {
+    if (checkValidation()) {
+      const file = e.target.files[0];
+      const data = new FormData();
+      data.append("file", file);
+
+      const res = await axios.post(
+        "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
+        data
+      );
+      console.log("display", res.data);
+      if (res && res.status === 200) {
+        setImageUrl(res.data);
+      }
+    }
+  }
   const [activeItem, setActiveItem] = useState("SubCategory");
   useEffect(() => {
     loadDataCategory();
@@ -116,7 +152,7 @@ const SubCategory = () => {
     <>
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
-        <SideBar activeItem={activeItem}/>
+          <SideBar activeItem={activeItem} />
           <div
             className="layout-page"
             style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
@@ -167,106 +203,9 @@ const SubCategory = () => {
                   </li>
                   {/* User */}
 
-                  <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                    <Link
-                      className="nav-link dropdown-toggle hide-arrow"
-                      to="/Profile"
-                      data-bs-toggle="dropdown"
-                    >
-                      <div className="avatar avatar-online">
-                        <img
-                          src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
-                          alt=""
-                          className="w-px-40 h-auto rounded-circle"
-                        />
-                      </div>
-                    </Link>
-                    <ul className="dropdown-menu dropdown-menu-end">
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <div className="d-flex">
-                            <div className="flex-shrink-0 me-3">
-                              <div className="avatar avatar-online">
-                                <img
-                                  src="../assets/img/avatars/1.png"
-                                  alt=""
-                                  className="w-px-40 h-auto rounded-circle"
-                                />
-                              </div>
-                            </div>
-                            <div className="flex-grow-1">
-                              <span className="fw-semibold d-block">
-                                John Doe
-                              </span>
-                              <small className="text-muted">Admin</small>
-                            </div>
-                          </div>
-                        </a>
-                      </li>
-                      <li>
-                        <div className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <i className="bx bx-user me-2" />
-                          <span className="align-middle">My Profile</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <i className="bx bx-cog me-2" />
-                          <span className="align-middle">Settings</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <span className="d-flex align-items-center align-middle">
-                            <i className="flex-shrink-0 bx bx-credit-card me-2" />
-                            <span className="flex-grow-1 align-middle">
-                              Billing
-                            </span>
-                            <span className="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">
-                              4
-                            </span>
-                          </span>
-                        </a>
-                      </li>
-                      <li>
-                        <div className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <a
-                          className="dropdown-item"
-                          href="auth-login-basic.html"
-                        >
-                          <i className="bx bx-power-off me-2" />
-                          <span className="align-middle">Log Out</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
+                
 
-                  <nav className="nav1">
-                    <input id="toggle" type="checkbox" defaultChecked />
-
-                    <button
-                      className="avatar avatar-online"
-                      style={{ border: "none", backgroundColor: "white" }}
-                    >
-                      <img
-                        src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
-                        alt=""
-                        className="w-px-40 h-auto rounded-circle"
-                      />
-                    </button>
-                    <div
-                      style={{
-                        width: 100,
-                        height: 200,
-                        backgroundColor: "white",
-                      }}
-                    ></div>
-                  </nav>
+              
                   {/*/ User */}
                 </ul>
               </div>
@@ -404,18 +343,25 @@ const SubCategory = () => {
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
-                                            type="text"
+                                            type="file"
                                             id="basic-icon-default-company"
                                             className="form-control"
                                             placeholder="Hình Ảnh Của Danh Mục"
                                             aria-label="ACME Inc."
                                             aria-describedby="basic-icon-default-company2"
-                                            value={imageUrl}
                                             onChange={(e) => {
-                                              setImageUrl(e.target.value);
+                                              createNewURLAdd(e);
                                             }}
                                           />
                                         </div>
+                                        <img
+                                          style={{
+                                            height: 200,
+                                            width: 200,
+                                            objectFit: "cover",
+                                          }}
+                                          src={imageUrl}
+                                        />
                                       </div>
                                       <div
                                         className="mb-3"
@@ -504,7 +450,9 @@ const SubCategory = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Cập Nhật Danh Mục Phụ</h5>
+                                  <h5 className="mb-0">
+                                    Cập Nhật Danh Mục Phụ
+                                  </h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -557,34 +505,42 @@ const SubCategory = () => {
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
-                                            type="text"
+                                            type="file"
                                             id="basic-icon-default-company"
                                             className="form-control"
                                             placeholder="Hình Ảnh Của Danh Mục Phụ"
                                             aria-label="ACME Inc."
-                                            value={categoryUpdate.imageUrl}
                                             onChange={(e) => {
-                                              setCategoryUpdate({
-                                                ...categoryUpdate,
-                                                imageUrl: e.target.value,
-                                              });
+                                              createNewURL(e);
                                             }}
                                             aria-describedby="basic-icon-default-company2"
                                           />
                                         </div>
+
+                                        <img
+                                          style={{
+                                            height: 200,
+                                            width: 200,
+                                            objectFit: "cover",
+                                          }}
+                                          src={categoryUpdate.imageUrl}
+                                        />
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{ width: "95%" ,marginTop:-200}}
+                                    
                                       >
                                         <label
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
+                                      
                                         >
                                           Danh Mục
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <select
+                                          
                                             name="city"
                                             id="basic-icon-default-email"
                                             className="form-control"
@@ -667,7 +623,7 @@ const SubCategory = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              &nbsp; &nbsp;Name SubCategory
+                              &nbsp; &nbsp;Tên Danh Mục Phụ
                             </th>
                             <th
                               style={{
@@ -676,7 +632,7 @@ const SubCategory = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              &nbsp; &nbsp;Name Category
+                              &nbsp; &nbsp;Tên Danh Mục 
                             </th>
                             <th
                               style={{
@@ -685,7 +641,7 @@ const SubCategory = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Actions
+                              Cập nhật
                             </th>
                           </tr>
                         </thead>

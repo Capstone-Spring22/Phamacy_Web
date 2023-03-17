@@ -12,7 +12,7 @@ import {
   createDataByPath,
 } from "../../services/data.service";
 import ReactPaginate from "react-paginate";
-
+import axios from "axios";
 const UpdateDrug = () => {
   const myId = localStorage.getItem("id");
 
@@ -61,7 +61,7 @@ const UpdateDrug = () => {
       preserve: "",
       ingredientModel: [{ id: "", ingredientId: "", content: "", unitId: "" }],
     },
-    imageModels: [{ id: "", imageUrl: "" }],
+    imageModels: [{ id: "", imageUrl: "" ,  isFirstImage: true,}],
   });
   async function loadDataDrugByID() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -180,12 +180,49 @@ const UpdateDrug = () => {
   async function updateProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      const data = product;
+      
+      const selectedImageIndex = product.imageModels.findIndex(
+        (image) => image.isFirstImage !== null
+      );
+      const data = {
+        // product
+        ...product,
+        imageModels: product.imageModels.map((image, index) => ({
+          ...image,
+          isFirstImage: index === selectedImageIndex,
+        })),
+      };
       const path = `Product`;
       const res = await updateDataByPath(path, accessToken, data);
       // console.log("display", data.homeAddress);
       if (res && res.status === 200) {
         Swal.fire("Update successfully!", "", "success");
+      }
+    }
+  }
+  async function createNewURL(e, index) {
+    if (checkValidation()) {
+      const file = e.target.files[0];
+      const data = new FormData();
+      data.append("file", file);
+
+      const res = await axios.post(
+        "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
+        data
+      );
+      console.log("display", res.data);
+      if (res && res.status === 200) {
+        setProduct({
+          ...product,
+          imageModels: [
+            ...product.imageModels.slice(0, index - 1),
+            {
+              ...product.imageModels[index - 1],
+              imageURL: e.target.value,
+            },
+            ...product.imageModels.slice(index),
+          ],
+        });
       }
     }
   }
@@ -1433,66 +1470,97 @@ const UpdateDrug = () => {
                   >
                     <h5 className="mb-0">Thêm Ảnh Cho Sản Phẩm</h5>
                   </div>
+                  <div className="card-body">
+                    <div
+                      style={{
+                        display: "flex",
 
-                  {Array.from({ length: imageInputCount }, (_, i) => i + 1).map(
-                    (index) => (
-                      <div>
-                        <div className="card-body">
+                        padding: 70,
+                        marginBottom: -199,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {Array.from(
+                        { length: imageInputCount },
+                        (_, i) => i + 1
+                      ).map((index) => (
+                        <div style={{ marginBottom: 200 }}>
+                          <label
+                            style={{ marginBottom: 60, marginLeft: 30 }}
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            Thêm Hình Ảnh
+                          </label>
                           <div
-                            style={{
-                              display: "flex",
-                              marginLeft: 100,
-                              padding: 30,
-                              flexWrap: "wrap",
-                            }}
+                            className="mb-3"
+                            style={{ width: "20%", marginRight: 20 }}
                           >
                             <div
-                              className="mb-3"
-                              style={{ width: "20%", marginRight: 20 }}
+                              className="input-group input-group-merge"
+                              style={{ marginBottom: -250 }}
                             >
-                              <label
-                                className="form-label"
-                                htmlFor="basic-icon-default-email"
-                              >
-                                Image
-                              </label>
-                              <div className="input-group input-group-merge">
+                              <form className="form1" method="POST">
                                 <input
-                                  type="text"
-                                  id="basic-icon-default-email"
-                                  className="form-control"
-                                  placeholder="Phone Number"
-                                  aria-label="Phone Number"
-                                  aria-describedby="basic-icon-default-email2"
-                                  value={
-                                    product.imageModels[index - 1].imageUrl
-                                  }
-                                  onChange={(e) => {
-                                    setProduct({
-                                      ...product,
-                                      imageModel: [
-                                        ...product.imageModel.slice(
-                                          0,
-                                          index - 1
-                                        ),
-                                        {
-                                          ...product.imageModel[index - 1],
-                                          imageURL: e.target.value,
-                                        },
-                                        ...product.imageModel.slice(index),
-                                      ],
-                                    });
-                                  }}
+                                  style={{ marginBottom: 100 }}
+                                  type="file"
+                                  multiple
+                                  onChange={(e) => createNewURL(e, index)}
                                 />
-                              </div>
 
-                              <div className="form-text"></div>
+                                {
+                                product.imageModels[index - 1].imageUrl ? (
+                                  <img
+                                    src={product.imageModels[index - 1].imageUrl}
+                                  />
+                                ) : (
+                                  <img src="https://media.istockphoto.com/id/1165482953/vector/picture-icon-vector-photo-gallery-icon-on-a-white-background-black-and-white.jpg?s=170x170&k=20&c=jKfPYRfAkoYKeW01wMivX6adqzT1maHpW70XiufNpg0=" />
+                                )}
+                              </form>
                             </div>
+
+                           
                           </div>
+                          <div
+                                className="mb-3"
+                                style={{
+                                  width: "30%",
+                                 
+                                  marginLeft:21
+                                }}
+                              >
+                                <div>
+                                  <button
+                                  style={{ marginTop:390,}}
+                                    className={`button-img ${
+                                      product.imageModels[index - 1]
+                                        .isFirstImage 
+                                        ? "active-img "
+                                        : ""
+                                    }`}
+                                    onClick={(e) => {
+                                      const newImageModel = [
+                                        ...product.imageModels,
+                                      ];
+                                      newImageModel.forEach((image, i) => {
+                                        newImageModel[i].isFirstImage =
+                                          i === index - 1 ? index - 1 : null;
+                                      });
+                                      setProduct({
+                                        ...product,
+                                        imageModels: newImageModel,
+                                      });
+                                    }}
+                                  >
+                                    
+                                       {product.imageModels[index - 1].isFirstImage ? 'First Image' : 'Set as First'}
+                                  </button>
+                                </div>
+                              </div>
                         </div>
-                      </div>
-                    )
-                  )}
+                      ))}
+                    </div>
+                  </div>
                   <button
                     style={{
                       height: 50,

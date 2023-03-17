@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BsPlus } from "react-icons/bs";
 import Footer from "./Footer";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import Header from "../Header/Header";
-const Home = () => {
+const Home = (props) => {
   let history = useHistory();
-
+  const location = useLocation();
+  const { cartData } = location.state;
+  const { drug, total } = cartData;
+  useEffect(() => {
+    console.log("cartData", cartData.total.discountPrice);
+  }, []);
   return (
     <>
       <Header />

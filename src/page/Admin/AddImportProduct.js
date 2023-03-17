@@ -601,7 +601,7 @@ const AddImportProduct = () => {
                     <h5 className="mb-0">Thêm Sản phẩm </h5>
                   </div>{" "}
                   {Array.from({ length: unitCount }, (_, i) => i + 1).map(
-                    (index) => {
+                    (index) => {  
                       const currentNumBatches =
                         product.productImportDetails[index - 1]?.productBatches
                           ?.length || 0;

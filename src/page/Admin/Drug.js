@@ -62,45 +62,65 @@ const Drug = () => {
             {" "}
             <div className="layout-wrapper layout-content-navbar">
               <div className="layout-container">
-              <SideBar activeItem={activeItem}/>
+                <SideBar activeItem={activeItem} />
 
                 <div
                   className="layout-page"
                   style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
                 >
                   {/* Navbar */}
-                  <nav class="navbar">
-                    <div class="navbar-container">
-                      <a href="#" class="navbar-logo"></a>
-                      <ul class="navbar-menu">
-                        <li class="navbar-item">
-                          <a href="#" class="navbar-link">Name</a>
-                        </li>
+                  <nav
+              className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+              id="layout-navbar"
+            >
+              <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                <a
+                  className="nav-item nav-link px-0 me-xl-4"
+                  href="javascript:void(0)"
+                >
+                  <i className="bx bx-menu bx-sm" />
+                </a>
+              </div>
+              <div
+                className="navbar-nav-right d-flex align-items-center"
+                id="navbar-collapse"
+              >
+                {/* Search */}
+                <div className="navbar-nav align-items-center">
+                  <div className="nav-item d-flex align-items-center">
+                    <i className="bx bx-search fs-4 lh-0" />
+                    <input
+                      type="text"
+                      className="form-control border-0 shadow-none"
+                      placeholder="Search..."
+                      aria-label="Search..."
+                    />
+                  </div>
+                </div>
+                {/* /Search */}
+                <ul className="navbar-nav flex-row align-items-center ms-auto">
+                  {/* Place this tag where you want the button to render. */}
+                  <li className="nav-item lh-1 me-3">
+                    <a
+                      className="github-button"
+                      href="https://github.com/themeselection/sneat-html-admin-template-free"
+                      data-icon="octicon-star"
+                      data-size="large"
+                      data-show-count="true"
+                      aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
+                    >
+                      Star
+                    </a>
+                  </li>
+                  {/* User */}
 
-                        <li class="navbar-item">
-                          <div className="avatar-dropdown">
-                            <img
-                              className="avatar"
-                              src="https://toigingiuvedep.vn/wp-content/uploads/2021/05/hinh-anh-avatar-nam-1.jpg"
-                              alt="Avatar"
-                            />
-                            <ul className="dropdown">
-                              <li>
-                                <a href="#">Name</a>
-                              </li>
-                              <li>
-                                <a href="#">Profile</a>
-                              </li>
-                              <li>
-                                <a href="#">Log Out</a>
-                              </li>
-                             
-                            </ul>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </nav>
+                
+
+              
+                  {/*/ User */}
+                </ul>
+              </div>
+            </nav>
 
                   {/* / Navbar */}
                   {/* Content wrapper */}
@@ -129,10 +149,10 @@ const Drug = () => {
                                 borderColor: "white",
                               }}
                             >
-                              <h3 className="fontagon">Product</h3>
+                              <h3 className="fontagon">Quản lý sản phẩm</h3>
                             </h5>
 
-                            <>
+                            <>   
                               <a
                                 className=" button-28"
                                 href="#my-dialog"
@@ -142,8 +162,10 @@ const Drug = () => {
                                   width: 80,
                                   fontSize: 13,
                                   paddingTop: 5,
-                                  marginLeft: "80%",
+                                  marginLeft: "70%",
                                   marginTop: "20px",
+                                  backgroundColor: "#82AAE3",
+                                  color: "white",
                                 }}
                               >
                                 <svg
@@ -159,6 +181,7 @@ const Drug = () => {
                                 </svg>
                                 &nbsp; Add
                               </a>
+                           
                               <div className="dialog overlay" id="my-dialog">
                                 <a href="#" className="overlay-close" />
 
@@ -490,7 +513,7 @@ const Drug = () => {
                                 }}
                               >
                                 <tr>
-                                <th
+                                  <th
                                     style={{
                                       backgroundColor: "#f6f9fc",
                                       borderColor: "white",
@@ -535,7 +558,7 @@ const Drug = () => {
                                   >
                                     Price AfterDiscount
                                   </th>
-                                
+
                                   <th
                                     style={{
                                       backgroundColor: "#f6f9fc",
@@ -553,7 +576,16 @@ const Drug = () => {
                                   drug.map((e) => {
                                     return (
                                       <tr key={e.id}>
-                                          <td><img src={e.imageModel.imageURL} style={{height:90,width:70,borderRadius:7}} /></td>
+                                        <td>
+                                          <img
+                                            src={e.imageModel.imageURL}
+                                            style={{
+                                              height: 90,
+                                              width: 70,
+                                              borderRadius: 7,
+                                            }}
+                                          />
+                                        </td>
                                         <td
                                           style={{
                                             width: 10,
@@ -566,8 +598,11 @@ const Drug = () => {
                                         </td>
                                         <td>{e.price}</td>
                                         <td>{e.sellQuantity}</td>
-                                        <td><del>{e.price}</del>/{e.priceAfterDiscount}</td>
-                                      
+                                        <td>
+                                          <del>{e.price}</del>/
+                                          {e.priceAfterDiscount}
+                                        </td>
+
                                         <td>
                                           <a
                                             class="button-81"
@@ -600,6 +635,10 @@ const Drug = () => {
                             </table>
                             <ReactPaginate
                               className="pagination p12"
+                              style={{
+                                backgroundColor: "#82AAE3",
+                                color: "white",
+                              }}
                               pageCount={totalRecord / perPage}
                               onPageChange={(e) =>
                                 setCurrentPage(e.selected + 1)

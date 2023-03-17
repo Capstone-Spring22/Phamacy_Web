@@ -6,20 +6,21 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import "../../assets/css/core.css";
 import ReactPaginate from "react-paginate";
 import { Dropdown } from "react-bootstrap";
+import axios from "axios";
 import {
   getDataByPath,
   deleteDataByPath,
   createDataByPath,
   updateDataByPath,
 } from "../../services/data.service";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 const MainCategory = () => {
   const [category, setCategory] = useState([]);
   const [categoryName, setCategoryName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [totalSite, setTotalSite] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(7);
+  const [perPage, setPerPage] = useState(6);
   const [isOpen, setIsOpen] = useState(true);
   const [categoryUpdate, setCategoryUpdate] = useState({
     categoryName: "",
@@ -32,8 +33,10 @@ const MainCategory = () => {
     // }
     return true;
   };
+  const [searchTerm, setSearchTerm] = useState("");
+
   async function loadDataCategory() {
-    const path = `MainCategory?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `MainCategory?pageIndex=${currentPage}&pageItems=${perPage}&Name=${searchTerm}`;
     const res = await getDataByPath(path, "", "");
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
@@ -68,7 +71,41 @@ const MainCategory = () => {
   useEffect(() => {
     loadDataUserByID();
   }, []);
-  
+  async function createNewURL(e) {
+    if (checkValidation()) {
+      const file = e.target.files[0];
+      const data = new FormData();
+      data.append("file", file);
+
+      const res = await axios.post(
+        "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
+        data
+      );
+      console.log("display", res.data);
+      if (res && res.status === 200) {
+        setCategoryUpdate({
+          ...categoryUpdate,
+          imageUrl: res.data,
+        });
+      }
+    }
+  }
+  async function createNewURLAdd(e) {
+    if (checkValidation()) {
+      const file = e.target.files[0];
+      const data = new FormData();
+      data.append("file", file);
+
+      const res = await axios.post(
+        "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
+        data
+      );
+      console.log("display", res.data);
+      if (res && res.status === 200) {
+        setImageUrl(res.data);
+      }
+    }
+  }
   const dataForCreate = () => {
     return {
       categoryName: categoryName,
@@ -109,7 +146,7 @@ const MainCategory = () => {
   }
   useEffect(() => {
     loadDataCategory();
-  }, [currentPage, perPage]);
+  }, [currentPage, perPage,searchTerm]);
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
@@ -165,12 +202,10 @@ const MainCategory = () => {
                     </a>
                   </li>
                   {/* User */}
-               
 
                   {/*/ User */}
                 </ul>
               </div>
-              
             </nav>
 
             {/* / Navbar */}
@@ -187,6 +222,7 @@ const MainCategory = () => {
                       backgroundColor: "#ffffff",
                       width: 1200,
                       margin: 30,
+
                       borderRadius: 5,
                       border: "none",
                     }}
@@ -198,6 +234,8 @@ const MainCategory = () => {
                           padding: "20px 24px",
                           backgroundColor: "#ffffff",
                           borderColor: "white",
+                          marginBottom: -100,
+                          marginTop: 20,
                         }}
                       >
                         <h3 className="fontagon">Quản Lý Danh Mục</h3>
@@ -234,7 +272,7 @@ const MainCategory = () => {
                           </svg>
                           &nbsp; Lưu
                         </a>
-                        
+
                         <div
                           className={`dialog overlay ${isOpen ? "" : "hidden"}`}
                           id="my-dialog"
@@ -306,10 +344,9 @@ const MainCategory = () => {
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
-                                            type="text"
-                                            value={imageUrl}
+                                            type="file"
                                             onChange={(e) => {
-                                              setImageUrl(e.target.value);
+                                              createNewURLAdd(e);
                                             }}
                                             id="basic-icon-default-company"
                                             className="form-control"
@@ -318,6 +355,14 @@ const MainCategory = () => {
                                             aria-describedby="basic-icon-default-company2"
                                           />
                                         </div>
+                                        <img
+                                          style={{
+                                            height: 200,
+                                            width: 200,
+                                            objectFit: "cover",
+                                          }}
+                                          src={imageUrl}
+                                        />
                                       </div>
                                     </div>
 
@@ -417,14 +462,10 @@ const MainCategory = () => {
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
-                                            value={categoryUpdate.imageUrl}
                                             onChange={(e) => {
-                                              setCategoryUpdate({
-                                                ...categoryUpdate,
-                                                imageUrl: e.target.value,
-                                              });
+                                              createNewURL(e);
                                             }}
-                                            type="text"
+                                            type="file"
                                             id="basic-icon-default-company"
                                             className="form-control"
                                             placeholder="Hình ảnh của danh mục"
@@ -432,6 +473,14 @@ const MainCategory = () => {
                                             aria-describedby="basic-icon-default-company2"
                                           />
                                         </div>
+                                        <img
+                                          style={{
+                                            height: 200,
+                                            width: 200,
+                                            objectFit: "cover",
+                                          }}
+                                          src={categoryUpdate.imageUrl}
+                                        />
                                       </div>
                                     </div>
 
@@ -462,6 +511,21 @@ const MainCategory = () => {
                           </div>
                         </div>
                       </>
+                    </div>
+                    <hr />
+                    <div style={{ marginLeft: 20 }}>
+                      <div>
+                        Search:
+                        <input
+                          className="input-search-table"
+                          placeholder="Search Name ..."
+                          value={searchTerm}
+                          onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            loadDataCategory();
+                          }}
+                        />
+                      </div>
                     </div>
 
                     <div className="table-responsive ">

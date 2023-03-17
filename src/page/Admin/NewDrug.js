@@ -85,7 +85,7 @@ const NewDrug = () => {
       setUnit(res.data.items);
     }
   }
-  
+
   async function loadDataCategory() {
     const path = `SubCategory?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -656,27 +656,6 @@ const NewDrug = () => {
 
                       <div className="col-md"></div>
                     </div>
-
-                    <button
-                      type="submit"
-                      className="button-28"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        createNewProducts();
-                      }}
-                      style={{
-                        height: 35,
-                        width: 100,
-                        fontSize: 13,
-                        paddingTop: 1,
-                        marginLeft: "90%",
-                        marginTop: "20px",
-                        backgroundColor: "#82AAE3",
-                        color: "white",
-                      }}
-                    >
-                      LƯU
-                    </button>
                   </div>
                 </div>
               </div>
@@ -1436,50 +1415,56 @@ const NewDrug = () => {
                       <div className="card-body">
                         <div
                           style={{
-                            display:"flex",
-                            marginLeft: 200,
+                            display: "flex",
+
                             padding: 70,
-                            marginBottom: -59,
-                            flexWrap:"wrap"
+                            marginBottom: -199,
+                            flexWrap: "wrap",
                           }}
                         >
                           {Array.from(
                             { length: imageInputCount },
                             (_, i) => i + 1
                           ).map((index) => (
-                            <div style={{marginRight:300}}>
+                            <div
+                              style={{  marginBottom: 200 }}
+                            >
+                              <label
+                                style={{ marginBottom: 60, marginLeft: 30 }}
+                                className="form-label"
+                                htmlFor="basic-icon-default-email"
+                              >
+                                Thêm Hình Ảnh
+                              </label>
                               <div
                                 className="mb-3"
-                                style={{ width: "30%", marginRight: 20 }}
+                                style={{
+                                  width: "30%",
+                                  marginRight: 20,
+                                
+                                }}
                               >
-                                <label
-                                  className="form-label"
-                                  htmlFor="basic-icon-default-email"
+                                <div
+                                  className="input-group input-group-merge"
+                                  style={{ marginBottom: -250 }}
                                 >
-                        
-                                </label>
-                                <div className="input-group input-group-merge">
-                                  {/* <input
-                                  type="file"
-                                  id="basic-icon-default-email"
-                                  className="form-control"
-                                  placeholder="Hình Ảnh"
-                                  aria-label="Phone Number"
-                                  aria-describedby="basic-icon-default-email2"
-                                  onChange={(e) => createNewURL(e, index)}
-                                /> */}
                                   <form className="form1" method="POST">
                                     <input
+                                      style={{ marginBottom: 100 }}
                                       type="file"
                                       multiple
                                       onChange={(e) => createNewURL(e, index)}
                                     />
 
-                                    <img
-                                      src={
-                                        product.imageModel[index - 1].imageURL
-                                      }
-                                    />
+                                    {product.imageModel[index - 1].imageURL ? (
+                                      <img
+                                        src={
+                                          product.imageModel[index - 1].imageURL
+                                        }
+                                      />
+                                    ) : (
+                                      <img src="https://media.istockphoto.com/id/1165482953/vector/picture-icon-vector-photo-gallery-icon-on-a-white-background-black-and-white.jpg?s=170x170&k=20&c=jKfPYRfAkoYKeW01wMivX6adqzT1maHpW70XiufNpg0=" />
+                                    )}
                                   </form>
                                 </div>
                               </div>
@@ -1487,37 +1472,36 @@ const NewDrug = () => {
                                 className="mb-3"
                                 style={{
                                   width: "30%",
-                                  marginTop: 70,
-                                  marginLeft: -230,
+                                 
+                                  marginLeft:35
                                 }}
                               >
                                 <div>
-                                  <label htmlFor={`isFirstImage-${index}`}>
-                                    <input
-                                      type="radio"
-                                      name={`isFirstImage`}
-                                      id={`isFirstImage-${index}`}
-                                      value={`${index}`}
-                                      checked={
-                                        product.imageModel[index - 1]
-                                          .isFirstImage
-                                      }
-                                      onChange={(e) => {
-                                        const newImageModel = [
-                                          ...product.imageModel,
-                                        ];
-                                        newImageModel.forEach((image, i) => {
-                                          newImageModel[i].isFirstImage =
-                                            i === index - 1 ? index - 1 : null;
-                                        });
-                                        setProduct({
-                                          ...product,
-                                          imageModel: newImageModel,
-                                        });
-                                      }}
-                                    />
-                             
-                                  </label>
+                                  <button
+                                  style={{ marginTop:390,}}
+                                    className={`button-img ${
+                                      product.imageModel[index - 1]
+                                        .isFirstImage 
+                                        ? "active-img "
+                                        : ""
+                                    }`}
+                                    onClick={(e) => {
+                                      const newImageModel = [
+                                        ...product.imageModel,
+                                      ];
+                                      newImageModel.forEach((image, i) => {
+                                        newImageModel[i].isFirstImage =
+                                          i === index - 1 ? index - 1 : null;
+                                      });
+                                      setProduct({
+                                        ...product,
+                                        imageModel: newImageModel,
+                                      });
+                                    }}
+                                  >
+                                    
+                                       {product.imageModel[index - 1].isFirstImage ? 'First Image' : 'Set as First'}
+                                  </button>
                                 </div>
                               </div>
                             </div>
@@ -1555,6 +1539,27 @@ const NewDrug = () => {
                         />
                       </svg>
                       thêm ảnh
+                    </button>
+                    <button
+                      type="submit"
+                      className="button-28"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        createNewProducts();
+                      }}
+                      style={{
+                        height: 35,
+                        width: 100,
+                        fontSize: 13,
+                        paddingTop: 1,
+                        marginLeft: "90%",
+                        marginTop: "-40px",
+                        backgroundColor: "#82AAE3",
+                        color: "white",
+                        marginBottom: 30,
+                      }}
+                    >
+                      LƯU
                     </button>
                   </div>
                 </div>
