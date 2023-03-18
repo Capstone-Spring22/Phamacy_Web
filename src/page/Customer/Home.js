@@ -59,15 +59,19 @@ const Home = () => {
   });
   async function addToCart(productId) {
     if (checkValidation()) {
-      const cartId = await axios.get("https://api.ipify.org/?format=json")
-      .then((res) => res.data.ip);
-    setProduct({
-      cartId,
-      item: {
-        productId,
-        quantity: product.item.productId === productId ? product.item.quantity + 1 : 1,
-      },
-    });
+      const cartId = await axios
+        .get("https://api.ipify.org/?format=json")
+        .then((res) => res.data.ip);
+      setProduct({
+        cartId,
+        item: {
+          productId,
+          quantity:
+            product.item.productId === productId
+              ? product.item.quantity + 1
+              : 1,
+        },
+      });
       const path = "Cart";
       const res = await createDataByPath(path, "", product);
       console.log("Check res", res);
@@ -85,123 +89,125 @@ const Home = () => {
   const handleDragStart = (e) => e.preventDefault();
   return (
     <>
-        <div className="site-navbar py-2">
-      <div className="search-wrap">
-        <div className="container">
-          <div className="search-box">
-            <button className="btn-search">
-              <i className="icon-close2" />
-            </button>
-            <form action="#" method="post">
-              <input
-                type="text"
-                className="input-search"
-                placeholder="Type to Search..."
-              />
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <div className="container">
-        <div className="d-flex align-items-center justify-content-between">
-          <div className="logo">
-            <div className="site-logo">
-              <a href="/Home" className="js-logo-clone" >
-                Pharma
-              </a>
-            </div>
-          </div>
-          <div className="main-nav d-none d-lg-block">
-            <nav
-              className="site-navigation text-right text-md-center"
-              role="navigation"
-            >
-              <ul className="site-menu js-clone-nav d-none d-lg-block">
-                <li className="active">
-                  <Link activeClassName="active" to="/Home" exact>
-                    <span>Home</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link activeClassName="active" to="/Medicine">
-                    <span>Store</span>
-                  </Link>
-                </li>
-
-              
-                <li className="has-children">
-                  <Link to="#">Category</Link>
-                  <ul className="dropdown">
-                    <li>
-                      <Link to="#">Supplements</Link>
-                    </li>
-                    <li className="has-children">
-                      <Link to="#">Vitamins</Link>
-                      <ul className="dropdown">
-                        <li>
-                          <Link to="#">Supplements</Link>
-                        </li>
-                        <li>
-                          <Link to="#">Vitamins</Link>
-                        </li>
-                        <li>
-                          <Link to="#">Diet &amp; Nutrition</Link>
-                        </li>
-                        <li>
-                          <Link to="#">Tea &amp; Coffee</Link>
-                        </li>
-                      </ul>
-                    </li>
-                    <li>
-                      <Link to="#">Diet &amp; Nutrition</Link>
-                    </li>
-                    <li>
-                      <Link to="#">Tea &amp; Coffee</Link>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <Link activeClassName="active" to="/LoginAdmin">
-                    <span>LoginAdmin</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link activeClassName="active" to="/Login">
-                    <span>Login</span>
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          <div className="icons">
-            <Link to="#" className="icons-btn d-inline-block js-search-open"></Link>
-            <div className="search-box icons-btn d-inline-block js-search-open">
+      <div className="site-navbar py-2">
+        <div className="search-wrap">
+          <div className="container">
+            <div className="search-box">
               <button className="btn-search">
-                <span className="icon-search" />
+                <i className="icon-close2" />
               </button>
-              <input
-                type="text"
-                className="input-search"
-                placeholder="Type to Search..."
-                style={{ color: "black" }}
-              />
+              <form action="#" method="post">
+                <input
+                  type="text"
+                  className="input-search"
+                  placeholder="Type to Search..."
+                />
+              </form>
             </div>
+          </div>
+        </div>
 
-            <Link to="/ViewCart"  className="icons-btn d-inline-block bag" >
-              <span className="icon-shopping-bag" />
-              <span className="number">2</span>
-            </Link>
-            <Link
-              href="#"
-              className="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"
-            >
-              <span className="icon-menu" />
-            </Link>
+        <div className="container">
+          <div className="d-flex align-items-center justify-content-between">
+            <div className="logo">
+              <div className="site-logo">
+                <a href="/Home" className="js-logo-clone">
+                  Pharma
+                </a>
+              </div>
+            </div>
+            <div className="main-nav d-none d-lg-block">
+              <nav
+                className="site-navigation text-right text-md-center"
+                role="navigation"
+              >
+                <ul className="site-menu js-clone-nav d-none d-lg-block">
+                  <li className="active">
+                    <Link activeClassName="active" to="/Home" exact>
+                      <span>Home</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link activeClassName="active" to="/Medicine">
+                      <span>Store</span>
+                    </Link>
+                  </li>
+
+                  <li className="has-children">
+                    <Link to="#">Category</Link>
+                    <ul className="dropdown">
+                      <li>
+                        <Link to="#">Supplements</Link>
+                      </li>
+                      <li className="has-children">
+                        <Link to="#">Vitamins</Link>
+                        <ul className="dropdown">
+                          <li>
+                            <Link to="#">Supplements</Link>
+                          </li>
+                          <li>
+                            <Link to="#">Vitamins</Link>
+                          </li>
+                          <li>
+                            <Link to="#">Diet &amp; Nutrition</Link>
+                          </li>
+                          <li>
+                            <Link to="#">Tea &amp; Coffee</Link>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <Link to="#">Diet &amp; Nutrition</Link>
+                      </li>
+                      <li>
+                        <Link to="#">Tea &amp; Coffee</Link>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <Link activeClassName="active" to="/LoginAdmin">
+                      <span>LoginAdmin</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link activeClassName="active" to="/Login">
+                      <span>Login</span>
+                    </Link>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <div className="icons">
+              <Link
+                to="#"
+                className="icons-btn d-inline-block js-search-open"
+              ></Link>
+              <div className="search-box icons-btn d-inline-block js-search-open">
+                <button className="btn-search">
+                  <span className="icon-search" />
+                </button>
+                <input
+                  type="text"
+                  className="input-search"
+                  placeholder="Type to Search..."
+                  style={{ color: "black" }}
+                />
+              </div>
+
+              <Link to="/ViewCart" className="icons-btn d-inline-block bag">
+                <span className="icon-shopping-bag" />
+                <span className="number">2</span>
+              </Link>
+              <Link
+                href="#"
+                className="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"
+              >
+                <span className="icon-menu" />
+              </Link>
+            </div>
           </div>
         </div>
       </div>
-    </div>
       <div className="site-wrap">
         <Carousel fade>
           <Carousel.Item interval={1000}>
@@ -361,13 +367,20 @@ const Home = () => {
                 drug.map((item, index) => {
                   return (
                     <div className="product-card" key={item.id}>
-                      <img src={item.imageModel.imageURL} alt="Product Image" />
+                      <img
+                        src={item.imageModel.imageURL}
+                        className="product-img"
+                        alt="Product Image"
+                      />
                       <div className="product-info">
                         {" "}
                         <h2 className="product-name">{item.name}</h2>
-                        <div style={{ display: "flex", marginTop: 50 }}>
+                        <div style={{ display: "flex"}}>
                           <p className="product-price">${item.price}</p>
-                          <button className="add-to-cart" onClick={() => addToCart(item.id)}>
+                          <button
+                            className="add-to-cart"
+                            onClick={() => addToCart(item.id)}
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               width="16"

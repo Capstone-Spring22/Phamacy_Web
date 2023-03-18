@@ -11,7 +11,9 @@ const AddToCart = () => {
   let history = useHistory();
   const [drug, setDrug] = useState(null);
   const [total, setTotal] = useState([]);
-
+  const [orderID, setOrderId] = useState([]);
+ 
+ 
   async function loadDataMedicine() {
     const path = `Cart/27.3.10.57`;
     const res = await getDataByPath(path, "", "");
@@ -22,12 +24,34 @@ const AddToCart = () => {
       console.log("res.data", res.data);
     }
   }
+ 
+  async function loadOrderId() {
+    const path = `Order/GenerateOrderId`;
+    const res = await getDataByPath(path, "", "");
+    console.log("display", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setOrderId(res.data);
+    }
+  }
+  const newArrayOfObjects =
+    drug &&
+    drug.length &&
+    drug.map(({ productId, quantity, price, priceAfterDiscount }) => ({
+      productId,
+      quantity,
+      originalPrice: price,
+      discountPrice: priceAfterDiscount,
+    }));
+  console.log("đ", newArrayOfObjects);
   function viewDetail(cartData) {
     history.push({
       pathname: "/Checkout",
       state: { cartData },
     });
   }
+  useEffect(() => {
+    loadOrderId();
+  }, []);
   useEffect(() => {
     loadDataMedicine();
   }, []);
@@ -63,10 +87,11 @@ const AddToCart = () => {
                     <table className="table table-responsive">
                       <thead>
                         <tr>
-                          <th>Product</th>
-                          <th>Price</th>
-                          <th>Quantity</th>
-                          <th>Total</th>
+                          <th>Hình Ảnh</th>
+                          <th>Tên</th>
+                          <th>Giá</th>
+                          <th>Số Lượng</th>
+                          <th>Tổng Giá</th>
                         </tr>
                       </thead>
 
@@ -77,17 +102,16 @@ const AddToCart = () => {
                           drug.map((item, index) => {
                             return (
                               <tr>
-                                <td className="cart_product_img d-flex align-items-center">
-                                  <a href="#">
-                                    <img
-                                      alt="Product"
-                                      src={item.productImageUrl}
-                                    />
-                                  </a>
-                                  <h6>{item.name}</h6>
+                                <td>
+                                  <img
+                                    className="cart-img"
+                                    alt="Product"
+                                    src={item.productImageUrl}
+                                  />
                                 </td>
+                                <td>{item.productName}</td>
                                 <td className="price">
-                                  <span>${item.price}</span>
+                                  <span>${item.price.toLocaleString('en-US')}</span>
                                 </td>
                                 <td className="qty">
                                   <div className="quantity">
@@ -119,7 +143,7 @@ const AddToCart = () => {
                                   </div>
                                 </td>
                                 <td className="total_price">
-                                  <span>{item.quantity * item.price}</span>
+                                  <span>{(item.quantity * item.price).toLocaleString('en-US')}</span>
                                 </td>
                               </tr>
                             );
@@ -234,7 +258,7 @@ const AddToCart = () => {
                       {total && total.subTotalPrice && (
                         <li>
                           <span>Subtotal</span>{" "}
-                          <span>{total.subTotalPrice}vnd</span>
+                          <span>{total.subTotalPrice.toLocaleString('en-US')}vnd</span>
                         </li>
                       )}
                       <li>
@@ -250,10 +274,12 @@ const AddToCart = () => {
                       </li>
                     </ul>
 
-                      <a
-                        onClick={() => viewDetail({ drug, total })}
-                        className="btn karl-checkout-btn"
-                      >
+                    <a
+                      onClick={() =>
+                        viewDetail({ drug, total, newArrayOfObjects, orderID })
+                      }
+                      className="btn karl-checkout-btn"
+                    >
                       Proceed to checkout
                     </a>
                   </div>

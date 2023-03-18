@@ -412,177 +412,7 @@ const AddImportProduct = () => {
           {/* / Navbar */}
           {/* Content wrapper */}
           <div>
-            <div
-              className="row "
-              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
-            >
-              <div className="col-xl">
-                <div className="card mb-4">
-                  <div
-                    className="card-header d-flex justify-content-between align-items-center"
-                    style={{
-                      height: 70,
-                      backgroundColor: "white",
-                      padding: "20px 24px",
-
-                      borderColor: "#f4f4f4",
-                    }}
-                  >
-                    <h5 className="mb-0">Thêm Sản Phẩm Nhập Kho</h5>
-                  </div>
-                  <div className="card-body">
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "auto auto",
-                        padding: 30,
-                      }}
-                    >
-                      <div className="mb-3" style={{ width: "95%" }}>
-                        <label
-                          className="form-label"
-                          htmlFor="basic-icon-default-fullname"
-                        >
-                          Ghi chú
-                        </label>
-                        <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="basic-icon-default-fullname"
-                            placeholder="Ghi chú"
-                            aria-label="Tên Sản Phẩm"
-                            aria-describedby="basic-icon-default-fullname2"
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                note: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="mb-3" style={{ width: "100%" }}>
-                        <label
-                          className="form-label"
-                          htmlFor="basic-icon-default-company"
-                        >
-                          Tổng giá sản phẩm
-                        </label>
-                        <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            id="basic-icon-default-company"
-                            className="form-control"
-                            placeholder="Tổng giá sản phẩm"
-                            aria-label="Tên Loại Con Sản Phẩm"
-                            aria-describedby="basic-icon-default-company2"
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                totalProductPrice: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="mb-3" style={{ width: "95%" }}>
-                        <label
-                          className="form-label"
-                          htmlFor="basic-icon-default-phone"
-                        >
-                          Thuế
-                        </label>
-                        <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            name="city"
-                            placeholder="Thuế"
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                taxPrice: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="mb-3" style={{ width: "95%" }}>
-                        <label
-                          className="form-label"
-                          htmlFor="basic-icon-default-phone"
-                        >
-                          Phí ship
-                        </label>
-                        <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            name="city"
-                            placeholder="Phí ship"
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                totalShippingFee: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
-
-                      <div className="mb-3" style={{ width: "95%" }}>
-                        <label
-                          className="form-label"
-                          htmlFor="basic-icon-default-company"
-                        >
-                          Tổng giá
-                        </label>
-                        <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            id="basic-icon-default-company"
-                            className="form-control"
-                            placeholder="Tổng giá"
-                            aria-label="Công dung"
-                            aria-describedby="basic-icon-default-company2"
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                totalPrice: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="button-28"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        createNewProducts();
-                      }}
-                      style={{
-                        height: 35,
-                        width: 100,
-                        fontSize: 13,
-                        paddingTop: 1,
-                        marginLeft: "90%",
-                        marginTop: "20px",
-                        backgroundColor: "#82AAE3",
-                        color: "white",
-                      }}
-                    >
-                      Lưu
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+          
             <div
               className="row "
               style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
@@ -1038,6 +868,177 @@ const AddImportProduct = () => {
                     </svg>{" "}
                     Thêm Sản phẩm
                   </button>
+                </div>
+              </div>
+            </div>
+            <div
+              className="row "
+              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+            >
+              <div className="col-xl">
+                <div className="card mb-4">
+                  <div
+                    className="card-header d-flex justify-content-between align-items-center"
+                    style={{
+                      height: 70,
+                      backgroundColor: "white",
+                      padding: "20px 24px",
+
+                      borderColor: "#f4f4f4",
+                    }}
+                  >
+                    <h5 className="mb-0">Thêm Sản Phẩm Nhập Kho</h5>
+                  </div>
+                  <div className="card-body">
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "auto auto",
+                        padding: 30,
+                      }}
+                    >
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-fullname"
+                        >
+                          Ghi chú
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="basic-icon-default-fullname"
+                            placeholder="Ghi chú"
+                            aria-label="Tên Sản Phẩm"
+                            aria-describedby="basic-icon-default-fullname2"
+                            onChange={(e) =>
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                note: e.target.value,
+                              }))
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3" style={{ width: "100%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-company"
+                        >
+                          Tổng giá sản phẩm
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-company"
+                            className="form-control"
+                            placeholder="Tổng giá sản phẩm"
+                            aria-label="Tên Loại Con Sản Phẩm"
+                            aria-describedby="basic-icon-default-company2"
+                            onChange={(e) =>
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                totalProductPrice: e.target.value,
+                              }))
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-phone"
+                        >
+                          Thuế
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            name="city"
+                            placeholder="Thuế"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            onChange={(e) =>
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                taxPrice: e.target.value,
+                              }))
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-phone"
+                        >
+                          Phí ship
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            name="city"
+                            placeholder="Phí ship"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            onChange={(e) =>
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                totalShippingFee: e.target.value,
+                              }))
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-company"
+                        >
+                          Tổng giá
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="basic-icon-default-company"
+                            className="form-control"
+                            placeholder="Tổng giá"
+                            aria-label="Công dung"
+                            aria-describedby="basic-icon-default-company2"
+                            onChange={(e) =>
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                totalPrice: e.target.value,
+                              }))
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="button-28"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        createNewProducts();
+                      }}
+                      style={{
+                        height: 35,
+                        width: 100,
+                        fontSize: 13,
+                        paddingTop: 1,
+                        marginLeft: "90%",
+                        marginTop: "20px",
+                        backgroundColor: "#82AAE3",
+                        color: "white",
+                      }}
+                    >
+                      Lưu
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

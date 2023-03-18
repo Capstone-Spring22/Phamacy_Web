@@ -1,4 +1,11 @@
-import React, { useEffect } from "react";
+import {
+  getDataByPath,
+  deleteDataByPath,
+  createDataByPath,
+} from "../../services/data.service";
+import { useEffect, useState } from "react";
+import React, { Fragment } from "react";
+import Swal from "sweetalert2";
 import { BsPlus } from "react-icons/bs";
 import Footer from "./Footer";
 import { useHistory, useLocation } from "react-router-dom";
@@ -7,10 +14,158 @@ const Home = (props) => {
   let history = useHistory();
   const location = useLocation();
   const { cartData } = location.state;
-  const { drug, total } = cartData;
+  const [city, setCity] = useState([]);
+
+  const [date, setDate] = useState([]);
+  const [dateTime, setDateTime] = useState("");
+  const [time, setTime] = useState([]);
+  const [citySelected, setCitySelected] = useState(false);
+  const [districsSelected, setDistricsSelected] = useState(false);
+  const [wardSelected, setWardSelected] = useState(false);
+  const [genderSelected, setGenderSelected] = useState(false);
+  const [cityID, setCityID] = useState("");
+  const [districs, setDistrics] = useState([]);
+  const [districtID, setDistrictID] = useState("");
+  const [ward, setWard] = useState([]);
+  const [wardID, setWardID] = useState("");
+  const [siteName, setSiteName] = useState("");
+  const [gender, setGender] = useState(null);
+  const { drug, total, newArrayOfObjects, orderID } = cartData;
+  const [product, setProduct] = useState({
+    orderId: orderID,
+    orderTypeId: 2,
+    siteId: "44701a50-c426-4235-9baa-3da837eb6e69",
+    pharmacistId: null,
+    subTotalPrice: cartData.total.subTotalPrice,
+    discountPrice: 0,
+    shippingPrice: 0,
+    totalPrice: 0,
+    usedPoint: 0,
+    payType: 1,
+    isPaid: 0,
+    note: "",
+   
+    products: newArrayOfObjects,
+    reveicerInformation: {
+      fullname: "",
+      phoneNumber: "",
+      email: "",
+      gender: true,
+      cityId: null,
+      districtId: null,
+      wardId: null,
+      homeAddress: null,
+    },
+    orderPickUp: {
+      datePickUp: "",
+      timePickUp: "",
+    },
+  });
+  const genders = [
+    { name: "Male", value: 0 },
+    { name: "FeMale", value: 1 },
+  ];
+  const checkValidation = () => {
+    // if (id.trim() === "") {
+    //   Swal.fire("ID Can't Empty", "", "question");
+    //   return false;
+    // }
+    return true;
+  };
+  const handleGender = (event) => {
+    event.preventDefault();
+    const genderID = event.target.value;
+    setGender(genderID);
+  };
+  async function loadDataCity() {
+    const path = `Address/City`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setCity(res.data);
+    }
+  }
+  async function loadDataDate() {
+    const path = `Order/PickUp/DateAvailable`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setDate(res.data);
+    }
+  }
+
+  async function loadDataDistrics() {
+    const path = `Address/${cityID}/District`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setDistrics(res.data);
+    }
+  }
+  
+  async function loadDataTime() {
+    const path = `Order/PickUp/${dateTime}/TimeAvailable`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setTime(res.data);
+       console.log('time',time)
+    }
+  }
+  async function loadDataWard() {
+    const path = `Address/${districtID}/Ward`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setWard(res.data);
+    }
+  }
+  const handleDate = (event) => {
+    event.preventDefault();
+    const dateTime = event.target.value;
+    setDateTime(dateTime);
+  };
+
+  const handlecity = (event) => {
+    event.preventDefault();
+    const cityID = event.target.value;
+    setCityID(cityID);
+  };
+  const handleDistrict = (event) => {
+    event.preventDefault();
+    const districtID = event.target.value;
+    setDistrictID(districtID);
+  };
+  const handleWards = (event) => {
+    event.preventDefault();
+    const wardID = event.target.value;
+    setWardID(wardID);
+  };
   useEffect(() => {
-    console.log("cartData", cartData.total.discountPrice);
+    loadDataDate();
   }, []);
+  useEffect(() => {
+    loadDataTime();
+  }, [dateTime]);
+  useEffect(() => {
+    loadDataCity();
+  }, []);
+  useEffect(() => {
+    loadDataDistrics();
+  }, [cityID]);
+  useEffect(() => {
+    loadDataWard();
+  }, [districtID]);
+  async function Checkout() {
+    if (checkValidation()) {
+      const data = product;
+      const path = "Order/Checkout";
+      const res = await createDataByPath(path, "", data);
+      console.log("Check res", res);
+      console.log("display du lieu", data);
+      if (res && res.status === 201) {
+        Swal.fire("Create Success", "", "success");
+        // window.location.reload();
+      }
+    }
+  }
+
+  useEffect(() => {}, []);
   return (
     <>
       <Header />
@@ -28,168 +183,329 @@ const Home = (props) => {
                     <div className="row">
                       <div className="col-md-6 mb-3">
                         <label htmlFor="first_name">
-                          First Name <span>*</span>
+                          Full name <span>*</span>
                         </label>
                         <input
                           type="text"
+                          style={{
+                            border: "1px solid #e4e7eb",
+                            backgroundColor: "white",
+                            borderRadius: 5,
+                          }}
                           className="form-control"
-                          id="first_name"
+                          id="full_name"
                           defaultValue=""
                           required=""
+                          onChange={(e) =>
+                            setProduct({
+                              ...product,
+                              reveicerInformation: {
+                                ...product.reveicerInformation,
+                                fullname: e.target.value,
+                              },
+                            })
+                          }
                         />
                       </div>
                       <div className="col-md-6 mb-3">
                         <label htmlFor="last_name">
-                          Last Name <span>*</span>
+                          Số điện thoại <span>*</span>
                         </label>
                         <input
                           type="text"
+                          style={{
+                            border: "1px solid #e4e7eb",
+                            backgroundColor: "white",
+                            borderRadius: 5,
+                          }}
                           className="form-control"
-                          id="last_name"
+                          id="sdt"
                           defaultValue=""
                           required=""
+                          onChange={(e) =>
+                            setProduct({
+                              ...product,
+                              reveicerInformation: {
+                                ...product.reveicerInformation,
+                                phoneNumber: e.target.value,
+                              },
+                            })
+                          }
                         />
                       </div>
                       <div className="col-12 mb-3">
-                        <label htmlFor="company">Company Name</label>
+                        <label htmlFor="company">Email</label>
                         <input
                           type="text"
+                          style={{
+                            border: "1px solid #e4e7eb",
+                            backgroundColor: "white",
+                            borderRadius: 5,
+                          }}
                           className="form-control"
                           id="company"
                           defaultValue=""
+                          onChange={(e) =>
+                            setProduct({
+                              ...product,
+                              reveicerInformation: {
+                                ...product.reveicerInformation,
+                                email: e.target.value,
+                              },
+                            })
+                          }
                         />
                       </div>
+                  
                       <div className="col-12 mb-3">
-                        <label htmlFor="country">
-                          Country <span>*</span>
+                        <label htmlFor="street_address">
+                          Thành phố <span>*</span>
                         </label>
                         <select
-                          className="custom-select d-block w-100"
-                          id="country"
+                          name="city"
+                          id="basic-icon-default-email"
+                          className="form-control"
+                          style={{
+                            border: "1px solid #e4e7eb",
+                            backgroundColor: "white",
+                            borderRadius: 5,
+                          }}
+                          onChange={(e) => {
+                            handlecity(e);
+                            setProduct({
+                              ...product,
+                              reveicerInformation: {
+                                ...product.reveicerInformation,
+                                cityId: e.target.value,
+                              },
+                            });
+                          }}
+                          value={cityID}
                         >
-                          <option value="usa">United States</option>
-                          <option value="uk">United Kingdom</option>
-                          <option value="ger">Germany</option>
-                          <option value="fra">France</option>
-                          <option value="ind">India</option>
-                          <option value="aus">Australia</option>
-                          <option value="bra">Brazil</option>
-                          <option value="cana">Canada</option>
+                           {!citySelected && (
+                              <option value="" style={{color: "#8899b8"}}>Chọn Tỉnh/ Thành Phô</option>
+                            )}
+                          {city &&
+                            city.length &&
+                            city.map((e, index) => {
+                              return (
+                                <>
+                                  <option key={e.id} value={e.id}>
+                                    {e.cityName}
+                                  </option>
+                                </>
+                              );
+                            })}
+                        </select>
+                      </div>
+
+                      <div className="col-12 mb-3">
+                        <label htmlFor="postcode">
+                          Quận/Huyện <span>*</span>
+                        </label>
+
+                        <select
+                          id="basic-icon-default-email"
+                          className="form-control"
+                          style={{
+                            border: "1px solid #e4e7eb",
+                            backgroundColor: "white",
+                            borderRadius: 5,
+                          }}
+                          onChange={(e) => {
+                            handleDistrict(e);
+                            setProduct({
+                              ...product,
+                              reveicerInformation: {
+                                ...product.reveicerInformation,
+                                districtId: e.target.value,
+                              },
+                            });
+                          }}
+                          value={districtID}
+                        >
+                             {!districsSelected && (
+                              <option value="" style={{color: "#8899b8"}}>Chọn Quận / Huyện</option>
+                            )}
+                          {districs &&
+                            districs.length &&
+                            districs.map((e, index) => {
+                              return (
+                                <>
+                                  <option key={e.id} value={e.id}>
+                                    {e.districtName}
+                                  </option>
+                                </>
+                              );
+                            })}
                         </select>
                       </div>
                       <div className="col-12 mb-3">
-                        <label htmlFor="street_address">
-                          Address <span>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control mb-3"
-                          id="street_address"
-                          defaultValue=""
-                        />
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="street_address2"
-                          defaultValue=""
-                        />
-                      </div>
-                      <div className="col-12 mb-3">
-                        <label htmlFor="postcode">
-                          Postcode <span>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="postcode"
-                          defaultValue=""
-                        />
-                      </div>
-                      <div className="col-12 mb-3">
                         <label htmlFor="city">
-                          Town/City <span>*</span>
+                          Phường <span>*</span>
                         </label>
-                        <input
-                          type="text"
+
+                        <select
+                          id="basic-icon-default-email"
                           className="form-control"
-                          id="city"
-                          defaultValue=""
-                        />
+                          style={{
+                            border: "1px solid #e4e7eb",
+                            backgroundColor: "white",
+                            borderRadius: 5,
+                          }}
+                          value={wardID}
+                          onChange={(e) => {
+                            handleWards(e);
+                            setProduct({
+                              ...product,
+                              reveicerInformation: {
+                                ...product.reveicerInformation,
+                                wardId: e.target.value,
+                              },
+                            });
+                          }}
+                        >
+                            {!wardSelected && (
+                              <option value="" style={{color: "#8899b8"}}>Chọn Phường</option>
+                            )}
+                          {ward &&
+                            ward.length &&
+                            ward.map((e, index) => {
+                              return (
+                                <>
+                                  <option key={e.id} value={e.id}>
+                                    {e.wardName}
+                                  </option>
+                                </>
+                              );
+                            })}
+                        </select>
                       </div>
                       <div className="col-12 mb-3">
                         <label htmlFor="state">
-                          Province <span>*</span>
+                          Địa chỉ cụ thể <span>*</span>
                         </label>
                         <input
                           type="text"
+                          style={{
+                            border: "1px solid #e4e7eb",
+                            backgroundColor: "white",
+                            borderRadius: 5,
+                          }}
                           className="form-control"
                           id="state"
                           defaultValue=""
+                          onChange={(e) =>
+                            setProduct({
+                              ...product,
+                              reveicerInformation: {
+                                ...product.reveicerInformation,
+                                homeAddress: e.target.value,
+                              },
+                            })
+                          }
                         />
                       </div>
                       <div className="col-12 mb-3">
-                        <label htmlFor="phone_number">
-                          Phone No <span>*</span>
+                        <label htmlFor="street_address">
+                          Ghi Chú <span>*</span>
                         </label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          id="phone_number"
-                          min={0}
+                        <textarea
+                          type="text"
+                          className="form-control mb-3"
+                          id="street_address"
+                          style={{
+                            border: "1px solid #e4e7eb",
+                            backgroundColor: "white",
+                            borderRadius: 5,
+                          }}
                           defaultValue=""
+                          onChange={(e) =>
+                            setProduct((prevState) => ({
+                              ...prevState,
+                              note: e.target.value,
+                            }))
+                          }
                         />
                       </div>
-                      <div className="col-12 mb-4">
-                        <label htmlFor="email_address">
-                          Email Address <span>*</span>
+                      <div className="col-md-6 mb-3">
+                        <label htmlFor="last_name">
+                          Ngày nhận <span>*</span>
                         </label>
-                        <input
-                          type="email"
+                        
+                         <select
+                          name="city"
+                          id="basic-icon-default-email"
                           className="form-control"
-                          id="email_address"
-                          defaultValue=""
-                        />
+                          style={{
+                            border: "1px solid #e4e7eb",
+                            backgroundColor: "white",
+                            borderRadius: 5,
+                          }}
+                          onChange={(e) => {
+                            handleDate(e);
+                            setProduct({
+                              ...product,
+                              orderPickUp: {
+                                ...product.orderPickUp,
+                                datePickUp: e.target.value,
+                              },
+                            })
+                          }}
+                          value={dateTime}
+                        >
+                          {date &&
+                            date.length &&
+                            date.map((e, index) => {
+                              return (
+                                <>
+                                  <option key={e.dateTime} value={e.dateTime}>
+                                    {e.dayofWeekAndDate}
+                                  </option>
+                                </>
+                              );
+                            })}
+                        </select>
                       </div>
-                      <div className="col-12">
-                        <div className="custom-control custom-checkbox d-block mb-2">
-                          <input
-                            type="checkbox"
-                            className="custom-control-input"
-                            id="customCheck1"
-                          />
-                          <label
-                            className="custom-control-label"
-                            htmlFor="customCheck1"
-                          >
-                            Terms and conitions
-                          </label>
-                        </div>
-                        <div className="custom-control custom-checkbox d-block mb-2">
-                          <input
-                            type="checkbox"
-                            className="custom-control-input"
-                            id="customCheck2"
-                          />
-                          <label
-                            className="custom-control-label"
-                            htmlFor="customCheck2"
-                          >
-                            Create an accout
-                          </label>
-                        </div>
-                        <div className="custom-control custom-checkbox d-block">
-                          <input
-                            type="checkbox"
-                            className="custom-control-input"
-                            id="customCheck3"
-                          />
-                          <label
-                            className="custom-control-label"
-                            htmlFor="customCheck3"
-                          >
-                            Subscribe to our newsletter
-                          </label>
-                        </div>
+
+                      <div className="col-md-6 mb-3">
+                        <label htmlFor="last_name">
+                          Thời gian nhận <span>*</span>
+                        </label>
+
+                      
+                            <select
+                          id="basic-icon-default-email"
+                          className="form-control"
+                          style={{
+                            border: "1px solid #e4e7eb",
+                            backgroundColor: "white",
+                            borderRadius: 5,
+                          }}
+                          onChange={(e) => {
+                            handleDistrict(e);
+                            setProduct({
+                              ...product,
+                              orderPickUp: {
+                                ...product.orderPickUp,
+                                timePickUp: e.target.value,
+                              },
+                            })
+                          }}
+                        
+                        >
+                          {time &&
+                            time.length &&
+                            time.map((e, index) => {
+                              return (
+                                <>
+                                  <option key={e.id} value={e.id}>
+                                    {e}
+                                  </option>
+                                </>
+                              );
+                            })}
+                        </select>
                       </div>
                     </div>
                   </form>
@@ -201,157 +517,40 @@ const Home = (props) => {
                     <h5>Your Order</h5>
                     <p>The Details</p>
                   </div>
+
                   <ul className="order-details-form mb-4">
                     <li>
                       <span>Product</span> <span>Total</span>
                     </li>
-                    <li>
-                      <span>Price</span> <span>$59.90</span>
-                    </li>
-                    <li>
-                      <span>Subtotal</span> <span>$59.90</span>
-                    </li>
+
+                    {total && total.subTotalPrice && (
+                      <li>
+                        <span>Subtotal</span>{" "}
+                        <span>
+                          {total.subTotalPrice.toLocaleString("en-US")} VND
+                        </span>
+                      </li>
+                    )}
                     <li>
                       <span>Shipping</span> <span>Free</span>
                     </li>
-                    <li>
-                      <span>Total</span> <span>$59.90</span>
-                    </li>
+                    {total && total.totalCartPrice && (
+                      <li>
+                        <span>Total</span>{" "}
+                        <span>
+                          {total.totalCartPrice.toLocaleString("en-US")} Vnd
+                        </span>
+                      </li>
+                    )}
                   </ul>
-                  <div id="accordion" role="tablist" className="mb-4">
-                    <div className="card">
-                      <div className="card-header" role="tab" id="headingOne">
-                        <h6 className="mb-0">
-                          <a
-                            data-toggle="collapse"
-                            href="#collapseOne"
-                            aria-expanded="false"
-                            aria-controls="collapseOne"
-                            style={{ textDecoration: "none", color: "black" }}
-                          >
-                            <i className="fa fa-circle-o mr-3" />
-                            Paypal
-                          </a>
-                        </h6>
-                      </div>
-                      <div
-                        id="collapseOne"
-                        className="collapse"
-                        role="tabpanel"
-                        aria-labelledby="headingOne"
-                        data-parent="#accordion"
-                      >
-                        <div className="card-body">
-                          <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Proin pharetra tempor so dales. Phasellus
-                            sagittis auctor gravida. Integ er bibendum sodales
-                            arcu id te mpus. Ut consectetur lacus.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="card">
-                      <div className="card-header" role="tab" id="headingTwo">
-                        <h6 className="mb-0">
-                          <a
-                            className="collapsed"
-                            data-toggle="collapse"
-                            href="#collapseTwo"
-                            aria-expanded="false"
-                            aria-controls="collapseTwo"
-                            style={{ textDecoration: "none", color: "black" }}
-                          >
-                            <i className="fa fa-circle-o mr-3" />
-                            cash on delievery
-                          </a>
-                        </h6>
-                      </div>
-                      <div
-                        id="collapseTwo"
-                        className="collapse"
-                        role="tabpanel"
-                        aria-labelledby="headingTwo"
-                        data-parent="#accordion"
-                        style={{ textDecoration: "none", color: "black" }}
-                      >
-                        <div className="card-body">
-                          <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Explicabo quis in veritatis officia inventore,
-                            tempore provident dignissimos.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="card">
-                      <div className="card-header" role="tab" id="headingThree">
-                        <h6 className="mb-0">
-                          <a
-                            style={{ textDecoration: "none", color: "black" }}
-                            className="collapsed"
-                            data-toggle="collapse"
-                            href="#collapseThree"
-                            aria-expanded="false"
-                            aria-controls="collapseThree"
-                          >
-                            <i className="fa fa-circle-o mr-3" />
-                            credit card
-                          </a>
-                        </h6>
-                      </div>
-                      <div
-                        id="collapseThree"
-                        className="collapse"
-                        role="tabpanel"
-                        aria-labelledby="headingThree"
-                        data-parent="#accordion"
-                        style={{ textDecoration: "none", color: "black" }}
-                      >
-                        <div className="card-body">
-                          <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Esse quo sint repudiandae suscipit ab soluta
-                            delectus voluptate, vero vitae
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="card">
-                      <div className="card-header" role="tab" id="headingFour">
-                        <h6 className="mb-0">
-                          <a
-                            className="collapsed"
-                            data-toggle="collapse"
-                            href="#collapseFour"
-                            aria-expanded="true"
-                            aria-controls="collapseFour"
-                            style={{ textDecoration: "none", color: "black" }}
-                          >
-                            <i className="fa fa-circle-o mr-3" />
-                            direct bank transfer
-                          </a>
-                        </h6>
-                      </div>
-                      <div
-                        id="collapseFour"
-                        className="collapse show"
-                        role="tabpanel"
-                        aria-labelledby="headingThree"
-                        data-parent="#accordion"
-                        style={{ textDecoration: "none", color: "black" }}
-                      >
-                        <div className="card-body">
-                          <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Est cum autem eveniet saepe fugit, impedit
-                            magni.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <a href="#" className="btn karl-checkout-btn">
+
+                  <a
+                    onClick={(e) => {
+                      e.preventDefault();
+                      Checkout();
+                    }}
+                    className="btn karl-checkout-btn"
+                  >
                     Place Order
                   </a>
                 </div>

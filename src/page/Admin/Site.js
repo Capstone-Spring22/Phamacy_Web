@@ -29,6 +29,7 @@ const Site = () => {
   const [totalSite, setTotalSite] = useState([]);
   const [homeAddress, setHomeAddress] = useState("");
   const [siteID, setSiteID] = useState("");
+
   const [siteUpdate, setSiteUpdate] = useState({
     siteName: "",
     description: "",

@@ -1189,7 +1189,7 @@ const NewDrug = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Thêm Nguyên Liệu Cho Sản Phẩm</h5>
+                    <h5 className="mb-0">Thêm Hình Ảnh</h5>
                   </div>
 
                   {Array.from({ length: ingredientCount }, (_, i) => i + 1).map(
