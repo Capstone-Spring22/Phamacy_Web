@@ -6,15 +6,20 @@ import Footer from "./Footer";
 import { useHistory } from "react-router-dom";
 import Header from "../Header/Header";
 import { getDataByPath, deleteDataByPath } from "../../services/data.service";
+import { async } from "q";
+import axios, { AxiosHeaders } from "axios";
 
 const AddToCart = () => {
+  const cartId = localStorage.getItem("cartId");
+
   let history = useHistory();
   const [drug, setDrug] = useState(null);
   const [total, setTotal] = useState([]);
   const [orderID, setOrderId] = useState([]);
 
   async function loadDataMedicine() {
-    const path = `Cart/116.106.156.4`;
+    console.log("display cartID", cartId);
+    const path = `Cart/${cartId}`;
     const res = await getDataByPath(path, "", "");
     console.log("display", res);
     if (res !== null && res !== undefined && res.status === 200) {
@@ -59,6 +64,22 @@ const AddToCart = () => {
       state: { cartData },
     });
   }
+  async function handleRemoveCart(productId){
+    const data = {
+      productId: productId,
+      cartId: cartId,
+    };
+    console.log("display data", data);
+    const config = {
+      headers: {
+        'Content-Type': 'application/json-patch+json',
+      }
+    };
+    const res = await axios.delete(`https://betterhealthapi.azurewebsites.net/api/v1/Cart`,{data: data, ...config});
+    if (res !== null && res !== undefined && res.status === 200) {
+      loadDataMedicine();
+    }
+  };
   useEffect(() => {
     loadOrderId();
   }, []);
@@ -92,7 +113,7 @@ const AddToCart = () => {
           <div className="cart_area section_padding_100 clearfix">
             <div className="container">
               <div className="row">
-                <div style={{display: 'flex'}}>
+                <div style={{ display: "flex" }}>
                   <div
                     className="cart-table clearfix"
                     style={{ marginTop: -22 }}
@@ -120,7 +141,7 @@ const AddToCart = () => {
                         <tr
                           style={{ backgroundColor: "#f6f9fc", border: "none" }}
                         >
-                          <th >Hình Ảnh</th>
+                          <th>Hình Ảnh</th>
                           <th>Tên</th>
                           <th>Giá</th>
                           <th>Số Lượng</th>
@@ -185,35 +206,56 @@ const AddToCart = () => {
                                     ).toLocaleString("en-US")}
                                   </span>
                                 </td>
+                                <td>
+                                  <button
+                                    onClick={() =>{
+                                       console.log('display',item.productId)
+                                      handleRemoveCart(item.productId)
+                                    }}
+                                  >
+                                    Xoá
+                                  </button>
+                                </td>
                               </tr>
                             );
                           })}
                       </tbody>
                     </table>
                   </div>
-                  <div className="col-12 col-md-6 col-lg-5 ml-lg-auto" style={{marginTop:-22, }}>
-                    <div className="order-details-confirmation" style={{boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",border:"none",borderRadius:10}}>
+                  <div
+                    className="col-12 col-md-6 col-lg-5 ml-lg-auto"
+                    style={{ marginTop: -22 }}
+                  >
+                    <div
+                      className="order-details-confirmation"
+                      style={{
+                        boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",
+                        border: "none",
+                        borderRadius: 10,
+                      }}
+                    >
                       <div className="cart-page-heading">
                         <h5>Thanh Toán</h5>
                         <p>Thông tin</p>
                       </div>
 
-                      <ul className="order-details-form " style={{padding:0,fontSize:20}}>
-                       
-
+                      <ul
+                        className="order-details-form "
+                        style={{ padding: 0, fontSize: 20 }}
+                      >
                         {total && total.subTotalPrice && (
-                          <li style={{fontSize:15}}>
+                          <li style={{ fontSize: 15 }}>
                             <span>Subtotal</span>{" "}
                             <span>
                               {total.subTotalPrice.toLocaleString("en-US")} VND
                             </span>
                           </li>
                         )}
-                        <li style={{fontSize:15}}>
+                        <li style={{ fontSize: 15 }}>
                           <span>Shipping</span> <span>Free</span>
                         </li>
                         {total && total.totalCartPrice && (
-                          <li style={{fontSize:15}}>
+                          <li style={{ fontSize: 15 }}>
                             <span>Tạm Tính</span>{" "}
                             <span>
                               {total.totalCartPrice.toLocaleString("en-US")} Vnd
@@ -238,23 +280,20 @@ const AddToCart = () => {
                           backgroundColor: "#82AAE3",
                           color: "white",
                           paddingTop: 13,
-                          fontSize:17
+                          fontSize: 17,
                         }}
-                     
                         className="button-28"
                       >
-                       Đặt Hàng
+                        Đặt Hàng
                       </a>
                     </div>
                   </div>
                 </div>
               </div>
-           
             </div>
           </div>
           <Footer />
         </div>
-        
       </>
     </div>
   );

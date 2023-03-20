@@ -27,7 +27,7 @@ const Home = () => {
   const update = (cartId) => {
     localStorage.setItem("cartId", cartId);
 
-    history.push("/ViewCart");
+    // history.push("/ViewCart");
   };
   const viewDetail = () => {
     history.push("/ViewDetail");
@@ -62,6 +62,7 @@ const Home = () => {
       const cartId = await axios
         .get("https://api.ipify.org/?format=json")
         .then((res) => res.data.ip);
+        update(cartId)
       setProduct({
         cartId,
         item: {

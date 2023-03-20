@@ -29,7 +29,8 @@ const Home = (props) => {
   const [ward, setWard] = useState([]);
   const [wardID, setWardID] = useState("");
   const [siteName, setSiteName] = useState("");
-  const { CheckoutSite, setCheckoutSite } = useState([]);
+  const { checkoutSite, setCheckoutSite } = useState([]);
+  const [checkSite, setCheckSite] = useState([]);
   const [gender, setGender] = useState(null);
   const {
     drug,
@@ -45,14 +46,14 @@ const Home = (props) => {
   const [product, setProduct] = useState({
     orderId: orderID,
     orderTypeId: 2,
-    siteId: "44701a50-c426-4235-9baa-3da837eb6e69",
+    siteId: "",
     pharmacistId: null,
     subTotalPrice: cartData.total.subTotalPrice,
-    discountPrice: 0,
+    discountPrice: cartData.total.discountPrice,
     shippingPrice: 0,
-    totalPrice: 0,
-    usedPoint: 0,
-    payType: 2,
+    totalPrice: cartData.total.totalCartPrice,
+    usedPoint: cartData.total.point,
+    payType: 1,
     isPaid: 0,
     note: "",
 
@@ -159,8 +160,29 @@ const Home = (props) => {
     CheckoutSiteObjectQuantity.length &&
     CheckoutSiteObjectQuantity.map((product) => product.quantity).join(";");
 
+  async function loadDataCitybyID() {
+    const path = `Address/${districtID}/Ward`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setWard(res.data);
+    }
+  }
+  async function loadDataDistrictbyID() {
+    const path = `Address/${districtID}/Ward`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setWard(res.data);
+    }
+  }
+  async function loadDataWardbyID() {
+    const path = `Address/${districtID}/Ward`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setWard(res.data);
+    }
+  }
   async function CheckoutSiteget() {
-    const path = `Order/PickUp/Site?ProductId=${productIds}&Quantity=${quantitys}&CityId=79`;
+    const path = `Order/PickUp/Site?ProductId=${productIds}&Quantity=${quantitys}&CityId=${cityID}`;
     const res = await getDataByPath(path, "", "");
     console.log("res", res.data.totalSite);
     console.log("productId", CheckoutSiteObjectProduct);
@@ -168,13 +190,13 @@ const Home = (props) => {
     console.log("ListProduct", productIds);
     console.log("ListQuantity", quantitys);
     if (res !== null && res !== undefined && res.status === 200) {
-      setCheckoutSite(res.data);
-      console.log("siteId", CheckoutSite);
+      setCheckSite(res.data.siteListToPickUps);
+      console.log("siteId", checkSite);
     }
   }
   useEffect(() => {
     CheckoutSiteget();
-  }, []);
+  }, [cityID]);
   const handleDate = (event) => {
     event.preventDefault();
     const dateTime = event.target.value;
@@ -383,13 +405,13 @@ const Home = (props) => {
                             }}
                             onChange={(e) => {
                               handlecity(e);
-                              setProduct({
-                                ...product,
-                                reveicerInformation: {
-                                  ...product.reveicerInformation,
-                                  cityId: e.target.value,
-                                },
-                              });
+                              // setProduct({
+                              //   ...product,
+                              //   reveicerInformation: {
+                              //     ...product.reveicerInformation,
+                              //     cityId: e.target.value,
+                              //   },
+                              // });
                             }}
                             value={cityID}
                           >
@@ -427,13 +449,13 @@ const Home = (props) => {
                             }}
                             onChange={(e) => {
                               handleDistrict(e);
-                              setProduct({
-                                ...product,
-                                reveicerInformation: {
-                                  ...product.reveicerInformation,
-                                  districtId: e.target.value,
-                                },
-                              });
+                              // setProduct({
+                              //   ...product,
+                              //   reveicerInformation: {
+                              //     ...product.reveicerInformation,
+                              //     districtId: e.target.value,
+                              //   },
+                              // });
                             }}
                             value={districtID}
                           >
@@ -455,7 +477,7 @@ const Home = (props) => {
                               })}
                           </select>
                         </div>
-                        <div className="col-12 mb-3">
+                        {/* <div className="col-12 mb-3">
                           <label htmlFor="city">
                             Phường <span>*</span>
                           </label>
@@ -497,8 +519,8 @@ const Home = (props) => {
                                 );
                               })}
                           </select>
-                        </div>
-                        <div className="col-12 mb-3">
+                        </div> */}
+                        {/* <div className="col-12 mb-3">
                           <label htmlFor="state">
                             Địa chỉ cụ thể <span>*</span>
                           </label>
@@ -522,6 +544,29 @@ const Home = (props) => {
                               })
                             }
                           />
+                        </div> */}
+                        <div className="col-12 mb-3">
+                          {checkSite &&
+                            checkSite.map((siteInfo) => {
+                              return (
+                                <div
+                                  onClick={() =>
+                                    setProduct((prevState) => ({
+                                      ...prevState,
+                                      siteId: siteInfo.siteId,
+                                    }))
+                                  }
+                                  key={siteInfo.siteId}
+                                >
+                                  <div>Có hàng tại {siteInfo.siteName}</div>
+                                  <div>
+                                    {siteInfo.cityId}-{siteInfo.districtId}-
+                                    {siteInfo.wardId}
+                                  </div>
+                                  <div>Địa chỉ: {siteInfo.homeAddress}</div>
+                                </div>
+                              );
+                            })}
                         </div>
                         <div className="col-12 mb-3">
                           <label htmlFor="street_address">

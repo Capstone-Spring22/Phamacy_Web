@@ -25,6 +25,8 @@ const NewDrug = () => {
   const [addUnit, setAddUnit] = useState(false);
   const [unit, setUnit] = useState([]);
   const [unit2, setUnit2] = useState([]);
+  const [unitSelected, setUnitSelected] = useState(false);
+  const [ingredientSelected, setIngredientSelected] = useState(false);
 
   const [categorySelected, setCategorySelected] = useState(false);
   const [manufactunerSelected, setManufactunerSelected] = useState(false);
@@ -52,7 +54,7 @@ const NewDrug = () => {
         unitLevel: 1,
         quantitative: 1,
         price: "",
-        isSell: 0,
+        isSell: 1,
         barCode: "",
       },
     ],
@@ -876,7 +878,6 @@ const NewDrug = () => {
                                     product.productDetailModel[index - 1].unitId
                                   }
                                   onChange={(e) => {
-                                    handleUnit(e);
                                     setProduct({
                                       ...product,
                                       productDetailModel: [
@@ -898,6 +899,9 @@ const NewDrug = () => {
                                     });
                                   }}
                                 >
+                                  {!unitSelected && (
+                                    <option value="">--- Chọn Đơn vị</option>
+                                  )}
                                   {unit &&
                                     unit.length &&
                                     unit.map((e, index) => {
@@ -1338,6 +1342,9 @@ const NewDrug = () => {
                                     ].unitId
                                   }
                                 >
+                                  {!unitSelected && (
+                                    <option value="">--- Chọn Đơn vị</option>
+                                  )}
                                   {unit2 &&
                                     unit2.length &&
                                     unit2.map((e, index) => {
@@ -1426,9 +1433,7 @@ const NewDrug = () => {
                             { length: imageInputCount },
                             (_, i) => i + 1
                           ).map((index) => (
-                            <div
-                              style={{  marginBottom: 200 }}
-                            >
+                            <div style={{ marginBottom: 200 }}>
                               <label
                                 style={{ marginBottom: 60, marginLeft: 30 }}
                                 className="form-label"
@@ -1441,7 +1446,6 @@ const NewDrug = () => {
                                 style={{
                                   width: "30%",
                                   marginRight: 20,
-                                
                                 }}
                               >
                                 <div
@@ -1472,16 +1476,15 @@ const NewDrug = () => {
                                 className="mb-3"
                                 style={{
                                   width: "30%",
-                                 
-                                  marginLeft:35
+
+                                  marginLeft: 35,
                                 }}
                               >
                                 <div>
                                   <button
-                                  style={{ marginTop:390,}}
+                                    style={{ marginTop: 390 }}
                                     className={`button-img ${
-                                      product.imageModel[index - 1]
-                                        .isFirstImage 
+                                      product.imageModel[index - 1].isFirstImage
                                         ? "active-img "
                                         : ""
                                     }`}
@@ -1499,8 +1502,9 @@ const NewDrug = () => {
                                       });
                                     }}
                                   >
-                                    
-                                       {product.imageModel[index - 1].isFirstImage ? 'First Image' : 'Set as First'}
+                                    {product.imageModel[index - 1].isFirstImage
+                                      ? "Hình đại diện"
+                                      : "Chọn hình đại diện"}
                                   </button>
                                 </div>
                               </div>
