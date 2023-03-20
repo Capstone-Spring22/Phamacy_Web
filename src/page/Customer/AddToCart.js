@@ -12,10 +12,9 @@ const AddToCart = () => {
   const [drug, setDrug] = useState(null);
   const [total, setTotal] = useState([]);
   const [orderID, setOrderId] = useState([]);
- 
- 
+
   async function loadDataMedicine() {
-    const path = `Cart/27.3.10.57`;
+    const path = `Cart/116.106.156.4`;
     const res = await getDataByPath(path, "", "");
     console.log("display", res);
     if (res !== null && res !== undefined && res.status === 200) {
@@ -24,7 +23,18 @@ const AddToCart = () => {
       console.log("res.data", res.data);
     }
   }
- 
+  const CheckoutSiteObjectProduct =
+    drug &&
+    drug.length &&
+    drug.map(({ productId }) => ({
+      productId,
+    }));
+  const CheckoutSiteObjectQuantity =
+    drug &&
+    drug.length &&
+    drug.map(({ quantity }) => ({
+      quantity,
+    }));
   async function loadOrderId() {
     const path = `Order/GenerateOrderId`;
     const res = await getDataByPath(path, "", "");
@@ -66,7 +76,7 @@ const AddToCart = () => {
               <div class="row">
                 <div class="col-md-12 mb-0">
                   <a
-                    href="index.html"
+                    href="Home"
                     style={{ textDecoration: "none", color: "black" }}
                   >
                     Home
@@ -82,20 +92,44 @@ const AddToCart = () => {
           <div className="cart_area section_padding_100 clearfix">
             <div className="container">
               <div className="row">
-                <div className="col-12">
-                  <div className="cart-table clearfix">
-                    <table className="table table-responsive">
-                      <thead>
-                        <tr>
-                          <th>Hình Ảnh</th>
+                <div style={{display: 'flex'}}>
+                  <div
+                    className="cart-table clearfix"
+                    style={{ marginTop: -22 }}
+                  >
+                    <table
+                      className="table table-responsive"
+                      style={{
+                        backgroundColor: "white",
+                        boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",
+                        borderRadius: 10,
+                        paddingBottom: 50,
+                      }}
+                    >
+                      <h5
+                        className="card-header"
+                        style={{
+                          padding: "20px 24px",
+                          backgroundColor: "#ffffff",
+                          borderColor: "white",
+                        }}
+                      >
+                        <h3 className="fontagon">Giỏ Hàng</h3>
+                      </h5>
+                      <thead style={{ border: "none" }}>
+                        <tr
+                          style={{ backgroundColor: "#f6f9fc", border: "none" }}
+                        >
+                          <th >Hình Ảnh</th>
                           <th>Tên</th>
                           <th>Giá</th>
                           <th>Số Lượng</th>
                           <th>Tổng Giá</th>
+                          <th>Xóa Cart</th>
                         </tr>
                       </thead>
 
-                      <tbody>
+                      <tbody style={{ border: "none" }}>
                         {" "}
                         {drug &&
                           drug.length &&
@@ -111,7 +145,9 @@ const AddToCart = () => {
                                 </td>
                                 <td>{item.productName}</td>
                                 <td className="price">
-                                  <span>${item.price.toLocaleString('en-US')}</span>
+                                  <span>
+                                    ${item.price.toLocaleString("en-US")}
+                                  </span>
                                 </td>
                                 <td className="qty">
                                   <div className="quantity">
@@ -143,7 +179,11 @@ const AddToCart = () => {
                                   </div>
                                 </td>
                                 <td className="total_price">
-                                  <span>{(item.quantity * item.price).toLocaleString('en-US')}</span>
+                                  <span>
+                                    {(
+                                      item.quantity * item.price
+                                    ).toLocaleString("en-US")}
+                                  </span>
                                 </td>
                               </tr>
                             );
@@ -151,143 +191,70 @@ const AddToCart = () => {
                       </tbody>
                     </table>
                   </div>
-                  <div className="cart-footer d-flex mt-30">
-                    <div className="back-to-shop w-50">
-                      <a
-                        href="shop-grid-left-sidebar.html"
-                        style={{ textDecoration: "none", color: "black" }}
-                      >
-                        Continue shooping
-                      </a>
-                    </div>
-                    <div className="update-checkout w-50 text-right">
-                      <a href="#" style={{ textDecoration: "none" }}>
-                        clear cart
-                      </a>
-                      <a href="#" style={{ textDecoration: "none" }}>
-                        Update cart
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-12 col-md-6 col-lg-4">
-                  <div className="coupon-code-area mt-70">
-                    <div className="cart-page-heading">
-                      <h5>Cupon code</h5>
-                      <p>Enter your cupone code</p>
-                    </div>
-                    <form action="#">
-                      <input
-                        type="search"
-                        name="search"
-                        placeholder="#569ab15"
-                      />
-                      <button
-                        type="submit"
-                        style={{ backgroundColor: "#51eaea" }}
-                      >
-                        Apply
-                      </button>
-                    </form>
-                  </div>
-                </div>
-                <div className="col-12 col-md-6 col-lg-4">
-                  <div className="shipping-method-area mt-70">
-                    <div className="cart-page-heading">
-                      <h5>Shipping method</h5>
-                      <p>Select the one you want</p>
-                    </div>
-                    <div className="custom-control custom-radio mb-30">
-                      <input
-                        type="radio"
-                        id="customRadio1"
-                        name="customRadio"
-                        className="custom-control-input"
-                      />
-                      <label
-                        className="custom-control-label d-flex align-items-center justify-content-between"
-                        htmlFor="customRadio1"
-                      >
-                        <span>Next day delivery</span>
-                        <span>$4.99</span>
-                      </label>
-                    </div>
-                    <div className="custom-control custom-radio mb-30">
-                      <input
-                        type="radio"
-                        id="customRadio2"
-                        name="customRadio"
-                        className="custom-control-input"
-                      />
-                      <label
-                        className="custom-control-label d-flex align-items-center justify-content-between"
-                        htmlFor="customRadio2"
-                      >
-                        <span>Standard delivery</span>
-                        <span>$1.99</span>
-                      </label>
-                    </div>
-                    <div className="custom-control custom-radio">
-                      <input
-                        type="radio"
-                        id="customRadio3"
-                        name="customRadio"
-                        className="custom-control-input"
-                      />
-                      <label
-                        className="custom-control-label d-flex align-items-center justify-content-between"
-                        htmlFor="customRadio3"
-                      >
-                        <span>Personal Pickup</span>
-                        <span>Free</span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
+                  <div className="col-12 col-md-6 col-lg-5 ml-lg-auto" style={{marginTop:-22, }}>
+                    <div className="order-details-confirmation" style={{boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",border:"none",borderRadius:10}}>
+                      <div className="cart-page-heading">
+                        <h5>Thanh Toán</h5>
+                        <p>Thông tin</p>
+                      </div>
 
-                <div className="col-12 col-lg-4">
-                  <div className="cart-total-area mt-70">
-                    <div className="cart-page-heading">
-                      <h5>Cart total</h5>
-                      <p>Final info</p>
-                    </div>
+                      <ul className="order-details-form " style={{padding:0,fontSize:20}}>
+                       
 
-                    <ul className="cart-total-chart">
-                      {total && total.subTotalPrice && (
-                        <li>
-                          <span>Subtotal</span>{" "}
-                          <span>{total.subTotalPrice.toLocaleString('en-US')}vnd</span>
+                        {total && total.subTotalPrice && (
+                          <li style={{fontSize:15}}>
+                            <span>Subtotal</span>{" "}
+                            <span>
+                              {total.subTotalPrice.toLocaleString("en-US")} VND
+                            </span>
+                          </li>
+                        )}
+                        <li style={{fontSize:15}}>
+                          <span>Shipping</span> <span>Free</span>
                         </li>
-                      )}
-                      <li>
-                        <span>Shipping</span> <span>Free</span>
-                      </li>
-                      <li>
-                        <span>
-                          <strong>Total</strong>
-                        </span>{" "}
-                        <span>
-                          <strong>$119.90</strong>
-                        </span>
-                      </li>
-                    </ul>
+                        {total && total.totalCartPrice && (
+                          <li style={{fontSize:15}}>
+                            <span>Tạm Tính</span>{" "}
+                            <span>
+                              {total.totalCartPrice.toLocaleString("en-US")} Vnd
+                            </span>
+                          </li>
+                        )}
+                      </ul>
 
-                    <a
-                      onClick={() =>
-                        viewDetail({ drug, total, newArrayOfObjects, orderID })
-                      }
-                      className="btn karl-checkout-btn"
-                    >
-                      Proceed to checkout
-                    </a>
+                      <a
+                        onClick={() =>
+                          viewDetail({
+                            drug,
+                            total,
+                            newArrayOfObjects,
+                            CheckoutSiteObjectProduct,
+                            CheckoutSiteObjectQuantity,
+                            orderID,
+                          })
+                        }
+                        style={{
+                          height: 50,
+                          backgroundColor: "#82AAE3",
+                          color: "white",
+                          paddingTop: 13,
+                          fontSize:17
+                        }}
+                     
+                        className="button-28"
+                      >
+                       Đặt Hàng
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
+           
             </div>
           </div>
+          <Footer />
         </div>
+        
       </>
     </div>
   );

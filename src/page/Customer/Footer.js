@@ -6,12 +6,16 @@ import { Link, NavLink } from "react-router-dom";
 const Footer = () => {
   
   return (
+    
     <footer className="site-footer">
-        <div className="container">
+      
+        <div className="container" style={{marginLeft:-100}}>
+          
           <div className="row">
             <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
               <div className="block-7">
-                <h3 className="footer-heading mb-4">About Us</h3>
+              
+                <h3 className="footer-heading mb-4">Về Chúng tôi</h3>
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius
                   quae reiciendis distinctio voluptates sed dolorum excepturi
@@ -20,7 +24,7 @@ const Footer = () => {
               </div>
             </div>
             <div className="col-lg-3 mx-auto mb-5 mb-lg-0">
-              <h3 className="footer-heading mb-4">Quick Links</h3>
+              <h3 className="footer-heading mb-4">Danh Mục</h3>
               <ul className="list-unstyled">
                 <li>
                   <a href="#">Supplements</a>
@@ -51,23 +55,7 @@ const Footer = () => {
               </div>
             </div>
           </div>
-          <div className="row pt-5 mt-5 text-center">
-            <div className="col-md-12">
-              <p>
-                {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
-                Copyright © All rights reserved {" "}
-                <i className="icon-heart" aria-hidden="true" /> by{" "}
-                <a
-                  href="https://colorlib.com"
-                  target="_blank"
-                  className="text-primary"
-                >
-                  Phama
-                </a>
-                {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
-              </p>
-            </div>
-          </div>
+       
         </div>
       </footer>
     

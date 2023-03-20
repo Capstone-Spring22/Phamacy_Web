@@ -11,6 +11,7 @@ import {
 } from "../../services/data.service";
 import { Link } from "react-router-dom";
 import jwtDecode from "jwt-decode";
+import logo from "../../assets/BH.png";
 
 const LoginAdmin = () => {
   const navigate = useHistory();
@@ -45,13 +46,15 @@ const LoginAdmin = () => {
               "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
             ]
           );
-          const roleID = jwtDecode(res.data.token)[
-            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-          ];
+          const roleID =
+            ("roleID",
+            jwtDecode(res.data.token)[
+              "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+            ]);
           const decoded = jwtDecode(res.data.token);
 
           console.log("ss", jwtDecode(res.data.token));
-          
+
           if (roleID === "Manager") {
             navigate.push("/ImportProduct");
           } else if (roleID === "Pharmacist") {
@@ -79,12 +82,14 @@ const LoginAdmin = () => {
               >
                 <div className="card-body">
                   {/* Logo */}
-                  <div className="app-brand justify-content-center">
-                    <a href="index.html" className="app-brand-link gap-2">
-                      <span className="app-brand-text demo text-body fw-bolder">
-                        BetterHealth
-                      </span>
-                    </a>
+                  <div className="app-brand demo" style={{ marginLeft: 20,marginBottom:-80,marginTop:-60 }}>
+                    <Link
+                      to="/Home"
+                      className="app-brand-link"
+                     
+                    >
+                      <img src={logo} style={{height:250 }} />
+                    </Link>
                   </div>
                   {/* /Logo */}
                   <h4 className="mb-2">Welcome to BetterHealth! 👋</h4>

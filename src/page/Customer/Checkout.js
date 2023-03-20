@@ -29,8 +29,19 @@ const Home = (props) => {
   const [ward, setWard] = useState([]);
   const [wardID, setWardID] = useState("");
   const [siteName, setSiteName] = useState("");
+  const { CheckoutSite, setCheckoutSite } = useState([]);
   const [gender, setGender] = useState(null);
-  const { drug, total, newArrayOfObjects, orderID } = cartData;
+  const {
+    drug,
+    total,
+    newArrayOfObjects,
+    CheckoutSiteObjectProduct,
+    CheckoutSiteObjectQuantity,
+    orderID,
+  } = cartData;
+  const [orderTypeId, setOrderTypeId] = useState(2);
+  const [selectedButton, setSelectedButton] = useState("button1");
+
   const [product, setProduct] = useState({
     orderId: orderID,
     orderTypeId: 2,
@@ -41,10 +52,10 @@ const Home = (props) => {
     shippingPrice: 0,
     totalPrice: 0,
     usedPoint: 0,
-    payType: 1,
+    payType: 2,
     isPaid: 0,
     note: "",
-   
+
     products: newArrayOfObjects,
     reveicerInformation: {
       fullname: "",
@@ -99,15 +110,39 @@ const Home = (props) => {
       setDistrics(res.data);
     }
   }
-  
+
   async function loadDataTime() {
     const path = `Order/PickUp/${dateTime}/TimeAvailable`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setTime(res.data);
-       console.log('time',time)
+      console.log("time", time);
     }
   }
+  const [showForm1, setShowForm1] = useState(true);
+  const [showForm2, setShowForm2] = useState(false);
+
+  const handleShowForm1 = () => {
+    setShowForm1(true);
+    setShowForm2(false);
+    setOrderTypeId(2);
+    setSelectedButton("button1");
+    setProduct((prevState) => ({
+      ...prevState,
+      orderTypeId: 2,
+    }));
+  };
+
+  const handleShowForm2 = () => {
+    setShowForm1(false);
+    setShowForm2(true);
+    setOrderTypeId(3);
+    setSelectedButton("button2");
+    setProduct((prevState) => ({
+      ...prevState,
+      orderTypeId: 3,
+    }));
+  };
   async function loadDataWard() {
     const path = `Address/${districtID}/Ward`;
     const res = await getDataByPath(path, "", "");
@@ -115,6 +150,31 @@ const Home = (props) => {
       setWard(res.data);
     }
   }
+  const productIds =
+    CheckoutSiteObjectProduct &&
+    CheckoutSiteObjectProduct.length &&
+    CheckoutSiteObjectProduct.map((product) => product.productId).join(";");
+  const quantitys =
+    CheckoutSiteObjectQuantity &&
+    CheckoutSiteObjectQuantity.length &&
+    CheckoutSiteObjectQuantity.map((product) => product.quantity).join(";");
+
+  async function CheckoutSiteget() {
+    const path = `Order/PickUp/Site?ProductId=${productIds}&Quantity=${quantitys}&CityId=79`;
+    const res = await getDataByPath(path, "", "");
+    console.log("res", res.data.totalSite);
+    console.log("productId", CheckoutSiteObjectProduct);
+    console.log("quantity", CheckoutSiteObjectQuantity);
+    console.log("ListProduct", productIds);
+    console.log("ListQuantity", quantitys);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setCheckoutSite(res.data);
+      console.log("siteId", CheckoutSite);
+    }
+  }
+  useEffect(() => {
+    CheckoutSiteget();
+  }, []);
   const handleDate = (event) => {
     event.preventDefault();
     const dateTime = event.target.value;
@@ -169,374 +229,773 @@ const Home = (props) => {
   return (
     <>
       <Header />
+      <div class="bg-light py-3">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 mb-0">
+              <a
+                href="/Home"
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                Home
+              </a>{" "}
+              <span class="mx-2 mb-0">/</span>{" "}
+              <a href="/ViewCart" class="text-black">
+                Cart
+              </a>
+              <span class="mx-2 mb-0">/</span>{" "}
+              <strong class="text-black">Check Out</strong>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="site-wrap">
         <div className="checkout_area section_padding_100">
           <div className="container">
             <div className="row">
-              <div className="col-12 col-md-6">
+              <div
+                className="col-12 col-md-6"
+                style={{
+                  backgroundColor: "white",
+                  boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",
+                  borderRadius: 10,
+                  paddingBottom: 50,
+                  width: 750,
+                  padding: 50,
+                }}
+              >
+                <div className="method-order">
+                  {" "}
+                  <button
+                    className={
+                      selectedButton === "button1" ? "button-order" : "action"
+                    }
+                    onClick={handleShowForm1}
+                  >
+                    Nhận Tại Nhà Thuốc
+                  </button>
+                  <button
+                    className={
+                      selectedButton === "button2" ? "button-order" : "action"
+                    }
+                    onClick={handleShowForm2}
+                  >
+                    Giao Tận Nơi
+                  </button>
+                </div>
+
                 <div className="checkout_details_area mt-50 clearfix">
                   <div className="cart-page-heading">
-                    <h5>Billing Address</h5>
-                    <p>Enter your cupone code</p>
+                    <h5>Thông Tin</h5>
+                    <p>Viết Thông Tin</p>
                   </div>
-                  <form action="#" method="post">
-                    <div className="row">
-                      <div className="col-md-6 mb-3">
-                        <label htmlFor="first_name">
-                          Full name <span>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          style={{
-                            border: "1px solid #e4e7eb",
-                            backgroundColor: "white",
-                            borderRadius: 5,
-                          }}
-                          className="form-control"
-                          id="full_name"
-                          defaultValue=""
-                          required=""
-                          onChange={(e) =>
-                            setProduct({
-                              ...product,
-                              reveicerInformation: {
-                                ...product.reveicerInformation,
-                                fullname: e.target.value,
-                              },
-                            })
-                          }
-                        />
-                      </div>
-                      <div className="col-md-6 mb-3">
-                        <label htmlFor="last_name">
-                          Số điện thoại <span>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          style={{
-                            border: "1px solid #e4e7eb",
-                            backgroundColor: "white",
-                            borderRadius: 5,
-                          }}
-                          className="form-control"
-                          id="sdt"
-                          defaultValue=""
-                          required=""
-                          onChange={(e) =>
-                            setProduct({
-                              ...product,
-                              reveicerInformation: {
-                                ...product.reveicerInformation,
-                                phoneNumber: e.target.value,
-                              },
-                            })
-                          }
-                        />
-                      </div>
-                      <div className="col-12 mb-3">
-                        <label htmlFor="company">Email</label>
-                        <input
-                          type="text"
-                          style={{
-                            border: "1px solid #e4e7eb",
-                            backgroundColor: "white",
-                            borderRadius: 5,
-                          }}
-                          className="form-control"
-                          id="company"
-                          defaultValue=""
-                          onChange={(e) =>
-                            setProduct({
-                              ...product,
-                              reveicerInformation: {
-                                ...product.reveicerInformation,
-                                email: e.target.value,
-                              },
-                            })
-                          }
-                        />
-                      </div>
-                  
-                      <div className="col-12 mb-3">
-                        <label htmlFor="street_address">
-                          Thành phố <span>*</span>
-                        </label>
-                        <select
-                          name="city"
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          style={{
-                            border: "1px solid #e4e7eb",
-                            backgroundColor: "white",
-                            borderRadius: 5,
-                          }}
-                          onChange={(e) => {
-                            handlecity(e);
-                            setProduct({
-                              ...product,
-                              reveicerInformation: {
-                                ...product.reveicerInformation,
-                                cityId: e.target.value,
-                              },
-                            });
-                          }}
-                          value={cityID}
-                        >
-                           {!citySelected && (
-                              <option value="" style={{color: "#8899b8"}}>Chọn Tỉnh/ Thành Phô</option>
+                  {showForm1 && (
+                    <form action="#" method="post">
+                      <div className="row">
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="first_name">
+                            Tên Đầy Đủ <span>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            className="form-control"
+                            id="full_name"
+                            defaultValue=""
+                            required=""
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  fullname: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="last_name">
+                            Số điện thoại <span>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            className="form-control"
+                            id="sdt"
+                            defaultValue=""
+                            required=""
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  phoneNumber: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="col-12 mb-3">
+                          <label htmlFor="company">Email</label>
+                          <input
+                            type="text"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            className="form-control"
+                            id="company"
+                            defaultValue=""
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  email: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+
+                        <div className="col-12 mb-3">
+                          <label htmlFor="street_address">
+                            Thành phố <span>*</span>
+                          </label>
+                          <select
+                            name="city"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            onChange={(e) => {
+                              handlecity(e);
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  cityId: e.target.value,
+                                },
+                              });
+                            }}
+                            value={cityID}
+                          >
+                            {!citySelected && (
+                              <option value="" style={{ color: "#8899b8" }}>
+                                Chọn Tỉnh/ Thành Phô
+                              </option>
                             )}
-                          {city &&
-                            city.length &&
-                            city.map((e, index) => {
-                              return (
-                                <>
-                                  <option key={e.id} value={e.id}>
-                                    {e.cityName}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
-                      </div>
+                            {city &&
+                              city.length &&
+                              city.map((e, index) => {
+                                return (
+                                  <>
+                                    <option key={e.id} value={e.id}>
+                                      {e.cityName}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
+                        </div>
 
-                      <div className="col-12 mb-3">
-                        <label htmlFor="postcode">
-                          Quận/Huyện <span>*</span>
-                        </label>
+                        <div className="col-12 mb-3">
+                          <label htmlFor="postcode">
+                            Quận/Huyện <span>*</span>
+                          </label>
 
-                        <select
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          style={{
-                            border: "1px solid #e4e7eb",
-                            backgroundColor: "white",
-                            borderRadius: 5,
-                          }}
-                          onChange={(e) => {
-                            handleDistrict(e);
-                            setProduct({
-                              ...product,
-                              reveicerInformation: {
-                                ...product.reveicerInformation,
-                                districtId: e.target.value,
-                              },
-                            });
-                          }}
-                          value={districtID}
-                        >
-                             {!districsSelected && (
-                              <option value="" style={{color: "#8899b8"}}>Chọn Quận / Huyện</option>
+                          <select
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            onChange={(e) => {
+                              handleDistrict(e);
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  districtId: e.target.value,
+                                },
+                              });
+                            }}
+                            value={districtID}
+                          >
+                            {!districsSelected && (
+                              <option value="" style={{ color: "#8899b8" }}>
+                                Chọn Quận / Huyện
+                              </option>
                             )}
-                          {districs &&
-                            districs.length &&
-                            districs.map((e, index) => {
-                              return (
-                                <>
-                                  <option key={e.id} value={e.id}>
-                                    {e.districtName}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
-                      </div>
-                      <div className="col-12 mb-3">
-                        <label htmlFor="city">
-                          Phường <span>*</span>
-                        </label>
+                            {districs &&
+                              districs.length &&
+                              districs.map((e, index) => {
+                                return (
+                                  <>
+                                    <option key={e.id} value={e.id}>
+                                      {e.districtName}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
+                        </div>
+                        <div className="col-12 mb-3">
+                          <label htmlFor="city">
+                            Phường <span>*</span>
+                          </label>
 
-                        <select
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          style={{
-                            border: "1px solid #e4e7eb",
-                            backgroundColor: "white",
-                            borderRadius: 5,
-                          }}
-                          value={wardID}
-                          onChange={(e) => {
-                            handleWards(e);
-                            setProduct({
-                              ...product,
-                              reveicerInformation: {
-                                ...product.reveicerInformation,
-                                wardId: e.target.value,
-                              },
-                            });
-                          }}
-                        >
+                          <select
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            value={wardID}
+                            onChange={(e) => {
+                              handleWards(e);
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  wardId: e.target.value,
+                                },
+                              });
+                            }}
+                          >
                             {!wardSelected && (
-                              <option value="" style={{color: "#8899b8"}}>Chọn Phường</option>
+                              <option value="" style={{ color: "#8899b8" }}>
+                                Chọn Phường
+                              </option>
                             )}
-                          {ward &&
-                            ward.length &&
-                            ward.map((e, index) => {
-                              return (
-                                <>
-                                  <option key={e.id} value={e.id}>
-                                    {e.wardName}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
-                      </div>
-                      <div className="col-12 mb-3">
-                        <label htmlFor="state">
-                          Địa chỉ cụ thể <span>*</span>
-                        </label>
-                        <input
-                          type="text"
-                          style={{
-                            border: "1px solid #e4e7eb",
-                            backgroundColor: "white",
-                            borderRadius: 5,
-                          }}
-                          className="form-control"
-                          id="state"
-                          defaultValue=""
-                          onChange={(e) =>
-                            setProduct({
-                              ...product,
-                              reveicerInformation: {
-                                ...product.reveicerInformation,
-                                homeAddress: e.target.value,
-                              },
-                            })
-                          }
-                        />
-                      </div>
-                      <div className="col-12 mb-3">
-                        <label htmlFor="street_address">
-                          Ghi Chú <span>*</span>
-                        </label>
-                        <textarea
-                          type="text"
-                          className="form-control mb-3"
-                          id="street_address"
-                          style={{
-                            border: "1px solid #e4e7eb",
-                            backgroundColor: "white",
-                            borderRadius: 5,
-                          }}
-                          defaultValue=""
-                          onChange={(e) =>
-                            setProduct((prevState) => ({
-                              ...prevState,
-                              note: e.target.value,
-                            }))
-                          }
-                        />
-                      </div>
-                      <div className="col-md-6 mb-3">
-                        <label htmlFor="last_name">
-                          Ngày nhận <span>*</span>
-                        </label>
-                        
-                         <select
-                          name="city"
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          style={{
-                            border: "1px solid #e4e7eb",
-                            backgroundColor: "white",
-                            borderRadius: 5,
-                          }}
-                          onChange={(e) => {
-                            handleDate(e);
-                            setProduct({
-                              ...product,
-                              orderPickUp: {
-                                ...product.orderPickUp,
-                                datePickUp: e.target.value,
-                              },
-                            })
-                          }}
-                          value={dateTime}
-                        >
-                          {date &&
-                            date.length &&
-                            date.map((e, index) => {
-                              return (
-                                <>
-                                  <option key={e.dateTime} value={e.dateTime}>
-                                    {e.dayofWeekAndDate}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
-                      </div>
+                            {ward &&
+                              ward.length &&
+                              ward.map((e, index) => {
+                                return (
+                                  <>
+                                    <option key={e.id} value={e.id}>
+                                      {e.wardName}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
+                        </div>
+                        <div className="col-12 mb-3">
+                          <label htmlFor="state">
+                            Địa chỉ cụ thể <span>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            className="form-control"
+                            id="state"
+                            defaultValue=""
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  homeAddress: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="col-12 mb-3">
+                          <label htmlFor="street_address">
+                            Ghi Chú <span>*</span>
+                          </label>
+                          <textarea
+                            type="text"
+                            className="form-control mb-3"
+                            id="street_address"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            defaultValue=""
+                            onChange={(e) =>
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                note: e.target.value,
+                              }))
+                            }
+                          />
+                        </div>
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="last_name">
+                            Ngày nhận <span>*</span>
+                          </label>
 
-                      <div className="col-md-6 mb-3">
-                        <label htmlFor="last_name">
-                          Thời gian nhận <span>*</span>
-                        </label>
+                          <select
+                            name="city"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            onChange={(e) => {
+                              handleDate(e);
+                              setProduct({
+                                ...product,
+                                orderPickUp: {
+                                  ...product.orderPickUp,
+                                  datePickUp: e.target.value,
+                                },
+                              });
+                            }}
+                            value={dateTime}
+                          >
+                            {date &&
+                              date.length &&
+                              date.map((e, index) => {
+                                return (
+                                  <>
+                                    <option key={e.dateTime} value={e.dateTime}>
+                                      {e.dayofWeekAndDate}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
+                        </div>
 
-                      
-                            <select
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          style={{
-                            border: "1px solid #e4e7eb",
-                            backgroundColor: "white",
-                            borderRadius: 5,
-                          }}
-                          onChange={(e) => {
-                            handleDistrict(e);
-                            setProduct({
-                              ...product,
-                              orderPickUp: {
-                                ...product.orderPickUp,
-                                timePickUp: e.target.value,
-                              },
-                            })
-                          }}
-                        
-                        >
-                          {time &&
-                            time.length &&
-                            time.map((e, index) => {
-                              return (
-                                <>
-                                  <option key={e.id} value={e.id}>
-                                    {e}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="last_name">
+                            Thời gian nhận <span>*</span>
+                          </label>
+
+                          <select
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            onChange={(e) => {
+                              handleDistrict(e);
+                              setProduct({
+                                ...product,
+                                orderPickUp: {
+                                  ...product.orderPickUp,
+                                  timePickUp: e.target.value,
+                                },
+                              });
+                            }}
+                          >
+                            {time &&
+                              time.length &&
+                              time.map((e, index) => {
+                                return (
+                                  <>
+                                    <option key={e.id} value={e.id}>
+                                      {e}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
+                        </div>
                       </div>
-                    </div>
-                  </form>
+                    </form>
+                  )}
+                  {showForm2 && (
+                    <form action="#" method="post">
+                      <div className="row">
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="first_name">
+                            Full name <span>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            className="form-control"
+                            id="full_name"
+                            defaultValue=""
+                            required=""
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  fullname: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="last_name">
+                            Số điện thoại <span>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            className="form-control"
+                            id="sdt"
+                            defaultValue=""
+                            required=""
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  phoneNumber: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="col-12 mb-3">
+                          <label htmlFor="company">Email</label>
+                          <input
+                            type="text"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            className="form-control"
+                            id="company"
+                            defaultValue=""
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  email: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+
+                        <div className="col-12 mb-3">
+                          <label htmlFor="street_address">
+                            Thành phố <span>*</span>
+                          </label>
+                          <select
+                            name="city"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            onChange={(e) => {
+                              handlecity(e);
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  cityId: e.target.value,
+                                },
+                              });
+                            }}
+                            value={cityID}
+                          >
+                            {!citySelected && (
+                              <option value="" style={{ color: "#8899b8" }}>
+                                Chọn Tỉnh/ Thành Phô
+                              </option>
+                            )}
+                            {city &&
+                              city.length &&
+                              city.map((e, index) => {
+                                return (
+                                  <>
+                                    <option key={e.id} value={e.id}>
+                                      {e.cityName}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
+                        </div>
+
+                        <div className="col-12 mb-3">
+                          <label htmlFor="postcode">
+                            Quận/Huyện <span>*</span>
+                          </label>
+
+                          <select
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            onChange={(e) => {
+                              handleDistrict(e);
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  districtId: e.target.value,
+                                },
+                              });
+                            }}
+                            value={districtID}
+                          >
+                            {!districsSelected && (
+                              <option value="" style={{ color: "#8899b8" }}>
+                                Chọn Quận / Huyện
+                              </option>
+                            )}
+                            {districs &&
+                              districs.length &&
+                              districs.map((e, index) => {
+                                return (
+                                  <>
+                                    <option key={e.id} value={e.id}>
+                                      {e.districtName}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
+                        </div>
+                        <div className="col-12 mb-3">
+                          <label htmlFor="city">
+                            Phường <span>*</span>
+                          </label>
+
+                          <select
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            value={wardID}
+                            onChange={(e) => {
+                              handleWards(e);
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  wardId: e.target.value,
+                                },
+                              });
+                            }}
+                          >
+                            {!wardSelected && (
+                              <option value="" style={{ color: "#8899b8" }}>
+                                Chọn Phường
+                              </option>
+                            )}
+                            {ward &&
+                              ward.length &&
+                              ward.map((e, index) => {
+                                return (
+                                  <>
+                                    <option key={e.id} value={e.id}>
+                                      {e.wardName}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
+                        </div>
+                        <div className="col-12 mb-3">
+                          <label htmlFor="state">
+                            Địa chỉ cụ thể <span>*</span>
+                          </label>
+                          <input
+                            type="text"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            className="form-control"
+                            id="state"
+                            defaultValue=""
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  homeAddress: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="col-12 mb-3">
+                          <label htmlFor="street_address">
+                            Ghi Chú <span>*</span>
+                          </label>
+                          <textarea
+                            type="text"
+                            className="form-control mb-3"
+                            id="street_address"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            defaultValue=""
+                            onChange={(e) =>
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                note: e.target.value,
+                              }))
+                            }
+                          />
+                        </div>
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="last_name">
+                            Ngày nhận <span>*</span>
+                          </label>
+
+                          <select
+                            name="city"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            onChange={(e) => {
+                              handleDate(e);
+                              setProduct({
+                                ...product,
+                                orderPickUp: {
+                                  ...product.orderPickUp,
+                                  datePickUp: e.target.value,
+                                },
+                              });
+                            }}
+                            value={dateTime}
+                          >
+                            {date &&
+                              date.length &&
+                              date.map((e, index) => {
+                                return (
+                                  <>
+                                    <option key={e.dateTime} value={e.dateTime}>
+                                      {e.dayofWeekAndDate}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
+                        </div>
+
+                        <div className="col-md-6 mb-3">
+                          <label htmlFor="last_name">
+                            Thời gian nhận <span>*</span>
+                          </label>
+
+                          <select
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            onChange={(e) => {
+                              handleDistrict(e);
+                              setProduct({
+                                ...product,
+                                orderPickUp: {
+                                  ...product.orderPickUp,
+                                  timePickUp: e.target.value,
+                                },
+                              });
+                            }}
+                          >
+                            {time &&
+                              time.length &&
+                              time.map((e, index) => {
+                                return (
+                                  <>
+                                    <option key={e.id} value={e.id}>
+                                      {e}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
+                        </div>
+                      </div>
+                    </form>
+                  )}
                 </div>
               </div>
+
               <div className="col-12 col-md-6 col-lg-5 ml-lg-auto">
-                <div className="order-details-confirmation">
+                <div
+                  className="order-details-confirmation"
+                  style={{
+                    boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",
+                    border: "none",
+                    borderRadius: 10,
+                  }}
+                >
                   <div className="cart-page-heading">
-                    <h5>Your Order</h5>
-                    <p>The Details</p>
+                    <h5>Thanh Toán</h5>
+                    <p>Thông tin</p>
                   </div>
 
-                  <ul className="order-details-form mb-4">
-                    <li>
-                      <span>Product</span> <span>Total</span>
-                    </li>
-
+                  <ul
+                    className="order-details-form "
+                    style={{ padding: 0, fontSize: 20 }}
+                  >
                     {total && total.subTotalPrice && (
-                      <li>
+                      <li style={{ fontSize: 15 }}>
                         <span>Subtotal</span>{" "}
                         <span>
                           {total.subTotalPrice.toLocaleString("en-US")} VND
                         </span>
                       </li>
                     )}
-                    <li>
-                      <span>Shipping</span> <span>Free</span>
+                    <li style={{ fontSize: 15 }}>
+                      <span>Phí Giao Hàng</span> <span>Free</span>
                     </li>
                     {total && total.totalCartPrice && (
-                      <li>
-                        <span>Total</span>{" "}
+                      <li style={{ fontSize: 15 }}>
+                        <span>Tạm Tính</span>{" "}
                         <span>
                           {total.totalCartPrice.toLocaleString("en-US")} Vnd
                         </span>
@@ -549,10 +1008,65 @@ const Home = (props) => {
                       e.preventDefault();
                       Checkout();
                     }}
-                    className="btn karl-checkout-btn"
+                    style={{
+                      height: 50,
+                      backgroundColor: "#82AAE3",
+                      color: "white",
+                      paddingTop: 13,
+                      fontSize: 17,
+                    }}
+                    className="button-28"
                   >
-                    Place Order
+                    Thanh Toán
                   </a>
+                </div>
+                <div className="checkout-payment">
+                  <div
+                    className="payment-cart"
+                    onClick={() =>
+                      document.getElementById("credit-card").click()
+                    }
+                  >
+                    <label for="credit-card">
+                      <input
+                        type="radio"
+                        id="credit-card"
+                        name="payment"
+                        value="credit-card"
+                        style={{ marginRight: 10 }}
+                        onClick={() => {
+                          setProduct((prevState) => ({
+                            ...prevState,
+                            payType: 1,
+                          }));
+                        }}
+                      />
+                      Thanh Toán Tiền Mặt Khi Nhận Hàng
+                    </label>
+                  </div>
+                  <div
+                    className="payment-cart"
+                    onClick={() =>
+                      document.getElementById("credit-card1").click()
+                    }
+                  >
+                    <label for="credit-card1">
+                      <input
+                        type="radio"
+                        id="credit-card1"
+                        name="payment"
+                        value="credit-card"
+                        style={{ marginRight: 10 }}
+                        onClick={() => {
+                          setProduct((prevState) => ({
+                            ...prevState,
+                            payType: 2,
+                          }));
+                        }}
+                      />
+                      Thanh Toán Bằng VNPay
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>

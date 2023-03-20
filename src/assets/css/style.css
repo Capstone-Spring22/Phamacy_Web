@@ -4394,16 +4394,15 @@ a {
   margin-right: 20px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
     rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
-    height: 400px;
+  height: 400px;
 }
 .product-card:hover {
   border: 1px solid #82aae3;
 }
 
-.cart-img{
+.cart-img {
   height: 100px;
   width: 100px;
-
 }
 .product-info {
 }
@@ -4414,13 +4413,16 @@ a {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
+  color: #9f9f9f;
+  line-height: 21.6px;
 }
 
 .product-price {
   font-size: 18px;
-  color: #fbb72c;
+  color: #82aae3;
   font-weight: 600;
-  margin-right: 30px;
+  margin-right: 60px;
+  margin-top: 20px;
 }
 
 .add-to-cart {
@@ -4434,14 +4436,70 @@ a {
 }
 
 .add-to-cart:hover {
-  background-color: #0069d9;
+  color: #82aae3;
 }
-.product-img{
+.product-img {
   position: relative;
   width: 120%;
   max-width: 250px;
   height: 400px;
   margin-bottom: 30px;
-  border-top-right-radius:7px ;
-  border-top-left-radius:7px ;
+  border-top-right-radius: 7px;
+  border-top-left-radius: 7px;
+}
+.button-order {
+  background-color: #82aae3; /* Green */
+  border: none;
+  border-radius: 10px;
+  color: white;
+  padding: 10px 28px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+.action {
+  background-color: #ffffff; /* Green */
+  border: none;
+  border-radius: 10px;
+  color: #82aae3;
+  padding: 10px 28px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+/* Hiệu ứng khi hover */
+.button-order :hover {
+  background-color: #3e8e41;
+}
+
+/* Hiệu ứng khi active */
+.button-order :active {
+  background-color: #d0e4d1;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+.method-order {
+  margin-left: 310px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+}
+.checkout-payment {
+  margin-top: 20px;
+  height: auto;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+  border-radius: 10px;
+  padding: 20px;
+}
+.payment-cart {
+  margin-top: 10px;
+
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
 }

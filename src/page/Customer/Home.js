@@ -354,13 +354,12 @@ const Home = () => {
         <section class="new_arrivals_area section_padding_10_0 clearfix">
           <div className="container">
             <div className="row">
-              <div className="title-section text-center col-12">
-                <h2 className="text-uppercase">NEW PRODUCT</h2>
+              <div className=" col-12">
+                <h3 className="" style={{marginLeft:20}}>Sản Phẩm Mới</h3>
               </div>
             </div>
             <br />
-            <br />
-            <br />
+         
             <div className="container " style={{ display: "flex" }}>
               {drug &&
                 drug.length &&
@@ -375,7 +374,7 @@ const Home = () => {
                       <div className="product-info">
                         {" "}
                         <h2 className="product-name">{item.name}</h2>
-                        <div style={{ display: "flex"}}>
+                        <div style={{ display: "flex" }}>
                           <p className="product-price">${item.price}</p>
                           <button
                             className="add-to-cart"
@@ -383,8 +382,8 @@ const Home = () => {
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
+                              width="20"
+                              height="20"
                               fill="currentColor"
                               class="bi bi-cart-fill"
                               viewBox="0 0 16 16"

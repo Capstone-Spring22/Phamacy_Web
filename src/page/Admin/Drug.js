@@ -27,7 +27,19 @@ const Drug = () => {
 
     history.push("/NewDrug");
   };
-
+  async function Authen(){
+    if (localStorage && localStorage.getItem("roleID")) {
+      const roleID = localStorage.getItem("roleID");
+      if (roleID !== "Owner") {
+        history.push("/LoginAdmin"); 
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("roleID");
+        return null;
+      }
+    }}
+    useEffect(() => {
+      Authen();
+    }, []);
   async function loadDataMedicine() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
