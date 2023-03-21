@@ -46,7 +46,7 @@ const Home = (props) => {
   const [product, setProduct] = useState({
     orderId: orderID,
     orderTypeId: 2,
-    siteId: "",
+    siteId: null,
     pharmacistId: null,
     subTotalPrice: cartData.total.subTotalPrice,
     discountPrice: cartData.total.discountPrice,
@@ -68,10 +68,7 @@ const Home = (props) => {
       wardId: null,
       homeAddress: null,
     },
-    orderPickUp: {
-      datePickUp: "",
-      timePickUp: "",
-    },
+    orderPickUp: null
   });
   const genders = [
     { name: "Male", value: 0 },
@@ -926,83 +923,7 @@ const Home = (props) => {
                             }
                           />
                         </div>
-                        <div className="col-md-6 mb-3">
-                          <label htmlFor="last_name">
-                            Ngày nhận <span>*</span>
-                          </label>
-
-                          <select
-                            name="city"
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            style={{
-                              border: "1px solid #e4e7eb",
-                              backgroundColor: "white",
-                              borderRadius: 5,
-                            }}
-                            onChange={(e) => {
-                              handleDate(e);
-                              setProduct({
-                                ...product,
-                                orderPickUp: {
-                                  ...product.orderPickUp,
-                                  datePickUp: e.target.value,
-                                },
-                              });
-                            }}
-                            value={dateTime}
-                          >
-                            {date &&
-                              date.length &&
-                              date.map((e, index) => {
-                                return (
-                                  <>
-                                    <option key={e.dateTime} value={e.dateTime}>
-                                      {e.dayofWeekAndDate}
-                                    </option>
-                                  </>
-                                );
-                              })}
-                          </select>
-                        </div>
-
-                        <div className="col-md-6 mb-3">
-                          <label htmlFor="last_name">
-                            Thời gian nhận <span>*</span>
-                          </label>
-
-                          <select
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            style={{
-                              border: "1px solid #e4e7eb",
-                              backgroundColor: "white",
-                              borderRadius: 5,
-                            }}
-                            onChange={(e) => {
-                              handleDistrict(e);
-                              setProduct({
-                                ...product,
-                                orderPickUp: {
-                                  ...product.orderPickUp,
-                                  timePickUp: e.target.value,
-                                },
-                              });
-                            }}
-                          >
-                            {time &&
-                              time.length &&
-                              time.map((e, index) => {
-                                return (
-                                  <>
-                                    <option key={e.id} value={e.id}>
-                                      {e}
-                                    </option>
-                                  </>
-                                );
-                              })}
-                          </select>
-                        </div>
+                        
                       </div>
                     </form>
                   )}

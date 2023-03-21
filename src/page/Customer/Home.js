@@ -62,7 +62,7 @@ const Home = () => {
       const cartId = await axios
         .get("https://api.ipify.org/?format=json")
         .then((res) => res.data.ip);
-        update(cartId)
+      update(cartId);
       setProduct({
         cartId,
         item: {
@@ -356,11 +356,13 @@ const Home = () => {
           <div className="container">
             <div className="row">
               <div className=" col-12">
-                <h3 className="" style={{marginLeft:20}}>Sản Phẩm Mới</h3>
+                <h3 className="" style={{ marginLeft: 20 }}>
+                  Sản Phẩm Mới
+                </h3>
               </div>
             </div>
             <br />
-         
+
             <div className="container " style={{ display: "flex" }}>
               {drug &&
                 drug.length &&
