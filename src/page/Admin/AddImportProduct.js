@@ -19,6 +19,8 @@ const AddImportProduct = () => {
   const [imageInputCount, setImageInputCount] = useState(1);
   const [manufactuner, setManufactuner] = useState([]);
   const [manufactunerID, setManufactunerID] = useState([]);
+  const [indexUnit, setIndexUnit] = useState(0);
+  const [countQuantity, setCountQuantity] = useState(0);
 
   const [productIngredient, setProductIngredient] = useState([]);
   const [productIngredientID, setProductIngredientID] = useState([]);
@@ -179,7 +181,7 @@ const AddImportProduct = () => {
   async function loadDataDrug() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
+      const path = `Product?pageIndex=${currentPage}&pageItems=${perPage}`;
       const res = await getDataByPath(path, accessToken, "");
       console.log("display", res);
       if (res !== null && res !== undefined && res.status === 200) {
@@ -189,17 +191,19 @@ const AddImportProduct = () => {
       }
     }
   }
-  async function loadDataDrugID(Id) {
-    if (localStorage && localStorage.getItem("accessToken")) {
-      const accessToken = localStorage.getItem("accessToken");
-      console.log("Id", Id);
-      const path = `Product/View/${Id}`;
-      const res = await getDataByPath(path, accessToken, "");
-      console.log("display", res);
-      if (res !== null && res !== undefined && res.status === 200) {
-        setProductRef(res.data.productUnitReferences);
-      }
-    }
+  async function loadDataDrugID(id) {
+    // if (localStorage && localStorage.getItem("accessToken")) {
+    //   const accessToken = localStorage.getItem("accessToken");
+    //   console.log("Id", Id);
+    //   const path = `Product/View/${Id}`;
+    //   const res = await getDataByPath(path, accessToken, "");
+    //   console.log("display", res);
+    //   if (res !== null && res !== undefined && res.status === 200) {
+    //     setProductRef(res.data.productUnitReferences);
+    //   }
+    // }
+    console.log("display unit", id);
+    setProductRef(id);
   }
 
   useEffect(() => {
@@ -208,6 +212,7 @@ const AddImportProduct = () => {
   const options = drug.map((e) => ({
     label: e.name,
     value: e.id,
+    unit: e.productUnitReferences,
   }));
   const options2 = productRef.map((e) => ({
     label: e.unitName,
@@ -228,6 +233,13 @@ const AddImportProduct = () => {
     loadDataUnit();
   }, []);
   useEffect(() => {
+    if (indexUnit === 0) {
+    } else {
+      handleAddQuantity(indexUnit);
+    }
+  }, [countQuantity]);
+
+  useEffect(() => {
     loadDataUnit2();
   }, []);
   useEffect(() => {
@@ -237,7 +249,58 @@ const AddImportProduct = () => {
     loadDataProductIngredient();
   }, []);
   const [numBatches, setNumBatches] = useState(1);
+  const handleAddQuantity = (index) => {
+    setProduct({
+      ...product,
+      productImportDetails: [
+        ...product.productImportDetails.slice(0, index - 1),
+        {
+          ...product.productImportDetails[index - 1],
+          quantity: product.productImportDetails[
+            index - 1
+          ].productBatches.reduce(
+            (total, curent) => total + curent.quantity,
+            0
+          ),
+        },
+        ...product.productImportDetails.slice(index),
+      ],
+    });
+  };
 
+  const handleAddQuantityBatch = (index, batchIndex, e) => {
+    setProduct({
+      ...product,
+      productImportDetails: [
+        ...product.productImportDetails.slice(0, index - 1),
+        {
+          ...product.productImportDetails[index - 1],
+          productBatches: [
+            ...product.productImportDetails[index - 1].productBatches.slice(
+              0,
+              batchIndex - 1
+            ),
+            {
+              ...product.productImportDetails[index - 1].productBatches[
+                batchIndex - 1
+              ],
+              quantity: parseInt(e.target.value),
+            },
+            ...product.productImportDetails[index - 1].productBatches.slice(
+              batchIndex
+            ),
+          ],
+          quantity: product.productImportDetails[
+            index - 1
+          ].productBatches.reduce(
+            (total, curent) => total + curent.quantity,
+            0
+          ),
+        },
+        ...product.productImportDetails.slice(index),
+      ],
+    });
+  };
   const handleAddUnit = () => {
     setProduct({
       ...product,
@@ -412,7 +475,6 @@ const AddImportProduct = () => {
           {/* / Navbar */}
           {/* Content wrapper */}
           <div>
-          
             <div
               className="row "
               style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
@@ -431,7 +493,7 @@ const AddImportProduct = () => {
                     <h5 className="mb-0">Thêm Sản phẩm </h5>
                   </div>{" "}
                   {Array.from({ length: unitCount }, (_, i) => i + 1).map(
-                    (index) => {  
+                    (index) => {
                       const currentNumBatches =
                         product.productImportDetails[index - 1]?.productBatches
                           ?.length || 0;
@@ -459,7 +521,7 @@ const AddImportProduct = () => {
                                 <Select
                                   onChange={(selectedOption) => {
                                     // setSelectedOption(selectedOption);
-                                    loadDataDrugID(selectedOption.value);
+                                    loadDataDrugID(selectedOption.unit);
                                   }}
                                   options={options}
                                 />
@@ -530,13 +592,10 @@ const AddImportProduct = () => {
                                     placeholder="Định Lượng"
                                     aria-label="Unit Id"
                                     aria-describedby={`quantitative${index}2`}
-                                    value={product.productImportDetails[
-                                      index - 1
-                                    ].productBatches.reduce(
-                                      (total, curent) =>
-                                        total + curent.quantity,
-                                      0
-                                    )}
+                                    value={
+                                      product.productImportDetails[index - 1]
+                                        .quantity
+                                    }
                                     onChange={(e) => {
                                       setProduct({
                                         ...product,
@@ -549,14 +608,7 @@ const AddImportProduct = () => {
                                             ...product.productImportDetails[
                                               index - 1
                                             ],
-                                            quantity:
-                                              product.productImportDetails[
-                                                index - 1
-                                              ].productBatches.reduce(
-                                                (total, curent) =>
-                                                  total + curent.quantity,
-                                                0
-                                              ),
+                                            quantity: e.target.value,
                                           },
                                           ...product.productImportDetails.slice(
                                             index
@@ -748,47 +800,14 @@ const AddImportProduct = () => {
                                         aria-label="Phone Number"
                                         aria-describedby="basic-icon-default-email2"
                                         onChange={(e) => {
-                                          setProduct({
-                                            ...product,
-                                            productImportDetails: [
-                                              ...product.productImportDetails.slice(
-                                                0,
-                                                index - 1
-                                              ),
-                                              {
-                                                ...product.productImportDetails[
-                                                  index - 1
-                                                ],
-                                                productBatches: [
-                                                  ...product.productImportDetails[
-                                                    index - 1
-                                                  ].productBatches.slice(
-                                                    0,
-                                                    batchIndex - 1
-                                                  ),
-                                                  {
-                                                    ...product
-                                                      .productImportDetails[
-                                                      index - 1
-                                                    ].productBatches[
-                                                      batchIndex - 1
-                                                    ],
-                                                    quantity: parseInt(
-                                                      e.target.value
-                                                    ),
-                                                  },
-                                                  ...product.productImportDetails[
-                                                    index - 1
-                                                  ].productBatches.slice(
-                                                    batchIndex
-                                                  ),
-                                                ],
-                                              },
-                                              ...product.productImportDetails.slice(
-                                                index
-                                              ),
-                                            ],
-                                          });
+                                          handleAddQuantityBatch(
+                                            index,
+                                            batchIndex,
+                                            e
+                                          );
+                                          setIndexUnit(index);
+                                          setCountQuantity(countQuantity + 1);
+                                          // handleAddQuantity(index)
                                         }}
                                       />
                                     </div>
