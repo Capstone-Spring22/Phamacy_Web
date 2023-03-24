@@ -29,6 +29,7 @@ import UpdateImportProduct from "./page/Admin/UpdateImportProduct";
 import ProductDiscount from "./page/Admin/ProductDiscount";
 import NewDiscount from "./page/Admin/NewDiscount";
 import UpdateDiscount from "./page/Admin/UpdateDiscount";
+import OrderDetail from "./page/Admin/OrderDetail";
 function App() {
   return (
     <div className="site-wrap">
@@ -105,6 +106,9 @@ function App() {
           </Route>
           <Route path="/UpdateDiscount">
             <UpdateDiscount />
+          </Route>
+          <Route path="/OrderDetail">
+            <OrderDetail />
           </Route>
         </Switch>
       </BrowserRouter>

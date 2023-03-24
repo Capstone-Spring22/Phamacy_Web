@@ -1,32 +1,50 @@
-import { useEffect, useState,useHistory } from "react";
-import {Link} from "react-router-dom"
+import { useEffect, useState } from "react";
+import { Link ,useHistory} from "react-router-dom";
 import SideBar from "../sidebar/SideBarPharmacist";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-
+import { getDataByPath, deleteDataByPath } from "../../services/data.service";
+import ReactPaginate from "react-paginate";
 const Order = () => {
-  
+  const [drug, setDrug] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(7);
+  const [totalRecord, setTotalRecord] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [OrderDetail, setOrderDetail] = useState([]);
+  let history = useHistory();
+  const update = (myId) => {
+    localStorage.setItem("id", myId);
+    history.push("/OrderDetail");
+  };
+  async function loadDataOrder() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `Order?pageIndex=${currentPage}&pageItems=${perPage}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("check", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setDrug(res.data.items);
+        setTotalRecord(res.data.totalRecord);
+      }
+    }
+  }
+  const [activeItem, setActiveItem] = useState("Order");
+  useEffect(() => {
+    loadDataOrder();
+  }, [currentPage, perPage]);
 
-  // async function loadDataMedicine() {
-  //   const path = `Site`;
-  //   const res = await getDataByPath(path, "", "");
-  //   console.log("check", res);
-  //   if (res !== null && res !== undefined && res.status === 200) {
-  //     setDrug(res.data.data);
-  //   }
-  // }
-  const drug = [
-    { id: "01",date:"20/2/2020"},
-   
-    
-  ]
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
-          <SideBar />
+        <SideBar activeItem={activeItem} />
 
-          <div className="layout-page" style={{ backgroundColor: "#f4f6fb", marginLeft:260 }}>
+
+          <div
+            className="layout-page"
+            style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
+          >
             {/* Navbar */}
             <nav
               className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
@@ -391,163 +409,7 @@ const Order = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="dialog overlay" id="my-dialog2">
-                          <a href="#" className="overlay-close" />
-
-                          <div className="row " style={{ width: 1000 }}>
-                            <div className="col-xl">
-                              <div className="card mb-4">
-                                <div
-                                  className="card-header d-flex justify-content-between align-items-center"
-                                  style={{
-                                    height: 70,
-                                    backgroundColor: "white",
-                                    padding: "20px 24px",
-
-                                    borderColor: "#f4f4f4",
-                                  }}
-                                >
-                                  <h5 className="mb-0">Update Medicine</h5>
-                                </div>
-                                <div className="card-body">
-                                  <form>
-                                    <div
-                                      style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "auto auto",
-                                        padding: 30,
-                                      }}
-                                    >
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-fullname"
-                                        >
-                                          Name
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            className="form-control"
-                                            id="basic-icon-default-fullname"
-                                            placeholder="Name"
-                                            aria-label="John Doe"
-                                            aria-describedby="basic-icon-default-fullname2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "100%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-company"
-                                        >
-                                          Image
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-company"
-                                            className="form-control"
-                                            placeholder="Image"
-                                            aria-label="ACME Inc."
-                                            aria-describedby="basic-icon-default-company2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-email"
-                                        >
-                                          Quantity
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            placeholder="Quantity"
-                                            aria-label="john.doe"
-                                            aria-describedby="basic-icon-default-email2"
-                                          />
-                                        </div>
-                                        <div className="form-text"></div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "100%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
-                                          Price
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-phone"
-                                            className="form-control phone-mask"
-                                            placeholder="658 799 8941"
-                                            aria-label="658 799 8941"
-                                            aria-describedby="basic-icon-default-phone2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-message"
-                                        >
-                                          Unit
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <textarea
-                                            id="basic-icon-default-message"
-                                            className="form-control"
-                                            placeholder="Hi, Do you have a moment to talk Joe?"
-                                            aria-label="Hi, Do you have a moment to talk Joe?"
-                                            aria-describedby="basic-icon-default-message2"
-                                            defaultValue={""}
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <button
-                                      type="submit"
-                                      className="button-28"
-                                      style={{
-                                        height: 30,
-                                        width: 80,
-                                        fontSize: 13,
-                                        paddingTop: 1,
-                                        marginLeft: "90%",
-                                        marginTop: "20px",
-                                        backgroundColor: "#11cdef",
-                                        color: "white",
-                                      }}
-                                    >
-                                      Save
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        
                       </>
                     </div>
 
@@ -568,7 +430,7 @@ const Order = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              &nbsp; &nbsp;Name
+                              &nbsp; &nbsp;Id Đơn Hàng
                             </th>
                             <th
                               style={{
@@ -577,7 +439,7 @@ const Order = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Price
+                              Loại Đơn Hàng
                             </th>
                             <th
                               style={{
@@ -586,17 +448,9 @@ const Order = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Quantity
+                              Giá
                             </th>
-                            <th
-                              style={{
-                                backgroundColor: "#f6f9fc",
-                                borderColor: "white",
-                                color: "#bfc8d3",
-                              }}
-                            >
-                              Unit
-                            </th>
+
                             <th
                               style={{
                                 backgroundColor: "#f6f9fc",
@@ -614,51 +468,29 @@ const Order = () => {
                             drug.map((e) => {
                               return (
                                 <tr key={e.id}>
-                                  <td>&nbsp; &nbsp;{e.name}</td>
-                                  <td>{e.price}</td>
-                                  <td>50</td>
+                                  <td>&nbsp; &nbsp;{e.id}</td>
+                                  <td>{e.orderTypeName}</td>
+                                  <td>{e.totalPrice}</td>
+
                                   <td>
-                                    <span className="badge bg-label-primary me-1">
-                                      Blister Packs
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <button
-                                      class="button-80"
-                                      role="button"
-                                      // onClick={() => {
-                                      //   deleteDataMedicine(e.id);
-                                      // }}
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        fill="currentColor"
-                                        class="bi bi-trash3-fill"
-                                        viewBox="0 0 16 16"
-                                      >
-                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
-                                      </svg>
-                                    </button>
                                     <a
                                       class="button-81"
                                       role="button"
                                       href="#my-dialog2"
+                                      onClick={() => {
+                                        update(e.id);
+                                      }}
                                     >
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="16"
                                         height="16"
                                         fill="currentColor"
-                                        class="bi bi-pencil-square"
+                                        class="bi bi-eye"
                                         viewBox="0 0 16 16"
                                       >
-                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                        <path
-                                          fill-rule="evenodd"
-                                          d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-                                        />
+                                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                                        <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
                                       </svg>
                                     </a>
                                   </td>
@@ -667,34 +499,16 @@ const Order = () => {
                             })}
                         </tbody>
                       </table>
-                      <div className="pagination p12">
-                        <ul>
-                          <a href="#">
-                            <li>Previous</li>
-                          </a>
-                          <a href="#">
-                            <li>1</li>
-                          </a>
-                          <a href="#">
-                            <li>2</li>
-                          </a>
-                          <a href="#">
-                            <li>3</li>
-                          </a>
-                          <a href="#">
-                            <li>4</li>
-                          </a>
-                          <a href="#">
-                            <li>5</li>
-                          </a>
-                          <a className="is-active" href="#">
-                            <li>6</li>
-                          </a>
-                          <a href="#">
-                            <li>Next</li>
-                          </a>
-                        </ul>
-                      </div>
+                      <ReactPaginate
+                        className="pagination p12"
+                        style={{
+                          backgroundColor: "#82AAE3",
+                          color: "white",
+                        }}
+                        pageCount={totalRecord / perPage}
+                        onPageChange={(e) => setCurrentPage(e.selected + 1)}
+                        currentPage={currentPage}
+                      />
                     </div>
                   </div>
                 </div>

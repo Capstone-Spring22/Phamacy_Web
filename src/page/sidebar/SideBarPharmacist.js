@@ -4,9 +4,29 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import { getDataByPath, deleteDataByPath } from "../../services/data.service";
 import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
-
-const Sidebar = () => {
+import logo from "../../assets/BH.png";
+const Sidebar = ({ activeItem }) => {
   const navigate = useHistory();
+
+  const [user, setUser] = useState([]);
+
+  async function loadDataUserByID() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+
+      console.log("localStorage", localStorage);
+      const path = `User/${localStorage.userID}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("res", res.data.username);
+      console.log("user", user);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setUser(res.data);
+      }
+    }
+  }
+  useEffect(() => {
+    loadDataUserByID();
+  }, []);
   const handleLogout = async () => {
     try {
       navigate.push("/LoginAdmin");
@@ -21,30 +41,33 @@ const Sidebar = () => {
       <aside
         id="layout-menu"
         className="layout-menu menu-vertical menu bg-menu-theme"
-        style={{ backgroundColor: "#ffffff",position: "fixed",height:1000 }}
+        style={{ backgroundColor: "#ffffff", position: "fixed", height: 1000 }}
       >
-        <div className="app-brand demo">
-          <Link to="/Home" className="app-brand-link">
-            <span
-              className="app-brand-text demo menu-text fw-bolder ms-2"
-              style={{ color: "#0077c9", fontSize: "20", lineHeight: "30" }}
-            >
-              BetterHealth
-            </span>
+        <div className="app-brand demo" style={{ marginLeft: -30 }}>
+          <Link to="/Home" className="app-brand-link" style={{ marginTop: 40 }}>
+            <img src={logo} style={{ marginRight: 60 }} />
           </Link>
-
-          <a
-            href="javascript:void(0);"
-            className="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
-          >
-            <i className="bx bx-chevron-left bx-sm align-middle" />
-          </a>
         </div>
         <br />
+        <li className="menu-header small text-uppercase">
+          <span className="menu-header-text">Welcome</span>
+        </li>
 
+        <div className="header-sidebar">
+          <img className="header-img" src={user.imageUrl} />{" "}
+          {user && user.username && (
+            <div className="header-sidebar-name">{user.username}</div>
+          )}
+        </div>
         <div className="menu-inner-shadow" />
         <ul className="menu-inner py-1">
           {/* Dashboard */}
+
+          {/* Layouts */}
+
+          <li className="menu-header small text-uppercase">
+            <span className="menu-header-text">Management</span>
+          </li>
           <li className="menu-item ">
             <a href="#" className="menu-link">
               <svg
@@ -61,12 +84,10 @@ const Sidebar = () => {
               <div data-i18n="Analytics">Dashboard</div>
             </a>
           </li>
-          {/* Layouts */}
-
-          <li className="menu-header small text-uppercase">
-            <span className="menu-header-text">Management</span>
-          </li>
-          <li className="menu-item">
+          <li
+           
+            className={`menu-item ${activeItem == "Order" ? "active" : ""}`}
+          >
             <Link to="/Order" className="menu-link">
               <svg
                 style={{ margin: "5" }}
@@ -132,11 +153,10 @@ const Sidebar = () => {
                   d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
                 />
               </svg>
-             
+
               <div data-i18n="Support">Logout</div>
             </Link>
           </li>
-         
         </ul>
       </aside>
     </>

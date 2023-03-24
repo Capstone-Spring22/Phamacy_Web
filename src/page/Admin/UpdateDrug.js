@@ -837,10 +837,10 @@ const UpdateDrug = () => {
                 >
                   <h5 className="mb-0">Cập nhật đơn vị của sản phẩm</h5>
                 </div>
-                <div className="card-body">
+                <div className="card-body" >
                   {Array.from({ length: unitCount }, (_, i) => i + 1).map(
                     (index) => (
-                      <div>
+                      <div  key={index}>
                         <div
                           style={{
                             display: "flex",
@@ -850,7 +850,7 @@ const UpdateDrug = () => {
                           }}
                         >
                           <div
-                            key={index}
+                            
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}
                           >
@@ -907,7 +907,7 @@ const UpdateDrug = () => {
                             </div>
                           </div>
                           <div
-                            key={index}
+                           
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}
                           >
@@ -953,7 +953,7 @@ const UpdateDrug = () => {
                             </div>
                           </div>
                           <div
-                            key={index}
+                        
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}
                           >
@@ -999,7 +999,7 @@ const UpdateDrug = () => {
                             </div>
                           </div>
                           <div
-                            key={index}
+                         
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}
                           >
@@ -1044,7 +1044,7 @@ const UpdateDrug = () => {
                             </div>
                           </div>
                           <div
-                            key={index}
+                           
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}
                           >

@@ -27,19 +27,20 @@ const Drug = () => {
 
     history.push("/NewDrug");
   };
-  async function Authen(){
+  async function Authen() {
     if (localStorage && localStorage.getItem("roleID")) {
       const roleID = localStorage.getItem("roleID");
       if (roleID !== "Owner") {
-        history.push("/LoginAdmin"); 
+        history.push("/LoginAdmin");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("roleID");
         return null;
       }
-    }}
-    useEffect(() => {
-      Authen();
-    }, []);
+    }
+  }
+  useEffect(() => {
+    Authen();
+  }, []);
   async function loadDataMedicine() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -82,57 +83,54 @@ const Drug = () => {
                 >
                   {/* Navbar */}
                   <nav
-              className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
-              id="layout-navbar"
-            >
-              <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-                <a
-                  className="nav-item nav-link px-0 me-xl-4"
-                  href="javascript:void(0)"
-                >
-                  <i className="bx bx-menu bx-sm" />
-                </a>
-              </div>
-              <div
-                className="navbar-nav-right d-flex align-items-center"
-                id="navbar-collapse"
-              >
-                {/* Search */}
-                <div className="navbar-nav align-items-center">
-                  <div className="nav-item d-flex align-items-center">
-                    <i className="bx bx-search fs-4 lh-0" />
-                    <input
-                      type="text"
-                      className="form-control border-0 shadow-none"
-                      placeholder="Search..."
-                      aria-label="Search..."
-                    />
-                  </div>
-                </div>
-                {/* /Search */}
-                <ul className="navbar-nav flex-row align-items-center ms-auto">
-                  {/* Place this tag where you want the button to render. */}
-                  <li className="nav-item lh-1 me-3">
-                    <a
-                      className="github-button"
-                      href="https://github.com/themeselection/sneat-html-admin-template-free"
-                      data-icon="octicon-star"
-                      data-size="large"
-                      data-show-count="true"
-                      aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
+                    className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+                    id="layout-navbar"
+                  >
+                    <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                      <a
+                        className="nav-item nav-link px-0 me-xl-4"
+                        href="javascript:void(0)"
+                      >
+                        <i className="bx bx-menu bx-sm" />
+                      </a>
+                    </div>
+                    <div
+                      className="navbar-nav-right d-flex align-items-center"
+                      id="navbar-collapse"
                     >
-                      Star
-                    </a>
-                  </li>
-                  {/* User */}
+                      {/* Search */}
+                      <div className="navbar-nav align-items-center">
+                        <div className="nav-item d-flex align-items-center">
+                          <i className="bx bx-search fs-4 lh-0" />
+                          <input
+                            type="text"
+                            className="form-control border-0 shadow-none"
+                            placeholder="Search..."
+                            aria-label="Search..."
+                          />
+                        </div>
+                      </div>
+                      {/* /Search */}
+                      <ul className="navbar-nav flex-row align-items-center ms-auto">
+                        {/* Place this tag where you want the button to render. */}
+                        <li className="nav-item lh-1 me-3">
+                          <a
+                            className="github-button"
+                            href="https://github.com/themeselection/sneat-html-admin-template-free"
+                            data-icon="octicon-star"
+                            data-size="large"
+                            data-show-count="true"
+                            aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
+                          >
+                            Star
+                          </a>
+                        </li>
+                        {/* User */}
 
-                
-
-              
-                  {/*/ User */}
-                </ul>
-              </div>
-            </nav>
+                        {/*/ User */}
+                      </ul>
+                    </div>
+                  </nav>
 
                   {/* / Navbar */}
                   {/* Content wrapper */}
@@ -164,7 +162,7 @@ const Drug = () => {
                               <h3 className="fontagon">Quản lý sản phẩm</h3>
                             </h5>
 
-                            <>   
+                            <>
                               <a
                                 className=" button-28"
                                 href="#my-dialog"
@@ -193,325 +191,6 @@ const Drug = () => {
                                 </svg>
                                 &nbsp; Add
                               </a>
-                           
-                              <div className="dialog overlay" id="my-dialog">
-                                <a href="#" className="overlay-close" />
-
-                                <div className="row " style={{ width: 1000 }}>
-                                  <div className="col-xl">
-                                    <div className="card mb-4">
-                                      <div
-                                        className="card-header d-flex justify-content-between align-items-center"
-                                        style={{
-                                          height: 70,
-                                          backgroundColor: "white",
-                                          padding: "20px 24px",
-
-                                          borderColor: "#f4f4f4",
-                                        }}
-                                      >
-                                        <h5 className="mb-0">
-                                          Update new product
-                                        </h5>
-                                      </div>
-                                      <div className="card-body">
-                                        <form>
-                                          <div
-                                            style={{
-                                              display: "grid",
-                                              gridTemplateColumns: "auto auto",
-                                              padding: 30,
-                                            }}
-                                          >
-                                            <div
-                                              className="mb-3"
-                                              style={{ width: "95%" }}
-                                            >
-                                              <label
-                                                className="form-label"
-                                                htmlFor="basic-icon-default-fullname"
-                                              >
-                                                Name
-                                              </label>
-                                              <div className="input-group input-group-merge">
-                                                <input
-                                                  type="text"
-                                                  className="form-control"
-                                                  id="basic-icon-default-fullname"
-                                                  placeholder="Name"
-                                                  aria-label="John Doe"
-                                                  aria-describedby="basic-icon-default-fullname2"
-                                                />
-                                              </div>
-                                            </div>
-                                            <div
-                                              className="mb-3"
-                                              style={{ width: "100%" }}
-                                            >
-                                              <label
-                                                className="form-label"
-                                                htmlFor="basic-icon-default-company"
-                                              >
-                                                Image
-                                              </label>
-                                              <div className="input-group input-group-merge">
-                                                <input
-                                                  type="text"
-                                                  id="basic-icon-default-company"
-                                                  className="form-control"
-                                                  placeholder="Image"
-                                                  aria-label="ACME Inc."
-                                                  aria-describedby="basic-icon-default-company2"
-                                                />
-                                              </div>
-                                            </div>
-                                            <div
-                                              className="mb-3"
-                                              style={{ width: "95%" }}
-                                            >
-                                              <label
-                                                className="form-label"
-                                                htmlFor="basic-icon-default-email"
-                                              >
-                                                Quantity
-                                              </label>
-                                              <div className="input-group input-group-merge">
-                                                <input
-                                                  type="text"
-                                                  id="basic-icon-default-email"
-                                                  className="form-control"
-                                                  placeholder="Quantity"
-                                                  aria-label="john.doe"
-                                                  aria-describedby="basic-icon-default-email2"
-                                                />
-                                              </div>
-                                              <div className="form-text"></div>
-                                            </div>
-                                            <div
-                                              className="mb-3"
-                                              style={{ width: "100%" }}
-                                            >
-                                              <label
-                                                className="form-label"
-                                                htmlFor="basic-icon-default-phone"
-                                              >
-                                                Price
-                                              </label>
-                                              <div className="input-group input-group-merge">
-                                                <input
-                                                  type="text"
-                                                  id="basic-icon-default-phone"
-                                                  className="form-control phone-mask"
-                                                  placeholder="Pirce"
-                                                  aria-label="658 799 8941"
-                                                  aria-describedby="basic-icon-default-phone2"
-                                                />
-                                              </div>
-                                            </div>
-                                            <div
-                                              className="mb-3"
-                                              style={{ width: "95%" }}
-                                            >
-                                              <label
-                                                className="form-label"
-                                                htmlFor="basic-icon-default-message"
-                                              >
-                                                Unit
-                                              </label>
-                                              <div className="input-group input-group-merge">
-                                                <input
-                                                  id="basic-icon-default-message"
-                                                  className="form-control"
-                                                  placeholder="Unit"
-                                                  aria-label="Hi, Do you have a moment to talk Joe?"
-                                                  aria-describedby="basic-icon-default-message2"
-                                                  defaultValue={""}
-                                                />
-                                              </div>
-                                            </div>
-                                          </div>
-
-                                          <button
-                                            type="submit"
-                                            className="button-28"
-                                            style={{
-                                              height: 30,
-                                              width: 80,
-                                              fontSize: 13,
-                                              paddingTop: 1,
-                                              marginLeft: "90%",
-                                              marginTop: "20px",
-                                              backgroundColor: "#11cdef",
-                                              color: "white",
-                                            }}
-                                          >
-                                            Save
-                                          </button>
-                                        </form>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="dialog overlay" id="my-dialog2">
-                                <a href="#" className="overlay-close" />
-
-                                <div className="row " style={{ width: 1000 }}>
-                                  <div className="col-xl">
-                                    <div className="card mb-4">
-                                      <div
-                                        className="card-header d-flex justify-content-between align-items-center"
-                                        style={{
-                                          height: 70,
-                                          backgroundColor: "white",
-                                          padding: "20px 24px",
-
-                                          borderColor: "#f4f4f4",
-                                        }}
-                                      >
-                                        <h5 className="mb-0">
-                                          Update Medicine
-                                        </h5>
-                                      </div>
-                                      <div className="card-body">
-                                        <form>
-                                          <div
-                                            style={{
-                                              display: "grid",
-                                              gridTemplateColumns: "auto auto",
-                                              padding: 30,
-                                            }}
-                                          >
-                                            <div
-                                              className="mb-3"
-                                              style={{ width: "95%" }}
-                                            >
-                                              <label
-                                                className="form-label"
-                                                htmlFor="basic-icon-default-fullname"
-                                              >
-                                                Name
-                                              </label>
-                                              <div className="input-group input-group-merge">
-                                                <input
-                                                  type="text"
-                                                  className="form-control"
-                                                  id="basic-icon-default-fullname"
-                                                  placeholder="Name"
-                                                  aria-label="John Doe"
-                                                  aria-describedby="basic-icon-default-fullname2"
-                                                />
-                                              </div>
-                                            </div>
-                                            <div
-                                              className="mb-3"
-                                              style={{ width: "100%" }}
-                                            >
-                                              <label
-                                                className="form-label"
-                                                htmlFor="basic-icon-default-company"
-                                              >
-                                                Image
-                                              </label>
-                                              <div className="input-group input-group-merge">
-                                                <input
-                                                  type="text"
-                                                  id="basic-icon-default-company"
-                                                  className="form-control"
-                                                  placeholder="Image"
-                                                  aria-label="ACME Inc."
-                                                  aria-describedby="basic-icon-default-company2"
-                                                />
-                                              </div>
-                                            </div>
-                                            <div
-                                              className="mb-3"
-                                              style={{ width: "95%" }}
-                                            >
-                                              <label
-                                                className="form-label"
-                                                htmlFor="basic-icon-default-email"
-                                              >
-                                                Quantity
-                                              </label>
-                                              <div className="input-group input-group-merge">
-                                                <input
-                                                  type="text"
-                                                  id="basic-icon-default-email"
-                                                  className="form-control"
-                                                  placeholder="Quantity"
-                                                  aria-label="john.doe"
-                                                  aria-describedby="basic-icon-default-email2"
-                                                />
-                                              </div>
-                                              <div className="form-text"></div>
-                                            </div>
-                                            <div
-                                              className="mb-3"
-                                              style={{ width: "100%" }}
-                                            >
-                                              <label
-                                                className="form-label"
-                                                htmlFor="basic-icon-default-phone"
-                                              >
-                                                Price
-                                              </label>
-                                              <div className="input-group input-group-merge">
-                                                <input
-                                                  type="text"
-                                                  id="basic-icon-default-phone"
-                                                  className="form-control phone-mask"
-                                                  placeholder="658 799 8941"
-                                                  aria-label="658 799 8941"
-                                                  aria-describedby="basic-icon-default-phone2"
-                                                />
-                                              </div>
-                                            </div>
-                                            <div
-                                              className="mb-3"
-                                              style={{ width: "95%" }}
-                                            >
-                                              <label
-                                                className="form-label"
-                                                htmlFor="basic-icon-default-message"
-                                              >
-                                                Unit
-                                              </label>
-                                              <div className="input-group input-group-merge">
-                                                <textarea
-                                                  id="basic-icon-default-message"
-                                                  className="form-control"
-                                                  placeholder="Hi, Do you have a moment to talk Joe?"
-                                                  aria-label="Hi, Do you have a moment to talk Joe?"
-                                                  aria-describedby="basic-icon-default-message2"
-                                                  defaultValue={""}
-                                                />
-                                              </div>
-                                            </div>
-                                          </div>
-
-                                          <button
-                                            type="submit"
-                                            className="button-28"
-                                            style={{
-                                              height: 30,
-                                              width: 80,
-                                              fontSize: 13,
-                                              paddingTop: 1,
-                                              marginLeft: "90%",
-                                              marginTop: "20px",
-                                              backgroundColor: "#11cdef",
-                                              color: "white",
-                                            }}
-                                          >
-                                            Save
-                                          </button>
-                                        </form>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
                             </>
                           </div>
 
@@ -532,7 +211,7 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    Image
+                                    Hình Ảnh
                                   </th>
                                   <th
                                     style={{
@@ -541,7 +220,7 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    &nbsp; &nbsp;Name
+                                    &nbsp; &nbsp;Tên Sản Phẩm
                                   </th>
                                   <th
                                     style={{
@@ -550,7 +229,7 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    Price
+                                    Giá
                                   </th>
                                   <th
                                     style={{
@@ -559,7 +238,7 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    Quantity
+                                    Số Lượng
                                   </th>
                                   <th
                                     style={{
@@ -595,15 +274,14 @@ const Drug = () => {
                                               height: 90,
                                               width: 70,
                                               borderRadius: 7,
+                                              objectFit: "cover",
                                             }}
                                           />
                                         </td>
                                         <td
                                           style={{
-                                            width: 10,
-                                            whiteSpace: "nowrap",
-                                            overFlow: "hidden",
-                                            textOverflow: "ellipsis",
+                                            width: 400,
+                                            textAlign: "left",
                                           }}
                                         >
                                           &nbsp; &nbsp;{e.name}

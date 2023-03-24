@@ -35,8 +35,18 @@ const MainCategory = () => {
   };
   const [searchTerm, setSearchTerm] = useState("");
 
-  async function loadDataCategory() {
-    const path = `MainCategory?pageIndex=${currentPage}&pageItems=${perPage}&Name=${searchTerm}`;
+  async function loadDataCategory(search) {
+    const path = `MainCategory?pageIndex=${currentPage}&pageItems=${perPage}&Name=${search}`;
+    const res = await getDataByPath(path, "", "");
+    console.log("check", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setCategory(res.data.items);
+      setTotalSite(res.data.totalRecord);
+      console.log("display", currentPage);
+    }
+  }
+  async function loadDataCategory2() {
+    const path = `MainCategory?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
@@ -145,8 +155,8 @@ const MainCategory = () => {
     }
   }
   useEffect(() => {
-    loadDataCategory();
-  }, [currentPage, perPage,searchTerm]);
+    loadDataCategory2();
+  }, [currentPage, perPage, searchTerm]);
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
@@ -519,10 +529,8 @@ const MainCategory = () => {
                         <input
                           className="input-search-table"
                           placeholder="Search Name ..."
-                          value={searchTerm}
                           onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                            loadDataCategory();
+                            loadDataCategory(e.target.value);
                           }}
                         />
                       </div>

@@ -64,7 +64,7 @@ const Sidebar = ({ activeItem }) => {
         <div className="header-sidebar">
           <img
             className="header-img"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKzFBa7k745EPUvthXNsgIMvUDAILqSAMT4IbTrhOIIA&s"
+            src={user.imageUrl}
           />{" "}
           {user && user.username && (
             <div className="header-sidebar-name">{user.username}</div>

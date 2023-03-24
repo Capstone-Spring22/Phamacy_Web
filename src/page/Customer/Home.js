@@ -24,8 +24,8 @@ const Home = () => {
   const [perPage, setPerPage] = useState(5);
   const [totalRecord, setTotalRecord] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const update = (cartId) => {
-    localStorage.setItem("cartId", cartId);
+  const update = (deviceId) => {
+    localStorage.setItem("deviceId", deviceId);
 
     // history.push("/ViewCart");
   };
@@ -59,12 +59,12 @@ const Home = () => {
   });
   async function addToCart(productId) {
     if (checkValidation()) {
-      const cartId = await axios
+      const deviceId = await axios
         .get("https://api.ipify.org/?format=json")
         .then((res) => res.data.ip);
-      update(cartId);
+      update(deviceId);
       setProduct({
-        cartId,
+        deviceId,
         item: {
           productId,
           quantity:

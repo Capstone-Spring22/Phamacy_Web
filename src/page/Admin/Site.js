@@ -47,7 +47,7 @@ const Site = () => {
     history.push("/ViewDetail");
   };
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(1);
+  const [perPage, setPerPage] = useState(7);
   const checkValidation = () => {
     // if (id.trim() === "") {
     //   Swal.fire("ID Can't Empty", "", "question");
@@ -59,20 +59,21 @@ const Site = () => {
   const handleClick = (id) => {
     console.log("display", id);
   };
-  
+
   async function loadDataSite() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-    const path = `Site?pageIndex=${currentPage}&pageItems=${perPage}`;
-    console.log("display2", getDataByPath);
-    const res = await getDataByPath(path, accessToken, "");
-     console.log('display31321',res)
-    if (res !== null && res !== undefined && res.status === 200) {
-      setSite(res.data.items);
-      
-      setTotalSite(res.data.totalRecord);
-       console.log('display',currentPage)
-    }}
+      const path = `Site?pageIndex=${currentPage}&pageItems=${perPage}`;
+      console.log("display2", getDataByPath);
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("display31321", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setSite(res.data.items);
+
+        setTotalSite(res.data.totalRecord);
+        console.log("display", currentPage);
+      }
+    }
   }
   async function loadDataSubCategoryID(id) {
     const path = `Site/${id}`;
@@ -101,16 +102,16 @@ const Site = () => {
   async function updateProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-    const data = dataForUpdate();
-    const path = `Site`;
-    const res = await updateDataByPath(path, accessToken, data);
-    // console.log("display", data.homeAddress);
-    if (res && res.status === 200) {
-      Swal.fire("Update successfully!", "", "success");
-      window.location.reload();
-
+      const data = dataForUpdate();
+      const path = `Site`;
+      const res = await updateDataByPath(path, accessToken, data);
+      // console.log("display", data.homeAddress);
+      if (res && res.status === 200) {
+        Swal.fire("Update successfully!", "", "success");
+        window.location.reload();
+      }
     }
-  }}
+  }
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -154,40 +155,42 @@ const Site = () => {
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-    if (checkValidation()) {
-      const data = dataForCreate();
-      const path = "Site";
-      const res = await createDataByPath(path, accessToken, data);
-      console.log("Check res", res);
-      if (res && res.status === 201) {
-        Swal.fire("Create Success", "", "success");
-        deleteForCreate();
-        window.location.reload();
+      if (checkValidation()) {
+        const data = dataForCreate();
+        const path = "Site";
+        const res = await createDataByPath(path, accessToken, data);
+        console.log("Check res", res);
+        if (res && res.status === 201) {
+          Swal.fire("Create Success", "", "success");
+          deleteForCreate();
+          window.location.reload();
+        }
       }
     }
-  }}
+  }
   async function loadDataSiteID(id) {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-    const path = `Site/${id}`;
-    const res = await getDataByPath(path, accessToken, "");
-    if (res !== null && res !== undefined && res.status === 200) {
-      console.log(id, res.data.isActivate);
-      const data = { siteID: id, status: !res.data.isActivate };
-      const path1 = "Site/Active";
-      const res1 = await updateDataByPath(path1, accessToken, data);
-      if (res1 && res1.status === 200) {
-        Swal.fire("Update successfully!", "", "success");
-        history.push("/Site");
-      } else if (res1 && res1.status === 400) {
-        Swal.fire(
-          "Cái này éo có nhân viên nên éo cho mở cửa! OK?",
-          "You failed!",
-          "error"
-        );
+      const path = `Site/${id}`;
+      const res = await getDataByPath(path, accessToken, "");
+      if (res !== null && res !== undefined && res.status === 200) {
+        console.log(id, res.data.isActivate);
+        const data = { siteID: id, status: !res.data.isActivate };
+        const path1 = "Site/Active";
+        const res1 = await updateDataByPath(path1, accessToken, data);
+        if (res1 && res1.status === 200) {
+          Swal.fire("Update successfully!", "", "success");
+          history.push("/Site");
+        } else if (res1 && res1.status === 400) {
+          Swal.fire(
+            "Cái này éo có nhân viên nên éo cho mở cửa! OK?",
+            "You failed!",
+            "error"
+          );
         }
+      }
     }
-  }}
+  }
 
   async function loadDataCity() {
     const path = `Address/City`;
@@ -227,13 +230,9 @@ const Site = () => {
     const wardID = event.target.value;
     setWardID(wardID);
   };
-
+  const [activeItem, setActiveItem] = useState("Site");
   useEffect(() => {
-   
- 
-    
-      loadDataSite();
-    
+    loadDataSite();
   }, [currentPage, perPage]);
 
   useEffect(() => {
@@ -249,9 +248,12 @@ const Site = () => {
     <>
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
-          <SideBar />
+          <SideBar activeItem={activeItem} />
 
-          <div className="layout-page" style={{ backgroundColor: "#f4f6fb", marginLeft:260 }}>
+          <div
+            className="layout-page"
+            style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
+          >
             {/* Navbar */}
             <nav
               className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
@@ -417,7 +419,7 @@ const Site = () => {
                           borderColor: "white",
                         }}
                       >
-                        <h3 className="fontagon">Site</h3>
+                        <h3 className="fontagon">Địa Điểm Chi Nhánh</h3>
                       </h5>
                       <>
                         <a
@@ -428,7 +430,7 @@ const Site = () => {
                             width: 80,
                             fontSize: 13,
                             paddingTop: 5,
-                            marginLeft: "80%",
+                            marginLeft: "70%",
                             marginTop: "20px",
                           }}
                         >
@@ -461,7 +463,7 @@ const Site = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Add new Site</h5>
+                                  <h5 className="mb-0">Thêm Chi Nhánh Mới</h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -480,7 +482,7 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-fullname"
                                         >
-                                          Name Site
+                                          Tên Chi Nhánh
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
@@ -504,7 +506,7 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-company"
                                         >
-                                          Image
+                                          Hình Ảnh
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input

@@ -4,9 +4,29 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import { getDataByPath, deleteDataByPath } from "../../services/data.service";
 import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
-
+import logo from "../../assets/BH.png";
 const Sidebar = ({activeItem}) => {
   const navigate = useHistory();
+
+  const [user, setUser] = useState([]);
+
+  async function loadDataUserByID() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+
+      console.log("localStorage", localStorage);
+      const path = `User/${localStorage.userID}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("res", res.data.username);
+      console.log("user", user);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setUser(res.data);
+      }
+    }
+  }
+  useEffect(() => {
+    loadDataUserByID();
+  }, []);
   const handleLogout = async () => {
     try {
       navigate.push("/LoginAdmin");
@@ -23,23 +43,10 @@ const Sidebar = ({activeItem}) => {
         className="layout-menu menu-vertical menu bg-menu-theme"
         style={{ backgroundColor: "#ffffff",position: "fixed",height:1000 }}
       >
-        <div className="app-brand demo">
-          <Link to="/Home" className="app-brand-link">
-            <span
-              className="app-brand-text demo menu-text fw-bolder ms-2"
-              style={{ color: "#0077c9", fontSize: "20", lineHeight: "30" }}
-            >
-              BetterHealth
-            </span>
-           
+       <div className="app-brand demo" style={{ marginLeft: -30 }}>
+          <Link to="/Home" className="app-brand-link" style={{ marginTop: 40 }}>
+            <img src={logo} style={{ marginRight: 60 }} />
           </Link>
-
-          <a
-            href="javascript:void(0);"
-            className="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none"
-          >
-            <i className="bx bx-chevron-left bx-sm align-middle" />
-          </a>
         </div>
         <br />
         <li className="menu-header small text-uppercase">
@@ -48,9 +55,11 @@ const Sidebar = ({activeItem}) => {
         <div className="header-sidebar">
           <img
             className="header-img"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKzFBa7k745EPUvthXNsgIMvUDAILqSAMT4IbTrhOIIA&s"
-          />
-          <div className="header-sidebar-name">Phu159123</div>
+            src={user.imageUrl}
+          />{" "}
+          {user && user.username && (
+            <div className="header-sidebar-name">{user.username}</div>
+          )}
         </div>
         <div className="menu-inner-shadow" />
         <ul className="menu-inner py-1">

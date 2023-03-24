@@ -87,7 +87,7 @@ const SubCategory = () => {
   };
 
   async function loadDataMainCategory() {
-    const path = `MainCategory?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `MainCategory?pageIndex=${currentPage}&pageItems=100`;
     const res = await getDataByPath(path, "", "");
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
@@ -203,9 +203,6 @@ const SubCategory = () => {
                   </li>
                   {/* User */}
 
-                
-
-              
                   {/*/ User */}
                 </ul>
               </div>
@@ -528,19 +525,19 @@ const SubCategory = () => {
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" ,marginTop:-200}}
-                                    
+                                        style={{
+                                          width: "95%",
+                                          marginTop: -200,
+                                        }}
                                       >
                                         <label
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
-                                      
                                         >
                                           Danh Mục
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <select
-                                          
                                             name="city"
                                             id="basic-icon-default-email"
                                             className="form-control"
@@ -632,7 +629,7 @@ const SubCategory = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              &nbsp; &nbsp;Tên Danh Mục 
+                              &nbsp; &nbsp;Tên Danh Mục
                             </th>
                             <th
                               style={{
