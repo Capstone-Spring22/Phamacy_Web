@@ -48,13 +48,49 @@ const NewEmployees = () => {
     { name: "Male", value: 0 },
     { name: "FeMale", value: 1 },
   ];
+  const [fullnameErrorMessage, setFullnameErrorMessage] = useState("");
+  const [usernameErrorMessage, setUsernameErrorMessage] = useState("");
+  const [phoneErrorMessage, setPhoneErrorMessage] = useState("");
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+
   const checkValidation = () => {
-    // if (id.trim() === "") {
-    //   Swal.fire("ID Can't Empty", "", "question");
-    //   return false;
-    // }
-    return true;
+    let isValid = true;
+
+    if (!fullname.trim()) {
+      setFullnameErrorMessage("Vui lòng điền tên đầy đủ");
+      isValid = false;
+    } else {
+      setFullnameErrorMessage("");
+    }
+
+    if (!username.trim()) {
+      setUsernameErrorMessage("Vui long đặt UserName");
+      isValid = false;
+    } else {
+      setUsernameErrorMessage("");
+    }
+
+    if (!phone.trim()) {
+      setPhoneErrorMessage("Phone number is required");
+      isValid = false;
+    } else {
+      setPhoneErrorMessage("");
+    }
+
+    if (!email.trim()) {
+      setEmailErrorMessage("Vui lòng điền email");
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailErrorMessage("Vui lòng điền đúng (abc@gmail.com)");
+      isValid = false;
+    } else {
+      setEmailErrorMessage("");
+    }
+
+    return isValid;
   };
+
+
   const dataForCreate = () => {
     return {
       username: username,
@@ -370,6 +406,7 @@ const NewEmployees = () => {
                           onChange={(e) => setFullname(e.target.value)}
                         />
                       </div>
+                      <div className="form-text" style={{color:"red"}}>{fullnameErrorMessage}</div>
                     </div>
                     <div className="mb-3" style={{ width: "100%" }}>
                       <label
@@ -408,7 +445,7 @@ const NewEmployees = () => {
                           onChange={(e) => setPhone(e.target.value)}
                         />
                       </div>
-                      <div className="form-text"></div>
+                      <div className="form-text" style={{color:"red"}}>{phoneErrorMessage}</div>
                     </div>
                     <div className="mb-3" style={{ width: "100%" }}>
                       <label
@@ -428,7 +465,7 @@ const NewEmployees = () => {
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
-                      <div className="form-text"></div>
+                      <div className="form-text" style={{color:"red"}}>{emailErrorMessage}</div>
                     </div>
                     <div className="mb-3" style={{ width: "95%" }}>
                       <label

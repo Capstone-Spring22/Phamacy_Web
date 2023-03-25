@@ -4520,3 +4520,51 @@ a {
   margin-right: 20px;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
 }
+.ant-switch-checked {
+  background-color: #82aae3 !important;
+}
+
+.ant-switch {
+  background-color: rgb(
+    233,
+    234,
+    239
+  ); /* Màu nền của switch khi không được check */
+}
+.form-check-input:not(:checked) {
+  background-color: white;
+}
+
+.form-check-input:checked {
+  background-color: #82aae3 !important;
+}
+.pagination{
+  margin-left: 20px;
+}
+.pagination .previous-button{
+  background-color: #ffffff;
+  border: 1px solid #82aae3 !important;
+  color: #82aae3;
+  border-radius: 5px !important;
+  margin-right: 10px;
+}
+.pagination .next-button {
+  background-color: #ffffff;
+  border: 1px solid #82aae3 !important;
+  color: #82aae3;
+  border-radius: 5px !important;
+  margin-left: 10px;
+}
+.pagination .page-item {
+  background-color: white;
+  border-color: #82aae3;
+  color: #82aae3;
+}
+
+.pagination .page-item.ac {
+  background-color: #ffffff !important;
+  border-color: #82aae3 !important;
+  border-radius: 5px !important;
+  color: #82aae3  !important;
+  border: 1px solid #82aae3 !important;
+}

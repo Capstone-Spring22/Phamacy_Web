@@ -5,7 +5,7 @@ import { getDataByPath, deleteDataByPath } from "../../services/data.service";
 import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
 import logo from "../../assets/BH.png";
-const Sidebar = ({activeItem}) => {
+const Sidebar = ({ activeItem }) => {
   const navigate = useHistory();
 
   const [user, setUser] = useState([]);
@@ -41,7 +41,7 @@ const Sidebar = ({activeItem}) => {
       <aside
         id="layout-menu"
         className="layout-menu menu-vertical menu bg-menu-theme"
-        style={{ backgroundColor: "#ffffff",position: "fixed",height:1000 }}
+        style={{ backgroundColor: "#ffffff", position: "fixed", height: 1000 }}
       >
         <div className="app-brand demo" style={{ marginLeft: -30 }}>
           <Link to="/Home" className="app-brand-link" style={{ marginTop: 40 }}>
@@ -54,10 +54,14 @@ const Sidebar = ({activeItem}) => {
         </li>
 
         <div className="header-sidebar">
-          <img
-            className="header-img"
-            src={user.imageUrl}
-          />{" "}
+          {user.imageUrl ? (
+            <img className="header-img" src={user.imageUrl} />
+          ) : (
+            <img
+              className="header-img"
+              src="https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png"
+            />
+          )}
           {user && user.username && (
             <div className="header-sidebar-name">{user.username}</div>
           )}
@@ -65,7 +69,7 @@ const Sidebar = ({activeItem}) => {
         <div className="menu-inner-shadow" />
         <ul className="menu-inner py-1">
           {/* Dashboard */}
-          
+
           {/* Layouts */}
 
           <li className="menu-header small text-uppercase">
@@ -87,7 +91,9 @@ const Sidebar = ({activeItem}) => {
               <div data-i18n="Analytics">Dashboard</div>
             </a>
           </li>
-          <li className={`menu-item ${activeItem == "Employees" ? "active" : ""}`}>
+          <li
+            className={`menu-item ${activeItem == "Employees" ? "active" : ""}`}
+          >
             <Link to="/Employees" className="menu-link">
               <svg
                 style={{ margin: "5" }}
@@ -141,7 +147,7 @@ const Sidebar = ({activeItem}) => {
                   d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
                 />
               </svg>
-             
+
               <div data-i18n="Support">Logout</div>
             </Link>
           </li>

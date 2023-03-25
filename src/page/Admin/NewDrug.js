@@ -613,7 +613,7 @@ const NewDrug = () => {
                             style={{
                               height: 20,
                               width: 20,
-                              backgroundColor: "#82AAE3",
+                              
                               borderColor: "#82AAE3",
                             }}
                             checked={isPrescription}
@@ -641,7 +641,7 @@ const NewDrug = () => {
                             style={{
                               height: 20,
                               width: 20,
-                              backgroundColor: "#82AAE3",
+                           
                               borderColor: "#82AAE3",
                             }}
                           />
@@ -1127,7 +1127,7 @@ const NewDrug = () => {
                                   style={{
                                     height: 20,
                                     width: 20,
-                                    backgroundColor: "#82AAE3",
+                                   
                                     borderColor: "#82AAE3",
                                   }}
                                 />
@@ -1135,7 +1135,7 @@ const NewDrug = () => {
                                   className="form-check-label"
                                   htmlFor={`isSell${index}`}
                                 >
-                                  For sale
+                                 Cho Bán
                                 </label>
                               </div>
                             </div>

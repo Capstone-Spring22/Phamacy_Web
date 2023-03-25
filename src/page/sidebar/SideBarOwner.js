@@ -62,10 +62,14 @@ const Sidebar = ({ activeItem }) => {
         </li>
 
         <div className="header-sidebar">
-          <img
-            className="header-img"
-            src={user.imageUrl}
-          />{" "}
+          {user.imageUrl ? (
+            <img className="header-img" src={user.imageUrl} />
+          ) : (
+            <img
+              className="header-img"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAEUTUFvPsiiOjdB2ocRUt0wh10kho3Mt9dA&usqp=CAU"
+            />
+          )}
           {user && user.username && (
             <div className="header-sidebar-name">{user.username}</div>
           )}
@@ -124,11 +128,16 @@ const Sidebar = ({ activeItem }) => {
                 width="16"
                 height="16"
                 fill="currentColor"
-                class="bi bi-person"
+                class="bi bi-bookmark-check"
                 viewBox="0 0 16 16"
               >
-                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z" />
+                <path
+                  fill-rule="evenodd"
+                  d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"
+                />
+                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z" />
               </svg>
+
               <div data-i18n="Support">Danh Mục Chính</div>
             </Link>
           </li>
@@ -144,11 +153,12 @@ const Sidebar = ({ activeItem }) => {
                 width="16"
                 height="16"
                 fill="currentColor"
-                class="bi bi-person"
+                class="bi bi-percent"
                 viewBox="0 0 16 16"
               >
-                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z" />
+                <path d="M13.442 2.558a.625.625 0 0 1 0 .884l-10 10a.625.625 0 1 1-.884-.884l10-10a.625.625 0 0 1 .884 0zM4.5 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 1a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm7 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 1a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />
               </svg>
+
               <div data-i18n="Support">Giảm Giá</div>
             </Link>
           </li>

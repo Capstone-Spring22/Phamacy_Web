@@ -52,11 +52,16 @@ const Sidebar = ({activeItem}) => {
         <li className="menu-header small text-uppercase">
           <span className="menu-header-text">Welcome</span>
         </li>
+     
         <div className="header-sidebar">
-          <img
-            className="header-img"
-            src={user.imageUrl}
-          />{" "}
+          {user.imageUrl ? (
+            <img className="header-img" src={user.imageUrl} />
+          ) : (
+            <img
+              className="header-img"
+              src="https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png"
+            />
+          )}
           {user && user.username && (
             <div className="header-sidebar-name">{user.username}</div>
           )}

@@ -281,7 +281,7 @@ const Employees = () => {
                           borderColor: "white",
                         }}
                       >
-                        <h3 className="fontagon"> Employees</h3>
+                        <h3 className="fontagon"> Quản Lý Nhân Viên</h3>
                       </h5>
 
                       <>
@@ -293,8 +293,10 @@ const Employees = () => {
                             width: 80,
                             fontSize: 13,
                             paddingTop: 5,
-                            marginLeft: "80%",
+                            marginLeft: "70%",
                             marginTop: "20px",
+                            backgroundColor: "#82AAE3",
+                            color: "white",
                           }}
                           onClick={() => {
                             create();
@@ -311,7 +313,7 @@ const Employees = () => {
                             <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                           </svg>
-                          &nbsp; Add
+                          &nbsp; Thêm
                         </a>
                       </>
                     </div>

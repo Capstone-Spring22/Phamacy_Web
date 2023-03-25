@@ -54,7 +54,14 @@ const Sidebar = ({ activeItem }) => {
         </li>
 
         <div className="header-sidebar">
-          <img className="header-img" src={user.imageUrl} />{" "}
+          {user.imageUrl ? (
+            <img className="header-img" src={user.imageUrl} />
+          ) : (
+            <img
+              className="header-img"
+              src="https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png"
+            />
+          )}
           {user && user.username && (
             <div className="header-sidebar-name">{user.username}</div>
           )}
@@ -84,10 +91,7 @@ const Sidebar = ({ activeItem }) => {
               <div data-i18n="Analytics">Dashboard</div>
             </a>
           </li>
-          <li
-           
-            className={`menu-item ${activeItem == "Order" ? "active" : ""}`}
-          >
+          <li className={`menu-item ${activeItem == "Order" ? "active" : ""}`}>
             <Link to="/Order" className="menu-link">
               <svg
                 style={{ margin: "5" }}

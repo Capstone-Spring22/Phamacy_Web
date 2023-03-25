@@ -4209,6 +4209,7 @@ fieldset:disabled .btn {
   display: flex;
   padding-left: 0;
   list-style: none;
+ 
 }
 
 .page-link {
@@ -4266,9 +4267,11 @@ fieldset:disabled .btn {
 .pagination-lg .page-link {
   padding: 0.9375rem 0.5rem;
   font-size: 1rem;
+  
 }
 .pagination-lg .page-item .page-link {
   border-radius: 0.5rem;
+  
 }
 
 .pagination-sm .page-link {

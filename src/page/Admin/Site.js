@@ -30,6 +30,12 @@ const Site = () => {
   const [homeAddress, setHomeAddress] = useState("");
   const [siteID, setSiteID] = useState("");
 
+  const [siteNameErrorMessage, setSiteNameErrorMessage] = useState("");
+  const [cityErrorMessage, setCityErrorMessage] = useState("");
+  const [districtsErrorMessage, setDistrictsErrorMessage] = useState("");
+  const [wardErrorMessage, setWardErrorMessage] = useState("");
+  const [descriptionErrorMessage, setDescriptionErrorMessage] = useState("");
+  const [contactInfoErrorMessage, setContactInfoErrorMessage] = useState("");
   const [siteUpdate, setSiteUpdate] = useState({
     siteName: "",
     description: "",
@@ -49,12 +55,53 @@ const Site = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
   const checkValidation = () => {
-    // if (id.trim() === "") {
-    //   Swal.fire("ID Can't Empty", "", "question");
-    //   return false;
-    // }
-    return true;
+    let isValid = true;
+    
+    if (siteName.trim().length === 0) {
+      isValid = false;
+      setSiteNameErrorMessage('Vui lòng nhập tên chi nhanh');
+    } else {
+      setSiteNameErrorMessage('');
+    }
+    
+    if (city.trim().length === 0) {
+      isValid = false;
+      setCityErrorMessage('Vui lòng chọn thành phố');
+    } else {
+      setCityErrorMessage('');
+    }
+    
+    if (districs.trim().length === 0) {
+      isValid = false;
+      setDistrictsErrorMessage('Vui lòng chọn quận/huyện');
+    } else {
+      setDistrictsErrorMessage('');
+    }
+    
+    if (ward.trim().length === 0) {
+      isValid = false;
+      setWardErrorMessage('Vui lòng chọn phường/xã');
+    } else {
+      setWardErrorMessage('');
+    }
+    
+    if (description.trim().length === 0) {
+      isValid = false;
+      setDescriptionErrorMessage('Vui lòng nhập mô tả');
+    } else {
+      setDescriptionErrorMessage('');
+    }
+    
+    if (contactInfo.trim().length === 0) {
+      isValid = false;
+      setContactInfoErrorMessage('Vui lòng nhập thông tin liên hệ');
+    } else {
+      setContactInfoErrorMessage('');
+    }
+  
+    return isValid;
   };
+  
 
   const handleClick = (id) => {
     console.log("display", id);
@@ -215,6 +262,7 @@ const Site = () => {
       setWard(res.data);
     }
   }
+  
   const handlecity = (event) => {
     event.preventDefault();
     const cityID = event.target.value;
@@ -432,6 +480,8 @@ const Site = () => {
                             paddingTop: 5,
                             marginLeft: "70%",
                             marginTop: "20px",
+                            backgroundColor: "#82AAE3",
+                            color: "white",
                           }}
                         >
                           <svg
@@ -445,7 +495,7 @@ const Site = () => {
                             <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
                           </svg>
-                          &nbsp; Add
+                          &nbsp; Thêm
                         </a>
                         <div className="dialog overlay" id="my-dialog">
                           <a href="#" className="overlay-close" />
@@ -497,6 +547,7 @@ const Site = () => {
                                             aria-describedby="basic-icon-default-fullname2"
                                           />
                                         </div>
+                                        <div className="form-text" style={{color:"red"}}>{siteNameErrorMessage}</div>
                                       </div>
                                       <div
                                         className="mb-3"
@@ -858,8 +909,7 @@ const Site = () => {
                                           </span> */}
                                         </div>
                                         <div className="form-text">
-                                          You can use letters, numbers &amp;
-                                          periods
+                                         
                                         </div>
                                       </div>
                                       <div
@@ -901,6 +951,7 @@ const Site = () => {
                                               })}
                                           </select>
                                         </div>
+                                        <div className="form-text" style={{color:"red"}}>{cityErrorMessage}</div>
                                       </div>
                                       <div
                                         className="mb-3"
@@ -940,6 +991,7 @@ const Site = () => {
                                               })}
                                           </select>
                                         </div>
+                                        <div className="form-text" style={{color:"red"}}>{districtsErrorMessage}</div>
                                       </div>
                                       <div
                                         className="mb-3"
@@ -1159,6 +1211,7 @@ const Site = () => {
                                     </a>
                                     <buton></buton>
                                     <Switch
+                                    
                                       checked={e.isActivate}
                                       onChange={async () => {
                                         loadDataSiteID(e.id);
@@ -1171,6 +1224,7 @@ const Site = () => {
                         </tbody>
                       </table>
                       <ReactPaginate
+
                         className="pagination p12"
                         pageCount={totalSite / perPage}
                         onPageChange={(e) => handlePageChange(e.selected + 1)}
