@@ -12,7 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import logo from "../../assets/BH.png";
-
+import Swal from "sweetalert2";
 const LoginAdmin = () => {
   const navigate = useHistory();
   const [username, setUsername] = useState("");
@@ -20,7 +20,12 @@ const LoginAdmin = () => {
   const handleLogin = (e) => {
     e.preventDefault();
   };
+  const [error, setError] = useState("");
   async function loginWithUsernamePassword(username, password) {
+    if (!username || !password) {
+     setError("Vui lòng nhập tên đăng nhập và mật khẩu");
+      return;
+    }
     if (username.trim() !== "" && password.trim() !== "") {
       const path = "Member/InternalUser/Login";
       const data = {
@@ -54,7 +59,7 @@ const LoginAdmin = () => {
           const decoded = jwtDecode(res.data.token);
 
           console.log("ss", jwtDecode(res.data.token));
-
+          
           if (roleID === "Manager") {
             navigate.push("/ImportProduct");
           } else if (roleID === "Pharmacist") {
@@ -64,8 +69,11 @@ const LoginAdmin = () => {
           } else if (roleID === "Owner") {
             navigate.push("/Drug");
           }
+          
         }
       }
+      else {
+        setError("Sai tên hoặc mật khẩu vui lòng thử lại"); }
     }
   }
 
@@ -96,6 +104,7 @@ const LoginAdmin = () => {
                   <p className="mb-4">
                     Please sign-in to your account and start the adventure
                   </p>
+                  {error && <div className="error" style={{color:"red"}}>{error}</div>}
                   <form
                     id="formAuthentication"
                     className="mb-3"

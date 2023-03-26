@@ -223,192 +223,12 @@ const Order = () => {
                           borderColor: "white",
                         }}
                       >
-                        <h3 className="fontagon">Order</h3>
+                        <h3 className="fontagon">Quản Lý Đơn Hàng</h3>
                       </h5>
 
                       <>
-                        <a
-                          className=" button-28"
-                          href="#my-dialog"
-                          style={{
-                            height: 30,
-                            width: 80,
-                            fontSize: 13,
-                            paddingTop: 5,
-                            marginLeft: "80%",
-                            marginTop: "20px",
-                          }}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="13"
-                            height="13"
-                            fill="currentColor"
-                            class="bi bi-plus-square"
-                            viewBox="0 0 16 16"
-                          >
-                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
-                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-                          </svg>
-                          &nbsp; Add
-                        </a>
-                        <div className="dialog overlay" id="my-dialog">
-                          <a href="#" className="overlay-close" />
-
-                          <div className="row " style={{ width: 1000 }}>
-                            <div className="col-xl">
-                              <div className="card mb-4">
-                                <div
-                                  className="card-header d-flex justify-content-between align-items-center"
-                                  style={{
-                                    height: 70,
-                                    backgroundColor: "white",
-                                    padding: "20px 24px",
-
-                                    borderColor: "#f4f4f4",
-                                  }}
-                                >
-                                  <h5 className="mb-0">Add new Order</h5>
-                                </div>
-                                <div className="card-body">
-                                  <form>
-                                    <div
-                                      style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "auto auto",
-                                        padding: 30,
-                                      }}
-                                    >
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-fullname"
-                                        >
-                                          Name
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            className="form-control"
-                                            id="basic-icon-default-fullname"
-                                            placeholder="Name"
-                                            aria-label="John Doe"
-                                            aria-describedby="basic-icon-default-fullname2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "100%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-company"
-                                        >
-                                          Image
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-company"
-                                            className="form-control"
-                                            placeholder="Image"
-                                            aria-label="ACME Inc."
-                                            aria-describedby="basic-icon-default-company2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-email"
-                                        >
-                                          Quantity
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            placeholder="Quantity"
-                                            aria-label="john.doe"
-                                            aria-describedby="basic-icon-default-email2"
-                                          />
-                                        </div>
-                                        <div className="form-text"></div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "100%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
-                                          Price
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="text"
-                                            id="basic-icon-default-phone"
-                                            className="form-control phone-mask"
-                                            placeholder="Pirce"
-                                            aria-label="658 799 8941"
-                                            aria-describedby="basic-icon-default-phone2"
-                                          />
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-message"
-                                        >
-                                          Unit
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            id="basic-icon-default-message"
-                                            className="form-control"
-                                            placeholder="Unit"
-                                            aria-label="Hi, Do you have a moment to talk Joe?"
-                                            aria-describedby="basic-icon-default-message2"
-                                            defaultValue={""}
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <button
-                                      type="submit"
-                                      className="button-28"
-                                      style={{
-                                        height: 30,
-                                        width: 80,
-                                        fontSize: 13,
-                                        paddingTop: 1,
-                                        marginLeft: "90%",
-                                        marginTop: "20px",
-                                        backgroundColor: "#11cdef",
-                                        color: "white",
-                                      }}
-                                    >
-                                      Save
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        
+                      
                         
                       </>
                     </div>
@@ -499,16 +319,23 @@ const Order = () => {
                             })}
                         </tbody>
                       </table>
-                      <ReactPaginate
-                        className="pagination p12"
-                        style={{
-                          backgroundColor: "#82AAE3",
-                          color: "white",
-                        }}
-                        pageCount={totalRecord / perPage}
-                        onPageChange={(e) => setCurrentPage(e.selected + 1)}
-                        currentPage={currentPage}
-                      />
+                   
+                       <ReactPaginate
+                          
+                          className="pagination "
+                          breakLabel="..."
+                          nextLabel=">"
+                          previousLabel="< "
+                          nextClassName="next-button"
+                          pageClassName="page-item"
+                          activeClassName="ac"
+                          previousClassName="previous-button"
+                          pageCount={totalRecord / perPage}
+                          onPageChange={(e) =>
+                            setCurrentPage(e.selected + 1)
+                          }
+                          currentPage={currentPage}
+                        />
                     </div>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
-import Select from "react-select";
+
 import SideBar from "../sidebar/SideBarOwner";
 import Creatable, { useCreatable } from "react-select/creatable";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -8,7 +8,7 @@ import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
 import {
   getDataByPath,
-  deleteDataByPath,
+
   createDataByPath,
 } from "../../services/data.service";
 import axios from "axios";
@@ -325,6 +325,7 @@ const NewDrug = () => {
     });
     setUnitCount(unitCount + 1);
   };
+  const [activeItem, setActiveItem] = useState("Drug");
   const handleAddImage = () => {
     setProduct({
       ...product,
@@ -336,7 +337,7 @@ const NewDrug = () => {
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
-        <SideBar />
+      <SideBar activeItem={activeItem} />
 
         <div
           className="layout-page"
@@ -1018,7 +1019,7 @@ const NewDrug = () => {
                                   type="text"
                                   id={`price${index}`}
                                   className="form-control"
-                                  placeholder="Unit Id"
+                                  placeholder="Giá Của Sản Phẩm"
                                   aria-label="Unit Id"
                                   aria-describedby={`price${index}2`}
                                   onChange={(e) =>
@@ -1059,7 +1060,7 @@ const NewDrug = () => {
                                   type="text"
                                   id={`barCode${index}`}
                                   className="form-control"
-                                  placeholder="Unit Id"
+                                  placeholder="Mã BarCode"
                                   aria-label="Unit Id"
                                   aria-describedby={`barCode${index}2`}
                                   onChange={(e) =>

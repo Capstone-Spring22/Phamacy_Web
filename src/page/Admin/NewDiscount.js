@@ -11,8 +11,9 @@ import {
   deleteDataByPath,
   createDataByPath,
 } from "../../services/data.service";
-import ReactPaginate from "react-paginate";
 
+import ReactPaginate from "react-paginate";
+import Select from "react-select";
 const NewDiscount = () => {
   const [ingredientCount, setIngredientCount] = useState(1);
   const [unitCount, setUnitCount] = useState(1);
@@ -33,7 +34,8 @@ const NewDiscount = () => {
   const [isSell, setIsSell] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
-
+  const [totalRecord, setTotalRecord] = useState([]);
+  const [drug, setDrug] = useState([]);
   const [product, setProduct] = useState({
     title: "",
     reason: "",
@@ -63,6 +65,19 @@ const NewDiscount = () => {
       }
     }
   }
+  async function loadDataDrug() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `Product?pageIndex=${currentPage}&pageItems=${perPage}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("display", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setDrug(res.data.items);
+        setTotalRecord(res.data.totalRecord);
+        console.log("display", currentPage);
+      }
+    }
+  }
   const checkValidation = () => {
     // if (id.trim() === "") {
     //   Swal.fire("ID Can't Empty", "", "question");
@@ -70,7 +85,14 @@ const NewDiscount = () => {
     // }
     return true;
   };
-
+  useEffect(() => {
+    loadDataDrug();
+  }, []);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const options = drug.map((e) => ({
+    label: e.name,
+    value: e.id,
+  }));
   const handleAddUnit = () => {
     setProduct({
       ...product,
@@ -357,7 +379,6 @@ const NewDiscount = () => {
                             className="form-control"
                             placeholder="Công dung"
                             aria-label="Công dung"
-                            
                             aria-describedby="basic-icon-default-company2"
                             onChange={(e) =>
                               setProduct((prevState) => ({
@@ -458,13 +479,13 @@ const NewDiscount = () => {
                                 >
                                   Id sản phẩm
                                 </label>
-                                <div className="input-group input-group-merge">
-                                  <input
-                                    name="city"
-                                    id="basic-icon-default-email"
-                                    className="form-control"
-                                    onChange={(e) => {
-                                      setProduct({
+                           
+                                  
+                                  <Select
+                              
+                                    onChange={(selectedOption) => {
+                                      setSelectedOption(selectedOption);
+                                        setProduct({
                                         ...product,
                                         products: [
                                           ...product.products.slice(
@@ -472,19 +493,16 @@ const NewDiscount = () => {
                                             index - 1
                                           ),
                                           {
-                                            ...product.products[
-                                              index - 1
-                                            ],
-                                            productId: e.target.value,
+                                            ...product.products[index - 1],
+                                            productId: selectedOption.value,
                                           },
-                                          ...product.products.slice(
-                                            index
-                                          ),
+                                          ...product.products.slice(index),
                                         ],
                                       });
                                     }}
-                                  ></input>
-                                </div>
+                                    options={options}
+                                  />
+                       
                               </div>
                             </div>
                           </div>

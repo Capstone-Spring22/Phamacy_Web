@@ -14,6 +14,7 @@ import {
   deleteDataByPath,
   createDataByPath,
 } from "../../services/data.service";
+import logo from "../../assets/BH2.png";
 import { CATEGORIES, ListNewProduct } from "../Data";
 
 const Home = () => {
@@ -111,11 +112,14 @@ const Home = () => {
         <div className="container">
           <div className="d-flex align-items-center justify-content-between">
             <div className="logo">
-              <div className="site-logo">
-                <a href="/Home" className="js-logo-clone">
-                  Pharma
-                </a>
-              </div>
+            <div
+              className="app-brand demo"
+              style={{ marginLeft: -10, marginBottom: -80, marginTop: -90 }}
+            >
+              <Link to="/Home" className="app-brand-link">
+                <img src={logo} style={{ height: 80 }} />
+              </Link>
+            </div>
             </div>
             <div className="main-nav d-none d-lg-block">
               <nav
@@ -211,15 +215,15 @@ const Home = () => {
       </div>
       <div className="site-wrap">
         <Carousel fade>
-          <Carousel.Item interval={1000}>
+          <Carousel.Item interval={2000}>
             <img
               className="d-block w-100"
-              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1678417597-7D25-kem-chong-nang-2023.png"
+              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1678849856-VRaS-hang-nhat-t3.png"
               style={{ height: 400 }}
               alt="First slide"
             />
           </Carousel.Item>
-          <Carousel.Item interval={500}>
+          <Carousel.Item interval={5000}>
             <img
               className="d-block w-100 "
               style={{ height: 400 }}
@@ -227,10 +231,10 @@ const Home = () => {
               alt="Second slide"
             />
           </Carousel.Item>
-          <Carousel.Item>
+          <Carousel.Item interval={8000}>
             <img
               className="d-block w-100"
-              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1677728079-Ssmc-brauer-tang-de-khang.png"
+              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1679725085-Ha7S-phong-benh-sot-xuat-huyet.png"
               style={{ height: 400 }}
               alt="Third slide"
             />
@@ -371,7 +375,7 @@ const Home = () => {
                     <div className="product-card" key={item.id}>
                       <img
                         src={item.imageModel.imageURL}
-                        className="product-img"
+                        className="product-img2"
                         alt="Product Image"
                       />
                       <div className="product-info">
@@ -441,12 +445,11 @@ const Home = () => {
 
             <div className="container ">
               <div className="row karl-new-arrivals ">
-                {/* {apartment &&
-                apartment.length  &&
-                apartment.map((e) => {
-                  return ( */}
-                <AliceCarousel>
-                  {ListNewProduct.map((item, index) => {
+        
+           
+                {drug &&
+                drug.length &&
+                drug.map((item, index) => {
                     return (
                       <div
                         className=" col-md-2 single_gallery_item women wow fadeInUpBig "
@@ -454,13 +457,13 @@ const Home = () => {
                       >
                         {/* Product Image */}
                         <div
-                          className="product-img "
+                          className="product-img"
                           style={{ borderRadius: 5, height: 280 }}
                           onClick={() => {
                             viewDetail();
                           }}
                         >
-                          <img src={item.src} alt="" />
+                          <img src={item.imageModel.imageURL} alt="" />
                           <div className="product-quicview">
                             <a
                               href="#"
@@ -477,14 +480,12 @@ const Home = () => {
                           <h4 className="product-price"> {item.price}</h4>
                           <p>{item.name}</p>
                           {/* Add to Cart */}
-                          <a href="#" className="add-to-cart-btn">
-                            ADD TO CART
-                          </a>
+                         
                         </div>
                       </div>
                     );
                   })}
-                </AliceCarousel>
+              
               </div>
             </div>
           </div>

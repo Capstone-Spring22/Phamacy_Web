@@ -29,7 +29,9 @@ const Site = () => {
   const [totalSite, setTotalSite] = useState([]);
   const [homeAddress, setHomeAddress] = useState("");
   const [siteID, setSiteID] = useState("");
-
+  const [districtSelected, setDistrictSelected] = useState(false);
+  const [wardSelected, setWardSelected] = useState(false);
+  const [citySelected, setCitySelected] = useState(false);
   const [siteNameErrorMessage, setSiteNameErrorMessage] = useState("");
   const [cityErrorMessage, setCityErrorMessage] = useState("");
   const [districtsErrorMessage, setDistrictsErrorMessage] = useState("");
@@ -56,52 +58,51 @@ const Site = () => {
   const [perPage, setPerPage] = useState(7);
   const checkValidation = () => {
     let isValid = true;
-    
+
     if (siteName.trim().length === 0) {
       isValid = false;
-      setSiteNameErrorMessage('Vui lòng nhập tên chi nhanh');
+      setSiteNameErrorMessage("Vui lòng nhập tên chi nhanh");
     } else {
-      setSiteNameErrorMessage('');
+      setSiteNameErrorMessage("");
     }
-    
+
     if (city.trim().length === 0) {
       isValid = false;
-      setCityErrorMessage('Vui lòng chọn thành phố');
+      setCityErrorMessage("Vui lòng chọn thành phố");
     } else {
-      setCityErrorMessage('');
+      setCityErrorMessage("");
     }
-    
+
     if (districs.trim().length === 0) {
       isValid = false;
-      setDistrictsErrorMessage('Vui lòng chọn quận/huyện');
+      setDistrictsErrorMessage("Vui lòng chọn quận/huyện");
     } else {
-      setDistrictsErrorMessage('');
+      setDistrictsErrorMessage("");
     }
-    
+
     if (ward.trim().length === 0) {
       isValid = false;
-      setWardErrorMessage('Vui lòng chọn phường/xã');
+      setWardErrorMessage("Vui lòng chọn phường/xã");
     } else {
-      setWardErrorMessage('');
+      setWardErrorMessage("");
     }
-    
+
     if (description.trim().length === 0) {
       isValid = false;
-      setDescriptionErrorMessage('Vui lòng nhập mô tả');
+      setDescriptionErrorMessage("Vui lòng nhập mô tả");
     } else {
-      setDescriptionErrorMessage('');
+      setDescriptionErrorMessage("");
     }
-    
+
     if (contactInfo.trim().length === 0) {
       isValid = false;
-      setContactInfoErrorMessage('Vui lòng nhập thông tin liên hệ');
+      setContactInfoErrorMessage("Vui lòng nhập thông tin liên hệ");
     } else {
-      setContactInfoErrorMessage('');
+      setContactInfoErrorMessage("");
     }
-  
+
     return isValid;
   };
-  
 
   const handleClick = (id) => {
     console.log("display", id);
@@ -230,8 +231,8 @@ const Site = () => {
           history.push("/Site");
         } else if (res1 && res1.status === 400) {
           Swal.fire(
-            "Cái này éo có nhân viên nên éo cho mở cửa! OK?",
-            "You failed!",
+            "Cửa hàng này chưa đủ nhân viên nên chưa mở cửa!",
+            "Không thể mở cửa",
             "error"
           );
         }
@@ -262,7 +263,7 @@ const Site = () => {
       setWard(res.data);
     }
   }
-  
+
   const handlecity = (event) => {
     event.preventDefault();
     const cityID = event.target.value;
@@ -539,7 +540,7 @@ const Site = () => {
                                             type="text"
                                             className="form-control"
                                             id="basic-icon-default-fullname"
-                                            placeholder="Name Site"
+                                            placeholder="Tên Chi Nhánh"
                                             value={siteName}
                                             onChange={(e) => {
                                               setSiteName(e.target.value);
@@ -547,11 +548,16 @@ const Site = () => {
                                             aria-describedby="basic-icon-default-fullname2"
                                           />
                                         </div>
-                                        <div className="form-text" style={{color:"red"}}>{siteNameErrorMessage}</div>
+                                        <div
+                                          className="form-text"
+                                          style={{ color: "red" }}
+                                        >
+                                          {siteNameErrorMessage}
+                                        </div>
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "100%" }}
+                                        style={{ width: "95%" }}
                                       >
                                         <label
                                           className="form-label"
@@ -582,14 +588,14 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-email"
                                         >
-                                          Contact Info
+                                          Thông Tin Liên Lạc
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
                                             type="text"
                                             id="basic-icon-default-email"
                                             className="form-control"
-                                            placeholder="Contact Info"
+                                            placeholder=" Thông Tin Liên Lạc"
                                             aria-label="Contact Info"
                                             aria-describedby="basic-icon-default-email2"
                                             value={contactInfo}
@@ -608,28 +614,36 @@ const Site = () => {
                                           </span> */}
                                         </div>
                                         <div className="form-text">
-                                          You can use letters, numbers &amp;
-                                          periods
+                                        
                                         </div>
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "100%" }}
+                                        style={{ width: "95%" }}
                                       >
                                         <label
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
                                         >
-                                          City
+                                          Thành Phố/ Tỉnh
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <select
                                             name="city"
                                             id="basic-icon-default-email"
                                             className="form-control"
-                                            onChange={(e) => handlecity(e)}
+                                            onChange={(e) => {
+                                              setCitySelected(true);
+                                              handlecity(e);
+                                            }}
                                             value={cityID}
                                           >
+                                            {" "}
+                                            {!citySelected && (
+                                              <option value="">
+                                                --- Chọn Thành Phố/ Tỉnh{" "}
+                                              </option>
+                                            )}
                                             {city &&
                                               city.length &&
                                               city.map((e, index) => {
@@ -658,15 +672,23 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
                                         >
-                                          District
+                                          Quận/ Huyện
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <select
                                             id="basic-icon-default-email"
                                             className="form-control"
-                                            onChange={(e) => handleDistrict(e)}
+                                            onChange={(e) => {
+                                              handleDistrict(e);
+                                              setDistrictSelected(true);
+                                            }}
                                             value={districtID}
                                           >
+                                            {!districtSelected && (
+                                              <option value="">
+                                                ---Chọn Quận/ Huyện
+                                              </option>
+                                            )}
                                             {districs &&
                                               districs.length &&
                                               districs.map((e, index) => {
@@ -693,15 +715,23 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
                                         >
-                                          Ward
+                                          Phường/ Xã
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <select
                                             id="basic-icon-default-email"
                                             className="form-control"
                                             value={wardID}
-                                            onChange={(e) => handleWards(e)}
+                                            onChange={(e) => {
+                                              handleWards(e);
+                                              setWardSelected(true);
+                                            }}
                                           >
+                                            {!wardSelected && (
+                                              <option value="">
+                                                --- Chọn Phường/ Xã
+                                              </option>
+                                            )}
                                             {ward &&
                                               ward.length &&
                                               ward.map((e, index) => {
@@ -729,13 +759,13 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-message"
                                         >
-                                          Home Address
+                                          Địa Chỉ
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <textarea
                                             id="basic-icon-default-message"
                                             className="form-control"
-                                            placeholder=" Home Address"
+                                            placeholder="Địa Chỉ"
                                             aria-label=" Home Address"
                                             aria-describedby="basic-icon-default-message2"
                                             defaultValue={""}
@@ -754,13 +784,13 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-message"
                                         >
-                                          Description
+                                          Mô Tả Cụ Thể
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <textarea
                                             id="basic-icon-default-message"
                                             className="form-control"
-                                            placeholder="Description"
+                                            placeholder="Viết Mô Tả"
                                             aria-label="Description"
                                             aria-describedby="basic-icon-default-message2"
                                             defaultValue={""}
@@ -781,17 +811,18 @@ const Site = () => {
                                         createNewProducts();
                                       }}
                                       style={{
-                                        height: 30,
-                                        width: 80,
+                                        height: 35,
+                                        width: 100,
                                         fontSize: 13,
                                         paddingTop: 1,
-                                        marginLeft: "90%",
-                                        marginTop: "20px",
-                                        backgroundColor: "#11cdef",
+                                        marginLeft: "82%",
+                                        marginTop: "-40px",
+                                        backgroundColor: "#82AAE3",
                                         color: "white",
+                                        marginBottom: 30,
                                       }}
                                     >
-                                      Save
+                                      Lưu
                                     </button>
                                   </form>
                                 </div>
@@ -815,7 +846,7 @@ const Site = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Update Site</h5>
+                                  <h5 className="mb-0">Cập Nhật Chi Nhánh</h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -834,14 +865,14 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-fullname"
                                         >
-                                          Name Site
+                                          Tên Chi Nhánh
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
                                             type="text"
                                             className="form-control"
                                             id="basic-icon-default-fullname"
-                                            placeholder="Name Site"
+                                            placeholder="Tên Chi Nhánh"
                                             value={siteName}
                                             onChange={(e) => {
                                               setSiteName(e.target.value);
@@ -852,13 +883,13 @@ const Site = () => {
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "100%" }}
+                                        style={{ width: "95%" }}
                                       >
                                         <label
                                           className="form-label"
                                           htmlFor="basic-icon-default-company"
                                         >
-                                          Image
+                                          Hình Ảnh
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
@@ -883,14 +914,14 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-email"
                                         >
-                                          Contact Info
+                                          Thông Tin Liên Lạc
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
                                             type="text"
                                             id="basic-icon-default-email"
                                             className="form-control"
-                                            placeholder="Contact Info"
+                                            placeholder="Thông Tin Liên Lạc"
                                             aria-label="Contact Info"
                                             aria-describedby="basic-icon-default-email2"
                                             value={contactInfo}
@@ -908,19 +939,17 @@ const Site = () => {
                                             @gmail.com
                                           </span> */}
                                         </div>
-                                        <div className="form-text">
-                                         
-                                        </div>
+                                        <div className="form-text"></div>
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "100%" }}
+                                        style={{ width: "95%" }}
                                       >
                                         <label
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
                                         >
-                                          City
+                                          Thành Phố / Tỉnh
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <select
@@ -951,7 +980,12 @@ const Site = () => {
                                               })}
                                           </select>
                                         </div>
-                                        <div className="form-text" style={{color:"red"}}>{cityErrorMessage}</div>
+                                        <div
+                                          className="form-text"
+                                          style={{ color: "red" }}
+                                        >
+                                          {cityErrorMessage}
+                                        </div>
                                       </div>
                                       <div
                                         className="mb-3"
@@ -961,7 +995,7 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
                                         >
-                                          District
+                                         Quận/ Huyện
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <select
@@ -991,7 +1025,12 @@ const Site = () => {
                                               })}
                                           </select>
                                         </div>
-                                        <div className="form-text" style={{color:"red"}}>{districtsErrorMessage}</div>
+                                        <div
+                                          className="form-text"
+                                          style={{ color: "red" }}
+                                        >
+                                          {districtsErrorMessage}
+                                        </div>
                                       </div>
                                       <div
                                         className="mb-3"
@@ -1001,7 +1040,7 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
                                         >
-                                          Ward
+                                          Phường/ Xã
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <select
@@ -1041,7 +1080,7 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-message"
                                         >
-                                          Home Address
+                                          Địa Chỉ Cụ Thể
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <textarea
@@ -1092,17 +1131,18 @@ const Site = () => {
                                         updateProducts();
                                       }}
                                       style={{
-                                        height: 30,
-                                        width: 80,
+                                        height: 35,
+                                        width: 100,
                                         fontSize: 13,
                                         paddingTop: 1,
-                                        marginLeft: "90%",
-                                        marginTop: "20px",
-                                        backgroundColor: "#11cdef",
+                                        marginLeft: "84%",
+                                        marginTop: "-40px",
+                                        backgroundColor: "#82AAE3",
                                         color: "white",
+                                        marginBottom: 30,
                                       }}
                                     >
-                                      Save
+                                      Lưu
                                     </button>
                                   </form>
                                 </div>
@@ -1211,7 +1251,6 @@ const Site = () => {
                                     </a>
                                     <buton></buton>
                                     <Switch
-                                    
                                       checked={e.isActivate}
                                       onChange={async () => {
                                         loadDataSiteID(e.id);
@@ -1223,9 +1262,16 @@ const Site = () => {
                             })}
                         </tbody>
                       </table>
-                      <ReactPaginate
 
-                        className="pagination p12"
+                      <ReactPaginate
+                        className="pagination "
+                        breakLabel="..."
+                        nextLabel=">"
+                        previousLabel="< "
+                        nextClassName="next-button"
+                        pageClassName="page-item"
+                        activeClassName="ac"
+                        previousClassName="previous-button"
                         pageCount={totalSite / perPage}
                         onPageChange={(e) => handlePageChange(e.selected + 1)}
                         currentPage={currentPage}

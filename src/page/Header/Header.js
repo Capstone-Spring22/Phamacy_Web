@@ -14,6 +14,7 @@ import "../../assets/css2/styleComment.css";
 import "../../assets/css2/styleCategory.css";
 import "../../assets/css/aos.css";
 import { Link } from "react-router-dom";
+import logo from "../../assets/BH2.png";
 const Header = () => {
   let history = useHistory();
 
@@ -42,10 +43,13 @@ const Header = () => {
       <div className="container">
         <div className="d-flex align-items-center justify-content-between">
           <div className="logo">
-            <div className="site-logo">
-              <a href="/Home" className="js-logo-clone" >
-                Pharma
-              </a>
+            <div
+              className="app-brand demo"
+              style={{ marginLeft: -10, marginBottom: -80, marginTop: -90 }}
+            >
+              <Link to="/Home" className="app-brand-link">
+                <img src={logo} style={{ height: 80 }} />
+              </Link>
             </div>
           </div>
           <div className="main-nav d-none d-lg-block">
@@ -65,7 +69,6 @@ const Header = () => {
                   </Link>
                 </li>
 
-              
                 <li className="has-children">
                   <Link to="#">Category</Link>
                   <ul className="dropdown">
@@ -111,7 +114,10 @@ const Header = () => {
             </nav>
           </div>
           <div className="icons">
-            <Link to="#" className="icons-btn d-inline-block js-search-open"></Link>
+            <Link
+              to="#"
+              className="icons-btn d-inline-block js-search-open"
+            ></Link>
             <div className="search-box icons-btn d-inline-block js-search-open">
               <button className="btn-search">
                 <span className="icon-search" />

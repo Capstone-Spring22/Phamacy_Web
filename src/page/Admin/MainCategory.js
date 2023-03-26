@@ -251,7 +251,7 @@ const checkValidation = () => {
                           backgroundColor: "#ffffff",
                           borderColor: "white",
                           marginBottom: -100,
-                          marginTop: 20,
+                          marginTop: 5,
                         }}
                       >
                         <h3 className="fontagon">Quản Lý Danh Mục</h3>

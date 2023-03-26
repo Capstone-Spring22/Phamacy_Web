@@ -296,14 +296,23 @@ const ProductDiscount = () => {
                                   })}
                               </tbody>
                             </table>
-                            <ReactPaginate
-                              className="pagination p12"
-                              pageCount={totalRecord / perPage}
-                              onPageChange={(e) =>
-                                setCurrentPage(e.selected + 1)
-                              }
-                              currentPage={currentPage}
-                            />
+                          
+                                 <ReactPaginate
+                          
+                          className="pagination "
+                          breakLabel="..."
+                          nextLabel=">"
+                          previousLabel="< "
+                          nextClassName="next-button"
+                          pageClassName="page-item"
+                          activeClassName="ac"
+                          previousClassName="previous-button"
+                          pageCount={totalRecord / perPage}
+                          onPageChange={(e) =>
+                            setCurrentPage(e.selected + 1)
+                          }
+                          currentPage={currentPage}
+                        />
                           </div>
                         </div>
                       </div>

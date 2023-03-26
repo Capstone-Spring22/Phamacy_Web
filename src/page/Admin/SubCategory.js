@@ -35,6 +35,7 @@ const SubCategory = () => {
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
       setSubCategory(res.data.items);
+      setTotalSite(res.data.totalRecord);
     }
   }
   const checkValidation = () => {
@@ -682,8 +683,16 @@ const SubCategory = () => {
                             })}
                         </tbody>
                       </table>
+
                       <ReactPaginate
-                        className="pagination p12"
+                        className="pagination "
+                        breakLabel="..."
+                        nextLabel=">"
+                        previousLabel="< "
+                        nextClassName="next-button"
+                        pageClassName="page-item"
+                        activeClassName="ac"
+                        previousClassName="previous-button"
                         pageCount={totalSite / perPage}
                         onPageChange={(e) => setCurrentPage(e.selected + 1)}
                         currentPage={currentPage}

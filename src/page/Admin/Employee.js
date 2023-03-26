@@ -335,7 +335,7 @@ const Employees = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              &nbsp; &nbsp;ID
+                              &nbsp; &nbsp;Tên
                             </th>
                             <th
                               style={{
@@ -344,7 +344,7 @@ const Employees = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Name
+                              Tên Đầy Đủ
                             </th>
                             <th
                               style={{
@@ -353,7 +353,7 @@ const Employees = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Address
+                              Địa chỉ chi nhánh
                             </th>
 
                             <th
@@ -363,7 +363,7 @@ const Employees = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Actions
+                              Update
                             </th>
                           </tr>
                         </thead>
@@ -401,12 +401,23 @@ const Employees = () => {
                             })}
                         </tbody>
                       </table>
-                      <ReactPaginate
-                        className="pagination p12"
-                        pageCount={totalEmployees / perPage}
-                        onPageChange={(e) =>    setCurrentPage(e.selected + 1)}
-                        currentPage={currentPage}
-                      />
+                 
+                           <ReactPaginate
+                          
+                          className="pagination "
+                          breakLabel="..."
+                          nextLabel=">"
+                          previousLabel="< "
+                          nextClassName="next-button"
+                          pageClassName="page-item"
+                          activeClassName="ac"
+                          previousClassName="previous-button"
+                          pageCount={totalEmployees / perPage}
+                          onPageChange={(e) =>
+                            setCurrentPage(e.selected + 1)
+                          }
+                          currentPage={currentPage}
+                        />
                     </div>
                   </div>
                 </div>
