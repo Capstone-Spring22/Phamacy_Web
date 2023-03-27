@@ -14,6 +14,7 @@ import {
 } from "../../services/data.service";
 import ReactPaginate from "react-paginate";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 const OrderDetail = () => {
   const myId = localStorage.getItem("id");
   const [OrderDetail, setOrderDetail] = useState([]);
@@ -21,6 +22,7 @@ const OrderDetail = () => {
   const [orderContactInfo, setOrderContactInfo] = useState([]);
   const [orderDelivery, setOrderDelivery] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
+  const [description, setDescription] = useState("");
   async function loadDataOrderById() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -41,13 +43,75 @@ const OrderDetail = () => {
     loadDataOrderById();
   }, []);
 
+  async function confirmOrder() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const deviceId = await axios
+        .get("https://api.ipify.org/?format=json")
+        .then((res) => res.data.ip);
+      const data = {
+        orderId: OrderDetail.id,
+        isAccept: true,
+        description: description,
+        ipAddress: deviceId,
+      };
+      const path = `Order/ValidateOrder`;
+      const res = await updateDataByPath(path, accessToken, data);
+      if (res !== null && res !== undefined && res.status === 200) {
+         console.log('display',"thành công")
+      }
+    }
+  }
+  let OrderStatus;
+  if (OrderDetail.pharmacistId === null) {
+    OrderStatus = (
+      <>
+        <div className="mb-3" style={{ width: "95%" }}>
+          <div className="input-group input-group-merge">
+            <div
+              type="text"
+              id="basic-icon-default-fullname"
+              placeholder="Tên Sản Phẩm"
+              aria-label="Tên Sản Phẩm"
+              aria-describedby="basic-icon-default-fullname2"
+            >
+              Vui Lòng Xác Nhận Đơn Hàng
+            </div>
+          </div>
+
+          <a
+            href="#my-dialog"
+            onClick={() => {
+              setIsOpen(true);
+            }}
+            className="button-28"
+            style={{
+              height: 40,
+              width: 200,
+              fontSize: 13,
+              paddingTop: 10,
+
+              marginTop: "20px",
+              marginBottom: -20,
+              backgroundColor: "#82AAE3",
+              color: "white",
+            }}
+          >
+            Xác Nhận Đơn Hàng
+          </a>
+        </div>
+      </>
+    );
+  } else {
+  }
+
   if (!orderDelivery) {
     return null;
   }
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
-      <SideBar activeItem={activeItem} />
+        <SideBar activeItem={activeItem} />
 
         <div
           className="layout-page"
@@ -193,7 +257,7 @@ const OrderDetail = () => {
                     style={{
                       height: 70,
                       backgroundColor: "white",
-                      
+
                       marginLeft: 230,
                       borderColor: "#f4f4f4",
                     }}
@@ -225,6 +289,7 @@ const OrderDetail = () => {
                               placeholder="Viết Mô Tả "
                               aria-label="John Doe"
                               aria-describedby="basic-icon-default-fullname2"
+                              onChange={(e)=>setDescription(e.target.value)}
                             />
                           </div>
                         </div>
@@ -254,6 +319,7 @@ const OrderDetail = () => {
                           className="button-28"
                           onClick={(e) => {
                             e.preventDefault();
+                            confirmOrder();
                           }}
                           style={{
                             height: 30,
@@ -366,7 +432,7 @@ const OrderDetail = () => {
                                   <td>
                                     &nbsp; &nbsp;
                                     <img
-                                      src={e.imageURL}
+                                      src={e.imageUrl}
                                       style={{
                                         height: 90,
                                         width: 70,
@@ -580,40 +646,7 @@ const OrderDetail = () => {
                           padding: 15,
                         }}
                       >
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <div className="input-group input-group-merge">
-                            <div
-                              type="text"
-                              id="basic-icon-default-fullname"
-                              placeholder="Tên Sản Phẩm"
-                              aria-label="Tên Sản Phẩm"
-                              aria-describedby="basic-icon-default-fullname2"
-                            >
-                              Vui Lòng Xác Nhận Đơn Hàng
-                            </div>
-                          </div>
-
-                          <a
-                            href="#my-dialog"
-                            onClick={() => {
-                              setIsOpen(true);
-                            }}
-                            className="button-28"
-                            style={{
-                              height: 40,
-                              width: 200,
-                              fontSize: 13,
-                              paddingTop: 10,
-
-                              marginTop: "20px",
-                              marginBottom: -20,
-                              backgroundColor: "#82AAE3",
-                              color: "white",
-                            }}
-                          >
-                            Xác Nhận Đơn Hàng
-                          </a>
-                        </div>
+                        {OrderStatus}
                       </div>
                     </div>
                   </div>

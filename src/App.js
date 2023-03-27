@@ -30,6 +30,7 @@ import ProductDiscount from "./page/Admin/ProductDiscount";
 import NewDiscount from "./page/Admin/NewDiscount";
 import UpdateDiscount from "./page/Admin/UpdateDiscount";
 import OrderDetail from "./page/Admin/OrderDetail";
+import CheckOutPharmacist from "./page/Admin/CheckOutPharmacist";
 function App() {
   return (
     <div className="site-wrap">
@@ -109,6 +110,9 @@ function App() {
           </Route>
           <Route path="/OrderDetail">
             <OrderDetail />
+          </Route>
+          <Route path="/CheckOutPharmacist">
+            <CheckOutPharmacist />
           </Route>
         </Switch>
       </BrowserRouter>
