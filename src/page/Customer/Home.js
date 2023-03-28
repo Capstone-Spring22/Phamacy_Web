@@ -58,6 +58,7 @@ const Home = () => {
       quantity: 0,
     },
   });
+  
   async function addToCart(productId) {
     if (checkValidation()) {
       const deviceId = await axios

@@ -16,6 +16,7 @@ const AddToCart = () => {
   const [drug, setDrug] = useState(null);
   const [total, setTotal] = useState([]);
   const [orderID, setOrderId] = useState([]);
+  const [cardID, setCardID] = useState("");
 
   async function loadDataMedicine() {
     console.log("display cartID", deviceId);
@@ -25,6 +26,7 @@ const AddToCart = () => {
     if (res !== null && res !== undefined && res.status === 200) {
       setDrug(res.data.items);
       setTotal(res.data);
+      setCardID(res.data.cartId)
       console.log("res.data", res.data);
     }
   }
@@ -68,7 +70,7 @@ const AddToCart = () => {
   async function handleRemoveCart(productId) {
     const data = {
       productId: productId,
-      deviceId: deviceId,
+      cartId: cardID,
     };
     console.log("display data", data);
     const config = {

@@ -23,28 +23,42 @@ const CheckOutPharmacist = () => {
   const [orderDelivery, setOrderDelivery] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
   const [description, setDescription] = useState("");
+  const [orderID, setOrderId] = useState("");
 
   const [activeItem, setActiveItem] = useState("CheckOutPharmacist");
   const [drug, setDrug] = useState(null);
-  const [drugInCart, setDrugInCart] = useState(null);
+  const [drugInCart, setDrugInCart] = useState([]);
+  const [listCart, setListCart] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
-  const [product, setProduct] = useState({
-    cartId: "",
-    item: {
-      productId: "",
-      quantity: 0,
-    },
-  });
 
   async function loadDataMedicine(search) {
     console.log("display", search);
-    const path = `Product?isSellFirstLevel=true&productName=${search}&pageIndex=${currentPage}&pageItems=${perPage}`;
-    const res = await getDataByPath(path, "", "");
-    console.log("display", res);
-    if (res !== null && res !== undefined && res.status === 200) {
-      setDrug(res.data.items);
-      console.log("display", currentPage);
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `Product?isSellFirstLevel=true&productName=${search}&pageIndex=${currentPage}&pageItems=${perPage}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("display", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setDrug(res.data.items);
+        console.log("display", currentPage);
+      }
+    }
+  }
+  async function Checkout() {
+    if (checkValidation()) {
+      if (localStorage && localStorage.getItem("accessToken")) {
+        const accessToken = localStorage.getItem("accessToken");
+      const data = product;
+      const path = "Order/Checkout";
+      const res = await createDataByPath(path, accessToken, data);
+      console.log("Check res", res);
+      console.log("display du lieu", data);
+      if (res && res.status === 201) {
+        Swal.fire("Create Success", "", "success");
+        // window.location.reload();
+      }
+    }
     }
   }
   const checkValidation = () => {
@@ -54,31 +68,88 @@ const CheckOutPharmacist = () => {
     // }
     return true;
   };
+
   async function addToCart(productId) {
     if (checkValidation()) {
-      const deviceId = await axios
-        .get("https://api.ipify.org/?format=json")
-        .then((res) => res.data.ip);
-      setProduct({
-        deviceId,
-        item: {
-          productId,
-          quantity:
-            product.item.productId === productId
-              ? product.item.quantity + 1
-              : 1,
-        },
-      });
-      const path = "Cart";
-      const res = await createDataByPath(path, "", product);
-      console.log("Check res", res);
-      console.log("display du lieu", product);
-      if (res && res.status === 200) {
-        // window.location.reload();
-        loadDataCart();
-      }
+      const drug1 = drug.find((item) => item.id === productId);
+      listCart.push(drug1);
+      setListCart([...listCart]);
+      console.log("display", listCart);
     }
   }
+  const [newArrayOfObjects, setNewArrayOfObjects] = useState([]);
+
+  const [product, setProduct] = useState({
+    orderId: null,
+    orderTypeId: 1,
+    siteId: null,
+    pharmacistId: null,
+    subTotalPrice: 0,
+    discountPrice: 0,
+    shippingPrice: 0,
+    totalPrice: 0,
+    usedPoint: 0,
+    payType: 1,
+    isPaid: 1,
+    note: "",
+
+    products: null,
+    reveicerInformation: {
+      fullname: "",
+      phoneNumber: "",
+    },
+  });
+  async function loadOrderId() {
+    const path = `Order/GenerateOrderId`;
+    const res = await getDataByPath(path, "", "");
+    console.log("display", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setProduct({
+        ...product,
+        orderId: res.data,
+        pharmacistId: localStorage.getItem("userID"),
+        siteId: localStorage.getItem("SiteID"),
+      });
+    }
+  }
+  useEffect(() => {
+    loadOrderId();
+  }, []);
+  useEffect(() => {
+    setProduct({
+      ...product,
+      products: newArrayOfObjects,
+    });
+  }, [newArrayOfObjects]);
+  useEffect(() => {
+    setNewArrayOfObjects(listCart &&
+      listCart.length &&
+      listCart.map(({ id, quantity, price, priceAfterDiscount }) => ({
+        productId: id,
+        quantity: 1,
+        originalPrice: price,
+        discountPrice: priceAfterDiscount,
+      })))
+  }, [listCart]);
+  function updateQuantity(productId, newQuantity) {
+    setNewArrayOfObjects((prevState) =>
+      prevState.map((item) => {
+        if (item.productId === productId) {
+          return {
+            ...item,
+            quantity: parseInt(newQuantity),
+          };
+        }
+        return item;
+      })
+    );
+  }
+
+  const hiennew = () => {
+    console.log("display", newArrayOfObjects);
+    console.log("display", product);
+  };
+
   async function loadDataCart() {
     const deviceId = await axios
       .get("https://api.ipify.org/?format=json")
@@ -231,7 +302,6 @@ const CheckOutPharmacist = () => {
           {/* / Navbar */}
           {/* Content wrapper */}
 
-       
           <div className="content-wrapper">
             {/* Content */}
             <div className="container-xxl flex-grow-1 container-p-y">
@@ -334,94 +404,7 @@ const CheckOutPharmacist = () => {
 
             <div className="content-backdrop fade" />
           </div>
-          <div className="content-wrapper">
-            {/* Content */}
-            <div className="container-xxl flex-grow-1 container-p-y">
-              {/* Basic Bootstrap Table */}
-              <div
-                className="card"
-                style={{
-                  width: "100%",
-                  backgroundColor: "#ffffff",
-                  width: 870,
-                  margin: 30,
-                  borderRadius: 5,
-                  border: "none",
-                }}
-              >
-                <div style={{ display: "flex" }}>
-                  <h5
-                    className="card-header"
-                    style={{
-                      padding: "20px 24px",
-                      backgroundColor: "#ffffff",
-                      borderColor: "white",
-                    }}
-                  >
-                    <h3 className="fontagon">Sản Phẩm Của Đơn Hàng</h3>
-                  </h5>
 
-                  <></>
-                </div>
-
-                <div className="table-responsive ">
-                  <table className="table">
-                    <thead
-                      style={{
-                        backgroundColor: "#f6f9fc",
-                        borderColor: "white",
-                        color: "",
-                      }}
-                    >
-                      <tr>
-                        <th
-                          style={{
-                            backgroundColor: "#f6f9fc",
-                            borderColor: "white",
-                            color: "#bfc8d3",
-                          }}
-                        >
-                          Tên Sản Phẩm
-                        </th>
-                        <th
-                          style={{
-                            backgroundColor: "#f6f9fc",
-                            borderColor: "white",
-                            color: "#bfc8d3",
-                          }}
-                        >
-                          Số Lượng
-                        </th>
-                        <th
-                          style={{
-                            backgroundColor: "#f6f9fc",
-                            borderColor: "white",
-                            color: "#bfc8d3",
-                          }}
-                        >
-                          Add
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="table-border-bottom-0">
-                      {drugInCart &&
-                        drugInCart.length &&
-                        drugInCart.map((e) => {
-                          return (
-                            <tr key={e.id}>
-                              <td>{e.productName}</td>
-                              
-                            </tr>
-                          );
-                        })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            <div className="content-backdrop fade" />
-          </div>
           <div style={{ display: "flex" }}>
             <div
               style={{
@@ -431,11 +414,22 @@ const CheckOutPharmacist = () => {
                 border: "1px solid black",
               }}
             >
-              {drugInCart &&
-                drugInCart.map((e) => {
-                  return <div>{e.productName}</div>;
+              {listCart &&
+                listCart.map((product) => {
+                  return (
+                    <div>
+                      <div key={product.id}>{product.name}</div>
+                      quantity{" "}
+                      <input
+                        onChange={(e) => {
+                          updateQuantity(product.id, e.target.value);
+                        }}
+                      ></input>
+                    </div>
+                  );
                 })}
             </div>
+            <button onClick={hiennew}>121212</button>
             <div
               style={{
                 height: 1000,
@@ -443,7 +437,33 @@ const CheckOutPharmacist = () => {
                 backgroundColor: "white",
                 border: "1px solid black",
               }}
-            ></div>
+            >
+              sdt
+              <input
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    reveicerInformation: {
+                      ...product.reveicerInformation,
+                      phoneNumber: e.target.value,
+                    },
+                  })
+                }
+              ></input>
+              <input
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    reveicerInformation: {
+                      ...product.reveicerInformation,
+                      fullname: e.target.value,
+                    },
+                  })
+                }
+              ></input>
+              ten
+              <button onClick={Checkout}>Checkout</button>
+            </div>
           </div>
         </div>
         <div className="layout-overlay layout-menu-toggle" />

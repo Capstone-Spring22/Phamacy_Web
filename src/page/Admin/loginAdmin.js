@@ -23,7 +23,7 @@ const LoginAdmin = () => {
   const [error, setError] = useState("");
   async function loginWithUsernamePassword(username, password) {
     if (!username || !password) {
-     setError("Vui lòng nhập tên đăng nhập và mật khẩu");
+      setError("Vui lòng nhập tên đăng nhập và mật khẩu");
       return;
     }
     if (username.trim() !== "" && password.trim() !== "") {
@@ -56,10 +56,12 @@ const LoginAdmin = () => {
             jwtDecode(res.data.token)[
               "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
             ]);
+
+          localStorage.setItem("SiteID", jwtDecode(res.data.token).SiteID);
           const decoded = jwtDecode(res.data.token);
 
           console.log("ss", jwtDecode(res.data.token));
-          
+
           if (roleID === "Manager") {
             navigate.push("/ImportProduct");
           } else if (roleID === "Pharmacist") {
@@ -69,11 +71,10 @@ const LoginAdmin = () => {
           } else if (roleID === "Owner") {
             navigate.push("/Drug");
           }
-          
         }
+      } else {
+        setError("Sai tên hoặc mật khẩu vui lòng thử lại");
       }
-      else {
-        setError("Sai tên hoặc mật khẩu vui lòng thử lại"); }
     }
   }
 
@@ -90,13 +91,16 @@ const LoginAdmin = () => {
               >
                 <div className="card-body">
                   {/* Logo */}
-                  <div className="app-brand demo" style={{ marginLeft: 20,marginBottom:-80,marginTop:-60 }}>
-                    <Link
-                      to="/Home"
-                      className="app-brand-link"
-                     
-                    >
-                      <img src={logo} style={{height:250 }} />
+                  <div
+                    className="app-brand demo"
+                    style={{
+                      marginLeft: 20,
+                      marginBottom: -80,
+                      marginTop: -60,
+                    }}
+                  >
+                    <Link to="/Home" className="app-brand-link">
+                      <img src={logo} style={{ height: 250 }} />
                     </Link>
                   </div>
                   {/* /Logo */}
@@ -104,7 +108,11 @@ const LoginAdmin = () => {
                   <p className="mb-4">
                     Please sign-in to your account and start the adventure
                   </p>
-                  {error && <div className="error" style={{color:"red"}}>{error}</div>}
+                  {error && (
+                    <div className="error" style={{ color: "red" }}>
+                      {error}
+                    </div>
+                  )}
                   <form
                     id="formAuthentication"
                     className="mb-3"
