@@ -75,14 +75,14 @@ const CheckOutPharmacist = () => {
       console.log("display du lieu", product);
       if (res && res.status === 200) {
         // window.location.reload();
-        loadDataCart()
+        loadDataCart();
       }
     }
   }
   async function loadDataCart() {
     const deviceId = await axios
-        .get("https://api.ipify.org/?format=json")
-        .then((res) => res.data.ip);
+      .get("https://api.ipify.org/?format=json")
+      .then((res) => res.data.ip);
     const path = `Cart/${deviceId}`;
     const res = await getDataByPath(path, "", "");
     console.log("display", res);
@@ -126,6 +126,7 @@ const CheckOutPharmacist = () => {
                     className="form-control border-0 shadow-none"
                     placeholder="Search..."
                     aria-label="Search..."
+                    onChange={(e) => loadDataMedicine(e.target.value)}
                   />
                 </div>
               </div>
@@ -229,29 +230,197 @@ const CheckOutPharmacist = () => {
 
           {/* / Navbar */}
           {/* Content wrapper */}
-          <input
-            placeholder="Search"
-            onChange={(e) => loadDataMedicine(e.target.value)}
-          />
-          <div
-            style={{
-              marginTop: 200,
-              height: 1000,
-              width: 1000,
-              backgroundColor: "white",
-            }}
-          >
-            {drug &&
-              drug.map((e) => {
-                return (
-                  <div key={e.id} style={{ display: "flex" }}>
-                    <div>{e.name}</div>;
-                    <div style={{ backgroundColor: "red", cursor: "pointer" }} onClick={()=>addToCart(e.id)}>
-                      Add to cart
-                    </div>
-                  </div>
-                );
-              })}
+
+       
+          <div className="content-wrapper">
+            {/* Content */}
+            <div className="container-xxl flex-grow-1 container-p-y">
+              {/* Basic Bootstrap Table */}
+              <div
+                className="card"
+                style={{
+                  width: "100%",
+                  backgroundColor: "#ffffff",
+                  width: 870,
+                  margin: 30,
+                  borderRadius: 5,
+                  border: "none",
+                }}
+              >
+                <div style={{ display: "flex" }}>
+                  <h5
+                    className="card-header"
+                    style={{
+                      padding: "20px 24px",
+                      backgroundColor: "#ffffff",
+                      borderColor: "white",
+                    }}
+                  >
+                    <h3 className="fontagon">Sản Phẩm Của Đơn Hàng</h3>
+                  </h5>
+
+                  <></>
+                </div>
+
+                <div className="table-responsive ">
+                  <table className="table">
+                    <thead
+                      style={{
+                        backgroundColor: "#f6f9fc",
+                        borderColor: "white",
+                        color: "",
+                      }}
+                    >
+                      <tr>
+                        <th
+                          style={{
+                            backgroundColor: "#f6f9fc",
+                            borderColor: "white",
+                            color: "#bfc8d3",
+                          }}
+                        >
+                          Tên Sản Phẩm
+                        </th>
+                        <th
+                          style={{
+                            backgroundColor: "#f6f9fc",
+                            borderColor: "white",
+                            color: "#bfc8d3",
+                          }}
+                        >
+                          Số Lượng
+                        </th>
+                        <th
+                          style={{
+                            backgroundColor: "#f6f9fc",
+                            borderColor: "white",
+                            color: "#bfc8d3",
+                          }}
+                        >
+                          Add
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="table-border-bottom-0">
+                      {drug &&
+                        drug.length &&
+                        drug.map((e) => {
+                          return (
+                            <tr key={e.id}>
+                              <td>{e.name}</td>
+                              <td>{e.price}</td>
+
+                              <td onClick={() => addToCart(e.id)}>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  fill="currentColor"
+                                  class="bi bi-cart-check"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z" />
+                                  <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                </svg>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div className="content-backdrop fade" />
+          </div>
+          <div className="content-wrapper">
+            {/* Content */}
+            <div className="container-xxl flex-grow-1 container-p-y">
+              {/* Basic Bootstrap Table */}
+              <div
+                className="card"
+                style={{
+                  width: "100%",
+                  backgroundColor: "#ffffff",
+                  width: 870,
+                  margin: 30,
+                  borderRadius: 5,
+                  border: "none",
+                }}
+              >
+                <div style={{ display: "flex" }}>
+                  <h5
+                    className="card-header"
+                    style={{
+                      padding: "20px 24px",
+                      backgroundColor: "#ffffff",
+                      borderColor: "white",
+                    }}
+                  >
+                    <h3 className="fontagon">Sản Phẩm Của Đơn Hàng</h3>
+                  </h5>
+
+                  <></>
+                </div>
+
+                <div className="table-responsive ">
+                  <table className="table">
+                    <thead
+                      style={{
+                        backgroundColor: "#f6f9fc",
+                        borderColor: "white",
+                        color: "",
+                      }}
+                    >
+                      <tr>
+                        <th
+                          style={{
+                            backgroundColor: "#f6f9fc",
+                            borderColor: "white",
+                            color: "#bfc8d3",
+                          }}
+                        >
+                          Tên Sản Phẩm
+                        </th>
+                        <th
+                          style={{
+                            backgroundColor: "#f6f9fc",
+                            borderColor: "white",
+                            color: "#bfc8d3",
+                          }}
+                        >
+                          Số Lượng
+                        </th>
+                        <th
+                          style={{
+                            backgroundColor: "#f6f9fc",
+                            borderColor: "white",
+                            color: "#bfc8d3",
+                          }}
+                        >
+                          Add
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="table-border-bottom-0">
+                      {drugInCart &&
+                        drugInCart.length &&
+                        drugInCart.map((e) => {
+                          return (
+                            <tr key={e.id}>
+                              <td>{e.productName}</td>
+                              
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div className="content-backdrop fade" />
           </div>
           <div style={{ display: "flex" }}>
             <div
@@ -262,11 +431,10 @@ const CheckOutPharmacist = () => {
                 border: "1px solid black",
               }}
             >
-              {drugInCart && drugInCart.map((e) =>{
-                return (
-                  <div>{e.productName}</div>
-                )
-              })}
+              {drugInCart &&
+                drugInCart.map((e) => {
+                  return <div>{e.productName}</div>;
+                })}
             </div>
             <div
               style={{
