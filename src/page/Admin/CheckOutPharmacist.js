@@ -49,16 +49,16 @@ const CheckOutPharmacist = () => {
     if (checkValidation()) {
       if (localStorage && localStorage.getItem("accessToken")) {
         const accessToken = localStorage.getItem("accessToken");
-      const data = product;
-      const path = "Order/Checkout";
-      const res = await createDataByPath(path, accessToken, data);
-      console.log("Check res", res);
-      console.log("display du lieu", data);
-      if (res && res.status === 201) {
-        Swal.fire("Create Success", "", "success");
-        // window.location.reload();
+        const data = product;
+        const path = "Order/Checkout";
+        const res = await createDataByPath(path, accessToken, data);
+        console.log("Check res", res);
+        console.log("display du lieu", data);
+        if (res && res.status === 201) {
+          Swal.fire("Create Success", "", "success");
+          // window.location.reload();
+        }
       }
-    }
     }
   }
   const checkValidation = () => {
@@ -122,14 +122,16 @@ const CheckOutPharmacist = () => {
     });
   }, [newArrayOfObjects]);
   useEffect(() => {
-    setNewArrayOfObjects(listCart &&
-      listCart.length &&
-      listCart.map(({ id, quantity, price, priceAfterDiscount }) => ({
-        productId: id,
-        quantity: 1,
-        originalPrice: price,
-        discountPrice: priceAfterDiscount,
-      })))
+    setNewArrayOfObjects(
+      listCart &&
+        listCart.length &&
+        listCart.map(({ id, quantity, price, priceAfterDiscount }) => ({
+          productId: id,
+          quantity: 1,
+          originalPrice: price,
+          discountPrice: priceAfterDiscount,
+        }))
+    );
   }, [listCart]);
   function updateQuantity(productId, newQuantity) {
     setNewArrayOfObjects((prevState) =>
@@ -301,169 +303,269 @@ const CheckOutPharmacist = () => {
 
           {/* / Navbar */}
           {/* Content wrapper */}
-
-          <div className="content-wrapper">
-            {/* Content */}
-            <div className="container-xxl flex-grow-1 container-p-y">
-              {/* Basic Bootstrap Table */}
-              <div
-                className="card"
-                style={{
-                  width: "100%",
-                  backgroundColor: "#ffffff",
-                  width: 870,
-                  margin: 30,
-                  borderRadius: 5,
-                  border: "none",
-                }}
-              >
-                <div style={{ display: "flex" }}>
-                  <h5
-                    className="card-header"
-                    style={{
-                      padding: "20px 24px",
-                      backgroundColor: "#ffffff",
-                      borderColor: "white",
-                    }}
-                  >
-                    <h3 className="fontagon">Sản Phẩm Của Đơn Hàng</h3>
-                  </h5>
-
-                  <></>
-                </div>
-
-                <div className="table-responsive ">
-                  <table className="table">
-                    <thead
+          <div style={{ display: "flex", flexWrap: "wrap" }}>
+            <div className="content-wrapper">
+              {/* Content */}
+              <div className="container-xxl flex-grow-1 container-p-y">
+                {/* Basic Bootstrap Table */}
+                <div
+                  className="card"
+                  style={{
+                    width: "100%",
+                    backgroundColor: "#ffffff",
+                    width: 870,
+                    margin: 30,
+                    borderRadius: 5,
+                    border: "none",
+                  }}
+                >
+                  <div style={{ display: "flex" }}>
+                    <h5
+                      className="card-header"
                       style={{
-                        backgroundColor: "#f6f9fc",
+                        padding: "20px 24px",
+                        backgroundColor: "#ffffff",
                         borderColor: "white",
-                        color: "",
                       }}
                     >
-                      <tr>
-                        <th
-                          style={{
-                            backgroundColor: "#f6f9fc",
-                            borderColor: "white",
-                            color: "#bfc8d3",
-                          }}
-                        >
-                          Tên Sản Phẩm
-                        </th>
-                        <th
-                          style={{
-                            backgroundColor: "#f6f9fc",
-                            borderColor: "white",
-                            color: "#bfc8d3",
-                          }}
-                        >
-                          Số Lượng
-                        </th>
-                        <th
-                          style={{
-                            backgroundColor: "#f6f9fc",
-                            borderColor: "white",
-                            color: "#bfc8d3",
-                          }}
-                        >
-                          Add
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="table-border-bottom-0">
-                      {drug &&
-                        drug.length &&
-                        drug.map((e) => {
-                          return (
-                            <tr key={e.id}>
-                              <td>{e.name}</td>
-                              <td>{e.price}</td>
+                      <h3 className="fontagon">Sản Phẩm Của Đơn Hàng</h3>
+                    </h5>
 
-                              <td onClick={() => addToCart(e.id)}>
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  fill="currentColor"
-                                  class="bi bi-cart-check"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z" />
-                                  <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                </svg>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                    </tbody>
-                  </table>
+                    <></>
+                  </div>
+
+                  <div className="table-responsive ">
+                    <table className="table">
+                      <thead
+                        style={{
+                          backgroundColor: "#f6f9fc",
+                          borderColor: "white",
+                          color: "",
+                        }}
+                      >
+                        <tr>
+                          <th
+                            style={{
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            Tên Sản Phẩm
+                          </th>
+                          <th
+                            style={{
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            Số Lượng
+                          </th>
+                          <th
+                            style={{
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            Add
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="table-border-bottom-0">
+                        {drug &&
+                          drug.length &&
+                          drug.map((e) => {
+                            return (
+                              <tr key={e.id}>
+                                <td>{e.name}</td>
+                                <td>{e.price}</td>
+
+                                <td onClick={() => addToCart(e.id)}>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    class="bi bi-cart-check"
+                                    viewBox="0 0 16 16"
+                                  >
+                                    <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z" />
+                                    <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                  </svg>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div className="content-backdrop fade" />
+            </div>
+            <div
+              className="row "
+              style={{ width: 900, marginTop: -30, marginLeft: 25 }}
+            >
+              <div className="col-xl">
+                <div className="card mb-4">
+                  <div
+                    className="card-header d-flex justify-content-between align-items-center"
+                    style={{
+                      height: 70,
+                      backgroundColor: "white",
+                      padding: "20px 24px",
+
+                      borderColor: "#f4f4f4",
+                    }}
+                  >
+                    <h5 className="mb-0">Thông Tin Đơn Hàng</h5>
+                  </div>
+                  <div className="card-body">
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "auto auto",
+                        padding: 30,
+                        marginLeft: 100,
+                        height: 420,
+                      }}
+                    >
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <div className="input-group input-group-merge">
+                          <div
+                            type="text"
+                            id="basic-icon-default-fullname"
+                            placeholder="Tên Sản Phẩm"
+                            aria-label="Tên Sản Phẩm"
+                            aria-describedby="basic-icon-default-fullname2"
+                          >
+                            {listCart &&
+                              listCart.map((product) => {
+                                return (
+                                  <div>
+                                    <div key={product.id}>{product.name}</div>
+                                    quantity{" "}
+                                    <input
+                                      onChange={(e) => {
+                                        updateQuantity(
+                                          product.id,
+                                          e.target.value
+                                        );
+                                      }}
+                                    ></input>
+                                  </div>
+                                );
+                              })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            <div className="row " style={{ width: 300, marginTop: 55 }}>
+              <div className="col-xl">
+                <div className="card mb-4">
+                  <div
+                    className="card-header d-flex justify-content-between align-items-center"
+                    style={{
+                      height: 70,
+                      backgroundColor: "white",
+                      padding: "20px 24px",
 
-            <div className="content-backdrop fade" />
-          </div>
+                      borderColor: "#f4f4f4",
+                    }}
+                  >
+                    <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
+                  </div>
+                  <div className="card-body">
+                    <div
+                      style={{
+                        display: "grid",
 
-          <div style={{ display: "flex" }}>
-            <div
-              style={{
-                height: 1000,
-                width: 1000,
-                backgroundColor: "white",
-                border: "1px solid black",
-              }}
-            >
-              {listCart &&
-                listCart.map((product) => {
-                  return (
-                    <div>
-                      <div key={product.id}>{product.name}</div>
-                      quantity{" "}
-                      <input
-                        onChange={(e) => {
-                          updateQuantity(product.id, e.target.value);
+                        padding: 15,
+                      }}
+                    >
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-fullname"
+                        >
+                          Tên
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="basic-icon-default-fullname"
+                            placeholder="Tên Người Mua"
+                            aria-label="Tên Người Mua"
+                            aria-describedby="basic-icon-default-fullname2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  phoneNumber: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-fullname"
+                        >
+                          Số Điện Thoại
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="basic-icon-default-fullname"
+                            placeholder="Tên Sản Phẩm"
+                            aria-label="Tên Sản Phẩm"
+                            aria-describedby="basic-icon-default-fullname2"
+                            onChange={(e) =>
+                              setProduct({
+                                ...product,
+                                reveicerInformation: {
+                                  ...product.reveicerInformation,
+                                  fullname: e.target.value,
+                                },
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                      <a
+                        className="button-28"
+                        onClick={Checkout}
+                        style={{
+                          height: 40,
+                          width: 200,
+                          fontSize: 13,
+                          paddingTop: 10,
+
+                          marginTop: "20px",
+                          marginBottom: -20,
+                          backgroundColor: "#82AAE3",
+                          color: "white",
                         }}
-                      ></input>
+                      >
+                        Thanh Toán
+                      </a>
                     </div>
-                  );
-                })}
+                  </div>
+                </div>
+              </div>
             </div>
-            <button onClick={hiennew}>121212</button>
-            <div
-              style={{
-                height: 1000,
-                width: 400,
-                backgroundColor: "white",
-                border: "1px solid black",
-              }}
-            >
-              sdt
-              <input
-                onChange={(e) =>
-                  setProduct({
-                    ...product,
-                    reveicerInformation: {
-                      ...product.reveicerInformation,
-                      phoneNumber: e.target.value,
-                    },
-                  })
-                }
-              ></input>
-              <input
-                onChange={(e) =>
-                  setProduct({
-                    ...product,
-                    reveicerInformation: {
-                      ...product.reveicerInformation,
-                      fullname: e.target.value,
-                    },
-                  })
-                }
-              ></input>
-              ten
-              <button onClick={Checkout}>Checkout</button>
-            </div>
+            
           </div>
         </div>
         <div className="layout-overlay layout-menu-toggle" />
