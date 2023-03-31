@@ -53,7 +53,7 @@ const OrderDetail = () => {
         orderId: OrderDetail.id,
         isAccept: true,
         description: description,
-        ipAddress: deviceId,
+        ipAddress: "",
       };
       const path = `Order/ValidateOrder`;
       const res = await updateDataByPath(path, accessToken, data);
@@ -102,8 +102,80 @@ const OrderDetail = () => {
         </div>
       </>
     );
-  } else {
+  } else if(OrderDetail.pharmacistId === localStorage.getItem("userID")) {
+    <>
+        <div className="mb-3" style={{ width: "95%" }}>
+          <div className="input-group input-group-merge">
+            <div
+              type="text"
+              id="basic-icon-default-fullname"
+              placeholder="Tên Sản Phẩm"
+              aria-label="Tên Sản Phẩm"
+              aria-describedby="basic-icon-default-fullname2"
+            >
+              Cập nhật
+            </div>
+          </div>
+
+          <a
+            href="#my-dialog"
+            onClick={() => {
+              setIsOpen(true);
+            }}
+            className="button-28"
+            style={{
+              height: 40,
+              width: 200,
+              fontSize: 13,
+              paddingTop: 10,
+
+              marginTop: "20px",
+              marginBottom: -20,
+              backgroundColor: "#82AAE3",
+              color: "white",
+            }}
+          >
+            Cập nhật trạng thái
+          </a>
+        </div>
+      </>
+  }else if(OrderDetail.pharmacistId !== localStorage.getItem("userID")) {
+    <>
+    <div className="mb-3" style={{ width: "95%" }}>
+      <div className="input-group input-group-merge">
+        <div
+          type="text"
+          id="basic-icon-default-fullname"
+          placeholder="Tên Sản Phẩm"
+          aria-label="Tên Sản Phẩm"
+          aria-describedby="basic-icon-default-fullname2"
+        >
+          Tình trạng
+        </div>
+      </div>
+
+      <a
+        href="#my-dialog"
+
+        className="button-28"
+        style={{
+          height: 40,
+          width: 200,
+          fontSize: 13,
+          paddingTop: 10,
+
+          marginTop: "20px",
+          marginBottom: -20,
+          backgroundColor: "#82AAE3",
+          color: "white",
+        }}
+      >
+        Đơn hàng đã được xác nhận bởi thằng khác
+      </a>
+    </div>
+  </>
   }
+
 
   if (!orderDelivery) {
     return null;

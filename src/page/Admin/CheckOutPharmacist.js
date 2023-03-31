@@ -72,7 +72,15 @@ const CheckOutPharmacist = () => {
   async function addToCart(productId) {
     if (checkValidation()) {
       const drug1 = drug.find((item) => item.id === productId);
-      listCart.push(drug1);
+       console.log('display drug1',drug1)
+      listCart.push({
+        productId: drug1.id,
+        quantity: 1,
+        originalPrice: drug1.price,
+        discountPrice: drug1.priceAfterDiscount,
+        productPrefer:drug1.productUnitReferences,
+        name:drug1.name
+      });
       setListCart([...listCart]);
       console.log("display", listCart);
     }
@@ -125,21 +133,34 @@ const CheckOutPharmacist = () => {
     setNewArrayOfObjects(
       listCart &&
         listCart.length &&
-        listCart.map(({ id, quantity, price, priceAfterDiscount }) => ({
-          productId: id,
-          quantity: 1,
-          originalPrice: price,
-          discountPrice: priceAfterDiscount,
+        listCart.map(({ productId, quantity, originalPrice, discountPrice }) => ({
+          productId: productId,
+          quantity: quantity,
+          originalPrice: originalPrice,
+          discountPrice: discountPrice,
         }))
     );
   }, [listCart]);
   function updateQuantity(productId, newQuantity) {
-    setNewArrayOfObjects((prevState) =>
+    setListCart((prevState) =>
       prevState.map((item) => {
         if (item.productId === productId) {
           return {
             ...item,
             quantity: parseInt(newQuantity),
+          };
+        }
+        return item;
+      })
+    );
+  }
+  function updateProductID(productId, newQuantity) {
+    setListCart((prevState) =>
+      prevState.map((item) => {
+        if (item.productId === productId) {
+          return {
+            ...item,
+            productId: newQuantity,
           };
         }
         return item;
@@ -452,11 +473,32 @@ const CheckOutPharmacist = () => {
                                     <input
                                       onChange={(e) => {
                                         updateQuantity(
-                                          product.id,
+                                          product.productId,
                                           e.target.value
                                         );
                                       }}
                                     ></input>
+                                    <select
+                                      onChange={(e) =>
+                                        updateProductID(
+                                          product.productId,
+                                          e.target.value
+                                        )
+                                      }
+                                    >
+                                      {product.productPrefer.map(
+                                        (unit) => {
+                                          return (
+                                            <option
+                                              key={unit.id}
+                                              value={unit.id}
+                                            >
+                                              {unit.unitName}
+                                            </option>
+                                          );
+                                        }
+                                      )}
+                                    </select>
                                   </div>
                                 );
                               })}
@@ -561,11 +603,11 @@ const CheckOutPharmacist = () => {
                         Thanh Toán
                       </a>
                     </div>
+                    <button onClick={hiennew}>Hiện</button>
                   </div>
                 </div>
               </div>
             </div>
-            
           </div>
         </div>
         <div className="layout-overlay layout-menu-toggle" />
