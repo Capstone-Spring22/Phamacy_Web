@@ -6,11 +6,7 @@ import Creatable, { useCreatable } from "react-select/creatable";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
-import {
-  getDataByPath,
-
-  createDataByPath,
-} from "../../services/data.service";
+import { getDataByPath, createDataByPath } from "../../services/data.service";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
 
@@ -337,7 +333,7 @@ const NewDrug = () => {
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
-      <SideBar activeItem={activeItem} />
+        <SideBar activeItem={activeItem} />
 
         <div
           className="layout-page"
@@ -614,7 +610,7 @@ const NewDrug = () => {
                             style={{
                               height: 20,
                               width: 20,
-                              
+
                               borderColor: "#82AAE3",
                             }}
                             checked={isPrescription}
@@ -642,7 +638,7 @@ const NewDrug = () => {
                             style={{
                               height: 20,
                               width: 20,
-                           
+
                               borderColor: "#82AAE3",
                             }}
                           />
@@ -1128,7 +1124,7 @@ const NewDrug = () => {
                                   style={{
                                     height: 20,
                                     width: 20,
-                                   
+
                                     borderColor: "#82AAE3",
                                   }}
                                 />
@@ -1136,7 +1132,7 @@ const NewDrug = () => {
                                   className="form-check-label"
                                   htmlFor={`isSell${index}`}
                                 >
-                                 Cho Bán
+                                  Cho Bán
                                 </label>
                               </div>
                             </div>
@@ -1495,7 +1491,7 @@ const NewDrug = () => {
                                       ];
                                       newImageModel.forEach((image, i) => {
                                         newImageModel[i].isFirstImage =
-                                          i === index - 1 ? index - 1 : null;
+                                          i === index - 1 ? true : null;
                                       });
                                       setProduct({
                                         ...product,

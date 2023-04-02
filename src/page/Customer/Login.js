@@ -9,7 +9,13 @@ import "react-phone-input-2/lib/style.css";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { toast, Toaster } from "react-hot-toast";
 import { auth } from "../../services/firebase";
+import axios from "axios";
+import jwtDecode from "jwt-decode";
+import { useHistory } from "react-router-dom";
 const Login = () => {
+  const navigate = useHistory();
+  const [error, setError] = useState("");
+
   const [otp, setOtp] = useState("");
   const [ph, setPh] = useState("");
   const [loading, setLoading] = useState(false);
@@ -60,11 +66,21 @@ const Login = () => {
       .then(async (res) => {
         console.log(res.user.accessToken);
         setUser(res.user);
-        if (user) {
-          const idToken = await user.getIdToken();
-          console.log("cc", idToken);
-        }
         setLoading(false);
+        const register = await axios.post("https://betterhealthapi.azurewebsites.net/api/v1/Member/Customer/Login",{
+          firebaseToken : res.user.accessToken
+        });
+        if (register && register.status === 200) {
+          if (localStorage) {
+            localStorage.setItem("accessToken", register.data.token);  
+            
+            if (register.data.roleName === "Customer") {
+              navigate.push("/Home");
+            } 
+          }
+        } else {
+          setError("Sai tên hoặc mật khẩu vui lòng thử lại");
+        }
       })
       .catch((err) => {
         console.log(err);

@@ -30,6 +30,12 @@ const Home = () => {
 
     // history.push("/ViewCart");
   };
+  const laydata = () => {
+    const data = localStorage;
+     console.log('display',data)
+
+    // history.push("/ViewCart");
+  };
   const viewDetail = () => {
     history.push("/ViewDetail");
   };
@@ -199,6 +205,7 @@ const Home = () => {
                   style={{ color: "black" }}
                 />
               </div>
+              <button onClick={laydata}>Lây data</button>
 
               <Link to="/ViewCart" className="icons-btn d-inline-block bag">
                 <span className="icon-shopping-bag" />

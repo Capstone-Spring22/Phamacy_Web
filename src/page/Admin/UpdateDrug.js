@@ -61,7 +61,7 @@ const UpdateDrug = () => {
       preserve: "",
       ingredientModel: [{ id: "", ingredientId: "", content: "", unitId: "" }],
     },
-    imageModels: [{ id: "", imageUrl: "" ,  isFirstImage: true,}],
+    imageModels: [{ id: "", imageUrl: "", isFirstImage: true }],
   });
   async function loadDataDrugByID() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -180,7 +180,7 @@ const UpdateDrug = () => {
   async function updateProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      
+
       const selectedImageIndex = product.imageModels.findIndex(
         (image) => image.isFirstImage !== null
       );
@@ -218,7 +218,7 @@ const UpdateDrug = () => {
             ...product.imageModels.slice(0, index - 1),
             {
               ...product.imageModels[index - 1],
-              imageURL: e.target.value,
+              imageUrl: res.data,
             },
             ...product.imageModels.slice(index),
           ],
@@ -837,10 +837,10 @@ const UpdateDrug = () => {
                 >
                   <h5 className="mb-0">Cập nhật đơn vị của sản phẩm</h5>
                 </div>
-                <div className="card-body" >
+                <div className="card-body">
                   {Array.from({ length: unitCount }, (_, i) => i + 1).map(
                     (index) => (
-                      <div  key={index}>
+                      <div key={index}>
                         <div
                           style={{
                             display: "flex",
@@ -850,7 +850,6 @@ const UpdateDrug = () => {
                           }}
                         >
                           <div
-                            
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}
                           >
@@ -907,7 +906,6 @@ const UpdateDrug = () => {
                             </div>
                           </div>
                           <div
-                           
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}
                           >
@@ -953,7 +951,6 @@ const UpdateDrug = () => {
                             </div>
                           </div>
                           <div
-                        
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}
                           >
@@ -999,7 +996,6 @@ const UpdateDrug = () => {
                             </div>
                           </div>
                           <div
-                         
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}
                           >
@@ -1044,7 +1040,6 @@ const UpdateDrug = () => {
                             </div>
                           </div>
                           <div
-                           
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}
                           >
@@ -1102,7 +1097,7 @@ const UpdateDrug = () => {
                               </small>
                               <input
                                 className="form-check-input"
-                                type="checkbox"
+                                type="hidden"
                                 id={`isVisible${index}`}
                                 checked={
                                   product.productDetailModel[index - 1]
@@ -1136,12 +1131,12 @@ const UpdateDrug = () => {
                                   borderColor: "#86a8c5",
                                 }}
                               />
-                              <label
+                              {/* <label
                                 className="form-check-label"
                                 htmlFor={`isSell${index}`}
                               >
                                 is Visible
-                              </label>
+                              </label> */}
                             </div>
                             <div className="form-check form-check-inline">
                               <input
@@ -1508,89 +1503,60 @@ const UpdateDrug = () => {
                                   onChange={(e) => createNewURL(e, index)}
                                 />
 
-                                {
-                                product.imageModels[index - 1].imageUrl ? (
+                                {product.imageModels[index - 1].imageUrl ? (
                                   <img
-                                    src={product.imageModels[index - 1].imageUrl}
+                                    style={{ objectFit: "cover" }}
+                                    src={
+                                      product.imageModels[index - 1].imageUrl
+                                    }
                                   />
                                 ) : (
                                   <img src="https://media.istockphoto.com/id/1165482953/vector/picture-icon-vector-photo-gallery-icon-on-a-white-background-black-and-white.jpg?s=170x170&k=20&c=jKfPYRfAkoYKeW01wMivX6adqzT1maHpW70XiufNpg0=" />
                                 )}
                               </form>
                             </div>
-
-                           
                           </div>
                           <div
-                                className="mb-3"
-                                style={{
-                                  width: "30%",
-                                 
-                                  marginLeft:21
+                            className="mb-3"
+                            style={{
+                              width: "30%",
+
+                              marginLeft: 21,
+                            }}
+                          >
+                            <div>
+                              <button
+                                style={{ marginTop: 390 }}
+                                className={`button-img ${
+                                  product.imageModels[index - 1].isFirstImage
+                                    ? "active-img"
+                                    : ""
+                                }`}
+                                onClick={(e) => {
+                                  const newImageModel = [
+                                    ...product.imageModels,
+                                  ];
+                                  newImageModel.forEach((image, i) => {
+                                    newImageModel[i].isFirstImage =
+                                      i === index - 1 ? true : null;
+                                  });
+                                  setProduct({
+                                    ...product,
+                                    imageModels: newImageModel,
+                                  });
+                                   console.log('display',product)
                                 }}
                               >
-                                <div>
-                                  <button
-                                  style={{ marginTop:390,}}
-                                    className={`button-img ${
-                                      product.imageModels[index - 1]
-                                        .isFirstImage 
-                                        ? "active-img "
-                                        : ""
-                                    }`}
-                                    onClick={(e) => {
-                                      const newImageModel = [
-                                        ...product.imageModels,
-                                      ];
-                                      newImageModel.forEach((image, i) => {
-                                        newImageModel[i].isFirstImage =
-                                          i === index - 1 ? index - 1 : null;
-                                      });
-                                      setProduct({
-                                        ...product,
-                                        imageModels: newImageModel,
-                                      });
-                                    }}
-                                  >
-                                    
-                                       {product.imageModels[index - 1].isFirstImage ? 'First Image' : 'Set as First'}
-                                  </button>
-                                </div>
-                              </div>
+                                {product.imageModels[index - 1].isFirstImage
+                                  ? "First Image"
+                                  : "Set as First"}
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
-                  <button
-                    style={{
-                      height: 50,
-                      width: 200,
-                      fontSize: 13,
-                      paddingTop: 1,
-                      marginLeft: "44%",
-                      marginBottom: "20px",
-                      backgroundColor: "#fff",
-                    }}
-                    className="button-28"
-                    onClick={handleAddImage}
-                  >
-                    {" "}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      class="bi bi-plus-lg"
-                      viewBox="0 0 16 16"
-                      style={{ marginRight: 10 }}
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
-                      />
-                    </svg>
-                    thêm ảnh
-                  </button>
                 </div>
               </div>
             </div>
