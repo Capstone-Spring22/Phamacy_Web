@@ -53,8 +53,28 @@ const OrderDetail = () => {
         orderId: OrderDetail.id,
         isAccept: true,
         description: description,
-        ipAddress: "",
+        ipAddress: deviceId,
       };
+      const path = `Order/ValidateOrder`;
+      const res = await updateDataByPath(path, accessToken, data);
+      if (res !== null && res !== undefined && res.status === 200) {
+         console.log('display',"thành công")
+      }
+    }
+  }
+  async function rejectOrder() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const deviceId = await axios
+        .get("https://api.ipify.org/?format=json")
+        .then((res) => res.data.ip);
+      const data = {
+        orderId: OrderDetail.id,
+        isAccept: false,
+        description: description,
+        ipAddress: deviceId,
+      };
+       console.log('data',data)
       const path = `Order/ValidateOrder`;
       const res = await updateDataByPath(path, accessToken, data);
       if (res !== null && res !== undefined && res.status === 200) {
@@ -372,6 +392,7 @@ const OrderDetail = () => {
                           className="button-28"
                           onClick={(e) => {
                             e.preventDefault();
+                            rejectOrder();
                           }}
                           style={{
                             height: 30,
@@ -795,6 +816,7 @@ const OrderDetail = () => {
                           <div className="input-group input-group-merge">
                             <div
                               type="text"
+                              style={{flexWrap:"wrap",width:220}}
                               id="basic-icon-default-fullname"
                               placeholder="Tên Sản Phẩm"
                               aria-label="Tên Sản Phẩm"
