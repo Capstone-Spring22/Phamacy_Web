@@ -8,7 +8,7 @@ import React, { Fragment } from "react";
 import Swal from "sweetalert2";
 import { BsPlus } from "react-icons/bs";
 import Footer from "./Footer";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation, Link } from "react-router-dom";
 import Header from "../Header/Header";
 const Home = (props) => {
   let history = useHistory();
@@ -68,7 +68,7 @@ const Home = (props) => {
       wardId: null,
       homeAddress: null,
     },
-    orderPickUp: null
+    orderPickUp: null,
   });
   const genders = [
     { name: "Male", value: 0 },
@@ -81,6 +81,10 @@ const Home = (props) => {
     // }
     return true;
   };
+  const roleName = localStorage.getItem("roleName");
+  const userName = localStorage.getItem("userName");
+  const phoneNo = localStorage.getItem("phoneNo");
+  const Email = localStorage.getItem("email");
   const handleGender = (event) => {
     event.preventDefault();
     const genderID = event.target.value;
@@ -243,7 +247,7 @@ const Home = (props) => {
       }
     }
   }
-
+ 
   useEffect(() => {}, []);
   return (
     <>
@@ -317,6 +321,7 @@ const Home = (props) => {
                           </label>
                           <input
                             type="text"
+                            value={userName}
                             style={{
                               border: "1px solid #e4e7eb",
                               backgroundColor: "white",
@@ -324,6 +329,7 @@ const Home = (props) => {
                             }}
                             className="form-control"
                             id="full_name"
+                        
                             defaultValue=""
                             required=""
                             onChange={(e) =>
@@ -343,6 +349,7 @@ const Home = (props) => {
                           </label>
                           <input
                             type="text"
+                            value={phoneNo}
                             style={{
                               border: "1px solid #e4e7eb",
                               backgroundColor: "white",
@@ -367,6 +374,7 @@ const Home = (props) => {
                           <label htmlFor="company">Email</label>
                           <input
                             type="text"
+                            value={Email}
                             style={{
                               border: "1px solid #e4e7eb",
                               backgroundColor: "white",
@@ -672,10 +680,11 @@ const Home = (props) => {
                       <div className="row">
                         <div className="col-md-6 mb-3">
                           <label htmlFor="first_name">
-                            Full name <span>*</span>
+                           Tên Đầy Đủ <span>*</span>
                           </label>
                           <input
                             type="text"
+                            value={userName}
                             style={{
                               border: "1px solid #e4e7eb",
                               backgroundColor: "white",
@@ -702,6 +711,7 @@ const Home = (props) => {
                           </label>
                           <input
                             type="text"
+                            value={phoneNo}
                             style={{
                               border: "1px solid #e4e7eb",
                               backgroundColor: "white",
@@ -726,6 +736,7 @@ const Home = (props) => {
                           <label htmlFor="company">Email</label>
                           <input
                             type="text"
+                            value={Email}
                             style={{
                               border: "1px solid #e4e7eb",
                               backgroundColor: "white",
@@ -923,7 +934,6 @@ const Home = (props) => {
                             }
                           />
                         </div>
-                        
                       </div>
                     </form>
                   )}

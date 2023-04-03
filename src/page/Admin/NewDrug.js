@@ -25,6 +25,7 @@ const NewDrug = () => {
   const [ingredientSelected, setIngredientSelected] = useState(false);
 
   const [categorySelected, setCategorySelected] = useState(false);
+  const [userUsageSelected, setUserUsageSelected] = useState(false);
   const [manufactunerSelected, setManufactunerSelected] = useState(false);
   const [isBatches, setIsBatches] = useState(false);
   const [isPrescription, setIsPrescription] = useState(false);
@@ -44,6 +45,7 @@ const NewDrug = () => {
     manufacturerId: "",
     isPrescription: 0,
     isBatches: 0,
+    userUsageTarget: "",
     productDetailModel: [
       {
         unitId: "",
@@ -83,7 +85,14 @@ const NewDrug = () => {
       setUnit(res.data.items);
     }
   }
-
+  const [userUsage, setUserUsage] = useState([]);
+  const userUsages = [
+    { name: "trẻ em", value: 1 },
+    { name: "người lớn", value: 2 },
+    { name: "người cao tuổi", value: 3 },
+    { name: "phụ nữ cho con bú", value: 4 },
+    { name: "mọi lứa tuổi", value: null },
+  ];
   async function loadDataCategory() {
     const path = `SubCategory?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -107,6 +116,11 @@ const NewDrug = () => {
     const subCategoryID = e.target.value;
     setSubCategoryID(subCategoryID);
     console.log("subCategoryID", subCategoryID);
+  };
+  const handleUserTarget = (event) => {
+    event.preventDefault();
+    const userUsage = event.target.value;
+    setUserUsage(userUsage);
   };
   async function loadDataProductIngredient() {
     const path = `ProductIngredient?pageIndex=${currentPage}&pageItems=${perPage}`;
@@ -597,7 +611,46 @@ const NewDrug = () => {
                           </select>
                         </div>
                       </div>
+                      <div className="mb-3" style={{ width: "100%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-company"
+                        >
+                          Đối Tượng Dùng Sản Phẩm
+                        </label>
 
+                        <div className="input-group input-group-merge">
+                          <select
+                            name="city"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            onChange={(e) => {
+                              handleUserTarget(e);
+                              setUserUsage(true);
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                userUsageTarget: userUsage.values,
+                              }));
+                            }}
+                            value={product.userUsageTarget}
+                          >
+                            {!userUsageSelected && (
+                              <option value="">--Chọn Đối Tượng</option>
+                            )}
+                            {userUsages &&
+                              userUsages.length &&
+                              userUsages.map((e, index) => {
+                                return (
+                                  <>
+                                    <option key={e.value} value={e.value}>
+                                      {e.name}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
+                        </div>
+                      </div>
                       <div className="col-md">
                         <small
                           className=" fw-semibold d-block"

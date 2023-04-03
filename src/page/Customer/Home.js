@@ -16,13 +16,13 @@ import {
 } from "../../services/data.service";
 import logo from "../../assets/BH2.png";
 import { CATEGORIES, ListNewProduct } from "../Data";
-
+import { toast, Toaster } from "react-hot-toast";
 const Home = () => {
   const [apartment, setApartment] = useState([]);
   let history = useHistory();
   const [drug, setDrug] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(5);
+  const [perPage, setPerPage] = useState(6);
   const [totalRecord, setTotalRecord] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const update = (deviceId) => {
@@ -30,16 +30,19 @@ const Home = () => {
 
     // history.push("/ViewCart");
   };
+
   const laydata = () => {
     const data = localStorage;
-     console.log('display',data)
+    console.log("display", data);
 
     // history.push("/ViewCart");
   };
   const viewDetail = () => {
     history.push("/ViewDetail");
   };
-
+  const userName = localStorage.getItem("userName");
+  const roleName = localStorage.getItem("roleName");
+  
   async function loadDataMedicine() {
     const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -50,6 +53,18 @@ const Home = () => {
       console.log("display", currentPage);
     }
   }
+  const navigate = useHistory();
+  const handleLogout = async () => {
+    try {
+      navigate.push("/Login");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userName");
+      localStorage.removeItem("roleName");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   const checkValidation = () => {
     // if (id.trim() === "") {
     //   Swal.fire("ID Can't Empty", "", "question");
@@ -64,30 +79,51 @@ const Home = () => {
       quantity: 0,
     },
   });
-  
+  let buttonLogout;
+  if (roleName === "Customer") {
+    buttonLogout = (
+      <li>
+        <Link activeClassName="active" onClick={handleLogout}>
+          <span>Logout</span>
+        </Link>
+      </li>
+    );
+  } else {
+    buttonLogout = (
+      <li>
+        <Link activeClassName="active" to="/Login">
+          <span>login</span>
+        </Link>
+      </li>
+    );
+  }
+
   async function addToCart(productId) {
-    if (checkValidation()) {
-      const deviceId = await axios
-        .get("https://api.ipify.org/?format=json")
-        .then((res) => res.data.ip);
-      update(deviceId);
-      setProduct({
-        deviceId,
-        item: {
-          productId,
-          quantity:
-            product.item.productId === productId
-              ? product.item.quantity + 1
-              : 1,
-        },
-      });
-      const path = "Cart";
-      const res = await createDataByPath(path, "", product);
-      console.log("Check res", res);
-      console.log("display du lieu", product);
-      if (res && res.status === 201) {
-        Swal.fire("Create Success", "", "success");
-        // window.location.reload();
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      if (checkValidation()) {
+        const deviceId = await axios
+          .get("https://api.ipify.org/?format=json")
+          .then((res) => res.data.ip);
+        update(deviceId);
+        setProduct({
+          deviceId,
+          item: {
+            productId,
+            quantity:
+              product.item.productId === productId
+                ? product.item.quantity + 1
+                : 1,
+          },
+        });
+        const path = "Cart";
+        const res = await createDataByPath(path, accessToken, product);
+        console.log("Check res", res);
+        console.log("display du lieu", product);
+        if (res && res.status === 200) {
+          toast.success("OTP sended successfully!");
+          // window.location.reload();
+        }
       }
     }
   }
@@ -115,18 +151,18 @@ const Home = () => {
             </div>
           </div>
         </div>
-
+        <Toaster toastOptions={{ duration: 4000 }} />
         <div className="container">
           <div className="d-flex align-items-center justify-content-between">
             <div className="logo">
-            <div
-              className="app-brand demo"
-              style={{ marginLeft: -10, marginBottom: -80, marginTop: -90 }}
-            >
-              <Link to="/Home" className="app-brand-link">
-                <img src={logo} style={{ height: 80 }} />
-              </Link>
-            </div>
+              <div
+                className="app-brand demo"
+                style={{ marginLeft: -10, marginBottom: -80, marginTop: -90 }}
+              >
+                <Link to="/Home" className="app-brand-link">
+                  <img src={logo} style={{ height: 80 }} />
+                </Link>
+              </div>
             </div>
             <div className="main-nav d-none d-lg-block">
               <nav
@@ -145,51 +181,18 @@ const Home = () => {
                     </Link>
                   </li>
 
-                  <li className="has-children">
-                    <Link to="#">Category</Link>
-                    <ul className="dropdown">
-                      <li>
-                        <Link to="#">Supplements</Link>
-                      </li>
-                      <li className="has-children">
-                        <Link to="#">Vitamins</Link>
-                        <ul className="dropdown">
-                          <li>
-                            <Link to="#">Supplements</Link>
-                          </li>
-                          <li>
-                            <Link to="#">Vitamins</Link>
-                          </li>
-                          <li>
-                            <Link to="#">Diet &amp; Nutrition</Link>
-                          </li>
-                          <li>
-                            <Link to="#">Tea &amp; Coffee</Link>
-                          </li>
-                        </ul>
-                      </li>
-                      <li>
-                        <Link to="#">Diet &amp; Nutrition</Link>
-                      </li>
-                      <li>
-                        <Link to="#">Tea &amp; Coffee</Link>
-                      </li>
-                    </ul>
-                  </li>
+                 
                   <li>
                     <Link activeClassName="active" to="/LoginAdmin">
                       <span>LoginAdmin</span>
                     </Link>
                   </li>
-                  <li>
-                    <Link activeClassName="active" to="/Login">
-                      <span>Login</span>
-                    </Link>
-                  </li>
+                  {buttonLogout}
                 </ul>
               </nav>
             </div>
             <div className="icons">
+              <div>{userName}</div>
               <Link
                 to="#"
                 className="icons-btn d-inline-block js-search-open"
@@ -205,7 +208,8 @@ const Home = () => {
                   style={{ color: "black" }}
                 />
               </div>
-              <button onClick={laydata}>Lây data</button>
+
+              {/* <button onClick={laydata}>Lây data</button> */}
 
               <Link to="/ViewCart" className="icons-btn d-inline-block bag">
                 <span className="icon-shopping-bag" />
@@ -453,11 +457,9 @@ const Home = () => {
 
             <div className="container ">
               <div className="row karl-new-arrivals ">
-        
-           
                 {drug &&
-                drug.length &&
-                drug.map((item, index) => {
+                  drug.length &&
+                  drug.map((item, index) => {
                     return (
                       <div
                         className=" col-md-2 single_gallery_item women wow fadeInUpBig "
@@ -466,12 +468,12 @@ const Home = () => {
                         {/* Product Image */}
                         <div
                           className="product-img"
-                          style={{ borderRadius: 5, height: 280 }}
+                          style={{ borderRadius: 5}}
                           onClick={() => {
                             viewDetail();
                           }}
                         >
-                          <img src={item.imageModel.imageURL} alt="" />
+                          <img src={item.imageModel.imageURL} alt="" style={{ objectFit:"cover",height:250}}/>
                           <div className="product-quicview">
                             <a
                               href="#"
@@ -485,15 +487,14 @@ const Home = () => {
 
                         {/* Product Description */}
                         <div className="product-description">
-                          <h4 className="product-price"> {item.price}</h4>
-                          <p>{item.name}</p>
-                          {/* Add to Cart */}
                          
+                          <p>{item.name}</p>
+                          <h4 className="product-price"> {item.price}</h4>
+                          {/* Add to Cart */}
                         </div>
                       </div>
                     );
                   })}
-              
               </div>
             </div>
           </div>

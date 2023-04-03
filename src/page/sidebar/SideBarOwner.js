@@ -38,6 +38,7 @@ const Sidebar = ({ activeItem }) => {
       console.log(error.message);
     }
   };
+  
   return (
     <>
       <aside

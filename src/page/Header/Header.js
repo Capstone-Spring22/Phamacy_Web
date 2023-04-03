@@ -15,9 +15,43 @@ import "../../assets/css2/styleCategory.css";
 import "../../assets/css/aos.css";
 import { Link } from "react-router-dom";
 import logo from "../../assets/BH2.png";
+import { useEffect } from "react";
 const Header = () => {
   let history = useHistory();
+  const navigate = useHistory();
+  const handleLogout = async () => {
+    try {
+      
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userName");
+      localStorage.removeItem("roleName");
+      navigate.push("/Home");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
+  const roleName = localStorage.getItem("roleName");
+  const userName = localStorage.getItem("userName");
+  const phoneNo = localStorage.getItem("phoneNo");
+  let buttonLogout;
+  if (roleName === "Customer") {
+    buttonLogout = (
+      <li>
+        <Link activeClassName="active" onClick={handleLogout}>
+          <span>Logout</span>
+        </Link>
+      </li>
+    );
+  } else {
+    buttonLogout = (
+      <li>
+        <Link activeClassName="active" to="/Login">
+          <span>login</span>
+        </Link>
+      </li>
+    );
+  }
   const viewDetail = () => {
     history.push("/ViewCart");
   };
@@ -69,47 +103,12 @@ const Header = () => {
                   </Link>
                 </li>
 
-                <li className="has-children">
-                  <Link to="#">Category</Link>
-                  <ul className="dropdown">
-                    <li>
-                      <Link to="#">Supplements</Link>
-                    </li>
-                    <li className="has-children">
-                      <Link to="#">Vitamins</Link>
-                      <ul className="dropdown">
-                        <li>
-                          <Link to="#">Supplements</Link>
-                        </li>
-                        <li>
-                          <Link to="#">Vitamins</Link>
-                        </li>
-                        <li>
-                          <Link to="#">Diet &amp; Nutrition</Link>
-                        </li>
-                        <li>
-                          <Link to="#">Tea &amp; Coffee</Link>
-                        </li>
-                      </ul>
-                    </li>
-                    <li>
-                      <Link to="#">Diet &amp; Nutrition</Link>
-                    </li>
-                    <li>
-                      <Link to="#">Tea &amp; Coffee</Link>
-                    </li>
-                  </ul>
-                </li>
                 <li>
                   <Link activeClassName="active" to="/LoginAdmin">
                     <span>LoginAdmin</span>
                   </Link>
                 </li>
-                <li>
-                  <Link activeClassName="active" to="/Login">
-                    <span>Login</span>
-                  </Link>
-                </li>
+                {buttonLogout}
               </ul>
             </nav>
           </div>

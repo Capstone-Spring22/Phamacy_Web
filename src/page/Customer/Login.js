@@ -67,16 +67,24 @@ const Login = () => {
         console.log(res.user.accessToken);
         setUser(res.user);
         setLoading(false);
-        const register = await axios.post("https://betterhealthapi.azurewebsites.net/api/v1/Member/Customer/Login",{
-          firebaseToken : res.user.accessToken
-        });
+        const register = await axios.post(
+          "https://betterhealthapi.azurewebsites.net/api/v1/Member/Customer/Login",
+          {
+            firebaseToken: res.user.accessToken,
+          }
+        );
         if (register && register.status === 200) {
           if (localStorage) {
-            localStorage.setItem("accessToken", register.data.token);  
-            
+            localStorage.setItem("accessToken", register.data.token);
+            localStorage.setItem("roleName", register.data.roleName);
+            localStorage.setItem("userName", register.data.name);
+            localStorage.setItem("email", register.data.email);
+            localStorage.setItem("imageURL", register.data.imageURL);
+            localStorage.setItem("phoneNo", register.data.phoneNo);
+
             if (register.data.roleName === "Customer") {
               navigate.push("/Home");
-            } 
+            }
           }
         } else {
           setError("Sai tên hoặc mật khẩu vui lòng thử lại");
