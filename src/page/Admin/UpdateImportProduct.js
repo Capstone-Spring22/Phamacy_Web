@@ -729,7 +729,7 @@ const UpdateImportProduct = () => {
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
-                                  type="date"
+                                  type="text"
                                   id={`price${index}`}
                                   className="form-control"
                                   placeholder="Unit Id"
@@ -744,19 +744,19 @@ const UpdateImportProduct = () => {
                                           productBatch.expireDate
                                       )
                                       .join(", ")
-                                      ? new Date(
-                                          product.productImportDetails[
-                                            index - 1
-                                          ].productBatches
-                                            .map(
-                                              (productBatch) =>
-                                                productBatch.expireDate
-                                            )
-                                            .join(", ")
-                                        )
-                                          .toISOString()
-                                          .substr(0, 10)
-                                      : ""
+                                      // ? new Date(
+                                      //     product.productImportDetails[
+                                      //       index - 1
+                                      //     ].productBatches
+                                      //       .map(
+                                      //         (productBatch) =>
+                                      //           productBatch.expireDate
+                                      //       )
+                                      //       .join(", ")
+                                      //   )
+                                      //     .toISOString()
+                                      //     .substr(0, 10)
+                                      // : ""
                                   }
                                   onChange={(e) => {
                                     setProduct({
@@ -801,7 +801,7 @@ const UpdateImportProduct = () => {
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
-                                  type="date"
+                                  type="text"
                                   id={`barCode${index}`}
                                   className="form-control"
                                   placeholder="Unit Id"
@@ -816,19 +816,19 @@ const UpdateImportProduct = () => {
                                           productBatch.manufactureDate
                                       )
                                       .join(", ")
-                                      ? new Date(
-                                          product.productImportDetails[
-                                            index - 1
-                                          ].productBatches
-                                            .map(
-                                              (productBatch) =>
-                                                productBatch.manufactureDate
-                                            )
-                                            .join(", ")
-                                        )
-                                          .toISOString()
-                                          .substr(0, 10)
-                                      : ""
+                                      // ? new Date(
+                                      //     product.productImportDetails[
+                                      //       index - 1
+                                      //     ].productBatches
+                                      //       .map(
+                                      //         (productBatch) =>
+                                      //           productBatch.manufactureDate
+                                      //       )
+                                      //       .join(", ")
+                                      //   )
+                                      //     .toISOString()
+                                      //     .substr(0, 10)
+                                      // : ""
                                   }
                                   onChange={(e) => {
                                     setProduct({

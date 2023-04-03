@@ -10,6 +10,7 @@ import { BsPlus } from "react-icons/bs";
 import Footer from "./Footer";
 import { useHistory, useLocation, Link } from "react-router-dom";
 import Header from "../Header/Header";
+import axios from "axios";
 const Home = (props) => {
   let history = useHistory();
   const location = useLocation();
@@ -67,6 +68,10 @@ const Home = (props) => {
       districtId: null,
       wardId: null,
       homeAddress: null,
+    },
+    vnpayInformation: {
+      vnp_TransactionNo: null,
+      vnp_PayDate: null,
     },
     orderPickUp: null,
   });
@@ -236,18 +241,40 @@ const Home = (props) => {
   }, [districtID]);
   async function Checkout() {
     if (checkValidation()) {
-      const data = product;
-      const path = "Order/Checkout";
-      const res = await createDataByPath(path, "", data);
-      console.log("Check res", res);
-      console.log("display du lieu", data);
-      if (res && res.status === 201) {
-        Swal.fire("Create Success", "", "success");
-        // window.location.reload();
+      if (product.payType === 1) {
+        const data = product;
+        const path = "Order/Checkout";
+        const res = await createDataByPath(path, "", data);
+        console.log("Check res", res);
+        console.log("display du lieu", data);
+        if (res && res.status === 201) {
+          Swal.fire("Create Success", "", "success");
+          // window.location.reload();
+        }
+      } else if (product.payType === 2) {
+        const url =
+          await axios.get(`https://betterhealthapi.azurewebsites.net/api/v1/VNPay?Amount=${
+            cartData.total.totalCartPrice
+          }&OrderId=${orderID}&IpAddress=${localStorage.getItem(
+            "deviceId"
+          )}&UrlCallBack=${window.location.href}
+        `);
+        if (url && url.status === 200) {
+          window.location.href=`${url.data}`;
+        }
+        // const data = product;
+        // const path = "Order/Checkout";
+        // const res = await createDataByPath(path, "", data);
+        // console.log("Check res", res);
+        // console.log("display du lieu", data);
+        // if (res && res.status === 201) {
+        //   Swal.fire("Create Success", "", "success");
+        //   // window.location.reload();
+        // }
       }
     }
   }
- 
+
   useEffect(() => {}, []);
   return (
     <>
@@ -329,7 +356,6 @@ const Home = (props) => {
                             }}
                             className="form-control"
                             id="full_name"
-                        
                             defaultValue=""
                             required=""
                             onChange={(e) =>
@@ -680,7 +706,7 @@ const Home = (props) => {
                       <div className="row">
                         <div className="col-md-6 mb-3">
                           <label htmlFor="first_name">
-                           Tên Đầy Đủ <span>*</span>
+                            Tên Đầy Đủ <span>*</span>
                           </label>
                           <input
                             type="text"

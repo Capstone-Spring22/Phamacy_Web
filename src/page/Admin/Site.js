@@ -38,6 +38,7 @@ const Site = () => {
   const [wardErrorMessage, setWardErrorMessage] = useState("");
   const [descriptionErrorMessage, setDescriptionErrorMessage] = useState("");
   const [contactInfoErrorMessage, setContactInfoErrorMessage] = useState("");
+  const [countUs, setCountUs] = useState("2");
   const [siteUpdate, setSiteUpdate] = useState({
     siteName: "",
     description: "",
@@ -227,9 +228,36 @@ const Site = () => {
         const path1 = "Site/Active";
         const res1 = await updateDataByPath(path1, accessToken, data);
         if (res1 && res1.status === 200) {
+          setCountUs(parseInt(countUs) + 1);
           Swal.fire("Update successfully!", "", "success");
           history.push("/Site");
         } else if (res1 && res1.status === 400) {
+          
+          Swal.fire(
+            "Cửa hàng này chưa đủ nhân viên nên chưa mở cửa!",
+            "Không thể mở cửa",
+            "error"
+          );
+        }
+      }
+    }
+  }
+  async function loadDataSiteIDtoDelivery(id) {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `Site/${id}`;
+      const res = await getDataByPath(path, accessToken, "");
+      if (res !== null && res !== undefined && res.status === 200) {
+        console.log(id, res.data.isDelivery);
+        const data = { siteID: id, status: !res.data.isDelivery };
+        const path1 = "Site/Delivery";
+        const res1 = await updateDataByPath(path1, accessToken, data);
+        if (res1 && res1.status === 200) {
+          setCountUs(parseInt(countUs) + 1);
+          Swal.fire("Update successfully!", "", "success");
+          history.push("/Site");
+        } else if (res1 && res1.status === 400) {
+          
           Swal.fire(
             "Cửa hàng này chưa đủ nhân viên nên chưa mở cửa!",
             "Không thể mở cửa",
@@ -282,7 +310,7 @@ const Site = () => {
   const [activeItem, setActiveItem] = useState("Site");
   useEffect(() => {
     loadDataSite();
-  }, [currentPage, perPage]);
+  }, [currentPage, perPage, countUs]);
 
   useEffect(() => {
     loadDataCity();
@@ -613,9 +641,7 @@ const Site = () => {
                                             @gmail.com
                                           </span> */}
                                         </div>
-                                        <div className="form-text">
-                                        
-                                        </div>
+                                        <div className="form-text"></div>
                                       </div>
                                       <div
                                         className="mb-3"
@@ -995,7 +1021,7 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
                                         >
-                                         Quận/ Huyện
+                                          Quận/ Huyện
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <select
@@ -1208,6 +1234,24 @@ const Site = () => {
                             >
                               Actions
                             </th>
+                            <th
+                              style={{
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
+                              Mở Cửa
+                            </th>
+                            <th
+                              style={{
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
+                              Giao Hàng
+                            </th>
                           </tr>
                         </thead>
                         <tbody className="table-border-bottom-0">
@@ -1249,14 +1293,21 @@ const Site = () => {
                                         />
                                       </svg>
                                     </a>
-                                    <buton></buton>
-                                    <Switch
+
+                                  </td>
+
+                                  <td><Switch
                                       checked={e.isActivate}
                                       onChange={async () => {
                                         loadDataSiteID(e.id);
                                       }}
-                                    />
-                                  </td>
+                                    /></td>
+                                  <td><Switch
+                                      checked={e.isDelivery}
+                                      onChange={async () => {
+                                        loadDataSiteIDtoDelivery(e.id);
+                                      }}
+                                    /></td>
                                 </tr>
                               );
                             })}

@@ -26,6 +26,7 @@ const UpdateDrug = () => {
   const [addUnit, setAddUnit] = useState(false);
   const [unit, setUnit] = useState([]);
   const [unit2, setUnit2] = useState([]);
+  const [userUsageSelected, setUserUsageSelected] = useState(false);
 
   const [isBatches, setIsBatches] = useState(false);
   const [isPrescription, setIsPrescription] = useState(false);
@@ -42,6 +43,7 @@ const UpdateDrug = () => {
     subCategoryId: "",
     manufacturerId: "",
     isPrescription: 0,
+    userTarget: "",
     productDetailModel: [
       {
         id: "",
@@ -160,6 +162,14 @@ const UpdateDrug = () => {
       }));
     }
   };
+  const [userUsage, setUserUsage] = useState([]);
+  const userUsages = [
+    { name: "trẻ em", value: 1 },
+    { name: "người lớn", value: 2 },
+    { name: "người cao tuổi", value: 3 },
+    { name: "phụ nữ cho con bú", value: 4 },
+    { name: "mọi lứa tuổi", value: null },
+  ];
   const handlePrescriptionChange = (event) => {
     setIsPrescription(event.target.checked);
 
@@ -557,6 +567,46 @@ const UpdateDrug = () => {
                                 <>
                                   <option key={e.id} value={e.id}>
                                     {e.manufacturerName}
+                                  </option>
+                                </>
+                              );
+                            })}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="mb-3" style={{ width: "100%" }}>
+                      <label
+                        className="form-label"
+                        htmlFor="basic-icon-default-company"
+                      >
+                        Đối Tượng Dùng Sản Phẩm
+                      </label>
+
+                      <div className="input-group input-group-merge">
+                        <select
+                          name="city"
+                          id="basic-icon-default-email"
+                          className="form-control"
+                          onChange={(e) => {
+                            // handleUserTarget(e);
+                            // setUserUsageSelected(true);
+                            setProduct((prevState) => ({
+                              ...prevState,
+                              userTarget: e.target.value,
+                            }));
+                          }}
+                          value={product.userTarget}
+                        >
+                          {/* {!userUsageSelected && (
+                              <option value="">--Chọn Đối Tượng</option>
+                            )} */}
+                          {userUsages &&
+                            userUsages.length &&
+                            userUsages.map((e, index) => {
+                              return (
+                                <>
+                                  <option key={e.value} value={e.value}>
+                                    {e.name}
                                   </option>
                                 </>
                               );
@@ -1544,7 +1594,7 @@ const UpdateDrug = () => {
                                     ...product,
                                     imageModels: newImageModel,
                                   });
-                                   console.log('display',product)
+                                  console.log("display", product);
                                 }}
                               >
                                 {product.imageModels[index - 1].isFirstImage

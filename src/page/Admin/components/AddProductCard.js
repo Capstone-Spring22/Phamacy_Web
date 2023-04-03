@@ -10,6 +10,7 @@ export default function AddProductCard({
   setIndexUnit,
   setCountQuantity,
   drug,
+  setcountPrice
 }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const [currentNumBatches, setCurrentNumBatches] = useState(0);
@@ -107,6 +108,7 @@ export default function AddProductCard({
                       ...product.productImportDetails.slice(index),
                     ],
                   }));
+                  setcountPrice((countprice)=>parseInt(countprice) + 1);
                 }}
               />
             </div>
@@ -130,11 +132,12 @@ export default function AddProductCard({
                       ...product.productImportDetails.slice(0, index - 1),
                       {
                         ...product.productImportDetails[index - 1],
-                        importPrice: e.target.value,
+                        importPrice: parseInt(e.target.value),
                       },
                       ...product.productImportDetails.slice(index),
                     ],
                   }));
+                  setcountPrice((countprice)=>parseInt(countprice) + 1);
                 }}
               />
             </div>

@@ -22,6 +22,7 @@ const AddImportProduct = () => {
   const [manufactunerID, setManufactunerID] = useState([]);
   const [indexUnit, setIndexUnit] = useState(0);
   const [countQuantity, setCountQuantity] = useState(0);
+  const [countprice, setcountPrice] = useState(0);
 
   const [productIngredient, setProductIngredient] = useState([]);
   const [productIngredientID, setProductIngredientID] = useState([]);
@@ -213,7 +214,26 @@ const AddImportProduct = () => {
         ...product.productImportDetails.slice(index),
       ],
     });
+    setcountPrice(parseInt(countprice) + 1);
   };
+  useEffect(() => {
+    setProduct({
+      ...product,
+      totalPrice:
+        parseInt(product.totalProductPrice) +
+        parseInt(product.taxPrice) +
+        parseInt(product.totalShippingFee),
+    });
+  }, [product.totalProductPrice, product.taxPrice, product.totalShippingFee]);
+  useEffect(() => {
+    setProduct({
+      ...product,
+      totalProductPrice: product.productImportDetails.reduce(
+        (total, curent) => total + curent.quantity * curent.importPrice,
+        0
+      ),
+    });
+  }, [countprice]);
 
   const handleAddQuantityBatch = (index, batchIndex, e) => {
     setProduct({
@@ -290,21 +310,25 @@ const AddImportProduct = () => {
 
         <div
           className="layout-page"
-          style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}>
+          style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
+        >
           {/* Navbar */}
           <nav
             className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
-            id="layout-navbar">
+            id="layout-navbar"
+          >
             <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
               <a
                 className="nav-item nav-link px-0 me-xl-4"
-                href="javascript:void(0)">
+                href="javascript:void(0)"
+              >
                 <i className="bx bx-menu bx-sm" />
               </a>
             </div>
             <div
               className="navbar-nav-right d-flex align-items-center"
-              id="navbar-collapse">
+              id="navbar-collapse"
+            >
               {/* Search */}
               <div className="navbar-nav align-items-center">
                 <div className="nav-item d-flex align-items-center">
@@ -327,7 +351,8 @@ const AddImportProduct = () => {
                     data-icon="octicon-star"
                     data-size="large"
                     data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub">
+                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
+                  >
                     Star
                   </a>
                 </li>
@@ -337,7 +362,8 @@ const AddImportProduct = () => {
                   <Link
                     className="nav-link dropdown-toggle hide-arrow"
                     to="/Profile"
-                    data-bs-toggle="dropdown">
+                    data-bs-toggle="dropdown"
+                  >
                     <div className="avatar avatar-online">
                       <img
                         src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
@@ -418,7 +444,8 @@ const AddImportProduct = () => {
           <div>
             <div
               className="row "
-              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}>
+              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+            >
               <div className="col-xl">
                 <div className="card mb-4">
                   <div
@@ -428,7 +455,8 @@ const AddImportProduct = () => {
                       backgroundColor: "white",
                       padding: "20px 24px",
                       borderColor: "#f4f4f4",
-                    }}>
+                    }}
+                  >
                     <h5 className="mb-0">Thêm Sản phẩm </h5>
                   </div>{" "}
                   {Array.from({ length: unitCount }, (_, i) => i + 1).map(
@@ -444,6 +472,8 @@ const AddImportProduct = () => {
                           setIndexUnit={setIndexUnit}
                           setCountQuantity={setCountQuantity}
                           drug={drug}
+                          setcountPrice={setcountPrice}
+                          
                         />
                       );
                     }
@@ -459,7 +489,8 @@ const AddImportProduct = () => {
                       marginBottom: "20px",
                       backgroundColor: "#fff",
                     }}
-                    onClick={handleAddUnit}>
+                    onClick={handleAddUnit}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -467,7 +498,8 @@ const AddImportProduct = () => {
                       fill="currentColor"
                       class="bi bi-plus-lg"
                       viewBox="0 0 16 16"
-                      style={{ marginRight: 10 }}>
+                      style={{ marginRight: 10 }}
+                    >
                       <path
                         fill-rule="evenodd"
                         d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
@@ -480,7 +512,8 @@ const AddImportProduct = () => {
             </div>
             <div
               className="row "
-              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}>
+              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+            >
               <div className="col-xl">
                 <div className="card mb-4">
                   <div
@@ -491,7 +524,8 @@ const AddImportProduct = () => {
                       padding: "20px 24px",
 
                       borderColor: "#f4f4f4",
-                    }}>
+                    }}
+                  >
                     <h5 className="mb-0">Thêm Sản Phẩm Nhập Kho</h5>
                   </div>
                   <div className="card-body">
@@ -500,11 +534,13 @@ const AddImportProduct = () => {
                         display: "grid",
                         gridTemplateColumns: "auto auto",
                         padding: 30,
-                      }}>
+                      }}
+                    >
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
                           className="form-label"
-                          htmlFor="basic-icon-default-fullname">
+                          htmlFor="basic-icon-default-fullname"
+                        >
                           Ghi chú
                         </label>
                         <div className="input-group input-group-merge">
@@ -527,7 +563,8 @@ const AddImportProduct = () => {
                       <div className="mb-3" style={{ width: "100%" }}>
                         <label
                           className="form-label"
-                          htmlFor="basic-icon-default-company">
+                          htmlFor="basic-icon-default-company"
+                        >
                           Tổng giá sản phẩm
                         </label>
                         <div className="input-group input-group-merge">
@@ -538,19 +575,21 @@ const AddImportProduct = () => {
                             placeholder="Tổng giá sản phẩm"
                             aria-label="Tên Loại Con Sản Phẩm"
                             aria-describedby="basic-icon-default-company2"
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                totalProductPrice: e.target.value,
-                              }))
-                            }
+                            value={product.totalProductPrice}
+                            // onChange={(e) =>
+                            //   setProduct((prevState) => ({
+                            //     ...prevState,
+                            //     totalProductPrice: e.target.value,
+                            //   }))
+                            // }
                           />
                         </div>
                       </div>
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
                           className="form-label"
-                          htmlFor="basic-icon-default-phone">
+                          htmlFor="basic-icon-default-phone"
+                        >
                           Thuế
                         </label>
                         <div className="input-group input-group-merge">
@@ -572,7 +611,8 @@ const AddImportProduct = () => {
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
                           className="form-label"
-                          htmlFor="basic-icon-default-phone">
+                          htmlFor="basic-icon-default-phone"
+                        >
                           Phí ship
                         </label>
                         <div className="input-group input-group-merge">
@@ -595,7 +635,8 @@ const AddImportProduct = () => {
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
                           className="form-label"
-                          htmlFor="basic-icon-default-company">
+                          htmlFor="basic-icon-default-company"
+                        >
                           Tổng giá
                         </label>
                         <div className="input-group input-group-merge">
@@ -606,12 +647,13 @@ const AddImportProduct = () => {
                             placeholder="Tổng giá"
                             aria-label="Công dung"
                             aria-describedby="basic-icon-default-company2"
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                totalPrice: e.target.value,
-                              }))
-                            }
+                            value={product.totalPrice}
+                            // onChange={(e) =>
+                            //   setProduct((prevState) => ({
+                            //     ...prevState,
+                            //     totalPrice: e.target.value,
+                            //   }))
+                            // }
                           />
                         </div>
                       </div>
@@ -633,7 +675,8 @@ const AddImportProduct = () => {
                         marginTop: "20px",
                         backgroundColor: "#82AAE3",
                         color: "white",
-                      }}>
+                      }}
+                    >
                       Lưu
                     </button>
                   </div>

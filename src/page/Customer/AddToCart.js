@@ -62,6 +62,7 @@ const AddToCart = () => {
 
   console.log("đ", newArrayOfObjects);
   function viewDetail(cartData) {
+    
     history.push({
       pathname: "/Checkout",
       state: { cartData },

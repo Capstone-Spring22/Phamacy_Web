@@ -625,11 +625,11 @@ const NewDrug = () => {
                             id="basic-icon-default-email"
                             className="form-control"
                             onChange={(e) => {
-                              handleUserTarget(e);
-                              setUserUsage(true);
+                              // handleUserTarget(e);
+                              setUserUsageSelected(true);
                               setProduct((prevState) => ({
                                 ...prevState,
-                                userUsageTarget: userUsage.values,
+                                userUsageTarget: e.target.value,
                               }));
                             }}
                             value={product.userUsageTarget}
