@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link ,useHistory} from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import SideBar from "../sidebar/SideBarPharmacist";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
@@ -38,8 +38,7 @@ const Order = () => {
     <>
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
-        <SideBar activeItem={activeItem} />
-
+          <SideBar activeItem={activeItem} />
 
           <div
             className="layout-page"
@@ -226,11 +225,7 @@ const Order = () => {
                         <h3 className="fontagon">Quản Lý Đơn Hàng</h3>
                       </h5>
 
-                      <>
-                        
-                      
-                        
-                      </>
+                      <></>
                     </div>
 
                     <div className="table-responsive ">
@@ -270,6 +265,15 @@ const Order = () => {
                             >
                               Giá
                             </th>
+                            <th
+                              style={{
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
+                              Trạng Thái
+                            </th>
 
                             <th
                               style={{
@@ -292,6 +296,11 @@ const Order = () => {
                                   <td>{e.orderTypeName}</td>
                                   <td>{e.totalPrice}</td>
 
+                                  {e.needAcceptance === true ? (
+                                    <td>Chưa Xác Nhận</td>
+                                  ) : (
+                                    <td>Đã Xác Nhận</td>
+                                  )}
                                   <td>
                                     <a
                                       class="button-81"
@@ -319,23 +328,20 @@ const Order = () => {
                             })}
                         </tbody>
                       </table>
-                   
-                       <ReactPaginate
-                          
-                          className="pagination "
-                          breakLabel="..."
-                          nextLabel=">"
-                          previousLabel="< "
-                          nextClassName="next-button"
-                          pageClassName="page-item"
-                          activeClassName="ac"
-                          previousClassName="previous-button"
-                          pageCount={totalRecord / perPage}
-                          onPageChange={(e) =>
-                            setCurrentPage(e.selected + 1)
-                          }
-                          currentPage={currentPage}
-                        />
+
+                      <ReactPaginate
+                        className="pagination "
+                        breakLabel="..."
+                        nextLabel=">"
+                        previousLabel="< "
+                        nextClassName="next-button"
+                        pageClassName="page-item"
+                        activeClassName="ac"
+                        previousClassName="previous-button"
+                        pageCount={totalRecord / perPage}
+                        onPageChange={(e) => setCurrentPage(e.selected + 1)}
+                        currentPage={currentPage}
+                      />
                     </div>
                   </div>
                 </div>

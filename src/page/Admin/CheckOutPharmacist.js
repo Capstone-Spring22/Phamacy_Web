@@ -73,6 +73,7 @@ const CheckOutPharmacist = () => {
     if (checkValidation()) {
       const drug1 = drug.find((item) => item.id === productId);
        console.log('display drug1',drug1)
+       console.log('drug1.id === listCart.find((product)=> product.id )',drug1.id === listCart.find((product)=> product.productId ===productId))
       listCart.push({
         productId: drug1.id,
         quantity: 1,

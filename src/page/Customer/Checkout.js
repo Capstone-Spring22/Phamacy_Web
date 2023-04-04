@@ -251,7 +251,7 @@ const Home = (props) => {
         const res = await createDataByPath(path, "", data);
         console.log("Check res", res);
         console.log("display du lieu", data);
-        if (res && res.status === 201) {
+        if (res && res.status === 200) {
           Swal.fire("Create Success", "", "success");
           // window.location.reload();
         }

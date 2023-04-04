@@ -40,14 +40,27 @@ const VNPay = (props) => {
     orderPickUp: null,
   });
   async function Checkout() {
-    const data = product;
-    console.log("data", data);
-    const path = "Order/Checkout";
-    const res = await createDataByPath(path, "", data);
-    console.log("Check res", res);
-    console.log("display du lieu", data);
-    if (res && res.status === 201) {
-      Swal.fire("Create Success", "", "success");
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const data = product;
+      console.log("data", data);
+      const path = "Order/Checkout";
+      const res = await createDataByPath(path, accessToken, data);
+      console.log("Check res", res);
+      console.log("display du lieu", data);
+      if (res && res.status === 200) {
+        Swal.fire("Create Success", "", "success");
+      }
+    } else {
+      const data = product;
+      console.log("data", data);
+      const path = "Order/Checkout";
+      const res = await createDataByPath(path, "", data);
+      console.log("Check res", res);
+      console.log("display du lieu", data);
+      if (res && res.status === 200) {
+        Swal.fire("Create Success", "", "success");
+      }
     }
   }
   useEffect(() => {
@@ -99,7 +112,7 @@ const VNPay = (props) => {
                 <div
                   style={{
                     backgroundColor: "white",
-                    
+
                     borderRadius: 10,
                     paddingBottom: 50,
                     width: 650,
@@ -113,128 +126,96 @@ const VNPay = (props) => {
                     fill="currentColor"
                     class="bi bi-check-circle"
                     viewBox="0 0 16 16"
-                    style={{color:"#9dca5c",borderColor:"#9dca5c",marginLeft:150}}
+                    style={{
+                      color: "#9dca5c",
+                      borderColor: "#9dca5c",
+                      marginLeft: 150,
+                    }}
                   >
                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                     <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
                   </svg>
                 </div>
-                <div className="vn-pay-success">Thanh Toán VNPay Thành Công</div>
+                <div className="vn-pay-success">
+                  Thanh Toán VNPay Thành Công
+                </div>
                 <br />
                 <hr></hr>
                 <div className="checkout_details_area mt-50 clearfix">
                   <div className="cart-page-heading">
                     <h5>Xem Lại Thông Tin</h5>
-                   
                   </div>
-     
-               
-                    <form action="#" method="post">
-                      <div className="row">
-                        <div className="col-md-6 mb-3">
-                          <label htmlFor="first_name">
-                            Tên Đầy Đủ <span>*</span>
-                          </label>
-                          <div
-                           
-                           
-                         
-                            id="full_name"
-                            defaultValue=""
-                            required=""
-                            
-                          >{product.reveicerInformation.fullname}</div>
-                        </div>
-                        <div className="col-md-6 mb-3">
-                          <label htmlFor="last_name">
-                            Số điện thoại <span>*</span>
-                          </label>
-                          <div
-                            type="text"
-                            
-                        
-                            id="sdt"
-                            defaultValue=""
-                            required=""
-                           
-                          >{product.reveicerInformation.phoneNumber}</div>
-                        </div>
-                        <div className="col-12 mb-3">
-                          <label htmlFor="company">Email</label>
-                          <div
-                            type="text"
-                            
-                            
-                            id="company"
-                            defaultValue=""
-                           
-                          >{product.reveicerInformation.email}</div>
-                        </div>
 
-                        <div className="col-12 mb-3">
-                          <label htmlFor="street_address">
-                            Thành phố <span>*</span>
-                          </label>
-                          <div
-                            name="city"
-                            id="basic-icon-default-email"
-                           
-                        >{product.reveicerInformation.cityId}
-                          </div>
-                        </div>
-
-                        <div className="col-12 mb-3">
-                          <label htmlFor="postcode">
-                            Quận/Huyện <span>*</span>
-                          </label>
-
-                          <div
-                            id="basic-icon-default-email"
-                            
-                          >{product.reveicerInformation.districtId}
-                          </div>
-                        </div>
-                        <div className="col-12 mb-3">
-                          <label htmlFor="city">
-                            Phường <span>*</span>
-                          </label>
-
-                          <div
-                            id="basic-icon-default-email"
-                           
-                           
-                           >{product.reveicerInformation.wardId}</div>
-                          
-                         
-                        
-                        </div>
-                        <div className="col-12 mb-3">
-                          <label htmlFor="state">
-                            Địa chỉ cụ thể <span>*</span>
-                          </label>
-                          <div
-                            type="text"
-                           
-                            id="state"
-                            defaultValue=""
-                          
-                          >{product.reveicerInformation.homeAddress}</div>
-                        </div>
-                        <div className="col-12 mb-3">
-                          <label htmlFor="street_address">
-                            Ghi Chú <span>*</span>
-                          </label>
-                          <div
-                            type="text"
-                         
-                            id="street_address"
-                            
-                           
-                          >{product.note}</div>
+                  <form action="#" method="post">
+                    <div className="row">
+                      <div className="col-md-6 mb-3">
+                        <label htmlFor="first_name">
+                          Tên Đầy Đủ <span>*</span>
+                        </label>
+                        <div id="full_name" defaultValue="" required="">
+                          {product.reveicerInformation.fullname}
                         </div>
                       </div>
-                    </form>
-           
+                      <div className="col-md-6 mb-3">
+                        <label htmlFor="last_name">
+                          Số điện thoại <span>*</span>
+                        </label>
+                        <div type="text" id="sdt" defaultValue="" required="">
+                          {product.reveicerInformation.phoneNumber}
+                        </div>
+                      </div>
+                      <div className="col-12 mb-3">
+                        <label htmlFor="company">Email</label>
+                        <div type="text" id="company" defaultValue="">
+                          {product.reveicerInformation.email}
+                        </div>
+                      </div>
+
+                      <div className="col-12 mb-3">
+                        <label htmlFor="street_address">
+                          Thành phố <span>*</span>
+                        </label>
+                        <div name="city" id="basic-icon-default-email">
+                          {product.reveicerInformation.cityId}
+                        </div>
+                      </div>
+
+                      <div className="col-12 mb-3">
+                        <label htmlFor="postcode">
+                          Quận/Huyện <span>*</span>
+                        </label>
+
+                        <div id="basic-icon-default-email">
+                          {product.reveicerInformation.districtId}
+                        </div>
+                      </div>
+                      <div className="col-12 mb-3">
+                        <label htmlFor="city">
+                          Phường <span>*</span>
+                        </label>
+
+                        <div id="basic-icon-default-email">
+                          {product.reveicerInformation.wardId}
+                        </div>
+                      </div>
+                      <div className="col-12 mb-3">
+                        <label htmlFor="state">
+                          Địa chỉ cụ thể <span>*</span>
+                        </label>
+                        <div type="text" id="state" defaultValue="">
+                          {product.reveicerInformation.homeAddress}
+                        </div>
+                      </div>
+                      <div className="col-12 mb-3">
+                        <label htmlFor="street_address">
+                          Ghi Chú <span>*</span>
+                        </label>
+                        <div type="text" id="street_address">
+                          {product.note}
+                        </div>
+                      </div>
+                    </div>
+                  </form>
                 </div>
               </div>
 

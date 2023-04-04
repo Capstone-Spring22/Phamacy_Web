@@ -30,7 +30,7 @@ const OrderDetail = () => {
       const res = await getDataByPath(path, accessToken, "");
       console.log("res", res.data.id);
       if (res !== null && res !== undefined && res.status === 200) {
-        console.log("check", OrderDetail);
+        console.log("cc", OrderDetail);
         setOrderDetail(res.data);
         setProductDetail(res.data.orderProducts);
         setOrderContactInfo(res.data.orderContactInfo);
@@ -56,9 +56,12 @@ const OrderDetail = () => {
         ipAddress: deviceId,
       };
       const path = `Order/ValidateOrder`;
+     
       const res = await updateDataByPath(path, accessToken, data);
+      console.log('res',res)
       if (res !== null && res !== undefined && res.status === 200) {
          console.log('display',"thành công")
+         loadDataOrderById()
       }
     }
   }
@@ -77,8 +80,10 @@ const OrderDetail = () => {
        console.log('data',data)
       const path = `Order/ValidateOrder`;
       const res = await updateDataByPath(path, accessToken, data);
+      console.log('res',res)
       if (res !== null && res !== undefined && res.status === 200) {
          console.log('display',"thành công")
+         loadDataOrderById()
       }
     }
   }
@@ -123,6 +128,7 @@ const OrderDetail = () => {
       </>
     );
   } else if(OrderDetail.pharmacistId === localStorage.getItem("userID")) {
+    OrderStatus = (
     <>
         <div className="mb-3" style={{ width: "95%" }}>
           <div className="input-group input-group-merge">
@@ -158,8 +164,9 @@ const OrderDetail = () => {
             Cập nhật trạng thái
           </a>
         </div>
-      </>
+      </>)
   }else if(OrderDetail.pharmacistId !== localStorage.getItem("userID")) {
+    OrderStatus = (
     <>
     <div className="mb-3" style={{ width: "95%" }}>
       <div className="input-group input-group-merge">
@@ -193,7 +200,7 @@ const OrderDetail = () => {
         Đơn hàng đã được xác nhận bởi thằng khác
       </a>
     </div>
-  </>
+  </>)
   }
 
 

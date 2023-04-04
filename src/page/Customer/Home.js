@@ -376,41 +376,44 @@ const Home = () => {
             <br />
 
             <div className="container " style={{ display: "flex" }}>
-              {drug &&
-                drug.length &&
-                drug.map((item, index) => {
-                  return (
-                    <div className="product-card" key={item.id}>
-                      <img
-                        src={item.imageModel.imageURL}
-                        className="product-img2"
-                        alt="Product Image"
-                      />
-                      <div className="product-info">
-                        {" "}
-                        <h2 className="product-name">{item.name}</h2>
-                        <div style={{ display: "flex" }}>
-                          <p className="product-price">${item.price}</p>
-                          <button
-                            className="add-to-cart"
-                            onClick={() => addToCart(item.id)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              fill="currentColor"
-                              class="bi bi-cart-fill"
-                              viewBox="0 0 16 16"
+            {drug &&
+                  drug.length &&
+                  drug.map((item, index) => {
+                    return (
+                      <div
+                        className=" col-md-2 single_gallery_item women wow fadeInUpBig "
+                        data-wow-delay="0.2s"
+                      >
+                        {/* Product Image */}
+                        <div
+                          className="product-img"
+                          style={{ borderRadius: 5}}
+                          onClick={() => {
+                            viewDetail(item.id);
+                          }}
+                        >
+                          <img src={item.imageModel.imageURL} alt="" style={{ objectFit:"cover",height:250}}/>
+                          <div className="product-quicview">
+                            <a
+                              href="#"
+                              data-toggle="modal"
+                              data-target="#quickview"
                             >
-                              <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-                            </svg>
-                          </button>
+                              <BsPlus style={{ marginBottom: 10 }} />
+                            </a>
+                          </div>
+                        </div>
+
+                        {/* Product Description */}
+                        <div className="product-description">
+                         
+                          <p>{item.name}</p>
+                          <h4 className="product-price"> {item.price}</h4>
+                          {/* Add to Cart */}
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
             </div>
           </div>
         </section>
