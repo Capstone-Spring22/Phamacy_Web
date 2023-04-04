@@ -15,6 +15,7 @@ import {
 import ReactPaginate from "react-paginate";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import { List } from "antd";
 const CheckOutPharmacist = () => {
   const myId = localStorage.getItem("id");
   const [OrderDetail, setOrderDetail] = useState([]);
@@ -72,20 +73,48 @@ const CheckOutPharmacist = () => {
   async function addToCart(productId) {
     if (checkValidation()) {
       const drug1 = drug.find((item) => item.id === productId);
-       console.log('display drug1',drug1)
-       console.log('drug1.id === listCart.find((product)=> product.id )',drug1.id === listCart.find((product)=> product.productId ===productId))
-      listCart.push({
-        productId: drug1.id,
-        quantity: 1,
-        originalPrice: drug1.price,
-        discountPrice: drug1.priceAfterDiscount,
-        productPrefer:drug1.productUnitReferences,
-        name:drug1.name
-      });
-      setListCart([...listCart]);
+      console.log("display drug1", drug1);
+      // console.log(
+      //   "drug1.id === listCart.find((product)=> product.id )",
+      //   drug1.id ===
+      //     listCart.find((product) => product.productId === productId).productId
+      // );
+      if (
+        listCart &&
+        listCart.find((product) => product.productId === productId)?.productId
+      ) {
+        // setListCart((prevState) => {
+        //   prevState.map((item) => {
+        //     if (item.productId === productId) {
+        //       return {
+        //         ...item,
+        //         quantity: 14,
+        //       };
+        //     }
+        //     return item;
+        //   });
+        // });
+      } else {
+        listCart.push({
+          productId: drug1.id,
+          quantity: 1,
+          originalPrice: drug1.price,
+          discountPrice: drug1.priceAfterDiscount,
+          productPrefer: drug1.productUnitReferences,
+          name: drug1.name,
+        });
+        setListCart([...listCart]);
+      }
+
       console.log("display", listCart);
     }
   }
+  const removeInCart = (id) => {
+    console.log("display", id);
+    const newList = listCart.filter((item) => item.productId !== id);
+
+    setListCart(newList);
+  };
   const [newArrayOfObjects, setNewArrayOfObjects] = useState([]);
 
   const [product, setProduct] = useState({
@@ -134,12 +163,14 @@ const CheckOutPharmacist = () => {
     setNewArrayOfObjects(
       listCart &&
         listCart.length &&
-        listCart.map(({ productId, quantity, originalPrice, discountPrice }) => ({
-          productId: productId,
-          quantity: quantity,
-          originalPrice: originalPrice,
-          discountPrice: discountPrice,
-        }))
+        listCart.map(
+          ({ productId, quantity, originalPrice, discountPrice }) => ({
+            productId: productId,
+            quantity: quantity,
+            originalPrice: originalPrice,
+            discountPrice: discountPrice,
+          })
+        )
     );
   }, [listCart]);
   function updateQuantity(productId, newQuantity) {
@@ -465,13 +496,15 @@ const CheckOutPharmacist = () => {
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
                           >
-                            {listCart &&
+                            {listCart.length &&
+                              listCart &&
                               listCart.map((product) => {
                                 return (
                                   <div>
                                     <div key={product.id}>{product.name}</div>
                                     quantity{" "}
                                     <input
+                                      value={product.quantity}
                                       onChange={(e) => {
                                         updateQuantity(
                                           product.productId,
@@ -487,19 +520,26 @@ const CheckOutPharmacist = () => {
                                         )
                                       }
                                     >
-                                      {product.productPrefer.map(
-                                        (unit) => {
-                                          return (
-                                            <option
-                                              key={unit.id}
-                                              value={unit.id}
-                                            >
-                                              {unit.unitName}
-                                            </option>
-                                          );
-                                        }
-                                      )}
+                                      {product.productPrefer.map((unit) => {
+                                        return (
+                                          <option key={unit.id} value={unit.id}>
+                                            {unit.unitName}
+                                          </option>
+                                        );
+                                      })}
                                     </select>
+                                    <button
+                                      onClick={() => {
+                                        const newList = listCart.filter(
+                                          (item) =>
+                                            item.productId !== product.productId
+                                        );
+
+                                        setListCart(newList);
+                                      }}
+                                    >
+                                      Remove
+                                    </button>
                                   </div>
                                 );
                               })}
