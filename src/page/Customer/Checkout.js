@@ -16,7 +16,11 @@ const Home = (props) => {
   const location = useLocation();
   const { cartData } = location.state;
   const [city, setCity] = useState([]);
+  localStorage.setItem("cartData", JSON.stringify(cartData));
 
+  // Retrieve the cart data from local storage
+  
+ 
   const [date, setDate] = useState([]);
   const [dateTime, setDateTime] = useState("");
   const [time, setTime] = useState([]);
@@ -75,6 +79,7 @@ const Home = (props) => {
     },
     orderPickUp: null,
   });
+  localStorage.setItem("product", JSON.stringify(product));
   const genders = [
     { name: "Male", value: 0 },
     { name: "FeMale", value: 1 },
@@ -257,23 +262,17 @@ const Home = (props) => {
             cartData.total.totalCartPrice
           }&OrderId=${orderID}&IpAddress=${localStorage.getItem(
             "deviceId"
-          )}&UrlCallBack=${window.location.href}
+          )}&UrlCallBack=http%3A%2F%2Flocalhost%3A3000%2FVnpay
         `);
         if (url && url.status === 200) {
-          window.location.href=`${url.data}`;
+          window.location.href = `${url.data}`;
+          localStorage.getItem("cartData");
+          
         }
-        // const data = product;
-        // const path = "Order/Checkout";
-        // const res = await createDataByPath(path, "", data);
-        // console.log("Check res", res);
-        // console.log("display du lieu", data);
-        // if (res && res.status === 201) {
-        //   Swal.fire("Create Success", "", "success");
-        //   // window.location.reload();
-        // }
       }
     }
   }
+  // Function to retrieve the stored data from localStorage
 
   useEffect(() => {}, []);
   return (

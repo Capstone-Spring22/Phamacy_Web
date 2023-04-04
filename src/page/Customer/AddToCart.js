@@ -276,7 +276,7 @@ const AddToCart = () => {
                           <li style={{ fontSize: 15 }}>
                             <span>Tạm Tính</span>{" "}
                             <span>
-                              {total.totalCartPrice.toLocaleString("en-US")} Vnd
+                            {total.totalCartPrice.toLocaleString("en-US")} Vnd
                             </span>
                           </li>
                         )}

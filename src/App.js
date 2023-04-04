@@ -31,6 +31,7 @@ import NewDiscount from "./page/Admin/NewDiscount";
 import UpdateDiscount from "./page/Admin/UpdateDiscount";
 import OrderDetail from "./page/Admin/OrderDetail";
 import CheckOutPharmacist from "./page/Admin/CheckOutPharmacist";
+import VNPay from "./page/Customer/VNpay";
 function App() {
   return (
     <div className="site-wrap">
@@ -113,6 +114,9 @@ function App() {
           </Route>
           <Route path="/CheckOutPharmacist">
             <CheckOutPharmacist />
+          </Route>
+          <Route path="/VNPay">
+            <VNPay />
           </Route>
         </Switch>
       </BrowserRouter>

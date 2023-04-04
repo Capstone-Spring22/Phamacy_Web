@@ -7,8 +7,13 @@ import ReactPaginate from "react-paginate";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";
-import { getDataByPath, deleteDataByPath } from "../../services/data.service";
+import {
+  getDataByPath,
+  deleteDataByPath,
+  updateDataByPath,
+} from "../../services/data.service";
 import { Link } from "react-router-dom";
+import { Switch } from "antd";
 
 const Drug = () => {
   const [drug, setDrug] = useState(null);
@@ -20,13 +25,12 @@ const Drug = () => {
 
   const update = (myId) => {
     localStorage.setItem("id", myId);
-
     history.push("/UpdateImportProduct");
   };
   const create = () => {
     history.push("/AddImportProduct");
   };
-
+  const [countUs, setCountUs] = useState("2");
   async function loadDataMedicine() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -41,10 +45,24 @@ const Drug = () => {
     }
     setIsLoading(false);
   }
+  async function ReleaseImport(id) {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const data = { id: id };
+      const path = `ProductImport/Release`;
+      const res = await updateDataByPath(path, accessToken, data);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setCountUs(parseInt(countUs) + 1);
+        Swal.fire("Update successfully!", "", "success");
+      } else if (res && res.status === 400) {
+        Swal.fire("Đã Xác Nhận Không Thể Sửa", "Không Thể Sửa", "error");
+      }
+    }
+  }
   const [activeItem, setActiveItem] = useState("ImportProduct");
   useEffect(() => {
     loadDataMedicine();
-  }, [currentPage, perPage]);
+  }, [currentPage, perPage, countUs]);
 
   return (
     <>
@@ -77,8 +95,6 @@ const Drug = () => {
                             Name
                           </a>
                         </li>
-
-                   
                       </ul>
                     </div>
                   </nav>
@@ -162,7 +178,7 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    &nbsp; &nbsp;Manager Name
+                                    &nbsp; &nbsp;Tên Quản Lý
                                   </th>
                                   <th
                                     style={{
@@ -171,7 +187,7 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    Import Date
+                                    Ngày Nhập
                                   </th>
                                   <th
                                     style={{
@@ -180,7 +196,7 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    Total Price
+                                    Tổng Giá
                                   </th>
 
                                   <th
@@ -190,7 +206,16 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    Actions
+                                    Cập Nhật
+                                  </th>
+                                  <th
+                                    style={{
+                                      backgroundColor: "#f6f9fc",
+                                      borderColor: "white",
+                                      color: "#bfc8d3",
+                                    }}
+                                  >
+                                    Xác Nhận
                                   </th>
                                 </tr>
                               </thead>
@@ -236,6 +261,14 @@ const Drug = () => {
                                               />
                                             </svg>
                                           </a>
+                                        </td>
+                                        <td>
+                                          <Switch
+                                            checked={e.isReleased}
+                                            onChange={async () => {
+                                              ReleaseImport(e.id);
+                                            }}
+                                          />
                                         </td>
                                       </tr>
                                     );

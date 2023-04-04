@@ -31,13 +31,9 @@ const Home = () => {
     // history.push("/ViewCart");
   };
 
-  const laydata = () => {
-    const data = localStorage;
-    console.log("display", data);
-
-    // history.push("/ViewCart");
-  };
-  const viewDetail = () => {
+  
+  const viewDetail = (detailId) => {
+    localStorage.setItem("detailId", detailId);
     history.push("/ViewDetail");
   };
   const userName = localStorage.getItem("userName");
@@ -470,7 +466,7 @@ const Home = () => {
                           className="product-img"
                           style={{ borderRadius: 5}}
                           onClick={() => {
-                            viewDetail();
+                            viewDetail(item.id);
                           }}
                         >
                           <img src={item.imageModel.imageURL} alt="" style={{ objectFit:"cover",height:250}}/>

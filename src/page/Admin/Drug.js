@@ -24,7 +24,6 @@ const Drug = () => {
   };
   const create = (myId) => {
     localStorage.setItem("id", myId);
-
     history.push("/NewDrug");
   };
   async function Authen() {

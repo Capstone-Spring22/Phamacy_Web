@@ -230,7 +230,7 @@ const Site = () => {
         if (res1 && res1.status === 200) {
           setCountUs(parseInt(countUs) + 1);
           Swal.fire("Update successfully!", "", "success");
-          history.push("/Site");
+         
         } else if (res1 && res1.status === 400) {
           
           Swal.fire(
