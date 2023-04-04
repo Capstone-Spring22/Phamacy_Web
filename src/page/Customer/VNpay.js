@@ -28,7 +28,7 @@ const VNPay = (props) => {
     totalPrice: productCheckOut.totalPrice,
     usedPoint: productCheckOut.usedPoint,
     payType: productCheckOut.payType,
-    isPaid: 0,
+    isPaid: 1,
     note: productCheckOut.note,
 
     products: productCheckOut.products,
@@ -42,13 +42,13 @@ const VNPay = (props) => {
   async function Checkout() {
     const data = product;
     console.log("data", data);
-    // const path = "Order/Checkout";
-    // const res = await createDataByPath(path, "", data);
-    // console.log("Check res", res);
-    // console.log("display du lieu", data);
-    // if (res && res.status === 201) {
-    //   Swal.fire("Create Success", "", "success");
-    // }
+    const path = "Order/Checkout";
+    const res = await createDataByPath(path, "", data);
+    console.log("Check res", res);
+    console.log("display du lieu", data);
+    if (res && res.status === 201) {
+      Swal.fire("Create Success", "", "success");
+    }
   }
   useEffect(() => {
     if (productCheckOut) {

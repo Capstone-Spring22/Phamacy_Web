@@ -17,10 +17,12 @@ const Home = (props) => {
   const { cartData } = location.state;
   const [city, setCity] = useState([]);
   localStorage.setItem("cartData", JSON.stringify(cartData));
-
+  const roleName = localStorage.getItem("roleName");
+  const userName = localStorage.getItem("userName");
+  const phoneNo = localStorage.getItem("phoneNo");
+  const Email = localStorage.getItem("email");
   // Retrieve the cart data from local storage
-  
- 
+
   const [date, setDate] = useState([]);
   const [dateTime, setDateTime] = useState("");
   const [time, setTime] = useState([]);
@@ -64,9 +66,9 @@ const Home = (props) => {
 
     products: newArrayOfObjects,
     reveicerInformation: {
-      fullname: "",
-      phoneNumber: "",
-      email: "",
+      fullname: userName,
+      phoneNumber: phoneNo,
+      email: Email,
       gender: true,
       cityId: null,
       districtId: null,
@@ -91,10 +93,7 @@ const Home = (props) => {
     // }
     return true;
   };
-  const roleName = localStorage.getItem("roleName");
-  const userName = localStorage.getItem("userName");
-  const phoneNo = localStorage.getItem("phoneNo");
-  const Email = localStorage.getItem("email");
+
   const handleGender = (event) => {
     event.preventDefault();
     const genderID = event.target.value;
@@ -267,7 +266,6 @@ const Home = (props) => {
         if (url && url.status === 200) {
           window.location.href = `${url.data}`;
           localStorage.getItem("cartData");
-          
         }
       }
     }
@@ -355,7 +353,6 @@ const Home = (props) => {
                             }}
                             className="form-control"
                             id="full_name"
-                            defaultValue=""
                             required=""
                             onChange={(e) =>
                               setProduct({
@@ -576,7 +573,8 @@ const Home = (props) => {
                           />
                         </div> */}
                         <div className="col-12 mb-3">
-                          {checkSite &&
+                          {checkSite.length > 0 ? (
+                            checkSite &&
                             checkSite.map((siteInfo) => {
                               return (
                                 <div
@@ -596,7 +594,10 @@ const Home = (props) => {
                                   <div>Địa chỉ: {siteInfo.homeAddress}</div>
                                 </div>
                               );
-                            })}
+                            })
+                          ) : (
+                            <div>Không có</div>
+                          )}
                         </div>
                         <div className="col-12 mb-3">
                           <label htmlFor="street_address">

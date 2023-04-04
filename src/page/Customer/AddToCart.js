@@ -193,7 +193,7 @@ const AddToCart = () => {
                                       min={1}
                                       max={99}
                                       name="quantity"
-                                      defaultValue={item.quantity}
+                                      value={item.quantity}
                                     />
                                     <span
                                       className="qty-plus"

@@ -11,14 +11,9 @@ const DetailMedicine = () => {
   const detailId = localStorage.getItem("detailId");
   const [product, setProduct] = useState([]);
   const [descriptionModels, setDescriptionModels] = useState([]);
-  const [cart, setCart] = useState({
-    deviceId: "",
-    item: {
-      productId: "",
-      quantity: 0,
-    },
-  });
+  const [cart, setCart] = useState([]);
   const [imageUrl, setImageUrl] = useState([]);
+  const [quantity, setQuantity] = useState(1);
   const update = (deviceId) => {
     localStorage.setItem("deviceId", deviceId);
 
@@ -27,7 +22,7 @@ const DetailMedicine = () => {
   useEffect(() => {
     console.log("Updated cart:", cart);
   }, [cart]);
-  
+
   async function loadDataProductId() {
     const path = `Product/View/${detailId}`;
     const res = await getDataByPath(path, "", "");
@@ -41,7 +36,6 @@ const DetailMedicine = () => {
   }
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-
   async function addToCart() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -49,22 +43,39 @@ const DetailMedicine = () => {
         .get("https://api.ipify.org/?format=json")
         .then((res) => res.data.ip);
       update(deviceId);
-      const detailId = localStorage.getItem("detailId");
-      setCart((prevCart) => ({
-        ...prevCart,
-        deviceId,
+      const data = {
+        deviceId: deviceId,
         item: {
-          productId: detailId,
-          quantity:
-            prevCart.item.productId === detailId
-              ? prevCart.item.quantity + 1
-              : 1,
+          productId: localStorage.getItem("detailId"),
+          quantity: quantity,
         },
-      }));
+      };
       console.log("Cart before API call:", cart);
       const path = "Cart";
-  
-      const res = await createDataByPath(path, accessToken, cart);
+
+      const res = await createDataByPath(path, accessToken, data);
+      console.log("API response:", res);
+      console.log("Product data:", product);
+      if (res && res.status === 200) {
+        toast.success("OTP sent successfully!");
+        // window.location.reload();
+      }
+    } else {
+      const deviceId = await axios
+        .get("https://api.ipify.org/?format=json")
+        .then((res) => res.data.ip);
+      update(deviceId);
+      const data = {
+        deviceId: deviceId,
+        item: {
+          productId: localStorage.getItem("detailId"),
+          quantity: quantity,
+        },
+      };
+      console.log("Cart before API call:", cart);
+      const path = "Cart";
+
+      const res = await createDataByPath(path, "", data);
       console.log("API response:", res);
       console.log("Product data:", product);
       if (res && res.status === 200) {
@@ -188,16 +199,15 @@ const DetailMedicine = () => {
                           min={1}
                           max={12}
                           name="quantity"
-                          defaultValue={1}
+                          value={quantity}
+                          onChange={(e) => setQuantity(e.target.value)}
                         />
                       </div>
                       <button
-                       
-                       
                         value={5}
                         className="btn cart-submit d-block"
                         style={{ backgroundColor: "#2cbb9d" }}
-                        onClick={()=>addToCart(detailId)}
+                        onClick={() => addToCart(detailId)}
                       >
                         Chọn Mua
                       </button>
@@ -392,7 +402,6 @@ const DetailMedicine = () => {
                               name="addtocart"
                               value={5}
                               className="cart-submit"
-                             
                             >
                               Thêm Vào Giỏ Hàng
                             </button>
