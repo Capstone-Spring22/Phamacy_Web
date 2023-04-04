@@ -112,22 +112,28 @@ const Login = () => {
               <div id="recaptcha-container"></div>
               {user ? (
                 <h2 className="text-center text-white font-medium text-2xl">
-                  👍Login Success
+          
                 </h2>
               ) : (
                 <div className="w-80 flex flex-col gap-4 rounded-lg p-4">
-                  <h1 className="text-center leading-normal text-white font-medium text-3xl mb-6">
-                    Welcome to <br /> CODE A PROGRAM
+                  <h1
+                    style={{ color: "#82aae3" }}
+                    className="text-center leading-normal  font-medium text-3xl mb-6"
+                  >
+                    Welcome to <br /> BetterHealth
                   </h1>
+                  <br/>
+                  <br/>
                   {showOTP ? (
                     <>
-                      <div style={{ width: 320 }}>
+                      <div style={{ width: 320, marginLeft: 200 }}>
                         <div
                           className="form-group first"
                           controlId="formBasicEmail"
+                      
                         >
                           <div id="sign-in-button"></div>
-                          <label htmlFor="username">Enter your OTP</label>
+                          <label htmlFor="username">Nhập OTP</label>
 
                           <OtpInput
                             value={otp}
@@ -136,6 +142,7 @@ const Login = () => {
                             otpType="number"
                             disabled={false}
                             autoFocus
+                            style={{height:60,paddingTop:20}}
                             className="form-control"
                           ></OtpInput>
                           <div id="recaptcha-container"></div>
@@ -160,13 +167,13 @@ const Login = () => {
                     </>
                   ) : (
                     <>
-                      <div style={{ width: 320 }}>
+                      <div style={{ width: 320, marginLeft: 200 }}>
                         <div
                           className="form-group first"
                           controlId="formBasicEmail"
                         >
                           <div id="sign-in-button"></div>
-                          <label htmlFor="username">Phone Number</label>
+                          <label htmlFor="username">Nhập Số Điện Thoại</label>
 
                           <PhoneInput
                             className="form-control"
@@ -178,7 +185,7 @@ const Login = () => {
                           />
                           <div id="recaptcha-container"></div>
                         </div>
-
+                        <br/>
                         <button
                           type="submit"
                           defaultValue="Log In"

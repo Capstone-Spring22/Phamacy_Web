@@ -42,7 +42,7 @@ const OrderDetail = () => {
   useEffect(() => {
     loadDataOrderById();
   }, []);
-
+  
   async function confirmOrder() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");

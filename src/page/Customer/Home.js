@@ -22,7 +22,7 @@ const Home = () => {
   let history = useHistory();
   const [drug, setDrug] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(6);
+  const [perPage, setPerPage] = useState(12);
   const [totalRecord, setTotalRecord] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const update = (deviceId) => {
@@ -55,6 +55,8 @@ const Home = () => {
       navigate.push("/Login");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userName");
+      localStorage.removeItem("email");
+      localStorage.removeItem("phoneNo");
       localStorage.removeItem("roleName");
     } catch (error) {
       console.log(error.message);
@@ -319,7 +321,7 @@ const Home = () => {
         <div className="site-section">
           <div className="container">
             <div className="title-section text-center col-12">
-              <h2 className="text-uppercase">Category</h2>
+              <h2 className="text-uppercase">Danh Mục</h2>
             </div>
             <div className="row align-items-stretch section-overlap">
               {CATEGORIES.map((item, index) => {
@@ -375,8 +377,10 @@ const Home = () => {
             </div>
             <br />
 
-            <div className="container " style={{ display: "flex" }}>
-            {drug &&
+           
+            <div className="container ">
+              <div className="row karl-new-arrivals ">
+                {drug &&
                   drug.length &&
                   drug.map((item, index) => {
                     return (
@@ -407,13 +411,14 @@ const Home = () => {
                         {/* Product Description */}
                         <div className="product-description">
                          
-                          <p>{item.name}</p>
-                          <h4 className="product-price"> {item.price}</h4>
+                          <p style={{height:90}}>{item.name}</p>
+                          <h4 className="product-price" style={{color:"#82aae3"}}> {item.price.toLocaleString("en-US")}</h4>
                           {/* Add to Cart */}
                         </div>
                       </div>
                     );
                   })}
+              </div>
             </div>
           </div>
         </section>
@@ -487,8 +492,8 @@ const Home = () => {
                         {/* Product Description */}
                         <div className="product-description">
                          
-                          <p>{item.name}</p>
-                          <h4 className="product-price"> {item.price}</h4>
+                          <p  style={{height:90}}>{item.name}</p>
+                          <h4 className="product-price" style={{color:"#82aae3"}}> {item.price.toLocaleString("en-US")}</h4>
                           {/* Add to Cart */}
                         </div>
                       </div>

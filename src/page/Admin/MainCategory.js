@@ -13,10 +13,10 @@ import {
   createDataByPath,
   updateDataByPath,
 } from "../../services/data.service";
-import { alert, defaultModules } from '@pnotify/core';
-import '@pnotify/core/dist/PNotify.css';
-import * as PNotifyMobile from '@pnotify/mobile';
-import '@pnotify/mobile/dist/PNotifyMobile.css';
+import { alert, defaultModules } from "@pnotify/core";
+import "@pnotify/core/dist/PNotify.css";
+import * as PNotifyMobile from "@pnotify/mobile";
+import "@pnotify/mobile/dist/PNotifyMobile.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 const MainCategory = () => {
   const [category, setCategory] = useState([]);
@@ -30,15 +30,15 @@ const MainCategory = () => {
     categoryName: "",
     imageUrl: "",
   });
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
-const checkValidation = () => {
-  if (categoryName.trim().length === 0) {
-    setErrorMessage('Tên danh mục không được để trống');
-  } else {
-    setErrorMessage('');
-  }
-};
+  const checkValidation = () => {
+    if (categoryName.trim().length === 0) {
+      setErrorMessage("Tên danh mục không được để trống");
+    } else {
+      setErrorMessage("");
+    }
+  };
   const [searchTerm, setSearchTerm] = useState("");
 
   async function loadDataCategory(search) {
@@ -116,6 +116,7 @@ const checkValidation = () => {
         "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
         data
       );
+      console.log("imageUrl", imageUrl);
       console.log("display", res.data);
       if (res && res.status === 200) {
         setImageUrl(res.data);
@@ -347,7 +348,12 @@ const checkValidation = () => {
                                             aria-describedby="basic-icon-default-fullname2"
                                           />
                                         </div>
-                                      <div className="form-text" style={{color:"red"}}>{errorMessage}</div>
+                                        <div
+                                          className="form-text"
+                                          style={{ color: "red" }}
+                                        >
+                                          {errorMessage}
+                                        </div>
                                       </div>
                                       <div
                                         className="mb-3"
@@ -612,21 +618,20 @@ const checkValidation = () => {
                             })}
                         </tbody>
                       </table>
-                     
-                        <ReactPaginate
-                          
-                          className="pagination "
-                          breakLabel="..."
-                          nextLabel=">"
-                          previousLabel="< "
-                          nextClassName="next-button"
-                          pageClassName="page-item"
-                          activeClassName="ac"
-                          previousClassName="previous-button"
-                          pageCount={totalSite / perPage}
-                          onPageChange={(e) => handlePageChange(e.selected + 1)}
-                          currentPage={currentPage}
-                        />
+
+                      <ReactPaginate
+                        className="pagination "
+                        breakLabel="..."
+                        nextLabel=">"
+                        previousLabel="< "
+                        nextClassName="next-button"
+                        pageClassName="page-item"
+                        activeClassName="ac"
+                        previousClassName="previous-button"
+                        pageCount={totalSite / perPage}
+                        onPageChange={(e) => handlePageChange(e.selected + 1)}
+                        currentPage={currentPage}
+                      />
                     </div>
                   </div>
                 </div>

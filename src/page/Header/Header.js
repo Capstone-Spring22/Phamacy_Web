@@ -24,6 +24,8 @@ const Header = () => {
       
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userName");
+      localStorage.removeItem("email");
+      localStorage.removeItem("phoneNo");
       localStorage.removeItem("roleName");
       navigate.push("/Home");
     } catch (error) {

@@ -34,7 +34,19 @@ const DetailMedicine = () => {
       setImageUrl(res.data.imageModels);
     }
   }
+  const [subCategory, setSubCategory] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  async function loadDataCategory() {
+    const path = `SubCategory?pageIndex=1&pageItems=20`;
+    const res = await getDataByPath(path, "", "");
+    console.log("check", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setSubCategory(res.data.items);
+    }
+  }
+  useEffect(() => {
+    loadDataCategory();
+  }, []);
 
   async function addToCart() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -57,7 +69,7 @@ const DetailMedicine = () => {
       console.log("API response:", res);
       console.log("Product data:", product);
       if (res && res.status === 200) {
-        toast.success("OTP sent successfully!");
+        toast.success("Đã Thêm Vào Giở Hàng");
         // window.location.reload();
       }
     } else {
@@ -79,7 +91,7 @@ const DetailMedicine = () => {
       console.log("API response:", res);
       console.log("Product data:", product);
       if (res && res.status === 200) {
-        toast.success("OTP sent successfully!");
+        toast.success("Đã Thêm Vào Giở Hàng");
         // window.location.reload();
       }
     }
@@ -87,7 +99,8 @@ const DetailMedicine = () => {
   const handleSelect = (selectedIndex, e) => {
     setSelectedImageIndex(selectedIndex);
   };
-
+  const subCategorys = subCategory.find((sc) => sc.id === product.subCategoryId);
+  const subCategoryName = subCategorys ? subCategorys.subCategoryName : "";
   useEffect(() => {
     loadDataProductId();
   }, []);
@@ -99,6 +112,7 @@ const DetailMedicine = () => {
       <Header />
       <div className="site-wrap">
         <>
+        <Toaster toastOptions={{ duration: 4000 }} />
           <div className="breadcumb_area">
             <div className="container">
               <div className="row">
@@ -112,12 +126,11 @@ const DetailMedicine = () => {
                         href="#"
                         style={{ textDecoration: "none", color: "black" }}
                       >
-                        Vitamin
+                         {subCategoryName}
                       </a>
                     </li>
                     <li className="breadcrumb-item active">
-                      Thuốc Clopidogrel 75mg MV US Pharma phòng nhồi máu cơ tim,
-                      đột quỵ (30 viên)
+                    {product.name}
                     </li>
                   </ol>
                   {/* btn */}
@@ -167,25 +180,28 @@ const DetailMedicine = () => {
                 <div className="col-12 col-md-6">
                   <div className="single_product_desc">
                     <h4 className="title">
-                      <div href="#">{product.name}</div>
+                      <div href="#" style={{color:"#82aae3"}}>{product.name}</div>
                     </h4>
-                    <h4 className="price">
+                    <hr/>
+                    <h5 className="price" style={{color:"#1e293b",fontSize:25}}>
                       {product.price}/{product.unitName}
-                    </h4>
+                    </h5>
                     <p className="available">
                       <span className="text-muted">Đơn Vị Bán</span>
                     </p>
 
                     <div className="widget size mb-50">
-                      <h6 className="widget-title">
-                        Danh Mục: {product.subCategoryId}{" "}
+                      <h6 className="widget-title" style={{color: '#334155'}}>
+                 
+                        Danh Mục:  {subCategoryName}{" "}
                       </h6>
-                      <h6 className="widget-title">
+                      <h6 className="widget-title" style={{color: '#334155'}}>
                         Nhà Sản Xuất: {product.manufacturerId}{" "}
                       </h6>
-                      <h6 className="widget-title">
-                        Nhà Sản Xuất: {descriptionModels.effect}{" "}
+                      <h6 className="widget-title" style={{color: '#334155',width:700}}>
+                        Công Dụng: <div style={{fontWeight:400,lineHeight:2}}>{descriptionModels.effect}{" "}</div>
                       </h6>
+                      
                     </div>
 
                     {/* Add to Cart Form */}
@@ -205,8 +221,9 @@ const DetailMedicine = () => {
                       </div>
                       <button
                         value={5}
+                       
                         className="btn cart-submit d-block"
-                        style={{ backgroundColor: "#2cbb9d" }}
+                        style={{ backgroundColor: "#82aae3" }}
                         onClick={() => addToCart(detailId)}
                       >
                         Chọn Mua

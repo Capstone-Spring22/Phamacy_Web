@@ -49,7 +49,7 @@ const Home = (props) => {
   } = cartData;
   const [orderTypeId, setOrderTypeId] = useState(2);
   const [selectedButton, setSelectedButton] = useState("button1");
-
+  const [point, setPoint] = useState([]);
   const [product, setProduct] = useState({
     orderId: orderID,
     orderTypeId: 2,
@@ -59,7 +59,7 @@ const Home = (props) => {
     discountPrice: cartData.total.discountPrice,
     shippingPrice: 0,
     totalPrice: cartData.total.totalCartPrice,
-    usedPoint: cartData.total.point,
+    usedPoint: 0,
     payType: 1,
     isPaid: 0,
     note: "",
@@ -87,10 +87,10 @@ const Home = (props) => {
     { name: "FeMale", value: 1 },
   ];
   const checkValidation = () => {
-    // if (id.trim() === "") {
-    //   Swal.fire("ID Can't Empty", "", "question");
-    //   return false;
-    // }
+    if (product.usedPoint > point) {
+      alert("Số lượng Điểm Thưởng đã nhập vượt quá số Điểm Thưởng hiện có");
+      return false;
+    }
     return true;
   };
 
@@ -121,7 +121,20 @@ const Home = (props) => {
       setDistrics(res.data);
     }
   }
-
+  async function loadPoint() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `CustomerPoint/${phoneNo}/CustomerAvailablePoint`;
+      console.log("point", point);
+      const res = await getDataByPath(path, accessToken, "");
+      if (res !== null && res !== undefined && res.status === 200) {
+        setPoint(res.data);
+      }
+    }
+  }
+  useEffect(() => {
+    loadPoint();
+  }, [point]);
   async function loadDataTime() {
     const path = `Order/PickUp/${dateTime}/TimeAvailable`;
     const res = await getDataByPath(path, "", "");
@@ -1067,6 +1080,34 @@ const Home = (props) => {
                         }}
                       />
                       Thanh Toán Bằng VNPay
+                    </label>
+                  </div>
+                </div>
+                <div className="checkout-payment">
+                  <div className="payment-cart">
+                    <label for="credit-card">
+                      <label htmlFor="state">
+                        Điểm Thưởng
+                        <span> Số điểm Còn Lại Của Bạn Là {point}</span>
+                      </label>
+                      <input
+                        type="number"
+                        style={{
+                          border: "1px solid #e4e7eb",
+                          backgroundColor: "white",
+                          borderRadius: 5,
+                        }}
+                        placeholder="Nhập Điểm Thưởng"
+                        className="form-control"
+                        id="state"
+                        max={3}
+                        onChange={(e) =>
+                          setProduct((prevState) => ({
+                            ...prevState,
+                            usedPoint: e.target.value,
+                          }))
+                        }
+                      />
                     </label>
                   </div>
                 </div>

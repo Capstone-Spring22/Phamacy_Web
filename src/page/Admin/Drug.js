@@ -16,8 +16,28 @@ const Drug = () => {
   const [perPage, setPerPage] = useState(3);
   const [totalRecord, setTotalRecord] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [subCategory, setSubCategory] = useState([]);
+  const [totalSite, setTotalSite] = useState([]);
+  const [subCategoryName, setSubCategoryName] = useState("");
+  const [mainCategoryId, setMainCategoryId] = useState("");
+  const [mainCategory, setMainCategory] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  
+  const [isOpen, setIsOpen] = useState(true);
   let history = useHistory();
 
+  async function loadDataCategory() {
+    const path = `SubCategory?pageIndex=1&pageItems=20`;
+    const res = await getDataByPath(path, "", "");
+    console.log("check", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setSubCategory(res.data.items);
+  
+    }
+  }
+  useEffect(() => {
+    loadDataCategory();
+  }, []);
   const update = (myId) => {
     localStorage.setItem("id", myId);
     history.push("/UpdateDrug");
@@ -246,7 +266,16 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    Price AfterDiscount
+                                    Danh Mục
+                                  </th>
+                                  <th
+                                    style={{
+                                      backgroundColor: "#f6f9fc",
+                                      borderColor: "white",
+                                      color: "#bfc8d3",
+                                    }}
+                                  >
+                                    Đối Tượng
                                   </th>
 
                                   <th
@@ -256,7 +285,7 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    Actions
+                                    Cập Nhật
                                   </th>
                                 </tr>
                               </thead>
@@ -264,6 +293,8 @@ const Drug = () => {
                                 {drug &&
                                   drug.length &&
                                   drug.map((e) => {
+                                    const subCategorys = subCategory.find((sc) => sc.id === e.subCategoryId);
+                                    const subCategoryName = subCategorys ? subCategorys.subCategoryName : "";
                                     return (
                                       <tr key={e.id}>
                                         <td>
@@ -287,9 +318,10 @@ const Drug = () => {
                                         </td>
                                         <td>{e.price}</td>
                                         <td>{e.sellQuantity}</td>
+                                        <td>{subCategoryName}</td>
                                         <td>
-                                          <del>{e.price}</del>/
-                                          {e.priceAfterDiscount}
+                                         
+                                          {e.userTargetString}
                                         </td>
 
                                         <td>
