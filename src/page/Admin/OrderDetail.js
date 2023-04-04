@@ -22,6 +22,7 @@ const OrderDetail = () => {
   const [orderContactInfo, setOrderContactInfo] = useState([]);
   const [orderDelivery, setOrderDelivery] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
+  const [orderStatus, setOrderStatus] = useState([]);
   const [description, setDescription] = useState("");
   async function loadDataOrderById() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -42,7 +43,16 @@ const OrderDetail = () => {
   useEffect(() => {
     loadDataOrderById();
   }, []);
-  
+  async function loadOrderStatusId() {
+    const path = `OrderStatus?OrderTypeId=2`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setOrderStatus(res.data)
+    }
+  }
+  useEffect(() => {
+    loadOrderStatusId();
+  }, []);
   async function confirmOrder() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -56,12 +66,12 @@ const OrderDetail = () => {
         ipAddress: deviceId,
       };
       const path = `Order/ValidateOrder`;
-     
+
       const res = await updateDataByPath(path, accessToken, data);
-      console.log('res',res)
+      console.log("res", res);
       if (res !== null && res !== undefined && res.status === 200) {
-         console.log('display',"thành công")
-         loadDataOrderById()
+        Swal.fire("Xác Nhận Thành Công", "", "success");
+        loadDataOrderById();
       }
     }
   }
@@ -77,16 +87,17 @@ const OrderDetail = () => {
         description: description,
         ipAddress: deviceId,
       };
-       console.log('data',data)
+      console.log("data", data);
       const path = `Order/ValidateOrder`;
       const res = await updateDataByPath(path, accessToken, data);
-      console.log('res',res)
+      console.log("res", res);
       if (res !== null && res !== undefined && res.status === 200) {
-         console.log('display',"thành công")
-         loadDataOrderById()
+        Swal.fire("Từ Chối Thành Công", "", "success");
+        loadDataOrderById();
       }
     }
   }
+
   let OrderStatus;
   if (OrderDetail.pharmacistId === null) {
     OrderStatus = (
@@ -127,9 +138,9 @@ const OrderDetail = () => {
         </div>
       </>
     );
-  } else if(OrderDetail.pharmacistId === localStorage.getItem("userID")) {
+  } else if (OrderDetail.pharmacistId === localStorage.getItem("userID")) {
     OrderStatus = (
-    <>
+      <>
         <div className="mb-3" style={{ width: "95%" }}>
           <div className="input-group input-group-merge">
             <div
@@ -164,49 +175,46 @@ const OrderDetail = () => {
             Cập nhật trạng thái
           </a>
         </div>
-      </>)
-  }else if(OrderDetail.pharmacistId !== localStorage.getItem("userID")) {
+      </>
+    );
+  } else if (OrderDetail.pharmacistId !== localStorage.getItem("userID")) {
     OrderStatus = (
-    <>
-    <div className="mb-3" style={{ width: "95%" }}>
-      <div className="input-group input-group-merge">
-        <div
-          type="text"
-          id="basic-icon-default-fullname"
-          placeholder="Tên Sản Phẩm"
-          aria-label="Tên Sản Phẩm"
-          aria-describedby="basic-icon-default-fullname2"
-        >
-          Tình trạng
+      <>
+        <div className="mb-3" style={{ width: "95%" }}>
+          <div className="input-group input-group-merge">
+            <div
+              type="text"
+              id="basic-icon-default-fullname"
+              placeholder="Tên Sản Phẩm"
+              aria-label="Tên Sản Phẩm"
+              aria-describedby="basic-icon-default-fullname2"
+            >
+              Tình trạng
+            </div>
+          </div>
+
+          <a
+            href="#my-dialog"
+            className="button-28"
+            style={{
+              height: 40,
+              width: 200,
+              fontSize: 13,
+              paddingTop: 10,
+
+              marginTop: "20px",
+              marginBottom: -20,
+              backgroundColor: "#82AAE3",
+              color: "white",
+            }}
+          >
+            Đơn hàng đã được xác nhận bởi thằng khác
+          </a>
         </div>
-      </div>
-
-      <a
-        href="#my-dialog"
-
-        className="button-28"
-        style={{
-          height: 40,
-          width: 200,
-          fontSize: 13,
-          paddingTop: 10,
-
-          marginTop: "20px",
-          marginBottom: -20,
-          backgroundColor: "#82AAE3",
-          color: "white",
-        }}
-      >
-        Đơn hàng đã được xác nhận bởi thằng khác
-      </a>
-    </div>
-  </>)
+      </>
+    );
   }
 
-
-  if (!orderDelivery) {
-    return null;
-  }
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
@@ -388,7 +396,7 @@ const OrderDetail = () => {
                               placeholder="Viết Mô Tả "
                               aria-label="John Doe"
                               aria-describedby="basic-icon-default-fullname2"
-                              onChange={(e)=>setDescription(e.target.value)}
+                              onChange={(e) => setDescription(e.target.value)}
                             />
                           </div>
                         </div>
@@ -655,7 +663,11 @@ const OrderDetail = () => {
                               aria-label="Tên Sản Phẩm"
                               aria-describedby="basic-icon-default-fullname2"
                             >
-                              {OrderDetail.isPaid}
+                              {OrderDetail.isPaid === true ? (
+                                <div>Đã Thanh Toán</div>
+                              ) : (
+                                <div>Chưa Thanh toán</div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -712,7 +724,12 @@ const OrderDetail = () => {
                               aria-label="Tên Sản Phẩm"
                               aria-describedby="basic-icon-default-fullname2"
                             >
-                              {OrderDetail.needAcceptance}
+                             
+                              {OrderDetail.needAcceptance === true ? (
+                                <div>Cần Được Xác Nhận</div>
+                              ) : (
+                                <div>Đã Xác Nhận</div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -823,7 +840,7 @@ const OrderDetail = () => {
                           <div className="input-group input-group-merge">
                             <div
                               type="text"
-                              style={{flexWrap:"wrap",width:220}}
+                              style={{ flexWrap: "wrap", width: 220 }}
                               id="basic-icon-default-fullname"
                               placeholder="Tên Sản Phẩm"
                               aria-label="Tên Sản Phẩm"
@@ -848,7 +865,7 @@ const OrderDetail = () => {
                               aria-label="Tên Sản Phẩm"
                               aria-describedby="basic-icon-default-fullname2"
                             >
-                              {orderDelivery.fullyAddress}
+                              {orderDelivery?.fullyAddress}
                             </div>
                           </div>
                         </div>

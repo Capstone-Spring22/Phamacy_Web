@@ -75,10 +75,7 @@ const Home = (props) => {
       wardId: null,
       homeAddress: null,
     },
-    vnpayInformation: {
-      vnp_TransactionNo: null,
-      vnp_PayDate: null,
-    },
+    vnpayInformation: null,
     orderPickUp: null,
   });
   localStorage.setItem("product", JSON.stringify(product));
@@ -586,31 +583,47 @@ const Home = (props) => {
                           />
                         </div> */}
                         <div className="col-12 mb-3">
-                          {checkSite.length > 0 ? (
-                            checkSite &&
-                            checkSite.map((siteInfo) => {
-                              return (
-                                <div
-                                  onClick={() =>
+                          <div className="checkout-payment">
+                            {checkSite.length > 0 ? (
+                              checkSite &&
+                              checkSite.map((siteInfo, index) => {
+                                const id = `credit-card-${index}`;
+                                return (
+                                  <div key={siteInfo.siteId}  onClick={() =>
                                     setProduct((prevState) => ({
                                       ...prevState,
                                       siteId: siteInfo.siteId,
                                     }))
-                                  }
-                                  key={siteInfo.siteId}
-                                >
-                                  <div>Có hàng tại {siteInfo.siteName}</div>
-                                  <div>
-                                    {siteInfo.cityId}-{siteInfo.districtId}-
-                                    {siteInfo.wardId}
+                                  }>
+                                    <div
+                                      className="payment-cart"
+                                      onClick={() =>
+                                        document.getElementById(id).click()
+                                      }
+                                    >
+                                      <label htmlFor={id}>
+                                        <input
+                                          type="radio"
+                                          id={id}
+                                          name="payment"
+                                          value="credit-card"
+                                          style={{ marginRight: 10 }}
+                                         
+                                        
+                                        />
+                                        {siteInfo.siteName}
+                                        <div>
+                                          Địa chỉ: {siteInfo.fullyAddress}
+                                        </div>
+                                      </label>
+                                    </div>
                                   </div>
-                                  <div>Địa chỉ: {siteInfo.homeAddress}</div>
-                                </div>
-                              );
-                            })
-                          ) : (
-                            <div>Không có</div>
-                          )}
+                                );
+                              })
+                            ) : (
+                              <p>No site info found.</p>
+                            )}
+                          </div>{" "}
                         </div>
                         <div className="col-12 mb-3">
                           <label htmlFor="street_address">
@@ -1104,7 +1117,7 @@ const Home = (props) => {
                         onChange={(e) =>
                           setProduct((prevState) => ({
                             ...prevState,
-                            usedPoint: e.target.value,
+                            usedPoint: 0,
                           }))
                         }
                       />

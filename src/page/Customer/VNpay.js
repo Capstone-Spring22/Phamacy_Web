@@ -20,7 +20,7 @@ const VNPay = (props) => {
   const [product, setProduct] = useState({
     orderId: productCheckOut.orderId,
     orderTypeId: productCheckOut.orderTypeId,
-    siteId: null,
+    siteId: productCheckOut.siteId,
     pharmacistId: null,
     subTotalPrice: productCheckOut.subTotalPrice,
     discountPrice: productCheckOut.discountPrice,
@@ -37,7 +37,7 @@ const VNPay = (props) => {
       vnp_TransactionNo: vnp_TransactionNo,
       vnp_PayDate: vnp_PayDate,
     },
-    orderPickUp: null,
+    orderPickUp: productCheckOut.orderPickUp,
   });
   async function Checkout() {
     if (localStorage && localStorage.getItem("accessToken")) {

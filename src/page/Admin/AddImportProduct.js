@@ -38,7 +38,7 @@ const AddImportProduct = () => {
   const [productID, setProductID] = useState("");
   const [isSell, setIsSell] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(7);
+  const [perPage, setPerPage] = useState(100);
   const [drug, setDrug] = useState([]);
   const [drugId, setDrugId] = useState("");
   const [totalRecord, setTotalRecord] = useState([]);

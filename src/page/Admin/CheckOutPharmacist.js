@@ -97,6 +97,7 @@ const CheckOutPharmacist = () => {
       } else {
         listCart.push({
           productId: drug1.id,
+          imageURL: drug1.imageModel.imageURL,
           quantity: 1,
           originalPrice: drug1.price,
           discountPrice: drug1.priceAfterDiscount,
@@ -500,10 +501,25 @@ const CheckOutPharmacist = () => {
                               listCart &&
                               listCart.map((product) => {
                                 return (
-                                  <div>
-                                    <div key={product.id}>{product.name}</div>
-                                    quantity{" "}
+                                  <div className="product-cart-p">
+                                    <img
+                                      src={product.imageURL}
+                                      style={{
+                                        height: 90,
+                                        width: 70,
+                                        borderRadius: 7,
+                                        objectFit: "cover",
+                                      }}
+                                    />
+                                    <div
+                                      key={product.id}
+                                      style={{ width: 380 }}
+                                    >
+                                      {product.name}
+                                    </div>
+
                                     <input
+                                      style={{ height: 30, width: 70 }}
                                       value={product.quantity}
                                       onChange={(e) => {
                                         updateQuantity(
@@ -513,6 +529,7 @@ const CheckOutPharmacist = () => {
                                       }}
                                     ></input>
                                     <select
+                                      style={{ height: 30, marginLeft: 10 }}
                                       onChange={(e) =>
                                         updateProductID(
                                           product.productId,
@@ -529,6 +546,13 @@ const CheckOutPharmacist = () => {
                                       })}
                                     </select>
                                     <button
+                                      style={{
+                                        height: 30,
+                                        marginLeft: 10,
+                                        backgroundColor: "white",
+                                        border: "1px solid white",
+                                        color: "red",
+                                      }}
                                       onClick={() => {
                                         const newList = listCart.filter(
                                           (item) =>
@@ -538,7 +562,16 @@ const CheckOutPharmacist = () => {
                                         setListCart(newList);
                                       }}
                                     >
-                                      Remove
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        fill="currentColor"
+                                        class="bi bi-trash3"
+                                        viewBox="0 0 16 16"
+                                      >
+                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                                      </svg>
                                     </button>
                                   </div>
                                 );
@@ -551,7 +584,10 @@ const CheckOutPharmacist = () => {
                 </div>
               </div>
             </div>
-            <div className="row " style={{ width: 300, marginTop: 55 }}>
+            <div
+              className="row "
+              style={{ width: 300, marginTop: -170, marginLeft: 20 }}
+            >
               <div className="col-xl">
                 <div className="card mb-4">
                   <div
@@ -635,7 +671,7 @@ const CheckOutPharmacist = () => {
                           fontSize: 13,
                           paddingTop: 10,
 
-                          marginTop: "20px",
+                          marginTop: "10px",
                           marginBottom: -20,
                           backgroundColor: "#82AAE3",
                           color: "white",
@@ -644,7 +680,7 @@ const CheckOutPharmacist = () => {
                         Thanh Toán
                       </a>
                     </div>
-                    <button onClick={hiennew}>Hiện</button>
+                    {/* <button onClick={hiennew}>Hiện</button> */}
                   </div>
                 </div>
               </div>
