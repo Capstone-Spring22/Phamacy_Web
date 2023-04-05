@@ -112,7 +112,7 @@ const Sidebar = ({activeItem}) => {
                 />
               </svg>
              
-              <div data-i18n="Support">Import product</div>
+              <div data-i18n="Support">Nhập Hàng</div>
             </Link>
           </li>
         <li className="menu-item" onClick={() => handleLogout()}>
