@@ -206,7 +206,8 @@ const DetailMedicine = () => {
                       className="price"
                       style={{ color: "#1e293b", fontSize: 25 }}
                     >
-                      {showPrice.price}/{showPrice.unitName}
+                      {showPrice.price.toLocaleString("en-US")}/
+                      {showPrice.unitName}
                     </h5>
                     <p className="available">
                       <span className="text-muted">Đơn Vị Bán</span>
@@ -241,11 +242,6 @@ const DetailMedicine = () => {
                           );
                         })}
                     </p>
-                    <button
-                      onClick={() => console.log("display", productID1)}
-                    >
-                      hien
-                    </button>
 
                     <div className="widget size mb-50">
                       <h6 className="widget-title" style={{ color: "#334155" }}>

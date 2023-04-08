@@ -235,8 +235,15 @@ const Drug = () => {
                                         >
                                           &nbsp; &nbsp;{e.managerName}
                                         </td>
-                                        <td>{e.importDate}</td>
-                                        <td>{e.totalPrice}</td>
+                                        <td>{new Date(e.importDate).toLocaleString(
+                                          "vi-VN",
+                                          {
+                                            timeZone: "Asia/Ho_Chi_Minh",
+                                          }
+                                        )}</td>
+                                        <td>{e.totalPrice.toLocaleString(
+                                              "en-US"
+                                            )}</td>
                                         <td>
                                           <a
                                             class="button-81"

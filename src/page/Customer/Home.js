@@ -35,6 +35,7 @@ const Home = () => {
   const [perPage, setPerPage] = useState(12);
   const [totalRecord, setTotalRecord] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [category, setCategory] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [roomsMsg, setRoomsMsg] = useState([]);
   const [userRoom, setUserRoom] = useState([]);
@@ -65,6 +66,14 @@ const Home = () => {
       setDrug(res.data.items);
       setTotalRecord(res.data.totalRecord);
       console.log("display", currentPage);
+    }
+  }
+  async function loadDataCategory2() {
+    const path = `MainCategory?pageIndex=${1}&pageItems=${12}`;
+    const res = await getDataByPath(path, "", "");
+    console.log("check", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setCategory(res.data.items);
     }
   }
   const navigate = useHistory();
@@ -213,6 +222,9 @@ const Home = () => {
   }
   useEffect(() => {
     fetchChatById();
+  }, []);
+  useEffect(() => {
+    loadDataCategory2();
   }, []);
 
   async function fetchChatByPharmacist() {
@@ -530,37 +542,34 @@ const Home = () => {
                       </div>
                     ))}
                   </div>
-              
-                    <div className="chat-text">
-                      <input
-                        placeholder="Send"
-                        defaultValue={""}
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                      />
+
+                  <div className="chat-text">
+                    <input
+                      placeholder="Send"
+                      defaultValue={""}
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                    />
                     {newMessage && (
-                          <button
-                            type="submit"
-                            className="button-send-chat"
-                            onClick={handleClickCount}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              fill="currentColor"
-                              class="bi bi-send-fill"
-                              viewBox="0 0 16 16"
-                            >
-                              <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z" />
-                            </svg>
-                          </button>
-                        )}
-                    </div>
-                    <div >
-                        
-                      </div>
-        
+                      <button
+                        type="submit"
+                        className="button-send-chat"
+                        onClick={handleClickCount}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-send-fill"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                  <div></div>
                 </div>
               </div>
             </div>
@@ -572,7 +581,7 @@ const Home = () => {
               <h2 className="text-uppercase">Danh Mục</h2>
             </div>
             <div className="row align-items-stretch section-overlap">
-              {CATEGORIES.map((item, index) => {
+              {category.map((item, index) => {
                 return (
                   <div className="col-md-2 col-lg-2 mb-2 mb-lg-2 hv">
                     <div
@@ -586,7 +595,7 @@ const Home = () => {
                       >
                         <img
                           className="hv"
-                          src={item.src}
+                          src={item.imageUrl}
                           style={{ height: 100, width: 100 }}
                         />
 
@@ -596,7 +605,13 @@ const Home = () => {
                           key={index}
                           style={{ color: "black", fontSize: 17 }}
                         >
-                          {item.name}
+                          {item.categoryName}
+                        </h6>
+                        <h6
+                          key={index}
+                          style={{ color: "black", fontSize: 17 }}
+                        >
+                          {item.noOfProducts}
                         </h6>
                       </a>
                     </div>

@@ -353,9 +353,8 @@ const Employees = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Địa chỉ chi nhánh
+                              Chức vụ
                             </th>
-
                             <th
                               style={{
                                 backgroundColor: "#f6f9fc",
@@ -363,8 +362,10 @@ const Employees = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Update
+                              Địa chỉ chi nhánh
                             </th>
+
+                            
                           </tr>
                         </thead>
                         <tbody className="table-border-bottom-0">
@@ -375,9 +376,11 @@ const Employees = () => {
                                 <tr key={e.id}>
                                   <td>&nbsp; &nbsp;{e.fullname}</td>
                                   <td>{e.username}</td>
+                                  <td>{e.roleName}</td>
                                   <td>{e.siteName}</td>
+                                  
 
-                                  <td>
+                                  {/* <td>
                                    
                                     <button class="button-81" role="button">
                                     <svg
@@ -395,7 +398,7 @@ const Employees = () => {
                                         />
                                       </svg>
                                     </button>
-                                  </td>
+                                  </td> */}
                                 </tr>
                               );
                             })}

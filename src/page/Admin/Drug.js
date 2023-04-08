@@ -250,15 +250,7 @@ const Drug = () => {
                                   >
                                     Giá
                                   </th>
-                                  <th
-                                    style={{
-                                      backgroundColor: "#f6f9fc",
-                                      borderColor: "white",
-                                      color: "#bfc8d3",
-                                    }}
-                                  >
-                                    Số Lượng
-                                  </th>
+                                  
                                   <th
                                     style={{
                                       backgroundColor: "#f6f9fc",
@@ -316,8 +308,7 @@ const Drug = () => {
                                         >
                                           &nbsp; &nbsp;{e.name}
                                         </td>
-                                        <td>{e.price}</td>
-                                        <td>{e.sellQuantity}</td>
+                                        <td>{e.price.toLocaleString("en-US")}</td>
                                         <td>{subCategoryName}</td>
                                         <td>
                                          

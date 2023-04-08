@@ -1176,7 +1176,7 @@ const Site = () => {
                             >
                               Quantity
                             </th>
-                            <th
+                            {/* <th
                               style={{
                                 backgroundColor: "#f6f9fc",
                                 borderColor: "white",
@@ -1193,7 +1193,7 @@ const Site = () => {
                               }}
                             >
                               Actions
-                            </th>
+                            </th> */}
                             <th
                               style={{
                                 backgroundColor: "#f6f9fc",
@@ -1222,12 +1222,12 @@ const Site = () => {
                                 <tr key={e.id}>
                                   <td>&nbsp; &nbsp;{e.siteName}</td>
                                   <td>{e.contactInfo}</td>
-                                  <td>50</td>
+                                  {/* <td>50</td>
                                   <td>
                                     <span className="badge bg-label-primary me-1">
                                       Blister Packs
                                     </span>
-                                  </td>
+                                  </td> */}
                                   <td>
                                     <a
                                       class="button-81"

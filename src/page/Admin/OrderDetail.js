@@ -128,6 +128,7 @@ const OrderDetail = () => {
     }
   }
   const date = new Date(OrderDetail.createdDate);
+
   const createDateVN =
     date.toLocaleString("vi-VN", {
       timeZone: "Asia/Ho_Chi_Minh",
