@@ -248,7 +248,7 @@ const Order = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              &nbsp; &nbsp;Id Đơn Hàng
+                              &nbsp; &nbsp;Mã Đơn Hàng
                             </th>
                             <th
                               style={{
@@ -321,7 +321,7 @@ const Order = () => {
                                 <tr key={e.id}>
                                   <td>&nbsp; &nbsp;{e.id}</td>
                                   <td>{e.orderTypeName}</td>
-                                  <td>{e.totalPrice}</td>
+                                  <td>{e.totalPrice.toLocaleString("en-US")}</td>
                                   <td>{e.orderStatusName}</td>
                                   {e.needAcceptance === true ? (
                                     <td>Chưa Xác Nhận</td>

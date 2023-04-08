@@ -18,31 +18,22 @@ import axios from "axios";
 import { List } from "antd";
 const CheckOutPharmacist = () => {
   const myId = localStorage.getItem("id");
-  const [OrderDetail, setOrderDetail] = useState([]);
-  const [ProductDetail, setProductDetail] = useState([]);
-  const [orderContactInfo, setOrderContactInfo] = useState([]);
-  const [orderDelivery, setOrderDelivery] = useState([]);
-  const [isOpen, setIsOpen] = useState(true);
-  const [description, setDescription] = useState("");
-  const [orderID, setOrderId] = useState("");
 
   const [activeItem, setActiveItem] = useState("CheckOutPharmacist");
   const [drug, setDrug] = useState(null);
   const [drugInCart, setDrugInCart] = useState([]);
   const [listCart, setListCart] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(100);
+  const [perPage, setPerPage] = useState(10);
+  const [point, setPoint] = useState(0);
 
   async function loadDataMedicine(search) {
-    console.log("display", search);
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
       const path = `Product?isSellFirstLevel=true&productName=${search}&pageIndex=${currentPage}&pageItems=${perPage}`;
       const res = await getDataByPath(path, accessToken, "");
-      console.log("display", res);
       if (res !== null && res !== undefined && res.status === 200) {
         setDrug(res.data.items);
-        console.log("display", currentPage);
       }
     }
   }
@@ -62,6 +53,51 @@ const CheckOutPharmacist = () => {
       }
     }
   }
+
+  const loadDataUserByPhone = async () => {
+    if (checkValidation()) {
+      if (localStorage && localStorage.getItem("accessToken")) {
+        const accessToken = localStorage.getItem("accessToken");
+        const path = `Customer?NameOrPhone=${product.reveicerInformation.phoneNumber}&pageIndex=1&pageItems=12`;
+        const res = await getDataByPath(path, accessToken, "");
+        console.log("Check res", res);
+        if (res && res.status === 200 && res.data.totalRecord > 0) {
+          // window.location.reload();
+          setProduct({
+            ...product,
+            reveicerInformation: {
+              ...product.reveicerInformation,
+              fullname: res.data.items[0].fullname,
+            },
+          });
+        } else if (res && res.status === 200 && res.data.totalRecord === 0) {
+          setProduct({
+            ...product,
+            reveicerInformation: {
+              ...product.reveicerInformation,
+              fullname: "Khách vãng lai",
+            },
+          });
+        }
+      }
+    }
+  };
+  const loadPointUserByPhone = async () => {
+    if (checkValidation()) {
+      if (localStorage && localStorage.getItem("accessToken")) {
+        const accessToken = localStorage.getItem("accessToken");
+        const path = `CustomerPoint/${product.reveicerInformation.phoneNumber}/CustomerAvailablePoint`;
+        const res = await getDataByPath(path, accessToken, "");
+        console.log("Check res", res);
+        if (res && res.status === 200) {
+          // window.location.reload();
+          setPoint(res.data);
+        } else if (res && res.status === 404) {
+          setPoint(0);
+        }
+      }
+    }
+  };
   const checkValidation = () => {
     // if (id.trim() === "") {
     //   Swal.fire("ID Can't Empty", "", "question");
@@ -365,6 +401,7 @@ const CheckOutPharmacist = () => {
                 {drug.map((e) => {
                   return (
                     <div
+                      key={e.id}
                       className="product-cart-p2"
                       onClick={() => addToCart(e.id)}
                     >
@@ -377,17 +414,17 @@ const CheckOutPharmacist = () => {
                           objectFit: "cover",
                         }}
                       />
-                      <div key={e.id} style={{ width: 380 }}>
-                        {e.name}
-                      </div>
-                      <div key={e.id} style={{ width: 380 }}>
+                      <div style={{ width: 380 }}>{e.name}</div>
+                      <div style={{ width: 380 }}>
                         {e.productInventoryModel.quantity}
                       </div>
                     </div>
                   );
                 })}
               </div>
-            ) : (<div className="search-result2"></div>)}
+            ) : (
+              <div className="search-result2"></div>
+            )}
 
             <div
               className="row "
@@ -426,90 +463,102 @@ const CheckOutPharmacist = () => {
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
                           >
-                            {listCart.length &&
-                              listCart &&
-                              listCart.map((product) => {
-                                return (
-                                  <div className="product-cart-p">
-                                    <img
-                                      src={product.imageURL}
-                                      style={{
-                                        height: 90,
-                                        width: 70,
-                                        borderRadius: 7,
-                                        objectFit: "cover",
-                                      }}
-                                    />
-                                    <div
-                                      key={product.id}
-                                      style={{ width: 380 }}
-                                    >
-                                      {product.name}
-                                    </div>
-                                    <div
-                                      key={product.id}
-                                      style={{ width: 70 }}
-                                    >
-                                 {product.productInventoryModel}
-                                    </div>
-                                    <input
-                                      style={{ height: 30, width: 70 }}
-                                      value={product.quantity}
-                                      onChange={(e) => {
-                                        updateQuantity(
-                                          product.productId,
-                                          e.target.value
-                                        );
-                                      }}
-                                    ></input>
-                                    <select
-                                      style={{ height: 30, marginLeft: 10 }}
-                                      onChange={(e) =>
-                                        updateProductID(
-                                          product.productId,
-                                          e.target.value
-                                        )
-                                      }
-                                    >
-                                      {product.productPrefer.map((unit) => {
-                                        return (
-                                          <option key={unit.id} value={unit.id}>
-                                            {unit.unitName}
-                                          </option>
-                                        );
-                                      })}
-                                    </select>
-                                    <button
-                                      style={{
-                                        height: 30,
-                                        marginLeft: 10,
-                                        backgroundColor: "white",
-                                        border: "1px solid white",
-                                        color: "red",
-                                      }}
-                                      onClick={() => {
-                                        const newList = listCart.filter(
-                                          (item) =>
-                                            item.productId !== product.productId
-                                        );
+                            {listCart.length === 0 ? (
+                              <div >
+                                Không có sản phẩm trong giỏ hàng
+                              </div>
+                            ) : (
+                              <>
+                                {
+                                  listCart &&
+                                  listCart.map((product) => {
+                                    return (
+                                      <div className="product-cart-p">
+                                        <img
+                                          src={product.imageURL}
+                                          style={{
+                                            height: 90,
+                                            width: 70,
+                                            borderRadius: 7,
+                                            objectFit: "cover",
+                                          }}
+                                        />
+                                        <div
+                                          key={product.id}
+                                          style={{ width: 380 }}
+                                        >
+                                          {product.name}
+                                        </div>
+                                        <div
+                                          key={product.id}
+                                          style={{ width: 70 }}
+                                        >
+                                          {product.productInventoryModel}
+                                        </div>
+                                        <input
+                                          style={{ height: 30, width: 70 }}
+                                          value={product.quantity}
+                                          onChange={(e) => {
+                                            updateQuantity(
+                                              product.productId,
+                                              e.target.value
+                                            );
+                                          }}
+                                        ></input>
+                                        <select
+                                          style={{ height: 30, marginLeft: 10 }}
+                                          onChange={(e) =>
+                                            updateProductID(
+                                              product.productId,
+                                              e.target.value
+                                            )
+                                          }
+                                        >
+                                          {product.productPrefer.map((unit) => {
+                                            return (
+                                              <option
+                                                key={unit.id}
+                                                value={unit.id}
+                                              >
+                                                {unit.unitName}
+                                              </option>
+                                            );
+                                          })}
+                                        </select>
+                                        <button
+                                          style={{
+                                            height: 30,
+                                            marginLeft: 10,
+                                            backgroundColor: "white",
+                                            border: "1px solid white",
+                                            color: "red",
+                                          }}
+                                          onClick={() => {
+                                            const newList = listCart.filter(
+                                              (item) =>
+                                                item.productId !==
+                                                product.productId
+                                            );
 
-                                        setListCart(newList);
-                                      }}
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        fill="currentColor"
-                                        class="bi bi-trash3"
-                                        viewBox="0 0 16 16"
-                                      >
-                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
-                                      </svg>
-                                    </button>
-                                  </div>
-                                );
-                              })}
+                                            setListCart(newList);
+                                          }}
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="16"
+                                            height="16"
+                                            fill="currentColor"
+                                            class="bi bi-trash3"
+                                            viewBox="0 0 16 16"
+                                          >
+                                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                                          </svg>
+                                        </button>
+                                      </div>
+                                    );
+                                  })}
+                              </>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -550,26 +599,33 @@ const CheckOutPharmacist = () => {
                           htmlFor="basic-icon-default-fullname"
                         >
                           Số Điện Thoại
-                         
                         </label>
                         <div className="input-group input-group-merge">
                           <input
                             type="text"
                             className="form-control"
                             id="basic-icon-default-fullname"
-                            placeholder="Tên Người Mua"
+                            placeholder="Số điện thoại người Mua"
                             aria-label="Tên Người Mua"
                             aria-describedby="basic-icon-default-fullname2"
-                            onChange={(e) =>
+                            onChange={(e) => {
                               setProduct({
                                 ...product,
                                 reveicerInformation: {
                                   ...product.reveicerInformation,
                                   phoneNumber: e.target.value,
                                 },
-                              })
-                            }
+                              });
+                            }}
                           />
+                          <div
+                            onClick={() => {
+                              loadDataUserByPhone();
+                              loadPointUserByPhone();
+                            }}
+                          >
+                            tim
+                          </div>
                         </div>
                         <label
                           className="form-label"
@@ -582,9 +638,10 @@ const CheckOutPharmacist = () => {
                             type="text"
                             className="form-control"
                             id="basic-icon-default-fullname"
-                            placeholder="Tên Sản Phẩm"
+                            placeholder="Tên người nhận"
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
+                            value={product.reveicerInformation.fullname}
                             onChange={(e) =>
                               setProduct({
                                 ...product,
@@ -596,6 +653,36 @@ const CheckOutPharmacist = () => {
                             }
                           />
                         </div>
+                        {point !== 0 ? (
+                          <div>
+                            <div>Điểm : {point}</div>
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-fullname"
+                            >
+                              Điểm Tich Luỹ
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <input
+                                type="text"
+                                className="form-control"
+                                id="basic-icon-default-fullname"
+                                placeholder="Tên người nhận"
+                                aria-label="Tên Sản Phẩm"
+                                aria-describedby="basic-icon-default-fullname2"
+                                value={product.usedPoint}
+                                onChange={(e) =>
+                                  setProduct({
+                                    ...product,
+                                    usedPoint: e.target.value,
+                                  })
+                                }
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <div></div>
+                        )}
                       </div>
                       <a
                         className="button-28"

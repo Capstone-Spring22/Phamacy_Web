@@ -8,17 +8,28 @@ import { useState } from "react";
 import { Carousel } from "react-bootstrap";
 import axios from "axios";
 const DetailMedicine = () => {
+  const deviceId = axios
+    .get("https://api.ipify.org/?format=json")
+    .then((res) => res.data.ip);
   const detailId = localStorage.getItem("detailId");
   const [product, setProduct] = useState([]);
   const [descriptionModels, setDescriptionModels] = useState([]);
   const [cart, setCart] = useState([]);
   const [imageUrl, setImageUrl] = useState([]);
   const [quantity, setQuantity] = useState(1);
+  const [productID1, setproductID1] = useState(
+    localStorage.getItem("detailId")
+  );
   const update = (deviceId) => {
     localStorage.setItem("deviceId", deviceId);
 
     // history.push("/ViewCart");
   };
+  const [showPrice, setShowPrice] = useState({
+    price: "",
+    unitName: "",
+  });
+
   useEffect(() => {
     console.log("Updated cart:", cart);
   }, [cart]);
@@ -30,6 +41,11 @@ const DetailMedicine = () => {
     console.log("productcc", product);
     if (res !== null && res !== undefined && res.status === 200) {
       setProduct(res.data);
+      setShowPrice({
+        ...showPrice,
+        price: res.data.price,
+        unitName: res.data.unitName,
+      });
       setDescriptionModels(res.data.descriptionModels);
       setImageUrl(res.data.imageModels);
     }
@@ -51,10 +67,10 @@ const DetailMedicine = () => {
   async function addToCart() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      const deviceId = await axios
-        .get("https://api.ipify.org/?format=json")
-        .then((res) => res.data.ip);
-      update(deviceId);
+      // const deviceId = await axios
+      //   .get("https://api.ipify.org/?format=json")
+      //   .then((res) => res.data.ip);
+      // update(deviceId);
       const data = {
         deviceId: deviceId,
         item: {
@@ -62,12 +78,13 @@ const DetailMedicine = () => {
           quantity: quantity,
         },
       };
+
       console.log("Cart before API call:", cart);
       const path = "Cart";
-
       const res = await createDataByPath(path, accessToken, data);
       console.log("API response:", res);
       console.log("Product data:", product);
+
       if (res && res.status === 200) {
         toast.success("Đã Thêm Vào Giở Hàng");
         // window.location.reload();
@@ -80,7 +97,7 @@ const DetailMedicine = () => {
       const data = {
         deviceId: deviceId,
         item: {
-          productId: localStorage.getItem("detailId"),
+          productId: productID1,
           quantity: quantity,
         },
       };
@@ -99,7 +116,9 @@ const DetailMedicine = () => {
   const handleSelect = (selectedIndex, e) => {
     setSelectedImageIndex(selectedIndex);
   };
-  const subCategorys = subCategory.find((sc) => sc.id === product.subCategoryId);
+  const subCategorys = subCategory.find(
+    (sc) => sc.id === product.subCategoryId
+  );
   const subCategoryName = subCategorys ? subCategorys.subCategoryName : "";
   useEffect(() => {
     loadDataProductId();
@@ -112,7 +131,7 @@ const DetailMedicine = () => {
       <Header />
       <div className="site-wrap">
         <>
-        <Toaster toastOptions={{ duration: 4000 }} />
+          <Toaster toastOptions={{ duration: 4000 }} />
           <div className="breadcumb_area">
             <div className="container">
               <div className="row">
@@ -126,12 +145,10 @@ const DetailMedicine = () => {
                         href="#"
                         style={{ textDecoration: "none", color: "black" }}
                       >
-                         {subCategoryName}
+                        {subCategoryName}
                       </a>
                     </li>
-                    <li className="breadcrumb-item active">
-                    {product.name}
-                    </li>
+                    <li className="breadcrumb-item active">{product.name}</li>
                   </ol>
                   {/* btn */}
                   <div href="#" className="backToHome d-block">
@@ -180,28 +197,72 @@ const DetailMedicine = () => {
                 <div className="col-12 col-md-6">
                   <div className="single_product_desc">
                     <h4 className="title">
-                      <div href="#" style={{color:"#82aae3"}}>{product.name}</div>
+                      <div href="#" style={{ color: "#82aae3" }}>
+                        {product.name}
+                      </div>
                     </h4>
-                    <hr/>
-                    <h5 className="price" style={{color:"#1e293b",fontSize:25}}>
-                      {product.price}/{product.unitName}
+                    <hr />
+                    <h5
+                      className="price"
+                      style={{ color: "#1e293b", fontSize: 25 }}
+                    >
+                      {showPrice.price}/{showPrice.unitName}
                     </h5>
                     <p className="available">
                       <span className="text-muted">Đơn Vị Bán</span>
+                      <div
+                        onClick={() => {
+                          setproductID1(product.id);
+                          setShowPrice({
+                            ...showPrice,
+                            price: product.price,
+                            unitName: product.unitName,
+                          });
+                        }}
+                      >
+                        {product.unitName}
+                      </div>
+                      {product.productUnitReferences &&
+                        product.productUnitReferences.map((unit) => {
+                          return (
+                            <div
+                              key={unit.id}
+                              onClick={() => {
+                                setproductID1(unit.id);
+                                setShowPrice({
+                                  ...showPrice,
+                                  price: unit.price,
+                                  unitName: unit.unitName,
+                                });
+                              }}
+                            >
+                              {unit.unitName}
+                            </div>
+                          );
+                        })}
                     </p>
+                    <button
+                      onClick={() => console.log("display", productID1)}
+                    >
+                      hien
+                    </button>
 
                     <div className="widget size mb-50">
-                      <h6 className="widget-title" style={{color: '#334155'}}>
-                 
-                        Danh Mục:  {subCategoryName}{" "}
+                      <h6 className="widget-title" style={{ color: "#334155" }}>
+                        Danh Mục: {subCategoryName}{" "}
                       </h6>
-                      <h6 className="widget-title" style={{color: '#334155'}}>
+                      <h6 className="widget-title" style={{ color: "#334155" }}>
                         Nhà Sản Xuất: {product.manufacturerId}{" "}
                       </h6>
-                      <h6 className="widget-title" style={{color: '#334155',width:700}}>
-                        Công Dụng: <div style={{fontWeight:400,lineHeight:2}}>{descriptionModels.effect}{" "}</div>
+                      <h6
+                        className="widget-title"
+                        style={{ color: "#334155", width: 700 }}
+                      >
+                        Công Dụng:{" "}
+                        <div style={{ fontWeight: 400, lineHeight: 2 }}>
+                          {descriptionModels.effect}{" "}
+                        </div>
                       </h6>
-                      
                     </div>
 
                     {/* Add to Cart Form */}
@@ -221,7 +282,6 @@ const DetailMedicine = () => {
                       </div>
                       <button
                         value={5}
-                       
                         className="btn cart-submit d-block"
                         style={{ backgroundColor: "#82aae3" }}
                         onClick={() => addToCart(detailId)}

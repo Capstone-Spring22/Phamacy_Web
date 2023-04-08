@@ -674,6 +674,15 @@ const OrderDetail = () => {
                                 color: "#bfc8d3",
                               }}
                             >
+                              Đơn vị
+                            </th>
+                            <th
+                              style={{
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
                               Giá
                             </th>
                           </tr>
@@ -699,7 +708,8 @@ const OrderDetail = () => {
                                   </td>
                                   <td>{e.productName}</td>
                                   <td>{e.quantity}</td>
-                                  <td>{e.priceTotal}</td>
+                                  <td>{e.unitName}</td>
+                                  <td>{e.priceTotal.toLocaleString("en-US")}</td>
                                 </tr>
                               );
                             })}

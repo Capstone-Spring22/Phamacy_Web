@@ -22,9 +22,11 @@ const Home = (props) => {
   const phoneNo = localStorage.getItem("phoneNo");
   const Email = localStorage.getItem("email");
   // Retrieve the cart data from local storage
+  const [countAddress, setcCountAddress] = useState(0);
 
   const [date, setDate] = useState([]);
   const [dateTime, setDateTime] = useState("");
+  const [inputAddress, setInputAddress] = useState(false);
   const [time, setTime] = useState([]);
   const [citySelected, setCitySelected] = useState(false);
   const [districsSelected, setDistricsSelected] = useState(false);
@@ -78,6 +80,15 @@ const Home = (props) => {
     vnpayInformation: null,
     orderPickUp: null,
   });
+
+  const [addressUser, setAddressUser] = useState({
+    customerId: localStorage.getItem("id"),
+    cityId: "",
+    districtId: "",
+    wardId: "",
+    homeAddress: "",
+    isMainAddress: false,
+  });
   localStorage.setItem("product", JSON.stringify(product));
   const genders = [
     { name: "Male", value: 0 },
@@ -129,6 +140,20 @@ const Home = (props) => {
       }
     }
   }
+  const [listAddress, setListAddress] = useState([]);
+  async function loadUserByID() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `Customer/${localStorage.getItem("id")}`;
+      const res = await getDataByPath(path, accessToken, "");
+      if (res !== null && res !== undefined && res.status === 200) {
+        setListAddress(res.data.customerAddressList);
+      }
+    }
+  }
+  useEffect(() => {
+    loadUserByID();
+  }, [countAddress]);
   useEffect(() => {
     loadPoint();
   }, [point]);
@@ -280,6 +305,42 @@ const Home = (props) => {
       }
     }
   }
+  const Addaddressuser = async () => {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const data = addressUser;
+      const path = "CustomerAddress";
+      const res = await createDataByPath(path, accessToken, data);
+      console.log("Check res", res);
+      console.log("display du lieu", data);
+      if (res && res.status === 200) {
+        setcCountAddress(parseInt(countAddress) + 1)
+        setAddressUser({customerId: localStorage.getItem("id"),
+        cityId: "",
+        districtId: "",
+        wardId: "",
+        homeAddress: "",
+        isMainAddress: false,})
+        setInputAddress(false)
+
+        // Swal.fire("Create Success", "", "success");
+        // window.location.reload();
+      }
+    }
+  };
+  const deleteaddressuser = async (id) => {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `CustomerAddress/${id}`;
+      const res = await deleteDataByPath(path, accessToken, "");
+      console.log("Check res", res);
+      if (res && res.status === 200) {
+        setcCountAddress(parseInt(countAddress) + 1)
+        // Swal.fire("Create Success", "", "success");
+        // window.location.reload();
+      }
+    }
+  };
   // Function to retrieve the stored data from localStorage
 
   useEffect(() => {}, []);
@@ -589,12 +650,15 @@ const Home = (props) => {
                               checkSite.map((siteInfo, index) => {
                                 const id = `credit-card-${index}`;
                                 return (
-                                  <div key={siteInfo.siteId}  onClick={() =>
-                                    setProduct((prevState) => ({
-                                      ...prevState,
-                                      siteId: siteInfo.siteId,
-                                    }))
-                                  }>
+                                  <div
+                                    key={siteInfo.siteId}
+                                    onClick={() =>
+                                      setProduct((prevState) => ({
+                                        ...prevState,
+                                        siteId: siteInfo.siteId,
+                                      }))
+                                    }
+                                  >
                                     <div
                                       className="payment-cart"
                                       onClick={() =>
@@ -608,8 +672,6 @@ const Home = (props) => {
                                           name="payment"
                                           value="credit-card"
                                           style={{ marginRight: 10 }}
-                                         
-                                        
                                         />
                                         {siteInfo.siteName}
                                         <div>
@@ -808,6 +870,209 @@ const Home = (props) => {
                             }
                           />
                         </div>
+                        <div className="col-12 mb-3">
+                          <div onClick={(e) => setInputAddress(!inputAddress)}>
+                            Add
+                          </div>
+                          {inputAddress && (
+                            <div>
+                              <div className="col-12 mb-3">
+                                <label htmlFor="street_address">
+                                  Thành phố <span>*</span>
+                                </label>
+                                <select
+                                  name="city"
+                                  id="basic-icon-default-email"
+                                  className="form-control"
+                                  style={{
+                                    border: "1px solid #e4e7eb",
+                                    backgroundColor: "white",
+                                    borderRadius: 5,
+                                  }}
+                                  onChange={(e) => {
+                                    handlecity(e);
+                                    setAddressUser({
+                                      ...addressUser,
+                                      cityId: e.target.value,
+                                    });
+                                  }}
+                                  value={addressUser.cityID}
+                                >
+                                  {!citySelected && (
+                                    <option
+                                      value=""
+                                      style={{ color: "#8899b8" }}
+                                    >
+                                      Chọn Tỉnh/ Thành Phô
+                                    </option>
+                                  )}
+                                  {city &&
+                                    city.length &&
+                                    city.map((e, index) => {
+                                      return (
+                                        <>
+                                          <option key={e.id} value={e.id}>
+                                            {e.cityName}
+                                          </option>
+                                        </>
+                                      );
+                                    })}
+                                </select>
+                              </div>
+                              <div className="col-12 mb-3">
+                                <label htmlFor="postcode">
+                                  Quận/Huyện <span>*</span>
+                                </label>
+
+                                <select
+                                  id="basic-icon-default-email"
+                                  className="form-control"
+                                  style={{
+                                    border: "1px solid #e4e7eb",
+                                    backgroundColor: "white",
+                                    borderRadius: 5,
+                                  }}
+                                  onChange={(e) => {
+                                    handleDistrict(e);
+                                    setAddressUser({
+                                      ...addressUser,
+                                      districtId: e.target.value,
+                                    });
+                                  }}
+                                  value={addressUser.districtId}
+                                >
+                                  {!districsSelected && (
+                                    <option
+                                      value=""
+                                      style={{ color: "#8899b8" }}
+                                    >
+                                      Chọn Quận / Huyện
+                                    </option>
+                                  )}
+                                  {districs &&
+                                    districs.length &&
+                                    districs.map((e, index) => {
+                                      return (
+                                        <>
+                                          <option key={e.id} value={e.id}>
+                                            {e.districtName}
+                                          </option>
+                                        </>
+                                      );
+                                    })}
+                                </select>
+                              </div>
+                              <div className="col-12 mb-3">
+                                <label htmlFor="city">
+                                  Phường <span>*</span>
+                                </label>
+
+                                <select
+                                  id="basic-icon-default-email"
+                                  className="form-control"
+                                  style={{
+                                    border: "1px solid #e4e7eb",
+                                    backgroundColor: "white",
+                                    borderRadius: 5,
+                                  }}
+                                  value={addressUser.wardId}
+                                  onChange={(e) => {
+                                    handleWards(e);
+                                    setAddressUser({
+                                      ...addressUser,
+                                      wardId: e.target.value,
+                                    });
+                                  }}
+                                >
+                                  {!wardSelected && (
+                                    <option
+                                      value=""
+                                      style={{ color: "#8899b8" }}
+                                    >
+                                      Chọn Phường
+                                    </option>
+                                  )}
+                                  {ward &&
+                                    ward.length &&
+                                    ward.map((e, index) => {
+                                      return (
+                                        <>
+                                          <option key={e.id} value={e.id}>
+                                            {e.wardName}
+                                          </option>
+                                        </>
+                                      );
+                                    })}
+                                </select>
+                              </div>
+                              <div className="col-12 mb-3">
+                                <label htmlFor="state">
+                                  Địa chỉ cụ thể <span>*</span>
+                                </label>
+                                <input
+                                  type="text"
+                                  style={{
+                                    border: "1px solid #e4e7eb",
+                                    backgroundColor: "white",
+                                    borderRadius: 5,
+                                  }}
+                                  className="form-control"
+                                  id="state"
+                                  defaultValue=""
+                                  onChange={(e) =>
+                                    setAddressUser({
+                                      ...addressUser,
+                                      homeAddress: e.target.value,
+                                    })
+                                  }
+                                />
+                              </div>
+                              <div onClick={Addaddressuser}>lưu</div>
+                            </div>
+                          )}
+                          <div className="checkout-payment">
+                            {listAddress.length > 0 ? (
+                              listAddress &&
+                              listAddress.map((address, index) => {
+                                const id = `credit-card-${index}`;
+                                return (
+                                  <div
+                                    key={address.id}
+                                    // onClick={() =>
+                                    //   setProduct((prevState) => ({
+                                    //     ...prevState,
+                                    //     siteId: siteInfo.siteId,
+                                    //   }))
+                                    // }
+                                  >
+                                    <div
+                                      className="payment-cart"
+                                      onClick={() =>
+                                        document.getElementById(id).click()
+                                      }
+                                    >
+                                      <label htmlFor={id}>
+                                        <input
+                                          type="radio"
+                                          id={id}
+                                          name="payment"
+                                          value="credit-card"
+                                          style={{ marginRight: 10 }}
+                                        />
+                                        <div>
+                                          Địa chỉ: {address.fullyAddress}
+                                        </div>
+                                      </label>
+                                    </div>
+                                    <div onClick={()=>deleteaddressuser(address.id)}>Xoá</div>
+                                  </div>
+                                );
+                              })
+                            ) : (
+                              <p>No site info found.</p>
+                            )}
+                          </div>{" "}
+                        </div>
 
                         <div className="col-12 mb-3">
                           <label htmlFor="street_address">
@@ -896,6 +1161,7 @@ const Home = (props) => {
                               })}
                           </select>
                         </div>
+
                         <div className="col-12 mb-3">
                           <label htmlFor="city">
                             Phường <span>*</span>
