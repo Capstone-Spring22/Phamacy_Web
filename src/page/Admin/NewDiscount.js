@@ -39,8 +39,8 @@ const NewDiscount = () => {
   const [product, setProduct] = useState({
     title: "",
     reason: "",
-    discountPercent: 0,
-    discountMoney: 0,
+    discountPercent: "",
+    discountMoney: "",
     startDate: "",
     endDate: "",
     products: [

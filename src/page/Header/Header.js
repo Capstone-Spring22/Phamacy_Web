@@ -54,6 +54,16 @@ const Header = () => {
       </li>
     );
   }
+  let buttonHistory;
+  if (roleName === "Customer") {
+    buttonHistory = (
+      <li>
+        <Link activeClassName="active" to="/HistoryOrder">
+          <span>View History</span>
+        </Link>
+      </li>
+    );
+  } 
   const viewDetail = () => {
     history.push("/ViewCart");
   };
@@ -104,7 +114,7 @@ const Header = () => {
                     <span>Store</span>
                   </Link>
                 </li>
-
+                {buttonHistory}
                 <li>
                   <Link activeClassName="active" to="/LoginAdmin">
                     <span>LoginAdmin</span>

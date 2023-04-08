@@ -77,6 +77,7 @@ const Login = () => {
           if (localStorage) {
             localStorage.setItem("accessToken", register.data.token);
             localStorage.setItem("roleName", register.data.roleName);
+            localStorage.setItem("id", register.data.id);
             localStorage.setItem("userName", register.data.name);
             localStorage.setItem("email", register.data.email);
             localStorage.setItem("imageURL", register.data.imageURL);

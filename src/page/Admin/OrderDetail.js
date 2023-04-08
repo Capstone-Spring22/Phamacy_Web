@@ -21,15 +21,18 @@ const OrderDetail = () => {
   const [ProductDetail, setProductDetail] = useState([]);
   const [orderContactInfo, setOrderContactInfo] = useState([]);
   const [orderDelivery, setOrderDelivery] = useState([]);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
   const [orderStatus, setOrderStatus] = useState([]);
+  const [orderStatusId, setOrderStatusId] = useState("");
   const [description, setDescription] = useState("");
+  const [descriptionStatus, setDescriptionStatus] = useState("");
   async function loadDataOrderById() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
       const path = `Order/${myId}`;
       const res = await getDataByPath(path, accessToken, "");
-      console.log("res", res.data.id);
+      console.log("res", res.data.orderTypeId);
       if (res !== null && res !== undefined && res.status === 200) {
         console.log("cc", OrderDetail);
         setOrderDetail(res.data);
@@ -40,18 +43,21 @@ const OrderDetail = () => {
     }
   }
   const [activeItem, setActiveItem] = useState("Order");
-  useEffect(() => {
-    loadDataOrderById();
-  }, []);
+ 
   async function loadOrderStatusId() {
-    const path = `OrderStatus?OrderTypeId=2`;
+     console.log('OrderDetail',OrderDetail.orderTypeId)
+    const path = `OrderStatus?OrderTypeId=${OrderDetail.orderTypeId}`;
+    
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
-      setOrderStatus(res.data)
+      setOrderStatus(res.data);
     }
   }
   useEffect(() => {
     loadOrderStatusId();
+  }, [OrderDetail]);
+  useEffect(() => {
+    loadDataOrderById();
   }, []);
   async function confirmOrder() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -75,6 +81,30 @@ const OrderDetail = () => {
       }
     }
   }
+  async function updateStatusOrder() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+
+      const data = {
+        orderId: OrderDetail.id,
+        orderStatusId: OrderDetail.orderStatus,
+        description: descriptionStatus,
+      };
+      const path = `Order/ExecuteOrder`;
+      console.log("res", data);
+      const res = await updateDataByPath(path, accessToken, data);
+      console.log("res", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        Swal.fire("Cập Nhật Trạng Thái Thành Công", "", "success");
+        loadDataOrderById();
+      }
+    }
+  }
+  const handleStatus = (event) => {
+    event.preventDefault();
+    const orderStatusId = event.target.value;
+    setOrderStatusId(orderStatusId);
+  };
   async function rejectOrder() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -155,9 +185,9 @@ const OrderDetail = () => {
           </div>
 
           <a
-            href="#my-dialog"
+            href="#my-dialog2"
             onClick={() => {
-              setIsOpen(true);
+              setIsOpen2(true);
             }}
             className="button-28"
             style={{
@@ -194,7 +224,7 @@ const OrderDetail = () => {
           </div>
 
           <a
-            href="#my-dialog"
+            href="#my-dialog3"
             className="button-28"
             style={{
               height: 40,
@@ -351,6 +381,119 @@ const OrderDetail = () => {
             </div>
           </nav>
           <div
+            className={`dialog overlay ${isOpen2 ? "" : "hidden"}`}
+            id="my-dialog2"
+          >
+            <a href="#" className="overlay-close" />
+
+            <div className="row " style={{ width: 700 }}>
+              <div className="col-xl">
+                <div className="card mb-4">
+                  <div
+                    className="card-header d-flex justify-content-between align-items-center"
+                    style={{
+                      height: 70,
+                      backgroundColor: "white",
+
+                      marginLeft: 230,
+                      borderColor: "#f4f4f4",
+                    }}
+                  >
+                    <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
+                  </div>
+                  <div className="card-body">
+                    <form>
+                      <div
+                        style={{
+                          display: "grid",
+
+                          padding: 30,
+                        }}
+                      >
+                        <div
+                          className="input-group input-group-merge"
+                          style={{ width: "95%" }}
+                        >
+                          <select
+                            name="city"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            onChange={(e) => {
+                            
+                              setOrderDetail({
+                                ...OrderDetail,
+                                orderStatus: e.target.value,
+                              });
+                            }}
+                            value={OrderDetail.orderStatus}
+                          >
+                            {orderStatus &&
+                              orderStatus.length &&
+                              orderStatus.map((e, index) => {
+                                return (
+                                  <>
+                                    <option
+                                      key={e.orderStatusId}
+                                      value={e.orderStatusId}
+                                    >
+                                      {e.orderStatusName}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
+                        </div>
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-phone"
+                          >
+                            Mô Tả
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <textarea
+                              style={{ height: 200 }}
+                              type="text"
+                              className="form-control"
+                              id="basic-icon-default-fullname"
+                              placeholder="Viết Mô Tả "
+                              aria-label="John Doe"
+                              aria-describedby="basic-icon-default-fullname2"
+                              onChange={(e) =>
+                                setDescriptionStatus(e.target.value)
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ display: "flex" }}>
+                        <button
+                          type="submit"
+                          className="button-28"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            updateStatusOrder();
+                          }}
+                          style={{
+                            height: 30,
+                            width: 80,
+                            fontSize: 13,
+                            marginLeft: 23,
+
+                            backgroundColor: "#82AAE3",
+                            color: "white",
+                          }}
+                        >
+                          Xác Nhận
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
             className={`dialog overlay ${isOpen ? "" : "hidden"}`}
             id="my-dialog"
           >
@@ -448,6 +591,7 @@ const OrderDetail = () => {
               </div>
             </div>
           </div>
+          
           {/* / Navbar */}
           {/* Content wrapper */}
           <div style={{ display: "flex" }}>
@@ -724,7 +868,6 @@ const OrderDetail = () => {
                               aria-label="Tên Sản Phẩm"
                               aria-describedby="basic-icon-default-fullname2"
                             >
-                             
                               {OrderDetail.needAcceptance === true ? (
                                 <div>Cần Được Xác Nhận</div>
                               ) : (

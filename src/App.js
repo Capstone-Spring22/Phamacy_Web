@@ -32,6 +32,9 @@ import UpdateDiscount from "./page/Admin/UpdateDiscount";
 import OrderDetail from "./page/Admin/OrderDetail";
 import CheckOutPharmacist from "./page/Admin/CheckOutPharmacist";
 import VNPay from "./page/Customer/VNpay";
+import HistoryOrder from "./page/Customer/HistoryOrder";
+import Chat from "./page/Customer/Chat";
+import ChatPharmacist from "./page/Admin/ChatPhamacist";
 function App() {
   return (
     <div className="site-wrap">
@@ -117,6 +120,15 @@ function App() {
           </Route>
           <Route path="/VNPay">
             <VNPay />
+          </Route>
+          <Route path="/HistoryOrder">
+            <HistoryOrder />
+          </Route>
+          <Route path="/Chat">
+            <Chat />
+          </Route>
+          <Route path="/ChatPharmacist">
+            <ChatPharmacist />
           </Route>
         </Switch>
       </BrowserRouter>

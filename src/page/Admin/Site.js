@@ -60,49 +60,9 @@ const Site = () => {
   const checkValidation = () => {
     let isValid = true;
 
-    if (siteName.trim().length === 0) {
-      isValid = false;
-      setSiteNameErrorMessage("Vui lòng nhập tên chi nhanh");
-    } else {
-      setSiteNameErrorMessage("");
-    }
+    
 
-    if (city.trim().length === 0) {
-      isValid = false;
-      setCityErrorMessage("Vui lòng chọn thành phố");
-    } else {
-      setCityErrorMessage("");
-    }
-
-    if (districs.trim().length === 0) {
-      isValid = false;
-      setDistrictsErrorMessage("Vui lòng chọn quận/huyện");
-    } else {
-      setDistrictsErrorMessage("");
-    }
-
-    if (ward.trim().length === 0) {
-      isValid = false;
-      setWardErrorMessage("Vui lòng chọn phường/xã");
-    } else {
-      setWardErrorMessage("");
-    }
-
-    if (description.trim().length === 0) {
-      isValid = false;
-      setDescriptionErrorMessage("Vui lòng nhập mô tả");
-    } else {
-      setDescriptionErrorMessage("");
-    }
-
-    if (contactInfo.trim().length === 0) {
-      isValid = false;
-      setContactInfoErrorMessage("Vui lòng nhập thông tin liên hệ");
-    } else {
-      setContactInfoErrorMessage("");
-    }
-
-    return isValid;
+    return true;
   };
 
   const handleClick = (id) => {

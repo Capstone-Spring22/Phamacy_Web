@@ -138,8 +138,8 @@ const Sidebar = ({ activeItem }) => {
           </li>
           <li className="menu-item">
             <Link
-              to="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-              target="_blank"
+              to="/ChatPharmacist"
+            
               className="menu-link"
             >
               <svg

@@ -12,6 +12,7 @@ const Order = () => {
   const [totalRecord, setTotalRecord] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [OrderDetail, setOrderDetail] = useState([]);
+  const [orderStatusP, setOrderStatusP] = useState([]);
   let history = useHistory();
   const update = (myId) => {
     localStorage.setItem("id", myId);
@@ -29,6 +30,7 @@ const Order = () => {
       }
     }
   }
+  
   const [activeItem, setActiveItem] = useState("Order");
   useEffect(() => {
     loadDataOrder();
@@ -272,6 +274,15 @@ const Order = () => {
                                 color: "#bfc8d3",
                               }}
                             >
+                              Trạng Thái Đơn Hàng
+                            </th>
+                            <th
+                              style={{
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
                               Trạng Thái
                             </th>
 
@@ -290,12 +301,13 @@ const Order = () => {
                           {drug &&
                             drug.length &&
                             drug.map((e) => {
+                             
                               return (
                                 <tr key={e.id}>
                                   <td>&nbsp; &nbsp;{e.id}</td>
                                   <td>{e.orderTypeName}</td>
                                   <td>{e.totalPrice}</td>
-
+                                  <td>{e.orderStatusName}</td>
                                   {e.needAcceptance === true ? (
                                     <td>Chưa Xác Nhận</td>
                                   ) : (

@@ -31,7 +31,7 @@ const CheckOutPharmacist = () => {
   const [drugInCart, setDrugInCart] = useState([]);
   const [listCart, setListCart] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(5);
+  const [perPage, setPerPage] = useState(100);
 
   async function loadDataMedicine(search) {
     console.log("display", search);
@@ -98,6 +98,7 @@ const CheckOutPharmacist = () => {
         listCart.push({
           productId: drug1.id,
           imageURL: drug1.imageModel.imageURL,
+          productInventoryModel: drug1.productInventoryModel.quantity,
           quantity: 1,
           originalPrice: drug1.price,
           discountPrice: drug1.priceAfterDiscount,
@@ -257,6 +258,7 @@ const CheckOutPharmacist = () => {
                   />
                 </div>
               </div>
+
               {/* /Search */}
               <ul className="navbar-nav flex-row align-items-center ms-auto">
                 {/* Place this tag where you want the button to render. */}
@@ -358,108 +360,35 @@ const CheckOutPharmacist = () => {
           {/* / Navbar */}
           {/* Content wrapper */}
           <div style={{ display: "flex", flexWrap: "wrap" }}>
-            <div className="content-wrapper">
-              {/* Content */}
-              <div className="container-xxl flex-grow-1 container-p-y">
-                {/* Basic Bootstrap Table */}
-                <div
-                  className="card"
-                  style={{
-                    width: "100%",
-                    backgroundColor: "#ffffff",
-                    width: 870,
-                    margin: 30,
-                    borderRadius: 5,
-                    border: "none",
-                  }}
-                >
-                  <div style={{ display: "flex" }}>
-                    <h5
-                      className="card-header"
-                      style={{
-                        padding: "20px 24px",
-                        backgroundColor: "#ffffff",
-                        borderColor: "white",
-                      }}
+            {drug && drug.length ? (
+              <div className="search-result">
+                {drug.map((e) => {
+                  return (
+                    <div
+                      className="product-cart-p2"
+                      onClick={() => addToCart(e.id)}
                     >
-                      <h3 className="fontagon">Sản Phẩm Của Đơn Hàng</h3>
-                    </h5>
-
-                    <></>
-                  </div>
-
-                  <div className="table-responsive ">
-                    <table className="table">
-                      <thead
+                      <img
+                        src={e.imageModel.imageURL}
                         style={{
-                          backgroundColor: "#f6f9fc",
-                          borderColor: "white",
-                          color: "",
+                          height: 90,
+                          width: 70,
+                          borderRadius: 7,
+                          objectFit: "cover",
                         }}
-                      >
-                        <tr>
-                          <th
-                            style={{
-                              backgroundColor: "#f6f9fc",
-                              borderColor: "white",
-                              color: "#bfc8d3",
-                            }}
-                          >
-                            Tên Sản Phẩm
-                          </th>
-                          <th
-                            style={{
-                              backgroundColor: "#f6f9fc",
-                              borderColor: "white",
-                              color: "#bfc8d3",
-                            }}
-                          >
-                            Số Lượng
-                          </th>
-                          <th
-                            style={{
-                              backgroundColor: "#f6f9fc",
-                              borderColor: "white",
-                              color: "#bfc8d3",
-                            }}
-                          >
-                            Add
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="table-border-bottom-0">
-                        {drug &&
-                          drug.length &&
-                          drug.map((e) => {
-                            return (
-                              <tr key={e.id}>
-                                <td>{e.name}</td>
-                                <td>{e.price}</td>
-
-                                <td onClick={() => addToCart(e.id)}>
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    fill="currentColor"
-                                    class="bi bi-cart-check"
-                                    viewBox="0 0 16 16"
-                                  >
-                                    <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z" />
-                                    <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                  </svg>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+                      />
+                      <div key={e.id} style={{ width: 380 }}>
+                        {e.name}
+                      </div>
+                      <div key={e.id} style={{ width: 380 }}>
+                        {e.productInventoryModel.quantity}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
+            ) : (<div className="search-result2"></div>)}
 
-              <div className="content-backdrop fade" />
-            </div>
             <div
               className="row "
               style={{ width: 900, marginTop: -30, marginLeft: 25 }}
@@ -478,7 +407,7 @@ const CheckOutPharmacist = () => {
                   >
                     <h5 className="mb-0">Thông Tin Đơn Hàng</h5>
                   </div>
-                  <div className="card-body">
+                  <div className="card-body scroll-p">
                     <div
                       style={{
                         display: "grid",
@@ -489,7 +418,7 @@ const CheckOutPharmacist = () => {
                       }}
                     >
                       <div className="mb-3" style={{ width: "95%" }}>
-                        <div className="input-group input-group-merge">
+                        <div className="input-group input-group-merge ">
                           <div
                             type="text"
                             id="basic-icon-default-fullname"
@@ -517,7 +446,12 @@ const CheckOutPharmacist = () => {
                                     >
                                       {product.name}
                                     </div>
-
+                                    <div
+                                      key={product.id}
+                                      style={{ width: 70 }}
+                                    >
+                                 {product.productInventoryModel}
+                                    </div>
                                     <input
                                       style={{ height: 30, width: 70 }}
                                       value={product.quantity}
@@ -586,7 +520,7 @@ const CheckOutPharmacist = () => {
             </div>
             <div
               className="row "
-              style={{ width: 300, marginTop: -170, marginLeft: 20 }}
+              style={{ width: 300, marginTop: -30, marginLeft: 20 }}
             >
               <div className="col-xl">
                 <div className="card mb-4">
