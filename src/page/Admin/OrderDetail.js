@@ -43,11 +43,11 @@ const OrderDetail = () => {
     }
   }
   const [activeItem, setActiveItem] = useState("Order");
- 
+
   async function loadOrderStatusId() {
-     console.log('OrderDetail',OrderDetail.orderTypeId)
+    console.log("OrderDetail", OrderDetail.orderTypeId);
     const path = `OrderStatus?OrderTypeId=${OrderDetail.orderTypeId}`;
-    
+
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setOrderStatus(res.data);
@@ -127,7 +127,11 @@ const OrderDetail = () => {
       }
     }
   }
-
+  const date = new Date(OrderDetail.createdDate);
+  const createDateVN =
+    date.toLocaleString("vi-VN", {
+      timeZone: "Asia/Ho_Chi_Minh",
+    });
   let OrderStatus;
   if (OrderDetail.pharmacistId === null) {
     OrderStatus = (
@@ -419,7 +423,6 @@ const OrderDetail = () => {
                             id="basic-icon-default-email"
                             className="form-control"
                             onChange={(e) => {
-                            
                               setOrderDetail({
                                 ...OrderDetail,
                                 orderStatus: e.target.value,
@@ -591,7 +594,7 @@ const OrderDetail = () => {
               </div>
             </div>
           </div>
-          
+
           {/* / Navbar */}
           {/* Content wrapper */}
           <div style={{ display: "flex" }}>
@@ -679,6 +682,7 @@ const OrderDetail = () => {
                           {ProductDetail &&
                             ProductDetail.length &&
                             ProductDetail.map((e) => {
+                             
                               return (
                                 <tr key={e.id}>
                                   <td>
@@ -740,7 +744,7 @@ const OrderDetail = () => {
                             className="form-label"
                             htmlFor="basic-icon-default-fullname"
                           >
-                            Id Đơn hàng
+                            Mã Đơn hàng
                           </label>
                           <div className="input-group input-group-merge">
                             <div
@@ -815,25 +819,7 @@ const OrderDetail = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="basic-icon-default-phone"
-                          >
-                            Mô Tả
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <div
-                              type="text"
-                              id="basic-icon-default-fullname"
-                              placeholder="Tên Sản Phẩm"
-                              aria-label="Tên Sản Phẩm"
-                              aria-describedby="basic-icon-default-fullname2"
-                            >
-                              {OrderDetail.note}
-                            </div>
-                          </div>
-                        </div>
+                     
                         <div className="mb-3" style={{ width: "95%" }}>
                           <label
                             className="form-label"
@@ -849,10 +835,11 @@ const OrderDetail = () => {
                               aria-label="Tên Sản Phẩm"
                               aria-describedby="basic-icon-default-fullname2"
                             >
-                              {OrderDetail.createdDate}
+                              {createDateVN}
                             </div>
                           </div>
                         </div>
+                        
                         <div className="mb-3" style={{ width: "95%" }}>
                           <label
                             className="form-label"
@@ -873,6 +860,25 @@ const OrderDetail = () => {
                               ) : (
                                 <div>Đã Xác Nhận</div>
                               )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-phone"
+                          >
+                            Mô Tả
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <div
+                              type="text"
+                              id="basic-icon-default-fullname"
+                              placeholder="Tên Sản Phẩm"
+                              aria-label="Tên Sản Phẩm"
+                              aria-describedby="basic-icon-default-fullname2"
+                            >
+                              {OrderDetail.note}
                             </div>
                           </div>
                         </div>

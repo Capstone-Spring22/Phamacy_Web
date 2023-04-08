@@ -18,6 +18,7 @@ const Order = () => {
     localStorage.setItem("id", myId);
     history.push("/OrderDetail");
   };
+
   async function loadDataOrder() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -30,7 +31,7 @@ const Order = () => {
       }
     }
   }
-  
+
   const [activeItem, setActiveItem] = useState("Order");
   useEffect(() => {
     loadDataOrder();
@@ -285,7 +286,15 @@ const Order = () => {
                             >
                               Trạng Thái
                             </th>
-
+                            <th
+                              style={{
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
+                              Ngày Tạo Đơn Hàng
+                            </th>
                             <th
                               style={{
                                 backgroundColor: "#f6f9fc",
@@ -301,7 +310,13 @@ const Order = () => {
                           {drug &&
                             drug.length &&
                             drug.map((e) => {
-                             
+                              const date = new Date(e.createdDate);
+                              const createDateVN = date.toLocaleString(
+                                "vi-VN",
+                                {
+                                  timeZone: "Asia/Ho_Chi_Minh",
+                                }
+                              );
                               return (
                                 <tr key={e.id}>
                                   <td>&nbsp; &nbsp;{e.id}</td>
@@ -313,6 +328,7 @@ const Order = () => {
                                   ) : (
                                     <td>Đã Xác Nhận</td>
                                   )}
+                                  <td>{createDateVN}</td>
                                   <td>
                                     <a
                                       class="button-81"

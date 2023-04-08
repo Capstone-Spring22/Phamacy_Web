@@ -549,7 +549,8 @@ const CheckOutPharmacist = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-fullname"
                         >
-                          Tên
+                          Số Điện Thoại
+                         
                         </label>
                         <div className="input-group input-group-merge">
                           <input
@@ -574,7 +575,7 @@ const CheckOutPharmacist = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-fullname"
                         >
-                          Số Điện Thoại
+                          Tên
                         </label>
                         <div className="input-group input-group-merge">
                           <input
