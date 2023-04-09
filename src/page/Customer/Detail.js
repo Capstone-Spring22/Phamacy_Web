@@ -8,9 +8,7 @@ import { useState } from "react";
 import { Carousel } from "react-bootstrap";
 import axios from "axios";
 const DetailMedicine = () => {
-  const deviceId = axios
-    .get("https://api.ipify.org/?format=json")
-    .then((res) => res.data.ip);
+
   const detailId = localStorage.getItem("detailId");
   const [product, setProduct] = useState([]);
   const [descriptionModels, setDescriptionModels] = useState([]);
@@ -69,10 +67,10 @@ const DetailMedicine = () => {
   async function addToCart() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      // const deviceId = await axios
-      //   .get("https://api.ipify.org/?format=json")
-      //   .then((res) => res.data.ip);
-      // update(deviceId);
+      const deviceId = await axios
+        .get("https://api.ipify.org/?format=json")
+        .then((res) => res.data.ip);
+      update(deviceId);
       const data = {
         deviceId: deviceId,
         item: {
@@ -81,7 +79,7 @@ const DetailMedicine = () => {
         },
       };
 
-      console.log("Cart before API call:", cart);
+      console.log("Cart before API call:", data);
       const path = "Cart";
       const res = await createDataByPath(path, accessToken, data);
       console.log("API response:", res);
@@ -294,7 +292,7 @@ const DetailMedicine = () => {
                           onChange={(e) => setQuantity(e.target.value)}
                         />
                       </div>
-                      {product.isPrescription === false ? (
+                      {product.isPrescription === true ? (
                         <button
                           value={5}
                           className="btn cart-submit d-block"
