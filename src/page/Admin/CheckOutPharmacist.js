@@ -464,13 +464,10 @@ const CheckOutPharmacist = () => {
                             aria-describedby="basic-icon-default-fullname2"
                           >
                             {listCart.length === 0 ? (
-                              <div >
-                                Không có sản phẩm trong giỏ hàng
-                              </div>
+                              <div>Không có sản phẩm trong giỏ hàng</div>
                             ) : (
                               <>
-                                {
-                                  listCart &&
+                                {listCart &&
                                   listCart.map((product) => {
                                     return (
                                       <div className="product-cart-p">
@@ -618,15 +615,17 @@ const CheckOutPharmacist = () => {
                               });
                             }}
                           />
-                          <div
+                        
+                        </div>
+                        <div
+                           className="button-tim"
                             onClick={() => {
                               loadDataUserByPhone();
                               loadPointUserByPhone();
                             }}
                           >
-                            tim
+                           Tìm
                           </div>
-                        </div>
                         <label
                           className="form-label"
                           htmlFor="basic-icon-default-fullname"
