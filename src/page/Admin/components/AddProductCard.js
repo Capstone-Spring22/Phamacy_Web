@@ -10,7 +10,7 @@ export default function AddProductCard({
   setIndexUnit,
   setCountQuantity,
   drug,
-  setcountPrice
+  setcountPrice,
 }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const [currentNumBatches, setCurrentNumBatches] = useState(0);
@@ -23,6 +23,19 @@ export default function AddProductCard({
     setCurrentNumBatches(
       product.productImportDetails[index - 1]?.productBatches?.length || 0
     );
+    if (!isBatch) {
+      setProduct((product) => ({
+        ...product,
+        productImportDetails: [
+          ...product.productImportDetails.slice(0, index - 1),
+          {
+            ...product.productImportDetails[index - 1],
+            productBatches: null,
+          },
+          ...product.productImportDetails.slice(index),
+        ],
+      }))
+    }
   };
 
   useEffect(() => {
@@ -40,7 +53,8 @@ export default function AddProductCard({
             marginLeft: 100,
             padding: 30,
             flexWrap: "wrap",
-          }}>
+          }}
+        >
           <div className="mb-3" style={{ width: "20%", marginRight: 20 }}>
             <label className="form-label" htmlFor="basic-icon-default-phone">
               sản phẩm
@@ -88,29 +102,42 @@ export default function AddProductCard({
               Số lượng
             </label>
             <div className="input-group input-group-merge">
-              <input
-                type="text"
-                id={`quantitative${index}`}
-                className="form-control"
-                placeholder="Định Lượng"
-                aria-label="Unit Id"
-                aria-describedby={`quantitative${index}2`}
-                value={product?.productImportDetails[index - 1]?.quantity}
-                onChange={(e) => {
-                  setProduct((product) => ({
-                    ...product,
-                    productImportDetails: [
-                      ...product.productImportDetails.slice(0, index - 1),
-                      {
-                        ...product.productImportDetails[index - 1],
-                        quantity: e.target.value,
-                      },
-                      ...product.productImportDetails.slice(index),
-                    ],
-                  }));
-                  setcountPrice((countprice)=>parseInt(countprice) + 1);
-                }}
-              />
+              {isBatches ? (
+                <input
+                  type="text"
+                  id={`quantitative${index}`}
+                  className="form-control"
+                  placeholder="Số Lượng"
+                  aria-label="Unit Id"
+                  readOnly
+                  aria-describedby={`quantitative${index}2`}
+                  value={product?.productImportDetails[index - 1]?.quantity}
+                />
+              ) : (
+                <input
+                  type="text"
+                  id={`quantitative${index}`}
+                  className="form-control"
+                  placeholder="Số Lượng"
+                  aria-label="Unit Id"
+                  aria-describedby={`quantitative${index}2`}
+                  value={product?.productImportDetails[index - 1]?.quantity}
+                  onChange={(e) => {
+                    setProduct((product) => ({
+                      ...product,
+                      productImportDetails: [
+                        ...product.productImportDetails.slice(0, index - 1),
+                        {
+                          ...product.productImportDetails[index - 1],
+                          quantity: e.target.value,
+                        },
+                        ...product.productImportDetails.slice(index),
+                      ],
+                    }));
+                    setcountPrice((countprice) => parseInt(countprice) + 1);
+                  }}
+                />
+              )}
             </div>
           </div>
           <div className="mb-3" style={{ width: "30%", marginRight: 20 }}>
@@ -137,134 +164,157 @@ export default function AddProductCard({
                       ...product.productImportDetails.slice(index),
                     ],
                   }));
-                  setcountPrice((countprice)=>parseInt(countprice) + 1);
+                  setcountPrice((countprice) => parseInt(countprice) + 1);
                 }}
               />
             </div>
           </div>
-          <div className="productimport-border">
-          {selectedOption &&
-            isBatches &&
-            Array.from({ length: currentNumBatches }, (_, j) => j + 1).map(
-              (batchIndex) => (
-                <React.Fragment key={`${index}-${batchIndex}`}>
-                  <div className="productimport">
-                  <div
-                    className="mb-3"
-                    style={{ width: "30%", marginRight: 20 }}>
-                    <label className="form-label">Hạn sử dụng</label>
-                    <div className="input-group input-group-merge">
-                      <input
-                        type="date"
-                        className="form-control input-importproduct"
-                        placeholder="Hạn sử dụng"
-                        aria-label="expireDate"
-                        onChange={(e) => {
-                          setProduct((product) => ({
-                            ...product,
-                            productImportDetails: [
-                              ...product.productImportDetails.slice(
-                                0,
-                                index - 1
-                              ),
-                              {
-                                ...product.productImportDetails[index - 1],
-                                productBatches: [
-                                  ...product.productImportDetails[
-                                    index - 1
-                                  ].productBatches.slice(0, batchIndex - 1),
-                                  {
-                                    ...product.productImportDetails[index - 1]
-                                      .productBatches[batchIndex - 1],
-                                    expireDate: e.target.value,
-                                  },
-                                  ...product.productImportDetails[
-                                    index - 1
-                                  ].productBatches.slice(batchIndex),
-                                ],
-                              },
-                              ...product.productImportDetails.slice(index),
-                            ],
-                          }));
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div
-                    className="mb-3"
-                    style={{ width: "30%", marginRight: 20 }}>
-                    <label className="form-label">Ngày sản xuất</label>
-                    <div className="input-group input-group-merge">
-                      <input
-                        type="date"
-                        className="form-control"
-                        placeholder="Ngày sản xuất"
-                        aria-label="Unit Id"
-                        onChange={(e) => {
-                          setProduct((product) => ({
-                            ...product,
-                            productImportDetails: [
-                              ...product.productImportDetails.slice(
-                                0,
-                                index - 1
-                              ),
-                              {
-                                ...product.productImportDetails[index - 1],
-                                productBatches: [
-                                  ...product.productImportDetails[
-                                    index - 1
-                                  ].productBatches.slice(0, batchIndex - 1),
-                                  {
-                                    ...product.productImportDetails[index - 1]
-                                      .productBatches[batchIndex - 1],
-                                    manufactureDate: e.target.value,
-                                  },
-                                  ...product.productImportDetails[
-                                    index - 1
-                                  ].productBatches.slice(batchIndex),
-                                ],
-                              },
-                              ...product.productImportDetails.slice(index),
-                            ],
-                          }));
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div
-                    className="mb-3"
-                    style={{ width: "30%", marginRight: 20 }}>
-                    <label
-                      className="form-label"
-                      htmlFor="basic-icon-default-email">
-                      số lượng sản phẩm lô
-                    </label>
-                    <div className="input-group input-group-merge">
-                      <input
-                        type="text"
-                        id="basic-icon-default-email"
-                        className="form-control"
-                        placeholder="Phone Number"
-                        aria-label="Phone Number"
-                        aria-describedby="basic-icon-default-email2"
-                        onChange={(e) => {
-                          handleAddQuantityBatch(index, batchIndex, e);
-                          setIndexUnit(index);
-                          setCountQuantity(
-                            (countQuantity) => countQuantity + 1
-                          );
-                          // handleAddQuantity(index)
-                        }}
-                      />
-                    </div>
+          {selectedOption && isBatches && (
+            <div className="productimport-border">
+              {selectedOption &&
+                isBatches &&
+                Array.from({ length: currentNumBatches }, (_, j) => j + 1).map(
+                  (batchIndex) => (
+                    <React.Fragment key={`${index}-${batchIndex}`}>
+                      <div className="productimport">
+                        <div
+                          className="mb-3"
+                          style={{ width: "30%", marginRight: 20 }}
+                        >
+                          <label className="form-label">Ngày sản xuất</label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="date"
+                              className="form-control"
+                              placeholder="Ngày sản xuất"
+                              aria-label="Unit Id"
+                              onChange={(e) => {
+                                setProduct((product) => ({
+                                  ...product,
+                                  productImportDetails: [
+                                    ...product.productImportDetails.slice(
+                                      0,
+                                      index - 1
+                                    ),
+                                    {
+                                      ...product.productImportDetails[
+                                        index - 1
+                                      ],
+                                      productBatches: [
+                                        ...product.productImportDetails[
+                                          index - 1
+                                        ].productBatches.slice(
+                                          0,
+                                          batchIndex - 1
+                                        ),
+                                        {
+                                          ...product.productImportDetails[
+                                            index - 1
+                                          ].productBatches[batchIndex - 1],
+                                          manufactureDate: e.target.value,
+                                        },
+                                        ...product.productImportDetails[
+                                          index - 1
+                                        ].productBatches.slice(batchIndex),
+                                      ],
+                                    },
+                                    ...product.productImportDetails.slice(
+                                      index
+                                    ),
+                                  ],
+                                }));
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className="mb-3"
+                          style={{ width: "30%", marginRight: 20 }}
+                        >
+                          <label className="form-label">Hạn sử dụng</label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="date"
+                              className="form-control input-importproduct"
+                              placeholder="Hạn sử dụng"
+                              aria-label="expireDate"
+                              onChange={(e) => {
+                                setProduct((product) => ({
+                                  ...product,
+                                  productImportDetails: [
+                                    ...product.productImportDetails.slice(
+                                      0,
+                                      index - 1
+                                    ),
+                                    {
+                                      ...product.productImportDetails[
+                                        index - 1
+                                      ],
+                                      productBatches: [
+                                        ...product.productImportDetails[
+                                          index - 1
+                                        ].productBatches.slice(
+                                          0,
+                                          batchIndex - 1
+                                        ),
+                                        {
+                                          ...product.productImportDetails[
+                                            index - 1
+                                          ].productBatches[batchIndex - 1],
+                                          expireDate: e.target.value,
+                                        },
+                                        ...product.productImportDetails[
+                                          index - 1
+                                        ].productBatches.slice(batchIndex),
+                                      ],
+                                    },
+                                    ...product.productImportDetails.slice(
+                                      index
+                                    ),
+                                  ],
+                                }));
+                              }}
+                            />
+                          </div>
+                        </div>
 
-                    <div className="form-text"></div>
-                  </div>
-                  </div>
-                </React.Fragment>
-              )
-              )}
-              </div>
+                        <div
+                          className="mb-3"
+                          style={{ width: "30%", marginRight: 20 }}
+                        >
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-email"
+                          >
+                            số lượng sản phẩm lô
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              placeholder="Số Lượng Sản Phẩm Lô"
+                              aria-label="Phone Number"
+                              aria-describedby="basic-icon-default-email2"
+                              onChange={(e) => {
+                                handleAddQuantityBatch(index, batchIndex, e);
+                                setIndexUnit(index);
+                                setCountQuantity(
+                                  (countQuantity) => countQuantity + 1
+                                );
+                                // handleAddQuantity(index)
+                              }}
+                            />
+                          </div>
+
+                          <div className="form-text"></div>
+                        </div>
+                      </div>
+                    </React.Fragment>
+                  )
+                )}
+            </div>
+          )}
           {selectedOption && isBatches && (
             <button
               className="button-batches"
@@ -289,7 +339,8 @@ export default function AddProductCard({
                     ...product.productImportDetails.slice(index),
                   ],
                 }));
-              }}>
+              }}
+            >
               + Thêm Lô
             </button>
           )}

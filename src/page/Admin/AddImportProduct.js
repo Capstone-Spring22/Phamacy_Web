@@ -570,6 +570,7 @@ const AddImportProduct = () => {
                         <div className="input-group input-group-merge">
                           <input
                             type="text"
+                            readOnly
                             id="basic-icon-default-company"
                             className="form-control"
                             placeholder="Tổng giá sản phẩm"
@@ -642,6 +643,7 @@ const AddImportProduct = () => {
                         <div className="input-group input-group-merge">
                           <input
                             type="text"
+                            readOnly
                             id="basic-icon-default-company"
                             className="form-control"
                             placeholder="Tổng giá"

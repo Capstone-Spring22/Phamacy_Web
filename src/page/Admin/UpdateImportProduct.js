@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-
+import Select from "react-select";
 import SideBar from "../sidebar/SideBarManager";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
@@ -25,6 +25,9 @@ const UpdateImportProduct = () => {
   const [addUnit, setAddUnit] = useState(false);
   const [unit, setUnit] = useState([]);
   const [unit2, setUnit2] = useState([]);
+  const [indexUnit, setIndexUnit] = useState(0);
+  const [countQuantity, setCountQuantity] = useState(0);
+  const [countprice, setcountPrice] = useState(0);
   const [addNewUnit, setAddnewUnit] = useState(false);
   const [addNewUnit2, setAddnewUnit2] = useState(false);
   const [isBatches, setIsBatches] = useState(false);
@@ -32,6 +35,7 @@ const UpdateImportProduct = () => {
   const [unitID, setUnitID] = useState("");
   const [unitID2, setUnitID2] = useState("");
   const [isSell, setIsSell] = useState(false);
+  const [drug, setDrug] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
   const [product, setProduct] = useState({
@@ -65,12 +69,14 @@ const UpdateImportProduct = () => {
       const accessToken = localStorage.getItem("accessToken");
       const path = `ProductImport/${myId}`;
       const res = await getDataByPath(path, accessToken, "");
-
+      console.log("product", product);
       if (res !== null && res !== undefined && res.status === 200) {
         setProduct(res.data);
         setUnitCount(res.data.productImportDetails.length);
       }
-    }}
+    }
+  }
+
   async function loadDataUnit() {
     const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -92,11 +98,7 @@ const UpdateImportProduct = () => {
       setProductIngredient(res.data.items);
     }
   }
-  const handleProductIngredient = (event) => {
-    event.preventDefault();
-    const productIngredientID = event.target.value;
-    setProductIngredientID(productIngredientID);
-  };
+
   async function loadDataUnit2() {
     const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -119,6 +121,20 @@ const UpdateImportProduct = () => {
     const manufactunerID = event.target.value;
     setManufactunerID(manufactunerID);
   };
+  async function loadDataDrug() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `Product?pageIndex=1&pageItems=100`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("display", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setDrug(res.data.items);
+
+        console.log("display", currentPage);
+      }
+    }
+  }
+
   const handleBatchChange = (event) => {
     setIsBatches(event.target.checked);
 
@@ -135,7 +151,11 @@ const UpdateImportProduct = () => {
       }));
     }
   };
-
+  const options = drug.map((e) => ({
+    label: e.name,
+    value: e.id,
+    unit: e.productUnitReferences,
+  }));
   const handlePrescriptionChange = (event) => {
     setIsPrescription(event.target.checked);
 
@@ -152,7 +172,40 @@ const UpdateImportProduct = () => {
       }));
     }
   };
-
+  const handleAddQuantity = (index) => {
+    setProduct({
+      ...product,
+      productImportDetails: [
+        ...product.productImportDetails.slice(0, index - 1),
+        {
+          ...product.productImportDetails[index - 1],
+          quantity: product.productImportDetails[
+            index - 1
+          ].productBatches.reduce(
+            (total, curent) => total + curent.quantity,
+            0
+          ),
+        },
+        ...product.productImportDetails.slice(index),
+      ],
+    });
+    setcountPrice(parseInt(countprice) + 1);
+  };
+  useEffect(() => {
+    if (indexUnit === 0) {
+    } else {
+      handleAddQuantity(indexUnit);
+    }
+  }, [countQuantity]);
+  useEffect(() => {
+    setProduct({
+      ...product,
+      totalProductPrice: product.productImportDetails.reduce(
+        (total, curent) => total + curent.quantity * curent.importPrice,
+        0
+      ),
+    });
+  }, [countprice]);
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -185,18 +238,11 @@ const UpdateImportProduct = () => {
   // }, [currentPage, perPage]);
   useEffect(() => {
     loadDataUnit();
-  }, []);
-  useEffect(() => {
-    loadDataUnit2();
-  }, []);
-  useEffect(() => {
-    loadDataManufacturer();
-  }, []);
-  useEffect(() => {
-    loadDataProductIngredient();
-  }, []);
-  useEffect(() => {
     loadDataImportProductByID();
+    loadDataProductIngredient();
+    loadDataManufacturer();
+    loadDataUnit2();
+    loadDataDrug();
   }, []);
 
   const handleAddIngredient = () => {
@@ -394,6 +440,413 @@ const UpdateImportProduct = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
+                    <h5 className="mb-0">Thêm Sản phẩm </h5>
+                  </div>{" "}
+                  {Array.from({ length: unitCount }, (_, i) => i + 1).map(
+                    (index) => {
+                      const drugName = drug.find(
+                        (sc) =>
+                          sc.id === product.productImportDetails[index - 1].id
+                      );
+                      const drugNameP = drugName ? drugName.name : "";
+                      return (
+                        <div className="card-body" key={index}>
+                          <div>
+                            <div
+                              style={{
+                                display: "flex",
+                                marginLeft: 100,
+                                padding: 30,
+                                flexWrap: "wrap",
+                              }}
+                            >
+                              <div
+                                className="mb-3"
+                                style={{ width: "30%", marginRight: 20 }}
+                              >
+                                <label
+                                  className="form-label"
+                                  htmlFor={`unitId${index}`}
+                                >
+                                  Sản Phẩm
+                                </label>
+                                <div className="input-group input-group-merge">
+                                  <input
+                                    type="text"
+                                    readOnly
+                                    id={`quantitative${index}`}
+                                    className="form-control"
+                                    aria-label="Unit Id"
+                                    aria-describedby={`quantitative${index}2`}
+                                    value={
+                                      drug?.find(
+                                        (sc) =>
+                                          sc.id ===
+                                          product?.productImportDetails[
+                                            index - 1
+                                          ].productId
+                                      )?.name
+                                        ? drug?.find(
+                                            (sc) =>
+                                              sc.id ===
+                                              product?.productImportDetails[
+                                                index - 1
+                                              ].productId
+                                          )?.name
+                                        : "Đang Tải ..."
+                                    }
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                className="mb-3"
+                                style={{ width: "30%", marginRight: 20 }}
+                              >
+                                <label
+                                  className="form-label"
+                                  htmlFor={`unitId${index}`}
+                                >
+                                  Số lượng
+                                </label>
+                                <div className="input-group input-group-merge">
+                                  <input
+                                    type="text"
+                                    id={`quantitative${index}`}
+                                    className="form-control"
+                                    placeholder="Số lượng"
+                                    aria-label="Unit Id"
+                                    
+                                    aria-describedby={`quantitative${index}2`}
+                                    value={
+                                      product.productImportDetails[index - 1]
+                                        .quantity
+                                    }
+                                    onChange={(e) => {
+                                      setcountPrice((countprice) => parseInt(countprice) + 1);
+                                      setProduct({
+                                        ...product,
+                                        productImportDetails: [
+                                          ...product.productImportDetails.slice(
+                                            0,
+                                            index - 1
+                                          ),
+                                          {
+                                            ...product.productImportDetails[
+                                              index - 1
+                                            ],
+                                            quantity: e.target.value,
+                                          },
+                                          ...product.productImportDetails.slice(
+                                            index
+                                          ),
+                                        ],
+                                      });
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                className="mb-3"
+                                style={{ width: "30%", marginRight: 20 }}
+                              >
+                                <label
+                                  className="form-label"
+                                  htmlFor={`unitId${index}`}
+                                >
+                                  Giá
+                                </label>
+                                <div className="input-group input-group-merge">
+                                  <input
+                                    type="text"
+                                    id={`sellQuantity${index}`}
+                                    className="form-control"
+                                    placeholder="Số lượng bán"
+                                    aria-label="Unit Id"
+                                    aria-describedby={`sellQuantity${index}2`}
+                                    value={
+                                      product.productImportDetails[index - 1]
+                                        .importPrice
+                                    }
+                                    onChange={(e) => {
+                                      setProduct({
+                                        ...product,
+                                        productImportDetails: [
+                                          ...product.productImportDetails.slice(
+                                            0,
+                                            index - 1
+                                          ),
+                                          {
+                                            ...product.productImportDetails[
+                                              index - 1
+                                            ],
+                                            importPrice: e.target.value,
+                                          },
+                                          ...product.productImportDetails.slice(
+                                            index
+                                          ),
+                                        ],
+                                      });
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              {product.productImportDetails[index - 1]
+                                .productBatches.length === 0 ? (
+                                <div></div>
+                              ) : (
+                                <div className="productimport-border">
+                                  {product.productImportDetails[
+                                    index - 1
+                                  ].productBatches.map((productBatch) => {
+                                    return (
+                                      <div className="productimport">
+                                        {" "}
+                                       
+                                        <div
+                                          className="mb-3"
+                                          style={{
+                                            width: "30%",
+                                            marginRight: 20,
+                                          }}
+                                        >
+                                          <label
+                                            className="form-label"
+                                            htmlFor={`unitId${index}`}
+                                          >
+                                            Ngày sản xuất
+                                          </label>
+                                          <div className="input-group input-group-merge">
+                                            <input
+                                              type="date"
+                                              id={`barCode${index}`}
+                                              className="form-control"
+                                              placeholder="Unit Id"
+                                              aria-label="Unit Id"
+                                              aria-describedby={`barCode${index}2`}
+                                              value={
+                                                productBatch.manufactureDate?
+                                                new Date(
+                                                  productBatch.manufactureDate
+                                                )
+                                                  .toISOString()
+                                                  .slice(0, 10):""
+
+                                                // ? new Date(
+                                                //     product.productImportDetails[
+                                                //       index - 1
+                                                //     ].productBatches
+                                                //       .map(
+                                                //         (productBatch) =>
+                                                //           productBatch.manufactureDate
+                                                //       )
+                                                //       .join(", ")
+                                                //   )
+                                                //     .toISOString()
+                                                //     .substr(0, 10)
+                                                // : ""
+                                              }
+                                              onChange={(e) => {
+                                                setProduct({
+                                                  ...product,
+                                                  productImportDetails: [
+                                                    ...product.productImportDetails.slice(
+                                                      0,
+                                                      index - 1
+                                                    ),
+                                                    {
+                                                      ...product
+                                                        .productImportDetails[
+                                                        index - 1
+                                                      ],
+                                                      productBatches: [
+                                                        {
+                                                          ...product
+                                                            .productImportDetails[
+                                                            index - 1
+                                                          ].productBatches[0],
+                                                          manufactureDate:
+                                                            e.target.value,
+                                                        },
+                                                      ],
+                                                    },
+                                                    ...product.productImportDetails.slice(
+                                                      index
+                                                    ),
+                                                  ],
+                                                });
+                                              }}
+                                            />
+                                          </div>
+                                        </div>
+                                        <div
+                                          className="mb-3"
+                                          style={{
+                                            width: "30%",
+                                            marginRight: 20,
+                                          }}
+                                        >
+                                          <label
+                                            className="form-label"
+                                            htmlFor={`unitId${index}`}
+                                          >
+                                            Hạn sử dụng
+                                          </label>
+                                          <div className="input-group input-group-merge">
+                                            <input
+                                              type="date"
+                                              id={`price${index}`}
+                                              className="form-control"
+                                              placeholder="Unit Id"
+                                              aria-label="Unit Id"
+                                              aria-describedby={`price${index}2`}
+                                              value={
+                                                productBatch.expireDate?
+                                                new Date(
+                                                  productBatch.expireDate
+                                                )
+                                                  .toISOString()
+                                                  .slice(0, 10):""
+
+                                                // ? new Date(
+                                                //     product.productImportDetails[
+                                                //       index - 1
+                                                //     ].productBatches
+                                                //       .map(
+                                                //         (productBatch) =>
+                                                //           productBatch.expireDate
+                                                //       )
+                                                //       .join(", ")
+                                                //   )
+                                                //     .toISOString()
+                                                //     .substr(0, 10)
+                                                // : ""
+                                              }
+                                              onChange={(e) => {
+                                                setProduct({
+                                                  ...product,
+                                                  productImportDetails: [
+                                                    ...product.productImportDetails.slice(
+                                                      0,
+                                                      index - 1
+                                                    ),
+                                                    {
+                                                      ...product
+                                                        .productImportDetails[
+                                                        index - 1
+                                                      ],
+                                                      productBatches: [
+                                                        {
+                                                          ...product
+                                                            .productImportDetails[
+                                                            index - 1
+                                                          ].productBatches[0],
+                                                          expireDate:
+                                                            e.target.value,
+                                                        },
+                                                      ],
+                                                    },
+                                                    ...product.productImportDetails.slice(
+                                                      index
+                                                    ),
+                                                  ],
+                                                });
+                                              }}
+                                            />
+                                          </div>
+                                        </div>
+                                        <div
+                                          className="mb-3"
+                                          style={{
+                                            width: "30%",
+                                            marginRight: 20,
+                                          }}
+                                        >
+                                          <label
+                                            className="form-label"
+                                            htmlFor="basic-icon-default-email"
+                                          >
+                                            số lượng sản phẩm lô
+                                          </label>
+
+                                          <div className="input-group input-group-merge">
+                                            <input
+                                              type="text"
+                                              id="basic-icon-default-email"
+                                              className="form-control"
+                                              placeholder="Phone Number"
+                                              aria-label="Phone Number"
+                                              aria-describedby="basic-icon-default-email2"
+                                              value={productBatch.quantity}
+                                              onChange={(e) => {
+                                                setIndexUnit(index);
+                                                setCountQuantity(
+                                                  (countQuantity) => countQuantity + 1
+                                                );
+                                                setProduct({
+                                                  ...product,
+                                                  productImportDetails: [
+                                                    ...product.productImportDetails.slice(
+                                                      0,
+                                                      index - 1
+                                                    ),
+                                                    {
+                                                      ...product
+                                                        .productImportDetails[
+                                                        index - 1
+                                                      ],
+                                                      productBatches: [
+                                                        {
+                                                          ...product
+                                                            .productImportDetails[
+                                                            index - 1
+                                                          ].productBatches[0],
+                                                          quantity:
+                                                            e.target.value,
+                                                        },
+                                                      ],
+                                                    },
+                                                    ...product.productImportDetails.slice(
+                                                      index
+                                                    ),
+                                                  ],
+                                                });
+                                              }}
+                                            />
+                                          </div>
+
+                                          <div className="form-text"></div>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}{" "}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <hr />
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+              </div>
+            </div>
+            <div
+              className="row "
+              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+            >
+              <div className="col-xl">
+                <div className="card mb-4">
+                  <div
+                    className="card-header d-flex justify-content-between align-items-center"
+                    style={{
+                      height: 70,
+                      backgroundColor: "white",
+                      padding: "20px 24px",
+
+                      borderColor: "#f4f4f4",
+                    }}
+                  >
                     <h5 className="mb-0">Add new Import Product</h5>
                   </div>
                   <div className="card-body">
@@ -416,7 +869,7 @@ const UpdateImportProduct = () => {
                             type="text"
                             className="form-control"
                             id="basic-icon-default-fullname"
-                            placeholder="Tên Sản Phẩm"
+                            placeholder="Ghi Chú"
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
                             value={product.note}
@@ -439,9 +892,10 @@ const UpdateImportProduct = () => {
                         <div className="input-group input-group-merge">
                           <input
                             type="text"
+                            readOnly
                             id="basic-icon-default-company"
                             className="form-control"
-                            placeholder="Tên Loại Con Sản Phẩm"
+                            placeholder="Tổng Giá Sản Phẩm"
                             aria-label="Tên Loại Con Sản Phẩm"
                             aria-describedby="basic-icon-default-company2"
                             value={product.totalProductPrice}
@@ -467,6 +921,7 @@ const UpdateImportProduct = () => {
                             name="city"
                             id="basic-icon-default-email"
                             className="form-control"
+                            
                             value={product.taxPrice}
                             onChange={(e) =>
                               setProduct((prevState) => ({
@@ -512,8 +967,9 @@ const UpdateImportProduct = () => {
                           <input
                             type="text"
                             id="basic-icon-default-company"
+                            readOnly
                             className="form-control"
-                            placeholder="Công dung"
+                            placeholder="Tổng Giá"
                             aria-label="Công dung"
                             aria-describedby="basic-icon-default-company2"
                             value={product.totalPrice}
@@ -527,403 +983,31 @@ const UpdateImportProduct = () => {
                         </div>
                       </div>
                     </div>
-                    <button
-                      type="submit"
-                      className="button-28"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        createNewProducts();
-                      }}
-                      style={{
-                        height: 30,
-                        width: 80,
-                        fontSize: 13,
-                        paddingTop: 1,
-                        marginLeft: "90%",
-                        marginTop: "20px",
-                        backgroundColor: "#82AAE3",
-                        color: "white",
-                      }}
-                    >
-                      Save
-                    </button>
+                    {product.isReleased === true ? (
+                      <div></div>
+                    ) : (
+                      <button
+                        type="submit"
+                        className="button-28"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          createNewProducts();
+                        }}
+                        style={{
+                          height: 30,
+                          width: 80,
+                          fontSize: 13,
+                          paddingTop: 1,
+                          marginLeft: "90%",
+                          marginTop: "20px",
+                          backgroundColor: "#82AAE3",
+                          color: "white",
+                        }}
+                      >
+                        Lưu
+                      </button>
+                    )}
                   </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="row "
-              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
-            >
-              <div className="col-xl">
-                <div className="card mb-4">
-                  <div
-                    className="card-header d-flex justify-content-between align-items-center"
-                    style={{
-                      height: 70,
-                      backgroundColor: "white",
-                      padding: "20px 24px",
-
-                      borderColor: "#f4f4f4",
-                    }}
-                  >
-                    <h5 className="mb-0">Thêm Sản phẩm </h5>
-                  </div>{" "}
-                  {Array.from({ length: unitCount }, (_, i) => i + 1).map(
-                    (index) => (
-                      <div className="card-body">
-                        <div>
-                          <div
-                            style={{
-                              display: "flex",
-                              marginLeft: 100,
-                              padding: 30,
-                              flexWrap: "wrap",
-                            }}
-                          >
-                            <div
-                              key={index}
-                              className="mb-3"
-                              style={{ width: "20%", marginRight: 20 }}
-                            >
-                              <label
-                                className="form-label"
-                                htmlFor="basic-icon-default-phone"
-                              >
-                                Id sản phẩm
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <input
-                                  name="city"
-                                  id="basic-icon-default-email"
-                                  className="form-control"
-                                  value={
-                                    product.productImportDetails[index - 1]
-                                      .productId
-                                  }
-                                  onChange={(e) => {
-                                    setProduct({
-                                      ...product,
-                                      productImportDetails: [
-                                        ...product.productImportDetails.slice(
-                                          0,
-                                          index - 1
-                                        ),
-                                        {
-                                          ...product.productImportDetails[
-                                            index - 1
-                                          ],
-                                          productId: e.target.value,
-                                        },
-                                        ...product.productImportDetails.slice(
-                                          index
-                                        ),
-                                      ],
-                                    });
-                                  }}
-                                ></input>
-                              </div>
-                            </div>
-                            <div
-                              key={index}
-                              className="mb-3"
-                              style={{ width: "20%", marginRight: 20 }}
-                            >
-                              <label
-                                className="form-label"
-                                htmlFor={`unitId${index}`}
-                              >
-                                Số lượng
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <input
-                                  type="text"
-                                  id={`quantitative${index}`}
-                                  className="form-control"
-                                  placeholder="Định Lượng"
-                                  aria-label="Unit Id"
-                                  aria-describedby={`quantitative${index}2`}
-                                  value={
-                                    product.productImportDetails[index - 1]
-                                      .quantity
-                                  }
-                                  onChange={(e) => {
-                                    setProduct({
-                                      ...product,
-                                      productImportDetails: [
-                                        ...product.productImportDetails.slice(
-                                          0,
-                                          index - 1
-                                        ),
-                                        {
-                                          ...product.productImportDetails[
-                                            index - 1
-                                          ],
-                                          quantity: e.target.value,
-                                        },
-                                        ...product.productImportDetails.slice(
-                                          index
-                                        ),
-                                      ],
-                                    });
-                                  }}
-                                />
-                              </div>
-                            </div>
-                            <div
-                              key={index}
-                              className="mb-3"
-                              style={{ width: "20%", marginRight: 20 }}
-                            >
-                              <label
-                                className="form-label"
-                                htmlFor={`unitId${index}`}
-                              >
-                                Giá
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <input
-                                  type="text"
-                                  id={`sellQuantity${index}`}
-                                  className="form-control"
-                                  placeholder="Số lượng bán"
-                                  aria-label="Unit Id"
-                                  aria-describedby={`sellQuantity${index}2`}
-                                  value={
-                                    product.productImportDetails[index - 1]
-                                      .importPrice
-                                  }
-                                  onChange={(e) => {
-                                    setProduct({
-                                      ...product,
-                                      productImportDetails: [
-                                        ...product.productImportDetails.slice(
-                                          0,
-                                          index - 1
-                                        ),
-                                        {
-                                          ...product.productImportDetails[
-                                            index - 1
-                                          ],
-                                          importPrice: e.target.value,
-                                        },
-                                        ...product.productImportDetails.slice(
-                                          index
-                                        ),
-                                      ],
-                                    });
-                                  }}
-                                />
-                              </div>
-                            </div>
-                            <div
-                              key={index}
-                              className="mb-3"
-                              style={{ width: "20%", marginRight: 20 }}
-                            >
-                              <label
-                                className="form-label"
-                                htmlFor={`unitId${index}`}
-                              >
-                                Hạn sử dụng
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <input
-                                  type="text"
-                                  id={`price${index}`}
-                                  className="form-control"
-                                  placeholder="Unit Id"
-                                  aria-label="Unit Id"
-                                  aria-describedby={`price${index}2`}
-                                  value={
-                                    product.productImportDetails[
-                                      index - 1
-                                    ].productBatches
-                                      .map(
-                                        (productBatch) =>
-                                          productBatch.expireDate
-                                      )
-                                      .join(", ")
-                                      // ? new Date(
-                                      //     product.productImportDetails[
-                                      //       index - 1
-                                      //     ].productBatches
-                                      //       .map(
-                                      //         (productBatch) =>
-                                      //           productBatch.expireDate
-                                      //       )
-                                      //       .join(", ")
-                                      //   )
-                                      //     .toISOString()
-                                      //     .substr(0, 10)
-                                      // : ""
-                                  }
-                                  onChange={(e) => {
-                                    setProduct({
-                                      ...product,
-                                      productImportDetails: [
-                                        ...product.productImportDetails.slice(
-                                          0,
-                                          index - 1
-                                        ),
-                                        {
-                                          ...product.productImportDetails[
-                                            index - 1
-                                          ],
-                                          productBatches: [
-                                            {
-                                              ...product.productImportDetails[
-                                                index - 1
-                                              ].productBatches[0],
-                                              expireDate: e.target.value,
-                                            },
-                                          ],
-                                        },
-                                        ...product.productImportDetails.slice(
-                                          index
-                                        ),
-                                      ],
-                                    });
-                                  }}
-                                />
-                              </div>
-                            </div>
-                            <div
-                              key={index}
-                              className="mb-3"
-                              style={{ width: "20%", marginRight: 20 }}
-                            >
-                              <label
-                                className="form-label"
-                                htmlFor={`unitId${index}`}
-                              >
-                                Ngày sản xuất
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <input
-                                  type="text"
-                                  id={`barCode${index}`}
-                                  className="form-control"
-                                  placeholder="Unit Id"
-                                  aria-label="Unit Id"
-                                  aria-describedby={`barCode${index}2`}
-                                  value={
-                                    product.productImportDetails[
-                                      index - 1
-                                    ].productBatches
-                                      .map(
-                                        (productBatch) =>
-                                          productBatch.manufactureDate
-                                      )
-                                      .join(", ")
-                                      // ? new Date(
-                                      //     product.productImportDetails[
-                                      //       index - 1
-                                      //     ].productBatches
-                                      //       .map(
-                                      //         (productBatch) =>
-                                      //           productBatch.manufactureDate
-                                      //       )
-                                      //       .join(", ")
-                                      //   )
-                                      //     .toISOString()
-                                      //     .substr(0, 10)
-                                      // : ""
-                                  }
-                                  onChange={(e) => {
-                                    setProduct({
-                                      ...product,
-                                      productImportDetails: [
-                                        ...product.productImportDetails.slice(
-                                          0,
-                                          index - 1
-                                        ),
-                                        {
-                                          ...product.productImportDetails[
-                                            index - 1
-                                          ],
-                                          productBatches: [
-                                            {
-                                              ...product.productImportDetails[
-                                                index - 1
-                                              ].productBatches[0],
-                                              manufactureDate: e.target.value,
-                                            },
-                                          ],
-                                        },
-                                        ...product.productImportDetails.slice(
-                                          index
-                                        ),
-                                      ],
-                                    });
-                                  }}
-                                />
-                              </div>
-                            </div>
-                            <div
-                              className="mb-3"
-                              style={{ width: "20%", marginRight: 20 }}
-                            >
-                              <label
-                                className="form-label"
-                                htmlFor="basic-icon-default-email"
-                              >
-                                số lượng sản phẩm lô
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <input
-                                  type="text"
-                                  id="basic-icon-default-email"
-                                  className="form-control"
-                                  placeholder="Phone Number"
-                                  aria-label="Phone Number"
-                                  aria-describedby="basic-icon-default-email2"
-                                  value={product.productImportDetails[
-                                    index - 1
-                                  ].productBatches
-                                    .map(
-                                      (productBatch) => productBatch.quantity
-                                    )
-                                    .join(", ")}
-                                  onChange={(e) => {
-                                    setProduct({
-                                      ...product,
-                                      productImportDetails: [
-                                        ...product.productImportDetails.slice(
-                                          0,
-                                          index - 1
-                                        ),
-                                        {
-                                          ...product.productImportDetails[
-                                            index - 1
-                                          ],
-                                          productBatches: [
-                                            {
-                                              ...product.productImportDetails[
-                                                index - 1
-                                              ].productBatches[0],
-                                              quantity: e.target.value,
-                                            },
-                                          ],
-                                        },
-                                        ...product.productImportDetails.slice(
-                                          index
-                                        ),
-                                      ],
-                                    });
-                                  }}
-                                />
-                              </div>
-
-                              <div className="form-text"></div>
-                            </div>
-                          </div>
-                        </div>
-                        <hr />
-                      </div>
-                    )
-                  )}
-                  
                 </div>
               </div>
             </div>

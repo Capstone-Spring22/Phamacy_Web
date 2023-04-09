@@ -464,7 +464,7 @@ const CheckOutPharmacist = () => {
                             aria-describedby="basic-icon-default-fullname2"
                           >
                             {listCart.length === 0 ? (
-                              <div>Không có sản phẩm trong giỏ hàng</div>
+                              <img style={{height:400}}  src="https://rtworkspace.com/wp-content/plugins/rtworkspace-ecommerce-wp-plugin/assets/img/empty-cart.png"/>
                             ) : (
                               <>
                                 {listCart &&

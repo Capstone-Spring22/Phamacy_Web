@@ -21,6 +21,7 @@ const OrderDetail = () => {
   const [ProductDetail, setProductDetail] = useState([]);
   const [orderContactInfo, setOrderContactInfo] = useState([]);
   const [orderDelivery, setOrderDelivery] = useState([]);
+  const [actionStatus, setActionStatus] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
   const [orderStatus, setOrderStatus] = useState([]);
@@ -39,6 +40,7 @@ const OrderDetail = () => {
         setProductDetail(res.data.orderProducts);
         setOrderContactInfo(res.data.orderContactInfo);
         setOrderDelivery(res.data.orderDelivery);
+        setActionStatus(res.data.actionStatus);
       }
     }
   }
@@ -469,6 +471,7 @@ const OrderDetail = () => {
                             />
                           </div>
                         </div>
+                        
                       </div>
                       <div style={{ display: "flex" }}>
                         <button
@@ -890,6 +893,25 @@ const OrderDetail = () => {
                               aria-describedby="basic-icon-default-fullname2"
                             >
                               {OrderDetail.note}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-phone"
+                          >
+                            Trạng Thái Hành Động
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <div
+                              type="text"
+                              id="basic-icon-default-fullname"
+                              placeholder="Tên Sản Phẩm"
+                              aria-label="Tên Sản Phẩm"
+                              aria-describedby="basic-icon-default-fullname2"
+                            >
+                              {actionStatus.statusMessage}
                             </div>
                           </div>
                         </div>

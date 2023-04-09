@@ -337,7 +337,7 @@ const Home = () => {
                 className="site-navigation text-right text-md-center"
                 role="navigation"
               >
-                <ul className="site-menu js-clone-nav d-none d-lg-block">
+                <ul className="site-menu js-clone-nav d-none d-lg-block" style={{marginLeft:-30}}>
                   <li className="active">
                     <Link activeClassName="active" to="/Home" exact>
                       <span>Home</span>
@@ -350,11 +350,7 @@ const Home = () => {
                   </li>
 
                   {buttonHistory}
-                  <li>
-                    <Link activeClassName="active" to="/LoginAdmin">
-                      <span>LoginAdmin</span>
-                    </Link>
-                  </li>
+                 
                   {buttonLogout}
                 </ul>
               </nav>

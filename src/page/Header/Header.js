@@ -115,11 +115,7 @@ const Header = () => {
                   </Link>
                 </li>
                 {buttonHistory}
-                <li>
-                  <Link activeClassName="active" to="/LoginAdmin">
-                    <span>LoginAdmin</span>
-                  </Link>
-                </li>
+                
                 {buttonLogout}
               </ul>
             </nav>
