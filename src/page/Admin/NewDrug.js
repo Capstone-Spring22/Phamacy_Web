@@ -2,13 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 
 import SideBar from "../sidebar/SideBarOwner";
-import Creatable, { useCreatable } from "react-select/creatable";
+import Creatable from "react-select/creatable";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import { Link } from "react-router-dom";
 import { getDataByPath, createDataByPath } from "../../services/data.service";
 import axios from "axios";
-import ReactPaginate from "react-paginate";
 
 const NewDrug = () => {
   const [ingredientCount, setIngredientCount] = useState(1);
@@ -17,24 +15,18 @@ const NewDrug = () => {
   const [manufactuner, setManufactuner] = useState([]);
   const [manufactunerId, setManufactunerId] = useState("");
   const [productIngredient, setProductIngredient] = useState([]);
-  const [productIngredientID, setProductIngredientID] = useState([]);
-  const [addUnit, setAddUnit] = useState(false);
   const [unit, setUnit] = useState([]);
   const [unit2, setUnit2] = useState([]);
   const [unitSelected, setUnitSelected] = useState(false);
-  const [ingredientSelected, setIngredientSelected] = useState(false);
 
   const [categorySelected, setCategorySelected] = useState(false);
   const [userUsageSelected, setUserUsageSelected] = useState(false);
   const [manufactunerSelected, setManufactunerSelected] = useState(false);
   const [isBatches, setIsBatches] = useState(false);
   const [isPrescription, setIsPrescription] = useState(false);
-  const [unitID, setUnitID] = useState("");
-  const [unitID2, setUnitID2] = useState("");
-  const [isSell, setIsSell] = useState(false);
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(100);
-  const [newIngredient, setNewIngredient] = useState([]);
   const resDataRef = useRef(null);
   const [subCategory, setSubCategory] = useState([]);
   const [subCategoryID, setSubCategoryID] = useState("");
@@ -85,7 +77,6 @@ const NewDrug = () => {
       setUnit(res.data.items);
     }
   }
-  const [userUsage, setUserUsage] = useState([]);
   const userUsages = [
     { name: "trẻ em", value: 1 },
     { name: "người lớn", value: 2 },
@@ -118,11 +109,7 @@ const NewDrug = () => {
     setSubCategoryID(subCategoryID);
     console.log("subCategoryID", subCategoryID);
   };
-  const handleUserTarget = (event) => {
-    event.preventDefault();
-    const userUsage = event.target.value;
-    setUserUsage(userUsage);
-  };
+
   async function loadDataProductIngredient() {
     const path = `ProductIngredient?pageIndex=1&pageItems=111`;
     const res = await getDataByPath(path, "", "");
@@ -130,11 +117,7 @@ const NewDrug = () => {
       setProductIngredient(res.data.items);
     }
   }
-  const handleProductIngredient = (event) => {
-    event.preventDefault();
-    const productIngredientID = event.target.value;
-    setProductIngredientID(productIngredientID);
-  };
+
   async function loadDataUnit2() {
     const path = `Unit?pageIndex=1&pageItems=111`;
     const res = await getDataByPath(path, "", "");
@@ -142,16 +125,7 @@ const NewDrug = () => {
       setUnit2(res.data.items);
     }
   }
-  const handleUnit = (event) => {
-    event.preventDefault();
-    const unitID = event.target.value;
-    setUnitID(unitID);
-  };
-  const handleUnit2 = (event) => {
-    event.preventDefault();
-    const unitID2 = event.target.value;
-    setUnitID2(unitID2);
-  };
+
   const handleManufactuner = (e) => {
     e.preventDefault();
     const manufactunerId = e.target.value;
@@ -384,100 +358,7 @@ const NewDrug = () => {
                 </div>
               </div>
               {/* /Search */}
-              <ul className="navbar-nav flex-row align-items-center ms-auto">
-                {/* Place this tag where you want the button to render. */}
-                <li className="nav-item lh-1 me-3">
-                  <a
-                    className="github-button"
-                    href="https://github.com/themeselection/sneat-html-admin-template-free"
-                    data-icon="octicon-star"
-                    data-size="large"
-                    data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-                  >
-                    Star
-                  </a>
-                </li>
-                {/* User */}
-
-                <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                  <Link
-                    className="nav-link dropdown-toggle hide-arrow"
-                    to="/Profile"
-                    data-bs-toggle="dropdown"
-                  >
-                    <div className="avatar avatar-online">
-                      <img
-                        src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
-                        alt=""
-                        className="w-px-40 h-auto rounded-circle"
-                      />
-                    </div>
-                  </Link>
-                  <ul className="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <div className="d-flex">
-                          <div className="flex-shrink-0 me-3">
-                            <div className="avatar avatar-online">
-                              <img
-                                src="../assets/img/avatars/1.png"
-                                alt=""
-                                className="w-px-40 h-auto rounded-circle"
-                              />
-                            </div>
-                          </div>
-                          <div className="flex-grow-1">
-                            <span className="fw-semibold d-block">
-                              John Doe
-                            </span>
-                            <small className="text-muted">Admin</small>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <li>
-                      <div className="dropdown-divider" />
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <i className="bx bx-user me-2" />
-                        <span className="align-middle">My Profile</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <i className="bx bx-cog me-2" />
-                        <span className="align-middle">Settings</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <span className="d-flex align-items-center align-middle">
-                          <i className="flex-shrink-0 bx bx-credit-card me-2" />
-                          <span className="flex-grow-1 align-middle">
-                            Billing
-                          </span>
-                          <span className="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">
-                            4
-                          </span>
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div className="dropdown-divider" />
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="auth-login-basic.html">
-                        <i className="bx bx-power-off me-2" />
-                        <span className="align-middle">Log Out</span>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-
-                {/*/ User */}
-              </ul>
+            
             </div>
           </nav>
 

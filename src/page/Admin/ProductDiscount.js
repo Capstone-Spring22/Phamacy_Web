@@ -7,15 +7,13 @@ import ReactPaginate from "react-paginate";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";
-import { getDataByPath, deleteDataByPath } from "../../services/data.service";
-import { Link } from "react-router-dom";
+import { getDataByPath } from "../../services/data.service";
 
 const ProductDiscount = () => {
   const [drug, setDrug] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
   const [totalRecord, setTotalRecord] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   let history = useHistory();
 
   const update = (myId) => {

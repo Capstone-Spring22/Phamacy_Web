@@ -1,21 +1,16 @@
-import { useEffect, useState, useHistory } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState  } from "react";
 import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import ReactPaginate from "react-paginate";
-import { Dropdown } from "react-bootstrap";
 import axios from "axios";
 import {
   getDataByPath,
-  deleteDataByPath,
-  createDataByPath,
+createDataByPath,
   updateDataByPath,
 } from "../../services/data.service";
-import { alert, defaultModules } from "@pnotify/core";
 import "@pnotify/core/dist/PNotify.css";
-import * as PNotifyMobile from "@pnotify/mobile";
 import "@pnotify/mobile/dist/PNotifyMobile.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 const MainCategory = () => {
@@ -206,24 +201,7 @@ const MainCategory = () => {
                   </div>
                 </div>
                 {/* /Search */}
-                <ul className="navbar-nav flex-row align-items-center ms-auto">
-                  {/* Place this tag where you want the button to render. */}
-                  <li className="nav-item lh-1 me-3">
-                    <a
-                      className="github-button"
-                      href="https://github.com/themeselection/sneat-html-admin-template-free"
-                      data-icon="octicon-star"
-                      data-size="large"
-                      data-show-count="true"
-                      aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-                    >
-                      Star
-                    </a>
-                  </li>
-                  {/* User */}
-
-                  {/*/ User */}
-                </ul>
+                
               </div>
             </nav>
 

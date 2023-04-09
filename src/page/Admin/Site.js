@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarAdmin";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -9,7 +9,6 @@ import ReactPaginate from "react-paginate";
 import { Switch } from "antd";
 import {
   getDataByPath,
-  deleteDataByPath,
   createDataByPath,
   updateDataByPath,
 } from "../../services/data.service";
@@ -35,20 +34,9 @@ const Site = () => {
   const [siteNameErrorMessage, setSiteNameErrorMessage] = useState("");
   const [cityErrorMessage, setCityErrorMessage] = useState("");
   const [districtsErrorMessage, setDistrictsErrorMessage] = useState("");
-  const [wardErrorMessage, setWardErrorMessage] = useState("");
-  const [descriptionErrorMessage, setDescriptionErrorMessage] = useState("");
-  const [contactInfoErrorMessage, setContactInfoErrorMessage] = useState("");
+ 
   const [countUs, setCountUs] = useState("2");
-  const [siteUpdate, setSiteUpdate] = useState({
-    siteName: "",
-    description: "",
-    contactInfo: "",
-    imageUrl: "",
-    cityId: "",
-    districtId: "",
-    wardID: "",
-    homeAddress: "",
-  });
+ 
 
   let history = useHistory();
 
@@ -65,9 +53,7 @@ const Site = () => {
     return true;
   };
 
-  const handleClick = (id) => {
-    console.log("display", id);
-  };
+
 
   async function loadDataSite() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -321,111 +307,7 @@ const Site = () => {
                   </div>
                 </div>
                 {/* /Search */}
-                <ul className="navbar-nav flex-row align-items-center ms-auto">
-                  {/* Place this tag where you want the button to render. */}
-                  <li className="nav-item lh-1 me-3">
-                    <a
-                      className="github-button"
-                      href="https://github.com/themeselection/sneat-html-admin-template-free"
-                      data-icon="octicon-star"
-                      data-size="large"
-                      data-show-count="true"
-                      aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-                    >
-                      Star
-                    </a>
-                  </li>
-                  {/* User */}
-
-                  <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                    <ul className="dropdown-menu dropdown-menu-end">
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <div className="d-flex">
-                            <div className="flex-shrink-0 me-3">
-                              <div className="avatar avatar-online">
-                                <img
-                                  src="../assets/img/avatars/1.png"
-                                  alt=""
-                                  className="w-px-40 h-auto rounded-circle"
-                                />
-                              </div>
-                            </div>
-                            <div className="flex-grow-1">
-                              <span className="fw-semibold d-block">
-                                John Doe
-                              </span>
-                              <small className="text-muted">Admin</small>
-                            </div>
-                          </div>
-                        </a>
-                      </li>
-                      <li>
-                        <div className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <i className="bx bx-user me-2" />
-                          <span className="align-middle">My Profile</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <i className="bx bx-cog me-2" />
-                          <span className="align-middle">Settings</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          <span className="d-flex align-items-center align-middle">
-                            <i className="flex-shrink-0 bx bx-credit-card me-2" />
-                            <span className="flex-grow-1 align-middle">
-                              Billing
-                            </span>
-                            <span className="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">
-                              4
-                            </span>
-                          </span>
-                        </a>
-                      </li>
-                      <li>
-                        <div className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <a
-                          className="dropdown-item"
-                          href="auth-login-basic.html"
-                        >
-                          <i className="bx bx-power-off me-2" />
-                          <span className="align-middle">Log Out</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-
-                  <nav className="nav1">
-                    <input id="toggle" type="checkbox" defaultChecked />
-
-                    <button
-                      className="avatar avatar-online"
-                      style={{ border: "none", backgroundColor: "white" }}
-                    >
-                      <img
-                        src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
-                        alt=""
-                        className="w-px-40 h-auto rounded-circle"
-                      />
-                    </button>
-                    <div
-                      style={{
-                        width: 100,
-                        height: 200,
-                        backgroundColor: "white",
-                      }}
-                    ></div>
-                  </nav>
-                  {/*/ User */}
-                </ul>
+               
               </div>
             </nav>
 

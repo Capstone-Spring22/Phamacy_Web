@@ -1,27 +1,19 @@
 import { useEffect, useState } from "react";
-import React, { Fragment } from "react";
+import React from "react";
 import Swal from "sweetalert2";
 
 import SideBar from "../sidebar/SideBarPharmacist";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import { Link } from "react-router-dom";
 import {
   getDataByPath,
-  deleteDataByPath,
   createDataByPath,
-  updateDataByPath,
 } from "../../services/data.service";
-import ReactPaginate from "react-paginate";
-import { useHistory } from "react-router-dom";
-import axios from "axios";
-import { List } from "antd";
+
 const CheckOutPharmacist = () => {
-  const myId = localStorage.getItem("id");
 
   const [activeItem, setActiveItem] = useState("CheckOutPharmacist");
   const [drug, setDrug] = useState(null);
-  const [drugInCart, setDrugInCart] = useState([]);
   const [listCart, setListCart] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
@@ -149,12 +141,7 @@ const CheckOutPharmacist = () => {
       console.log("display", listCart);
     }
   }
-  const removeInCart = (id) => {
-    console.log("display", id);
-    const newList = listCart.filter((item) => item.productId !== id);
-
-    setListCart(newList);
-  };
+ 
   const [newArrayOfObjects, setNewArrayOfObjects] = useState([]);
 
   const [product, setProduct] = useState({
@@ -290,100 +277,7 @@ setProduct({...product,
               </div>
 
               {/* /Search */}
-              <ul className="navbar-nav flex-row align-items-center ms-auto">
-                {/* Place this tag where you want the button to render. */}
-                <li className="nav-item lh-1 me-3">
-                  <a
-                    className="github-button"
-                    href="https://github.com/themeselection/sneat-html-admin-template-free"
-                    data-icon="octicon-star"
-                    data-size="large"
-                    data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-                  >
-                    Star
-                  </a>
-                </li>
-                {/* User */}
-
-                <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                  <Link
-                    className="nav-link dropdown-toggle hide-arrow"
-                    to="/Profile"
-                    data-bs-toggle="dropdown"
-                  >
-                    <div className="avatar avatar-online">
-                      <img
-                        src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
-                        alt=""
-                        className="w-px-40 h-auto rounded-circle"
-                      />
-                    </div>
-                  </Link>
-                  <ul className="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <div className="d-flex">
-                          <div className="flex-shrink-0 me-3">
-                            <div className="avatar avatar-online">
-                              <img
-                                src="../assets/img/avatars/1.png"
-                                alt=""
-                                className="w-px-40 h-auto rounded-circle"
-                              />
-                            </div>
-                          </div>
-                          <div className="flex-grow-1">
-                            <span className="fw-semibold d-block">
-                              John Doe
-                            </span>
-                            <small className="text-muted">Admin</small>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <li>
-                      <div className="dropdown-divider" />
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <i className="bx bx-user me-2" />
-                        <span className="align-middle">My Profile</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <i className="bx bx-cog me-2" />
-                        <span className="align-middle">Settings</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <span className="d-flex align-items-center align-middle">
-                          <i className="flex-shrink-0 bx bx-credit-card me-2" />
-                          <span className="flex-grow-1 align-middle">
-                            Billing
-                          </span>
-                          <span className="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">
-                            4
-                          </span>
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div className="dropdown-divider" />
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="auth-login-basic.html">
-                        <i className="bx bx-power-off me-2" />
-                        <span className="align-middle">Log Out</span>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-
-                {/*/ User */}
-              </ul>
+             
             </div>
           </nav>
 

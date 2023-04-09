@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarOwner";
 import ReactPaginate from "react-paginate";
 
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";
-import { getDataByPath, deleteDataByPath } from "../../services/data.service";
-import { Link } from "react-router-dom";
+import { getDataByPath } from "../../services/data.service";
 
 const Drug = () => {
   const [drug, setDrug] = useState(null);
@@ -17,13 +15,7 @@ const Drug = () => {
   const [totalRecord, setTotalRecord] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [subCategory, setSubCategory] = useState([]);
-  const [totalSite, setTotalSite] = useState([]);
-  const [subCategoryName, setSubCategoryName] = useState("");
-  const [mainCategoryId, setMainCategoryId] = useState("");
-  const [mainCategory, setMainCategory] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  
-  const [isOpen, setIsOpen] = useState(true);
+
   let history = useHistory();
 
   async function loadDataCategory() {
@@ -130,24 +122,7 @@ const Drug = () => {
                         </div>
                       </div>
                       {/* /Search */}
-                      <ul className="navbar-nav flex-row align-items-center ms-auto">
-                        {/* Place this tag where you want the button to render. */}
-                        <li className="nav-item lh-1 me-3">
-                          <a
-                            className="github-button"
-                            href="https://github.com/themeselection/sneat-html-admin-template-free"
-                            data-icon="octicon-star"
-                            data-size="large"
-                            data-show-count="true"
-                            aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-                          >
-                            Star
-                          </a>
-                        </li>
-                        {/* User */}
-
-                        {/*/ User */}
-                      </ul>
+                      
                     </div>
                   </nav>
 

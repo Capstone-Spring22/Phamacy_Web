@@ -1,40 +1,23 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import Select from "react-select";
 import SideBar from "../sidebar/SideBarManager";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import { Link } from "react-router-dom";
-import {
-  getDataByPath,
-  deleteDataByPath,
-  createDataByPath,
-  updateDataByPath,
-} from "../../services/data.service";
-import ReactPaginate from "react-paginate";
+import { getDataByPath, updateDataByPath } from "../../services/data.service";
 
 const UpdateImportProduct = () => {
   const myId = localStorage.getItem("id");
-  const [ingredientCount, setIngredientCount] = useState(1);
   const [unitCount, setUnitCount] = useState(1);
-  const [imageInputCount, setImageInputCount] = useState(1);
+
   const [manufactuner, setManufactuner] = useState([]);
-  const [manufactunerID, setManufactunerID] = useState([]);
   const [productIngredient, setProductIngredient] = useState([]);
-  const [productIngredientID, setProductIngredientID] = useState([]);
-  const [addUnit, setAddUnit] = useState(false);
+
   const [unit, setUnit] = useState([]);
   const [unit2, setUnit2] = useState([]);
   const [indexUnit, setIndexUnit] = useState(0);
   const [countQuantity, setCountQuantity] = useState(0);
   const [countprice, setcountPrice] = useState(0);
-  const [addNewUnit, setAddnewUnit] = useState(false);
-  const [addNewUnit2, setAddnewUnit2] = useState(false);
-  const [isBatches, setIsBatches] = useState(false);
-  const [isPrescription, setIsPrescription] = useState(false);
-  const [unitID, setUnitID] = useState("");
-  const [unitID2, setUnitID2] = useState("");
-  const [isSell, setIsSell] = useState(false);
+
   const [drug, setDrug] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(30);
@@ -106,21 +89,7 @@ const UpdateImportProduct = () => {
       setUnit2(res.data.items);
     }
   }
-  const handleUnit = (event) => {
-    event.preventDefault();
-    const unitID = event.target.value;
-    setUnitID(unitID);
-  };
-  const handleUnit2 = (event) => {
-    event.preventDefault();
-    const unitID2 = event.target.value;
-    setUnitID2(unitID2);
-  };
-  const handleManufactuner = (event) => {
-    event.preventDefault();
-    const manufactunerID = event.target.value;
-    setManufactunerID(manufactunerID);
-  };
+
   async function loadDataDrug() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -135,43 +104,6 @@ const UpdateImportProduct = () => {
     }
   }
 
-  const handleBatchChange = (event) => {
-    setIsBatches(event.target.checked);
-
-    // Lấy giá trị cho batch tại đây
-    if (event.target.checked) {
-      setProduct((prevState) => ({
-        ...prevState,
-        isBatches: 1,
-      }));
-    } else {
-      setProduct((prevState) => ({
-        ...prevState,
-        isBatches: 0,
-      }));
-    }
-  };
-  const options = drug.map((e) => ({
-    label: e.name,
-    value: e.id,
-    unit: e.productUnitReferences,
-  }));
-  const handlePrescriptionChange = (event) => {
-    setIsPrescription(event.target.checked);
-
-    // Lấy giá trị cho batch tại đây
-    if (event.target.checked) {
-      setProduct((prevState) => ({
-        ...prevState,
-        isPrescription: 1,
-      }));
-    } else {
-      setProduct((prevState) => ({
-        ...prevState,
-        isPrescription: 0,
-      }));
-    }
-  };
   const handleAddQuantity = (index) => {
     setProduct({
       ...product,
@@ -287,45 +219,7 @@ const UpdateImportProduct = () => {
     loadDataDrug();
   }, []);
 
-  const handleAddIngredient = () => {
-    setProduct({
-      ...product,
-      descriptionModel: {
-        ...product.descriptionModel,
-        ingredientModel: [
-          ...product.descriptionModel.ingredientModel,
-          {
-            ingredientId: "",
-            content: "",
-            unitId: "",
-          },
-        ],
-      },
-    });
-    setIngredientCount(ingredientCount + 1);
-  };
   const [activeItem, setActiveItem] = useState("ImportProduct");
-  const handleAddUnit = () => {
-    setProduct({
-      ...product,
-      productImportDetails: [
-        ...product.productImportDetails,
-        {
-          productId: "",
-          quantity: 0,
-          importPrice: 0,
-          productBatches: [
-            {
-              quantity: 0,
-              manufactureDate: "",
-              expireDate: "",
-            },
-          ],
-        },
-      ],
-    });
-    setUnitCount(unitCount + 1);
-  };
 
   return (
     <div className="layout-wrapper layout-content-navbar">
@@ -366,100 +260,6 @@ const UpdateImportProduct = () => {
                 </div>
               </div>
               {/* /Search */}
-              <ul className="navbar-nav flex-row align-items-center ms-auto">
-                {/* Place this tag where you want the button to render. */}
-                <li className="nav-item lh-1 me-3">
-                  <a
-                    className="github-button"
-                    href="https://github.com/themeselection/sneat-html-admin-template-free"
-                    data-icon="octicon-star"
-                    data-size="large"
-                    data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-                  >
-                    Star
-                  </a>
-                </li>
-                {/* User */}
-
-                <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                  <Link
-                    className="nav-link dropdown-toggle hide-arrow"
-                    to="/Profile"
-                    data-bs-toggle="dropdown"
-                  >
-                    <div className="avatar avatar-online">
-                      <img
-                        src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
-                        alt=""
-                        className="w-px-40 h-auto rounded-circle"
-                      />
-                    </div>
-                  </Link>
-                  <ul className="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <div className="d-flex">
-                          <div className="flex-shrink-0 me-3">
-                            <div className="avatar avatar-online">
-                              <img
-                                src="../assets/img/avatars/1.png"
-                                alt=""
-                                className="w-px-40 h-auto rounded-circle"
-                              />
-                            </div>
-                          </div>
-                          <div className="flex-grow-1">
-                            <span className="fw-semibold d-block">
-                              John Doe
-                            </span>
-                            <small className="text-muted">Admin</small>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <li>
-                      <div className="dropdown-divider" />
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <i className="bx bx-user me-2" />
-                        <span className="align-middle">My Profile</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <i className="bx bx-cog me-2" />
-                        <span className="align-middle">Settings</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <span className="d-flex align-items-center align-middle">
-                          <i className="flex-shrink-0 bx bx-credit-card me-2" />
-                          <span className="flex-grow-1 align-middle">
-                            Billing
-                          </span>
-                          <span className="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">
-                            4
-                          </span>
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div className="dropdown-divider" />
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="auth-login-basic.html">
-                        <i className="bx bx-power-off me-2" />
-                        <span className="align-middle">Log Out</span>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-
-                {/*/ User */}
-              </ul>
             </div>
           </nav>
 
@@ -486,7 +286,6 @@ const UpdateImportProduct = () => {
                   </div>{" "}
                   {Array.from({ length: unitCount }, (_, i) => i + 1).map(
                     (index) => {
-                      
                       return (
                         <div className="card-body" key={index}>
                           <div>
@@ -553,14 +352,15 @@ const UpdateImportProduct = () => {
                                     className="form-control"
                                     placeholder="Số lượng"
                                     aria-label="Unit Id"
-                                    
                                     aria-describedby={`quantitative${index}2`}
                                     value={
                                       product.productImportDetails[index - 1]
                                         .quantity
                                     }
                                     onChange={(e) => {
-                                      setcountPrice((countprice) => parseInt(countprice) + 1);
+                                      setcountPrice(
+                                        (countprice) => parseInt(countprice) + 1
+                                      );
                                       setProduct({
                                         ...product,
                                         productImportDetails: [
@@ -639,7 +439,6 @@ const UpdateImportProduct = () => {
                                     return (
                                       <div className="productimport">
                                         {" "}
-                                       
                                         <div
                                           className="mb-3"
                                           style={{
@@ -662,12 +461,13 @@ const UpdateImportProduct = () => {
                                               aria-label="Unit Id"
                                               aria-describedby={`barCode${index}2`}
                                               value={
-                                                productBatch.manufactureDate?
-                                                new Date(
-                                                  productBatch.manufactureDate
-                                                )
-                                                  .toISOString()
-                                                  .slice(0, 10):""
+                                                productBatch.manufactureDate
+                                                  ? new Date(
+                                                      productBatch.manufactureDate
+                                                    )
+                                                      .toISOString()
+                                                      .slice(0, 10)
+                                                  : ""
 
                                                 // ? new Date(
                                                 //     product.productImportDetails[
@@ -738,12 +538,13 @@ const UpdateImportProduct = () => {
                                               aria-label="Unit Id"
                                               aria-describedby={`price${index}2`}
                                               value={
-                                                productBatch.expireDate?
-                                                new Date(
-                                                  productBatch.expireDate
-                                                )
-                                                  .toISOString()
-                                                  .slice(0, 10):""
+                                                productBatch.expireDate
+                                                  ? new Date(
+                                                      productBatch.expireDate
+                                                    )
+                                                      .toISOString()
+                                                      .slice(0, 10)
+                                                  : ""
 
                                                 // ? new Date(
                                                 //     product.productImportDetails[
@@ -818,7 +619,8 @@ const UpdateImportProduct = () => {
                                               onChange={(e) => {
                                                 setIndexUnit(index);
                                                 setCountQuantity(
-                                                  (countQuantity) => countQuantity + 1
+                                                  (countQuantity) =>
+                                                    countQuantity + 1
                                                 );
                                                 setProduct({
                                                   ...product,
@@ -959,7 +761,6 @@ const UpdateImportProduct = () => {
                             name="city"
                             id="basic-icon-default-email"
                             className="form-control"
-                            
                             value={product.taxPrice}
                             onChange={(e) =>
                               setProduct((prevState) => ({

@@ -9,10 +9,8 @@ import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";
 import {
   getDataByPath,
-  deleteDataByPath,
   updateDataByPath,
 } from "../../services/data.service";
-import { Link } from "react-router-dom";
 import { Switch } from "antd";
 
 const Drug = () => {

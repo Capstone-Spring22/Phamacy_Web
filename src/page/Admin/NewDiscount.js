@@ -1,37 +1,19 @@
 import { useEffect, useState } from "react";
-import React, { Fragment } from "react";
+import React from "react";
 import Swal from "sweetalert2";
 
 import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import { Link } from "react-router-dom";
 import {
   getDataByPath,
-  deleteDataByPath,
   createDataByPath,
 } from "../../services/data.service";
 
-import ReactPaginate from "react-paginate";
 import Select from "react-select";
 const NewDiscount = () => {
-  const [ingredientCount, setIngredientCount] = useState(1);
   const [unitCount, setUnitCount] = useState(1);
-  const [imageInputCount, setImageInputCount] = useState(1);
-  const [manufactuner, setManufactuner] = useState([]);
-  const [manufactunerID, setManufactunerID] = useState([]);
-  const [productIngredient, setProductIngredient] = useState([]);
-  const [productIngredientID, setProductIngredientID] = useState([]);
-  const [addUnit, setAddUnit] = useState(false);
-  const [unit, setUnit] = useState([]);
-  const [unit2, setUnit2] = useState([]);
-  const [addNewUnit, setAddnewUnit] = useState(false);
-  const [addNewUnit2, setAddnewUnit2] = useState(false);
-  const [isBatches, setIsBatches] = useState(false);
-  const [isPrescription, setIsPrescription] = useState(false);
-  const [unitID, setUnitID] = useState("");
-  const [unitID2, setUnitID2] = useState("");
-  const [isSell, setIsSell] = useState(false);
+ 
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
   const [totalRecord, setTotalRecord] = useState([]);
@@ -144,100 +126,7 @@ const NewDiscount = () => {
                 </div>
               </div>
               {/* /Search */}
-              <ul className="navbar-nav flex-row align-items-center ms-auto">
-                {/* Place this tag where you want the button to render. */}
-                <li className="nav-item lh-1 me-3">
-                  <a
-                    className="github-button"
-                    href="https://github.com/themeselection/sneat-html-admin-template-free"
-                    data-icon="octicon-star"
-                    data-size="large"
-                    data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-                  >
-                    Star
-                  </a>
-                </li>
-                {/* User */}
-
-                <li className="nav-item navbar-dropdown dropdown-user dropdown">
-                  <Link
-                    className="nav-link dropdown-toggle hide-arrow"
-                    to="/Profile"
-                    data-bs-toggle="dropdown"
-                  >
-                    <div className="avatar avatar-online">
-                      <img
-                        src="https://phunugioi.com/wp-content/uploads/2020/01/anh-avatar-supreme-dep-lam-dai-dien-facebook.jpg"
-                        alt=""
-                        className="w-px-40 h-auto rounded-circle"
-                      />
-                    </div>
-                  </Link>
-                  <ul className="dropdown-menu dropdown-menu-end">
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <div className="d-flex">
-                          <div className="flex-shrink-0 me-3">
-                            <div className="avatar avatar-online">
-                              <img
-                                src="../assets/img/avatars/1.png"
-                                alt=""
-                                className="w-px-40 h-auto rounded-circle"
-                              />
-                            </div>
-                          </div>
-                          <div className="flex-grow-1">
-                            <span className="fw-semibold d-block">
-                              John Doe
-                            </span>
-                            <small className="text-muted">Admin</small>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <li>
-                      <div className="dropdown-divider" />
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <i className="bx bx-user me-2" />
-                        <span className="align-middle">My Profile</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <i className="bx bx-cog me-2" />
-                        <span className="align-middle">Settings</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="#">
-                        <span className="d-flex align-items-center align-middle">
-                          <i className="flex-shrink-0 bx bx-credit-card me-2" />
-                          <span className="flex-grow-1 align-middle">
-                            Billing
-                          </span>
-                          <span className="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">
-                            4
-                          </span>
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div className="dropdown-divider" />
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="auth-login-basic.html">
-                        <i className="bx bx-power-off me-2" />
-                        <span className="align-middle">Log Out</span>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-
-                {/*/ User */}
-              </ul>
+              
             </div>
           </nav>
 
