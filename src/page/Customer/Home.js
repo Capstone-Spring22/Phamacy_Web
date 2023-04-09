@@ -766,7 +766,7 @@ const Home = () => {
 
                         {/* Product Description */}
                         <div className="product-description">
-                          <p style={{ height: 90 }}>{item.name}</p>
+                          <p style={{ height: 90 ,color: '#334155'}}>{item.name}</p>
                           <h4
                             className="product-price"
                             style={{ color: "#82aae3" }}

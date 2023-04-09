@@ -35,11 +35,13 @@ import VNPay from "./page/Customer/VNpay";
 import HistoryOrder from "./page/Customer/HistoryOrder";
 import Chat from "./page/Customer/Chat";
 import ChatPharmacist from "./page/Admin/ChatPhamacist";
+import { Redirect } from "react-router-dom";
 function App() {
   return (
     <div className="site-wrap">
       <BrowserRouter>
         <Switch>
+        <Route exact path="/" render={() => <Redirect to="/home" />} />
           <Route path="/Home">
             <Home />
           </Route>

@@ -2584,7 +2584,6 @@ img {
   position: relative;
   z-index: 1;
   overflow: hidden;
- 
 }
 
 .product-img > img {
@@ -2644,6 +2643,8 @@ img {
 
 .product-description {
   margin-top: 20px;
+  font-family: roboto;
+  line-height: 24px;
 }
 
 .product-description h4 {
@@ -2656,6 +2657,9 @@ img {
 .product-description p {
   font-size: 15px;
   margin: 0;
+  font-family: roboto;
+  line-height: 24px;
+  font-weight: 500;
 }
 
 .product-description .add-to-cart-btn {
@@ -4439,7 +4443,7 @@ a {
 .add-to-cart:hover {
   color: #82aae3;
 }
-.product-img2{
+.product-img2 {
   position: relative;
   width: 120%;
   max-width: 250px;
@@ -4571,7 +4575,6 @@ a {
   margin-left: 5px;
   margin-right: 5px;
   height: 40px;
-
 }
 
 .pagination .page-item.ac {
@@ -4595,12 +4598,12 @@ a {
 .selected {
   border-color: blue;
 }
-.vn-pay-success{
+.vn-pay-success {
   margin-left: 110px;
   font-size: 28px;
   font-weight: 600;
 }
-.product-cart-p{
+.product-cart-p {
   margin-top: 20px;
   margin-left: -80px;
   height: auto;
@@ -4608,35 +4611,34 @@ a {
   border-radius: 10px;
   padding: 20px;
   display: flex;
-  
 }
-.scroll-p{
-  overflow-x:hidden;
-  overflow-y:auto;
+.scroll-p {
+  overflow-x: hidden;
+  overflow-y: auto;
 }
-.search-result{
+.search-result {
   height: 300px;
   background-color: white;
   width: 1200px;
   margin-left: 28px;
   margin-top: 10px;
   border-radius: 5px;
-  margin-bottom:100px;
-  overflow-x:hidden;
-  overflow-y:auto;
+  margin-bottom: 100px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
-.search-result2{
+.search-result2 {
   height: 00px;
   background-color: transparent;
   width: 1200px;
   margin-left: 28px;
   margin-top: 10px;
   border-radius: 5px;
-  margin-bottom:100px;
-  overflow-x:hidden;
-  overflow-y:auto;
+  margin-bottom: 100px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
-.product-cart-p2{
+.product-cart-p2 {
   margin-top: 20px;
   margin-left: 80px;
   height: auto;
@@ -4645,4 +4647,20 @@ a {
   padding: 20px;
   display: flex;
   width: 1000px;
+}
+.button-unit{
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  font-size: 15px;
+  padding: 5px 10px;
+  margin-left:10px
+}
+.button-unit-active{
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  font-size: 15px;
+  padding: 5px 10px;
+  margin-left:10px;
+  background-color: #82aae3;
+  color: white;
 }

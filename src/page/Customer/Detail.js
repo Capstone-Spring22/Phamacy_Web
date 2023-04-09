@@ -33,7 +33,9 @@ const DetailMedicine = () => {
   useEffect(() => {
     console.log("Updated cart:", cart);
   }, [cart]);
-
+  const [selectedUnitID, setSelectedUnitID] = useState(product.id);
+  const unselectedUnitClass = "button-unit";
+  const selectedUnitClass = "button-unit-active";
   async function loadDataProductId() {
     const path = `Product/View/${detailId}`;
     const res = await getDataByPath(path, "", "");
@@ -209,9 +211,18 @@ const DetailMedicine = () => {
                       {showPrice.price.toLocaleString("en-US")}/
                       {showPrice.unitName}
                     </h5>
-                    <p className="available">
+                    <div
+                      className="available"
+                      style={{ display: "flex", fontSize: 20 }}
+                    >
                       <span className="text-muted">Đơn Vị Bán</span>
                       <div
+                        className={
+                          selectedUnitID === product.id
+                            ? selectedUnitClass
+                            : unselectedUnitClass
+                        }
+                        style={{ marginLeft: 10 }}
                         onClick={() => {
                           setproductID1(product.id);
                           setShowPrice({
@@ -219,6 +230,7 @@ const DetailMedicine = () => {
                             price: product.price,
                             unitName: product.unitName,
                           });
+                          setSelectedUnitID(product.id);
                         }}
                       >
                         {product.unitName}
@@ -227,6 +239,11 @@ const DetailMedicine = () => {
                         product.productUnitReferences.map((unit) => {
                           return (
                             <div
+                              className={
+                                selectedUnitID === unit.id
+                                  ? selectedUnitClass
+                                  : unselectedUnitClass
+                              }
                               key={unit.id}
                               onClick={() => {
                                 setproductID1(unit.id);
@@ -235,13 +252,14 @@ const DetailMedicine = () => {
                                   price: unit.price,
                                   unitName: unit.unitName,
                                 });
+                                setSelectedUnitID(unit.id);
                               }}
                             >
                               {unit.unitName}
                             </div>
                           );
                         })}
-                    </p>
+                    </div>
 
                     <div className="widget size mb-50">
                       <h6 className="widget-title" style={{ color: "#334155" }}>
@@ -276,19 +294,30 @@ const DetailMedicine = () => {
                           onChange={(e) => setQuantity(e.target.value)}
                         />
                       </div>
-                      <button
-                        value={5}
-                        className="btn cart-submit d-block"
-                        style={{ backgroundColor: "#82aae3" }}
-                        onClick={() => addToCart(detailId)}
-                      >
-                        Chọn Mua
-                      </button>
+                      {product.isPrescription === false ? (
+                        <button
+                          value={5}
+                          className="btn cart-submit d-block"
+                          style={{ backgroundColor: "#82aae3" }}
+                          // onClick={() => handlePrescription(detailId)}
+                        >
+                          Thuốc kê đơn
+                        </button>
+                      ) : (
+                        <button
+                          value={5}
+                          className="btn cart-submit d-block"
+                          style={{ backgroundColor: "#82aae3" }}
+                          onClick={() => addToCart(detailId)}
+                        >
+                          Chọn Mua
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
                 <div id="accordion" role="tablist">
-                  <div className="card">
+                  <div className="card" style={{ border: "none" }}>
                     <div className="card-header" role="tab" id="headingOne">
                       <h6 className="mb-0">
                         <div
@@ -297,7 +326,7 @@ const DetailMedicine = () => {
                           aria-expanded="true"
                           aria-controls="collapseOne"
                         >
-                          Information
+                          Công Dụng
                         </div>
                       </h6>
                     </div>
@@ -309,59 +338,36 @@ const DetailMedicine = () => {
                       data-parent="#accordion"
                     >
                       <div className="card-body">
-                        <p>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit. Proin pharetra tempor so dales. Phasellus
-                          sagittis auctor gravida. Integ er bibendum sodales
-                          arcu id te mpus. Ut consectetur lacus.
-                        </p>
-                        <p>
-                          Approx length 66cm/26" (Based on a UK size 8 sample)
-                          Mixed fibres
-                        </p>
-                        <p>
-                          The Model wears a UK size 8/ EU size 36/ US size 4 and
-                          her height is 5'8"
-                        </p>
+                        <p>{descriptionModels.effect}</p>
                       </div>
                     </div>
                   </div>
                   <div className="card">
-                    <div className="card-header" role="tab" id="headingTwo">
+                    <div className="card-header" role="tab" id="headingOne">
                       <h6 className="mb-0">
                         <div
-                          className="collapsed"
                           data-toggle="collapse"
-                          href="#collapseTwo"
-                          aria-expanded="false"
-                          aria-controls="collapseTwo"
+                          href="#collapseOne"
+                          aria-expanded="true"
+                          aria-controls="collapseOne"
                         >
-                          Cart Details
+                          Công Dụng
                         </div>
                       </h6>
                     </div>
                     <div
-                      id="collapseTwo"
-                      className="collapse"
+                      id="collapseOne"
+                      className="collapse show"
                       role="tabpanel"
-                      aria-labelledby="headingTwo"
+                      aria-labelledby="headingOne"
                       data-parent="#accordion"
                     >
                       <div className="card-body">
-                        <p>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Explicabo quis in veritatis officia inventore,
-                          tempore provident dignissimos nemo, nulla quaerat.
-                          Quibusdam non, eos, voluptatem reprehenderit hic nam!
-                          Laboriosam, sapiente! Praesentium.
-                        </p>
-                        <p>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Officia magnam laborum eaque.
-                        </p>
+                        <p>{descriptionModels.effect}</p>
                       </div>
                     </div>
                   </div>
+
                   <div className="card">
                     <div
                       id="collapseThree"
@@ -528,121 +534,6 @@ const DetailMedicine = () => {
               </div>
             </div>
           </div>
-          <>
-            <link
-              href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
-              rel="stylesheet"
-            />
-            <div className="container">
-              <div className="be-comment-block">
-                <h1 className="comments-title">Comments (3)</h1>
-                <div className="be-comment">
-                  <div className="be-img-comment">
-                    <a href="blog-detail-2.html">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                        alt=""
-                        className="be-ava-comment"
-                      />
-                    </a>
-                  </div>
-                  <div className="be-comment-content">
-                    <span className="be-comment-name">
-                      <a href="blog-detail-2.html">Ravi Sah</a>
-                    </span>
-                    <span className="be-comment-time">
-                      <i className="fa fa-clock-o" />
-                      May 27, 2015 at 3:14am
-                    </span>
-                    <p className="be-comment-text">Thuoc nhu cc</p>
-                  </div>
-                </div>
-                <div className="be-comment">
-                  <div className="be-img-comment">
-                    <a href="blog-detail-2.html">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                        alt=""
-                        className="be-ava-comment"
-                      />
-                    </a>
-                  </div>
-                  <div className="be-comment-content">
-                    <span className="be-comment-name">
-                      <a href="blog-detail-2.html">
-                        Phoenix, the Creative Studio
-                      </a>
-                    </span>
-                    <span className="be-comment-time">
-                      <i className="fa fa-clock-o" />
-                      May 27, 2015 at 3:14am
-                    </span>
-                    <p className="be-comment-text">dcmm</p>
-                  </div>
-                </div>
-                <div className="be-comment">
-                  <div className="be-img-comment">
-                    <a href="blog-detail-2.html">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                        alt=""
-                        className="be-ava-comment"
-                      />
-                    </a>
-                  </div>
-                  <div className="be-comment-content">
-                    <span className="be-comment-name">
-                      <a href="blog-detail-2.html">Cüneyt ŞEN</a>
-                    </span>
-                    <span className="be-comment-time">
-                      <i className="fa fa-clock-o" />
-                      May 27, 2015 at 3:14am
-                    </span>
-                    <p className="be-comment-text">cc</p>
-                  </div>
-                </div>
-                <form className="form-block">
-                  <div className="row">
-                    <div className="col-xs-12 col-sm-6">
-                      <div className="form-group fl_icon">
-                        <div className="icon">
-                          <i className="fa fa-user" />
-                        </div>
-                        <input
-                          className="form-input"
-                          type="text"
-                          placeholder="Your name"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-xs-12 col-sm-6 fl_icon">
-                      <div className="form-group fl_icon">
-                        <div className="icon">
-                          <i className="fa fa-envelope-o" />
-                        </div>
-                        <input
-                          className="form-input"
-                          type="text"
-                          placeholder="Your email"
-                        />
-                      </div>
-                    </div>
-                    <div className="col-xs-12">
-                      <div className="form-group">
-                        <textarea
-                          className="form-input"
-                          required=""
-                          placeholder="Your text"
-                          defaultValue={""}
-                        />
-                      </div>
-                    </div>
-                    <a className="btn btn-primary pull-right">submit</a>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </>
 
           <Footer />
           {/* ****** Quick View Modal Area End ****** */}
