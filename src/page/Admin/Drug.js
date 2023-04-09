@@ -308,7 +308,7 @@ const Drug = () => {
                                         >
                                           &nbsp; &nbsp;{e.name}
                                         </td>
-                                        <td>{e.price.toLocaleString("en-US")}</td>
+                                        <td>{e.price.toLocaleString("en-US")} đ</td>
                                         <td>{subCategoryName}</td>
                                         <td>
                                          

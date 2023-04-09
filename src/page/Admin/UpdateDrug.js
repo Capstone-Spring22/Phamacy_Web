@@ -90,21 +90,21 @@ const UpdateDrug = () => {
     console.log("subCategoryID", subCategoryID);
   };
   async function loadDataUnit() {
-    const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `Unit?pageIndex=1&pageItems=111`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setUnit(res.data.items);
     }
   }
   async function loadDataManufacturer() {
-    const path = `Manufacturer?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `Manufacturer?pageIndex=1&pageItems=100`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setManufactuner(res.data.items);
     }
   }
   async function loadDataProductIngredient() {
-    const path = `ProductIngredient?pageIndex=1&pageItems=20`;
+    const path = `ProductIngredient?pageIndex=1&pageItems=100`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setProductIngredient(res.data.items);
@@ -124,7 +124,7 @@ const UpdateDrug = () => {
     setProductIngredientID(productIngredientID);
   };
   async function loadDataUnit2() {
-    const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `Unit?pageIndex=1&pageItems=100`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setUnit2(res.data.items);
@@ -168,7 +168,7 @@ const UpdateDrug = () => {
     { name: "người lớn", value: 2 },
     { name: "người cao tuổi", value: 3 },
     { name: "phụ nữ cho con bú", value: 4 },
-    { name: "mọi lứa tuổi", value: null },
+    { name: "mọi lứa tuổi", value: "" },
   ];
   const handlePrescriptionChange = (event) => {
     setIsPrescription(event.target.checked);
@@ -1313,7 +1313,7 @@ const UpdateDrug = () => {
                               className="form-label"
                               htmlFor={`unitId${index}`}
                             >
-                              Mã thành phần
+                              Tên thành phần
                             </label>
                             <div className="input-group input-group-merge">
                               <select
@@ -1535,7 +1535,7 @@ const UpdateDrug = () => {
                             className="form-label"
                             htmlFor="basic-icon-default-email"
                           >
-                            Thêm Hình Ảnh
+                            Sửa Hình Ảnh
                           </label>
                           <div
                             className="mb-3"

@@ -131,10 +131,9 @@ const OrderDetail = () => {
   }
   const date = new Date(OrderDetail.createdDate);
 
-  const createDateVN =
-    date.toLocaleString("vi-VN", {
-      timeZone: "Asia/Ho_Chi_Minh",
-    });
+  const createDateVN = date.toLocaleString("vi-VN", {
+    timeZone: "Asia/Ho_Chi_Minh",
+  });
   let OrderStatus;
   if (OrderDetail.pharmacistId === null) {
     OrderStatus = (
@@ -471,7 +470,6 @@ const OrderDetail = () => {
                             />
                           </div>
                         </div>
-                        
                       </div>
                       <div style={{ display: "flex" }}>
                         <button
@@ -551,47 +549,72 @@ const OrderDetail = () => {
                           </div>
                         </div>
                       </div>
-                      <div style={{ display: "flex" }}>
-                        <button
-                          type="submit"
-                          className="button-28"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            rejectOrder();
-                          }}
-                          style={{
-                            height: 30,
-                            width: 80,
-                            fontSize: 13,
-                            paddingTop: 1,
-                            marginLeft: "35%",
+                      {OrderDetail?.actionStatus?.canAccept ? (
+                        <div style={{ display: "flex" }}>
+                          <button
+                            type="submit"
+                            className="button-28"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              rejectOrder();
+                            }}
+                            style={{
+                              height: 30,
+                              width: 80,
+                              fontSize: 13,
+                              paddingTop: 1,
+                              marginLeft: "35%",
 
-                            backgroundColor: "#DF2E38",
-                            color: "white",
-                          }}
-                        >
-                          Từ Chối
-                        </button>
-                        <button
-                          type="submit"
-                          className="button-28"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            confirmOrder();
-                          }}
-                          style={{
-                            height: 30,
-                            width: 80,
-                            fontSize: 13,
-                            marginLeft: 23,
+                              backgroundColor: "#DF2E38",
+                              color: "white",
+                            }}
+                          >
+                            Từ Chối
+                          </button>
+                          <button
+                            type="submit"
+                            className="button-28"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              confirmOrder();
+                            }}
+                            style={{
+                              height: 30,
+                              width: 80,
+                              fontSize: 13,
+                              marginLeft: 23,
 
-                            backgroundColor: "#82AAE3",
-                            color: "white",
-                          }}
-                        >
-                          Xác Nhận
-                        </button>
-                      </div>
+                              backgroundColor: "#82AAE3",
+                              color: "white",
+                            }}
+                          >
+                            Xác Nhận
+                          </button>
+                        </div>
+                      ) : (
+                        <div style={{ display: "flex" }}>
+                          <button
+                            type="submit"
+                            className="button-28"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              rejectOrder();
+                            }}
+                            style={{
+                              height: 30,
+                              width: 80,
+                              fontSize: 13,
+                              paddingTop: 1,
+                              marginLeft: "40%",
+
+                              backgroundColor: "#DF2E38",
+                              color: "white",
+                            }}
+                          >
+                            Từ Chối
+                          </button>
+                        </div>
+                      )}
                     </form>
                   </div>
                 </div>
@@ -655,6 +678,7 @@ const OrderDetail = () => {
 
                             <th
                               style={{
+                                width: 500,
                                 backgroundColor: "#f6f9fc",
                                 borderColor: "white",
                                 color: "#bfc8d3",
@@ -695,7 +719,6 @@ const OrderDetail = () => {
                           {ProductDetail &&
                             ProductDetail.length &&
                             ProductDetail.map((e) => {
-                             
                               return (
                                 <tr key={e.id}>
                                   <td>
@@ -713,7 +736,9 @@ const OrderDetail = () => {
                                   <td>{e.productName}</td>
                                   <td>{e.quantity}</td>
                                   <td>{e.unitName}</td>
-                                  <td>{e.priceTotal.toLocaleString("en-US")}</td>
+                                  <td>
+                                    {e.priceTotal.toLocaleString("en-US")} đ
+                                  </td>
                                 </tr>
                               );
                             })}
@@ -833,7 +858,7 @@ const OrderDetail = () => {
                             </div>
                           </div>
                         </div>
-                     
+
                         <div className="mb-3" style={{ width: "95%" }}>
                           <label
                             className="form-label"
@@ -853,7 +878,7 @@ const OrderDetail = () => {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="mb-3" style={{ width: "95%" }}>
                           <label
                             className="form-label"
@@ -906,6 +931,7 @@ const OrderDetail = () => {
                           <div className="input-group input-group-merge">
                             <div
                               type="text"
+                              style={{width:300}}
                               id="basic-icon-default-fullname"
                               placeholder="Tên Sản Phẩm"
                               aria-label="Tên Sản Phẩm"
@@ -1008,8 +1034,9 @@ const OrderDetail = () => {
                               aria-label="Tên Sản Phẩm"
                               aria-describedby="basic-icon-default-fullname2"
                             >
-                              {orderContactInfo.phoneNumber}
+                              <tel>{orderContactInfo.phoneNumber}</tel>
                             </div>
+                            <div  className="form-text" style={{color:"red"}}>Gọi Khách Hàng Xác Nhận Lại</div>
                           </div>
                         </div>
                         <div className="mb-3" style={{ width: "95%" }}>
@@ -1047,7 +1074,7 @@ const OrderDetail = () => {
                               aria-label="Tên Sản Phẩm"
                               aria-describedby="basic-icon-default-fullname2"
                             >
-                              {orderDelivery?.fullyAddress}
+                              {orderDelivery?.homeNumber}
                             </div>
                           </div>
                         </div>

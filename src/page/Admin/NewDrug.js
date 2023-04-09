@@ -79,7 +79,7 @@ const NewDrug = () => {
   });
 
   async function loadDataUnit() {
-    const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `Unit?pageIndex=1&pageItems=111`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setUnit(res.data.items);
@@ -91,10 +91,11 @@ const NewDrug = () => {
     { name: "người lớn", value: 2 },
     { name: "người cao tuổi", value: 3 },
     { name: "phụ nữ cho con bú", value: 4 },
-    { name: "mọi lứa tuổi", value: null },
+    { name: "phụ nữ", value: 5 },
+    { name: "mọi lứa tuổi", value: "" },
   ];
   async function loadDataCategory() {
-    const path = `SubCategory?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `SubCategory?pageIndex=1&pageItems=111`;
     const res = await getDataByPath(path, "", "");
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
@@ -102,7 +103,7 @@ const NewDrug = () => {
     }
   }
   async function loadDataManufacturer() {
-    const path = `Manufacturer?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `Manufacturer?pageIndex=1&pageItems=111`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setManufactuner(res.data.items);
@@ -123,7 +124,7 @@ const NewDrug = () => {
     setUserUsage(userUsage);
   };
   async function loadDataProductIngredient() {
-    const path = `ProductIngredient?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `ProductIngredient?pageIndex=1&pageItems=111`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setProductIngredient(res.data.items);
@@ -135,7 +136,7 @@ const NewDrug = () => {
     setProductIngredientID(productIngredientID);
   };
   async function loadDataUnit2() {
-    const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `Unit?pageIndex=1&pageItems=111`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setUnit2(res.data.items);

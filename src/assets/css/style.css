@@ -4605,12 +4605,13 @@ a {
 }
 .product-cart-p {
   margin-top: 20px;
-  margin-left: -80px;
+  margin-left: -130px;
   height: auto;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
   border-radius: 10px;
   padding: 20px;
   display: flex;
+  width: 800px;
 }
 .scroll-p {
   overflow-x: hidden;

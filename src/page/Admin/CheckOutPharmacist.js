@@ -26,6 +26,7 @@ const CheckOutPharmacist = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [point, setPoint] = useState(0);
+  const [count, setCount] = useState(0);
 
   async function loadDataMedicine(search) {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -46,7 +47,7 @@ const CheckOutPharmacist = () => {
         const res = await createDataByPath(path, accessToken, data);
         console.log("Check res", res);
         console.log("display du lieu", data);
-        if (res && res.status === 201) {
+        if (res && res.status === 200) {
           Swal.fire("Create Success", "", "success");
           // window.location.reload();
         }
@@ -142,6 +143,7 @@ const CheckOutPharmacist = () => {
           name: drug1.name,
         });
         setListCart([...listCart]);
+        setCount(parseInt(count) +1)
       }
 
       console.log("display", listCart);
@@ -238,23 +240,15 @@ const CheckOutPharmacist = () => {
     );
   }
 
-  const hiennew = () => {
-    console.log("display", newArrayOfObjects);
-    console.log("display", product);
-  };
+useEffect(() =>{
+setProduct({...product,
+  totalPrice:product?.products?.reduce(
+    (total, curent) => total + curent.quantity * curent.discountPrice,
+    0
+  ),
+})
+},[count])
 
-  async function loadDataCart() {
-    const deviceId = await axios
-      .get("https://api.ipify.org/?format=json")
-      .then((res) => res.data.ip);
-    const path = `Cart/${deviceId}`;
-    const res = await getDataByPath(path, "", "");
-    console.log("display", res);
-    if (res !== null && res !== undefined && res.status === 200) {
-      setDrugInCart(res.data.items);
-      console.log("res.data", res.data);
-    }
-  }
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
@@ -414,9 +408,16 @@ const CheckOutPharmacist = () => {
                           objectFit: "cover",
                         }}
                       />
-                      <div style={{ width: 380 }}>{e.name}</div>
+                      <div
+                        style={{ width: 380, marginRight: 30, marginLeft: 30 }}
+                      >
+                        <div>Tên sản phẩm:</div>
+                        <div> {e.name}</div>
+                      </div>
+
                       <div style={{ width: 380 }}>
-                        {e.productInventoryModel.quantity}
+                        <div>Số Lượng Tồn Kho:</div>
+                        <div>{e.productInventoryModel.quantity}</div>
                       </div>
                     </div>
                   );
@@ -464,7 +465,10 @@ const CheckOutPharmacist = () => {
                             aria-describedby="basic-icon-default-fullname2"
                           >
                             {listCart.length === 0 ? (
-                              <img style={{height:400}}  src="https://rtworkspace.com/wp-content/plugins/rtworkspace-ecommerce-wp-plugin/assets/img/empty-cart.png"/>
+                              <img
+                                style={{ height: 400 }}
+                                src="https://rtworkspace.com/wp-content/plugins/rtworkspace-ecommerce-wp-plugin/assets/img/empty-cart.png"
+                              />
                             ) : (
                               <>
                                 {listCart &&
@@ -482,33 +486,42 @@ const CheckOutPharmacist = () => {
                                         />
                                         <div
                                           key={product.id}
-                                          style={{ width: 380 }}
+                                          style={{ width: 400 }}
                                         >
-                                          {product.name}
+                                          <div>Tên sản phẩm:</div>
+                                          <div> {product.name}</div>
                                         </div>
                                         <div
-                                          key={product.id}
-                                          style={{ width: 70 }}
+                                          style={{ width: 100, marginLeft:10 }}
                                         >
-                                          {product.productInventoryModel}
+                                           <div>SL tồn kho:</div>
+                                          <div> {product.productInventoryModel}</div>
+                                          
                                         </div>
+                                        <div style={{ width: 100 }}>
+                                        <div>SL mua:</div>
                                         <input
                                           style={{ height: 30, width: 70 }}
                                           value={product.quantity}
                                           onChange={(e) => {
+                                            setCount(parseInt(count) +1)
                                             updateQuantity(
                                               product.productId,
                                               e.target.value
                                             );
                                           }}
                                         ></input>
+                                        </div>
+                                        <div style={{ width: 100 }}>
+                                        <div>Đơn vị:</div>
                                         <select
                                           style={{ height: 30, marginLeft: 10 }}
-                                          onChange={(e) =>
+                                          onChange={(e) =>{
+                                            setCount(parseInt(count) +1)
                                             updateProductID(
                                               product.productId,
                                               e.target.value
-                                            )
+                                            )}
                                           }
                                         >
                                           {product.productPrefer.map((unit) => {
@@ -522,6 +535,8 @@ const CheckOutPharmacist = () => {
                                             );
                                           })}
                                         </select>
+                                        </div>
+                                       
                                         <button
                                           style={{
                                             height: 30,
@@ -615,17 +630,16 @@ const CheckOutPharmacist = () => {
                               });
                             }}
                           />
-                        
                         </div>
                         <div
-                           className="button-tim"
-                            onClick={() => {
-                              loadDataUserByPhone();
-                              loadPointUserByPhone();
-                            }}
-                          >
-                           Tìm
-                          </div>
+                          className="button-tim"
+                          onClick={() => {
+                            loadDataUserByPhone();
+                            loadPointUserByPhone();
+                          }}
+                        >
+                          Tìm
+                        </div>
                         <label
                           className="form-label"
                           htmlFor="basic-icon-default-fullname"

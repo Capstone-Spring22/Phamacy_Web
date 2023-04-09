@@ -267,7 +267,7 @@ const ProductDiscount = () => {
                                           ? "0"
                                           : e.discountMoney.toLocaleString(
                                               "en-US"
-                                            )}
+                                            )} đ
                                       </td>
                                       <td>{e.totalProduct}</td>
                                       <td>

@@ -37,7 +37,7 @@ const UpdateImportProduct = () => {
   const [isSell, setIsSell] = useState(false);
   const [drug, setDrug] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(7);
+  const [perPage, setPerPage] = useState(30);
   const [product, setProduct] = useState({
     productImportDetails: [
       {
@@ -69,7 +69,7 @@ const UpdateImportProduct = () => {
       const accessToken = localStorage.getItem("accessToken");
       const path = `ProductImport/${myId}`;
       const res = await getDataByPath(path, accessToken, "");
-      console.log("product", product);
+      console.log("product", res);
       if (res !== null && res !== undefined && res.status === 200) {
         setProduct(res.data);
         setUnitCount(res.data.productImportDetails.length);
@@ -191,6 +191,39 @@ const UpdateImportProduct = () => {
     });
     setcountPrice(parseInt(countprice) + 1);
   };
+  const handleAddQuantityBatch = (index, batchIndex, e) => {
+    setProduct({
+      ...product,
+      productImportDetails: [
+        ...product.productImportDetails.slice(0, index - 1),
+        {
+          ...product.productImportDetails[index - 1],
+          productBatches: [
+            ...product.productImportDetails[index - 1].productBatches.slice(
+              0,
+              batchIndex - 1
+            ),
+            {
+              ...product.productImportDetails[index - 1].productBatches[
+                batchIndex - 1
+              ],
+              quantity: parseInt(e.target.value),
+            },
+            ...product.productImportDetails[index - 1].productBatches.slice(
+              batchIndex
+            ),
+          ],
+          quantity: product.productImportDetails[
+            index - 1
+          ].productBatches.reduce(
+            (total, curent) => total + curent.quantity,
+            0
+          ),
+        },
+        ...product.productImportDetails.slice(index),
+      ],
+    });
+  };
   useEffect(() => {
     if (indexUnit === 0) {
     } else {
@@ -206,6 +239,15 @@ const UpdateImportProduct = () => {
       ),
     });
   }, [countprice]);
+  useEffect(() => {
+    setProduct({
+      ...product,
+      totalPrice:
+        parseInt(product.totalProductPrice) +
+        parseInt(product.taxPrice) +
+        parseInt(product.totalShippingFee),
+    });
+  }, [product.totalProductPrice, product.taxPrice, product.totalShippingFee]);
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -440,15 +482,11 @@ const UpdateImportProduct = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Thêm Sản phẩm </h5>
+                    <h5 className="mb-0"> Sản phẩm trong lô</h5>
                   </div>{" "}
                   {Array.from({ length: unitCount }, (_, i) => i + 1).map(
                     (index) => {
-                      const drugName = drug.find(
-                        (sc) =>
-                          sc.id === product.productImportDetails[index - 1].id
-                      );
-                      const drugNameP = drugName ? drugName.name : "";
+                      
                       return (
                         <div className="card-body" key={index}>
                           <div>
@@ -484,14 +522,14 @@ const UpdateImportProduct = () => {
                                           sc.id ===
                                           product?.productImportDetails[
                                             index - 1
-                                          ].productId
+                                          ]?.productId
                                       )?.name
                                         ? drug?.find(
                                             (sc) =>
                                               sc.id ===
                                               product?.productImportDetails[
                                                 index - 1
-                                              ].productId
+                                              ]?.productId
                                           )?.name
                                         : "Đang Tải ..."
                                     }
@@ -847,7 +885,7 @@ const UpdateImportProduct = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Add new Import Product</h5>
+                    <h5 className="mb-0">Thông tin chung</h5>
                   </div>
                   <div className="card-body">
                     <div
