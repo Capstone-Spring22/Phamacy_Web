@@ -457,7 +457,7 @@ const AddImportProduct = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Thêm Sản phẩm </h5>
+                    <h5 className="mb-0">Nhập kho sản phẩm </h5>
                   </div>{" "}
                   {Array.from({ length: unitCount }, (_, i) => i + 1).map(
                     (index) => {

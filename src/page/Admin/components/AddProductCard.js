@@ -41,7 +41,7 @@ export default function AddProductCard({
             padding: 30,
             flexWrap: "wrap",
           }}>
-          <div className="mb-3" style={{ width: "30%", marginRight: 20 }}>
+          <div className="mb-3" style={{ width: "20%", marginRight: 20 }}>
             <label className="form-label" htmlFor="basic-icon-default-phone">
               sản phẩm
             </label>
@@ -59,7 +59,7 @@ export default function AddProductCard({
               options={options}
             />
           </div>
-          <div className="mb-3" style={{ width: "30%", marginRight: 20 }}>
+          <div className="mb-3" style={{ width: "20%", marginRight: 20 }}>
             <label className="form-label" htmlFor="basic-icon-default-phone">
               Đơn vị
             </label>
@@ -83,7 +83,7 @@ export default function AddProductCard({
               />
             )}
           </div>
-          <div className="mb-3" style={{ width: "30%", marginRight: 20 }}>
+          <div className="mb-3" style={{ width: "20%", marginRight: 20 }}>
             <label className="form-label" htmlFor={`unitId${index}`}>
               Số lượng
             </label>
@@ -115,14 +115,14 @@ export default function AddProductCard({
           </div>
           <div className="mb-3" style={{ width: "30%", marginRight: 20 }}>
             <label className="form-label" htmlFor={`unitId${index}`}>
-              Giá
+              Giá nhập
             </label>
             <div className="input-group input-group-merge">
               <input
                 type="text"
                 id={`sellQuantity${index}`}
                 className="form-control"
-                placeholder="Số lượng bán"
+                placeholder="Giá nhập"
                 aria-label="Unit Id"
                 aria-describedby={`sellQuantity${index}2`}
                 onChange={(e) => {
@@ -142,11 +142,13 @@ export default function AddProductCard({
               />
             </div>
           </div>
+          <div className="productimport-border">
           {selectedOption &&
             isBatches &&
             Array.from({ length: currentNumBatches }, (_, j) => j + 1).map(
               (batchIndex) => (
                 <React.Fragment key={`${index}-${batchIndex}`}>
+                  <div className="productimport">
                   <div
                     className="mb-3"
                     style={{ width: "30%", marginRight: 20 }}>
@@ -154,7 +156,7 @@ export default function AddProductCard({
                     <div className="input-group input-group-merge">
                       <input
                         type="date"
-                        className="form-control"
+                        className="form-control input-importproduct"
                         placeholder="Hạn sử dụng"
                         aria-label="expireDate"
                         onChange={(e) => {
@@ -258,9 +260,11 @@ export default function AddProductCard({
 
                     <div className="form-text"></div>
                   </div>
+                  </div>
                 </React.Fragment>
               )
-            )}
+              )}
+              </div>
           {selectedOption && isBatches && (
             <button
               className="button-batches"
@@ -286,7 +290,7 @@ export default function AddProductCard({
                   ],
                 }));
               }}>
-              +
+              + Thêm Lô
             </button>
           )}
         </div>
