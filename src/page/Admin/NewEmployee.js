@@ -393,7 +393,7 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-fullname"
                       >
-                        Full Name
+                        Tên Đầy Đủ
                       </label>
                       <div className="input-group input-group-merge">
                         <input
@@ -413,7 +413,7 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-company"
                       >
-                        User Name
+                        Tên Tài Khoản
                       </label>
                       <div className="input-group input-group-merge">
                         <input
@@ -432,7 +432,7 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-email"
                       >
-                        Phone Number
+                        Số điện thoại
                       </label>
                       <div className="input-group input-group-merge">
                         <input
@@ -472,7 +472,7 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-phone"
                       >
-                        Image
+                        Hình Ảnh
                       </label>
                       <div className="input-group input-group-merge">
                         <input
@@ -491,7 +491,7 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-phone"
                       >
-                        City
+                        Thành Phố
                       </label>
                       <div className="input-group input-group-merge">
                         <select
@@ -526,7 +526,7 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-phone"
                       >
-                        District
+                        Quận/ Huyện
                       </label>
                       <div className="input-group input-group-merge">
                         <select
@@ -558,7 +558,7 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-phone"
                       >
-                        Ward
+                        Phường/Xã
                       </label>
                       <div className="input-group input-group-merge">
                         <select
@@ -590,7 +590,7 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-phone"
                       >
-                        Role
+                        Chức Vụ
                       </label>
                       <div className="input-group input-group-merge">
                         <select
@@ -624,7 +624,7 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-phone"
                       >
-                        Site
+                        Chi Nhánh
                       </label>
                       <div className="input-group input-group-merge">
                         <select
@@ -658,7 +658,7 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-phone"
                       >
-                        Gender
+                        Giới Tính
                       </label>
                       <div className="input-group input-group-merge">
                         <select
