@@ -388,8 +388,8 @@ setProduct({...product,
                                         <div
                                           style={{ width: 100, marginLeft:10 }}
                                         >
-                                           <div>SL tồn kho:</div>
-                                          <div> {product.productInventoryModel}</div>
+                                           <div>Giá </div>
+                                          <div> {product.originalPrice}</div>
                                           
                                         </div>
                                         <div style={{ width: 100 }}>

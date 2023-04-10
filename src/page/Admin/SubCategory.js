@@ -20,6 +20,7 @@ const SubCategory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
   const [isOpen, setIsOpen] = useState(true);
+  
   const [categoryUpdate, setCategoryUpdate] = useState({
     subCategoryName: "",
     mainCategoryId: "",

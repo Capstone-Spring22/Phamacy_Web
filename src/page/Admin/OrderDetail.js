@@ -5,11 +5,7 @@ import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarPharmacist";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import {
-  getDataByPath,
-
-  updateDataByPath,
-} from "../../services/data.service";
+import { getDataByPath, updateDataByPath } from "../../services/data.service";
 
 import axios from "axios";
 const OrderDetail = () => {
@@ -22,8 +18,13 @@ const OrderDetail = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
   const [orderStatus, setOrderStatus] = useState([]);
-
+  const [note, setNote] = useState([]);
+  const [noteId, setNoteId] = useState("");
   const [description, setDescription] = useState("");
+
+  const [noteUpdate, setNodeUpdate] = useState([
+    { orderDetailId: "", note: "" },
+  ]);
   const [descriptionStatus, setDescriptionStatus] = useState("");
   async function loadDataOrderById() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -41,6 +42,24 @@ const OrderDetail = () => {
       }
     }
   }
+  async function updateNote() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const data = noteUpdate;
+      const path = `Order/UpdateOrderProductNote`;
+      const res = await updateDataByPath(path, accessToken, data);
+      console.log("data", data);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setIsOpen2(false);
+        
+        Swal.fire("Thêm Ghi Chú Thành Công", "", "success");
+      }
+    }
+  }
+  const handleNoteID = (id) => {
+    setNodeUpdate([{...noteUpdate, orderDetailId: id }]);
+    setIsOpen(true);
+  };
   const [activeItem, setActiveItem] = useState("Order");
 
   async function loadOrderStatusId() {
@@ -50,6 +69,7 @@ const OrderDetail = () => {
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setOrderStatus(res.data);
+     
     }
   }
   useEffect(() => {
@@ -75,7 +95,7 @@ const OrderDetail = () => {
       const res = await updateDataByPath(path, accessToken, data);
       console.log("res", res);
       if (res !== null && res !== undefined && res.status === 200) {
-        setIsOpen(false)
+        setIsOpen(false);
         Swal.fire("Xác Nhận Thành Công", "", "success");
         loadDataOrderById();
       }
@@ -95,7 +115,7 @@ const OrderDetail = () => {
       const res = await updateDataByPath(path, accessToken, data);
       console.log("res", res);
       if (res !== null && res !== undefined && res.status === 200) {
-        setIsOpen2(false)
+        setIsOpen2(false);
         Swal.fire("Cập Nhật Trạng Thái Thành Công", "", "success");
         loadDataOrderById();
       }
@@ -119,12 +139,16 @@ const OrderDetail = () => {
       const res = await updateDataByPath(path, accessToken, data);
       console.log("res", res);
       if (res !== null && res !== undefined && res.status === 200) {
-        setIsOpen(false)
+        setIsOpen(false);
         Swal.fire("Từ Chối Thành Công", "", "success");
         loadDataOrderById();
       }
     }
   }
+  const productNoteFromPharmacist = ProductDetail.find(
+    (product) => product.id === noteUpdate[0].orderDetailId
+  )?.productNoteFromPharmacist
+ 
   const date = new Date(OrderDetail.createdDate);
 
   const createDateVN = date.toLocaleString("vi-VN", {
@@ -285,7 +309,6 @@ const OrderDetail = () => {
                   />
                 </div>
               </div>
-             
             </div>
           </nav>
           <div
@@ -523,7 +546,95 @@ const OrderDetail = () => {
               </div>
             </div>
           </div>
+          <div
+            className={`dialog overlay ${isOpen ? "" : "hidden"}`}
+            id="my-dialog3"
+          >
+            <a href="#" className="overlay-close" />
 
+            <div className="row " style={{ width: 700 }}>
+              <div className="col-xl">
+                <div className="card mb-4">
+                  <div
+                    className="card-header d-flex justify-content-between align-items-center"
+                    style={{
+                      height: 70,
+                      backgroundColor: "white",
+
+                      marginLeft: 230,
+                      borderColor: "#f4f4f4",
+                    }}
+                  >
+                    <h5 className="mb-0">Thêm Hướng Dẫn Sử Dụng</h5>
+                  </div>
+                  <div className="card-body">
+                    <form>
+                      <div
+                        style={{
+                          display: "grid",
+
+                          padding: 30,
+                        }}
+                      >
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-phone"
+                          >
+                            Mô Tả
+                          </label>
+                          <div className="input-group input-group-merge">
+                            {}
+                            <textarea
+                              style={{ height: 200 }}
+                              type="text"
+                              className="form-control"
+                              id="basic-icon-default-fullname"
+                              placeholder="Viết Mô Tả "
+                              aria-label="John Doe"
+                              aria-describedby="basic-icon-default-fullname2"
+                              value={productNoteFromPharmacist===""?"":productNoteFromPharmacist}
+                              onChange={(e) =>
+                                setNodeUpdate((prevNote) => [
+                                  {
+                                    orderDetailId: prevNote[0].orderDetailId,
+                                    note: e.target.value,
+                                  },
+                                ])
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ display: "flex" }}>
+                        <button
+                          type="submit"
+                          className="button-28"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            updateNote();
+                          }}
+                          style={{
+                            height: 30,
+                            width: 80,
+                            fontSize: 13,
+                            paddingTop: 1,
+                            marginLeft: "40%",
+
+                            backgroundColor: "#82AAE3",
+                            color: "white",
+                          }}
+                        >
+                          Lưu
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           {/* / Navbar */}
           {/* Content wrapper */}
           <div style={{ display: "flex" }}>
@@ -615,6 +726,15 @@ const OrderDetail = () => {
                             >
                               Giá
                             </th>
+                            <th
+                              style={{
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
+                              Thêm Ghi Chú
+                            </th>
                           </tr>
                         </thead>
                         <tbody className="table-border-bottom-0">
@@ -640,6 +760,33 @@ const OrderDetail = () => {
                                   <td>{e.unitName}</td>
                                   <td>
                                     {e.priceTotal.toLocaleString("en-US")} đ
+                                  </td>
+                                  <td>
+                                    {" "}
+                                    <a
+                                      class="button-81"
+                                      role="button"
+                                      href="#my-dialog3"
+                                      onClick={() => {
+                                        setIsOpen(true);
+                                        handleNoteID(e.id);
+                                      }}
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        fill="currentColor"
+                                        class="bi bi-pencil-square"
+                                        viewBox="0 0 16 16"
+                                      >
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                        <path
+                                          fill-rule="evenodd"
+                                          d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                                        />
+                                      </svg>
+                                    </a>
                                   </td>
                                 </tr>
                               );
@@ -833,7 +980,7 @@ const OrderDetail = () => {
                           <div className="input-group input-group-merge">
                             <div
                               type="text"
-                              style={{width:300}}
+                              style={{ width: 300 }}
                               id="basic-icon-default-fullname"
                               placeholder="Tên Sản Phẩm"
                               aria-label="Tên Sản Phẩm"
@@ -938,7 +1085,9 @@ const OrderDetail = () => {
                             >
                               <tel>{orderContactInfo.phoneNumber}</tel>
                             </div>
-                            <div  className="form-text" style={{color:"red"}}>Gọi Khách Hàng Xác Nhận Lại</div>
+                            <div className="form-text" style={{ color: "red" }}>
+                              Gọi Khách Hàng Xác Nhận Lại
+                            </div>
                           </div>
                         </div>
                         <div className="mb-3" style={{ width: "95%" }}>
