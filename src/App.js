@@ -35,8 +35,9 @@ import VNPay from "./page/Customer/VNpay";
 import HistoryOrder from "./page/Customer/HistoryOrder";
 import Chat from "./page/Customer/Chat";
 import ChatPharmacist from "./page/Admin/ChatPhamacist";
-import { Redirect } from "react-router-dom";
 import ViewImportProduct from "./page/Admin/ViewImportProduct";
+
+import { Redirect } from "react-router-dom";
 function App() {
   return (
     <div className="site-wrap">
@@ -49,13 +50,16 @@ function App() {
           <Route path="/Sidebar">
             <SideBar />
           </Route>
+          <Route path="/Medicine/:categoryId">
+            <Medicine />
+          </Route>
           <Route path="/Medicine">
             <Medicine />
           </Route>
           <Route path="/Drug">
             <Drug />
           </Route>
-          <Route path="/ViewDetail">
+          <Route path="/ViewDetail/:productId">
             <DetailMedicine />
           </Route>
           <Route path="/ViewCart">

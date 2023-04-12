@@ -48,6 +48,7 @@ const Home = (props) => {
     CheckoutSiteObjectProduct,
     CheckoutSiteObjectQuantity,
     orderID,
+    cartID,
   } = cartData;
   const [orderTypeId, setOrderTypeId] = useState(2);
   const [selectedButton, setSelectedButton] = useState("button1");
@@ -90,6 +91,8 @@ const Home = (props) => {
     isMainAddress: false,
   });
   localStorage.setItem("product", JSON.stringify(product));
+  localStorage.setItem("cartID1", JSON.stringify(cartData.cartID));
+  
   const genders = [
     { name: "Male", value: 0 },
     { name: "FeMale", value: 1 },
@@ -289,6 +292,7 @@ const Home = (props) => {
         console.log("display du lieu", data);
         if (res && res.status === 200) {
           Swal.fire("Create Success", "", "success");
+          handleRemoveCart()
           // window.location.reload();
         }
       } else if (product.payType === 2) {
@@ -345,6 +349,27 @@ const Home = (props) => {
       }
     }
   };
+  const handleApplyUserPoint = async () => {
+    const res = await axios.post(
+      "https://betterhealthapi.azurewebsites.net/api/v1/Cart/ApplyCustomerPoint",
+      {
+        cartId: cartData.cartID,
+        usingPoint: product.usedPoint,
+      }
+    );
+    if (res && res.status === 200) {
+      setcCountAddress(parseInt(countAddress) + 1);
+    }
+  };
+  async function handleRemoveCart() {
+
+    const res = await axios.delete(
+      `https://betterhealthapi.azurewebsites.net/api/v1/Cart/${cartData.cartID}`
+    );
+    if (res !== null && res !== undefined && res.status === 200) {
+     
+    }
+  }
   // Function to retrieve the stored data from localStorage
 
   useEffect(() => {}, []);
@@ -1090,7 +1115,7 @@ const Home = (props) => {
                               )}
                             </div>
                           ) : (
-                           <></>
+                            <></>
                           )}
                         </div>
 
@@ -1252,6 +1277,14 @@ const Home = (props) => {
                             }))
                           }
                         />
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleApplyUserPoint();
+                          }}
+                        >
+                          Áp dụng
+                        </button>
                       </label>
                     </div>
                   </div>

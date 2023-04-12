@@ -5,9 +5,14 @@ import { BsPlus } from "react-icons/bs";
 import Footer from "./Footer";
 import { useHistory } from "react-router-dom";
 import Header from "../Header/Header";
-import { getDataByPath, deleteDataByPath } from "../../services/data.service";
+import {
+  getDataByPath,
+  deleteDataByPath,
+  createDataByPath,
+} from "../../services/data.service";
 import { async } from "q";
 import axios, { AxiosHeaders } from "axios";
+import { toast } from "react-hot-toast";
 
 const AddToCart = () => {
   const deviceId = localStorage.getItem("deviceId");
@@ -16,7 +21,7 @@ const AddToCart = () => {
   const [drug, setDrug] = useState(null);
   const [total, setTotal] = useState([]);
   const [orderID, setOrderId] = useState([]);
-  const [cardID, setCardID] = useState("");
+  const [cartID, setCartID] = useState("");
 
   async function loadDataMedicine() {
     console.log("display cartID", deviceId);
@@ -26,7 +31,7 @@ const AddToCart = () => {
     if (res !== null && res !== undefined && res.status === 200) {
       setDrug(res.data.items);
       setTotal(res.data);
-      setCardID(res.data.cartId)
+      setCartID(res.data.cartId);
       console.log("res.data", res.data);
     }
   }
@@ -62,16 +67,39 @@ const AddToCart = () => {
 
   console.log("đ", newArrayOfObjects);
   function viewDetail(cartData) {
-    
     history.push({
       pathname: "/Checkout",
       state: { cartData },
     });
   }
+  async function handleUpdateCart(productId, quantity) {
+    const data = {
+      deviceId: deviceId,
+      item: {
+        productId: productId,
+        quantity: quantity,
+      },
+    };
+    console.log("display data", data);
+    const config = {
+      headers: {
+        "Content-Type": "application/json-patch+json",
+      },
+    };
+    const path = "Cart";
+    const res = await createDataByPath(path, "", data);
+    console.log("API response:", res);
+
+    if (res && res.status === 200) {
+      toast.success("đã cập nhật");
+      loadDataMedicine();
+      // window.location.reload();
+    }
+  }
   async function handleRemoveCart(productId) {
     const data = {
       productId: productId,
-      cartId: cardID,
+      cartId: cartID,
     };
     console.log("display data", data);
     const config = {
@@ -86,6 +114,19 @@ const AddToCart = () => {
     if (res !== null && res !== undefined && res.status === 200) {
       loadDataMedicine();
     }
+  }
+  function updateQuantity(productId, newQuantity) {
+    setDrug((prevState) =>
+      prevState.map((item) => {
+        if (item.productId === productId) {
+          return {
+            ...item,
+            quantity: parseInt(newQuantity),
+          };
+        }
+        return item;
+      })
+    );
   }
   useEffect(() => {
     loadOrderId();
@@ -117,7 +158,7 @@ const AddToCart = () => {
           </div>
           {/* ****** Top Discount Area End ****** */}
           {/* ****** Cart Area Start ****** */}
-          <div className="cart_area section_padding_100 clearfix">
+          <div className=" section_padding_100 clearfix">
             <div className="container">
               <div className="row">
                 <div style={{ display: "flex" }}>
@@ -125,45 +166,80 @@ const AddToCart = () => {
                     className="cart-table clearfix"
                     style={{ marginTop: -22 }}
                   >
-                    <table
-                      className="table table-responsive"
-                      style={{
-                        backgroundColor: "white",
-                        boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",
-                        borderRadius: 10,
-                        paddingBottom: 50,
-                      }}
-                    >
-                      <h5
-                        className="card-header"
+                    <table className="table">
+                      <thead
                         style={{
-                          padding: "20px 24px",
-                          backgroundColor: "#ffffff",
+                          backgroundColor: "#f6f9fc",
                           borderColor: "white",
+                          color: "",
                         }}
                       >
-                        <h3 className="fontagon">Giỏ Hàng</h3>
-                      </h5>
-                      <thead style={{ border: "none" }}>
-                        <tr
-                          style={{ backgroundColor: "#f6f9fc", border: "none" }}
-                        >
-                          <th>Hình Ảnh</th>
-                          <th>Tên</th>
-                          <th>Giá</th>
-                          <th>Số Lượng</th>
-                          <th>Tổng Giá</th>
-                          <th>Xóa Cart</th>
+                        <tr>
+                          <th
+                            style={{
+                              width: 150,
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            &nbsp; &nbsp;Hình ảnh
+                          </th>
+                          <th
+                            style={{
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            &nbsp; &nbsp;tên
+                          </th>
+                          <th
+                            style={{
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            &nbsp; &nbsp;Giá
+                          </th>
+                          <th
+                            style={{
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            &nbsp; &nbsp;Số lượng
+                          </th>
+                          <th
+                            style={{
+                              width: 110,
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            &nbsp; &nbsp;Tổng giá
+                          </th>
+                          <th
+                            style={{
+                              width: 100,
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            Xoá SP
+                          </th>
                         </tr>
                       </thead>
-
-                      <tbody style={{ border: "none" }}>
-                        {" "}
+                      <tbody className="table-border-bottom-0">
                         {drug &&
                           drug.length &&
                           drug.map((item, index) => {
                             return (
-                              <tr>
+                              <tr key={item.id}>
                                 <td>
                                   <img
                                     className="cart-img"
@@ -194,6 +270,17 @@ const AddToCart = () => {
                                       max={99}
                                       name="quantity"
                                       value={item.quantity}
+                                      onChange={(e) => {
+                                        e.preventDefault();
+                                        handleUpdateCart(
+                                          item.productId,
+                                          e.target.value
+                                        );
+                                        updateQuantity(
+                                          item.productId,
+                                          e.target.value
+                                        );
+                                      }}
                                     />
                                     <span
                                       className="qty-plus"
@@ -207,7 +294,7 @@ const AddToCart = () => {
                                   </div>
                                 </td>
                                 <td className="total_price">
-                                  <span>
+                                  <span style={{ marginLeft: 20 }}>
                                     {(
                                       item.quantity * item.price
                                     ).toLocaleString("en-US")}
@@ -215,8 +302,8 @@ const AddToCart = () => {
                                 </td>
                                 <td>
                                   <button
-                                   class="button-81"
-                                   style={{color:"red"}}
+                                    class="button-81"
+                                    style={{ color: "red" }}
                                     onClick={() => {
                                       console.log("display", item.productId);
                                       handleRemoveCart(item.productId);
@@ -241,12 +328,13 @@ const AddToCart = () => {
                     </table>
                   </div>
                   <div
-                    className="col-12 col-md-6 col-lg-5 ml-lg-auto"
+                    className="col-12 col-md-6 col-lg-4 ml-lg-auto"
                     style={{ marginTop: -22 }}
                   >
                     <div
                       className="order-details-confirmation"
                       style={{
+                        width: 500,
                         boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",
                         border: "none",
                         borderRadius: 10,
@@ -276,7 +364,7 @@ const AddToCart = () => {
                           <li style={{ fontSize: 15 }}>
                             <span>Tạm Tính</span>{" "}
                             <span>
-                            {total.totalCartPrice.toLocaleString("en-US")} Vnd
+                              {total.totalCartPrice.toLocaleString("en-US")} Vnd
                             </span>
                           </li>
                         )}
@@ -291,6 +379,7 @@ const AddToCart = () => {
                             CheckoutSiteObjectProduct,
                             CheckoutSiteObjectQuantity,
                             orderID,
+                            cartID
                           })
                         }
                         style={{

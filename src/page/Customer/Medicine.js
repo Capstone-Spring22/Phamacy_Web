@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { BsPlus } from "react-icons/bs";
 import { getDataByPath, deleteDataByPath } from "../../services/data.service";
 import Header from "../Header/Header";
@@ -7,8 +7,10 @@ import { ListProduct } from "../Data";
 import { SimpleDropdown } from "react-js-dropdavn";
 const Medicine = () => {
   let history = useHistory();
+  const { categoryId } = useParams();
 
-  const viewDetail = () => {
+  const viewDetail = (detailId) => {
+    localStorage.setItem("detailId", detailId);
     history.push("/ViewDetail");
   };
   const [apartment, setApartment] = useState([]);
@@ -33,7 +35,17 @@ const Medicine = () => {
   console.log("checkp", apartment);
 
   async function loadDataMedicine() {
-    const path = `Product?isSellFirstLevel=true&mainCategoryID=&pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
+    const res = await getDataByPath(path, "", "");
+    console.log("display", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setDrug(res.data.items);
+      setTotalRecord(res.data.totalRecord);
+      console.log("display", currentPage);
+    }
+  }
+  async function loadDataMedicinebycategoryID(categoryID) {
+    const path = `Product?isSellFirstLevel=true&mainCategoryID=${categoryID}&pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
     console.log("display", res);
     if (res !== null && res !== undefined && res.status === 200) {
@@ -48,11 +60,14 @@ const Medicine = () => {
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
       setCategory(res.data.items);
-
     }
   }
   useEffect(() => {
-    loadDataMedicine();
+    if (categoryId) {
+      loadDataMedicinebycategoryID(categoryId);
+    } else {
+      loadDataMedicine();
+    }
   }, []);
   useEffect(() => {
     loadDataCategory2();
@@ -240,41 +255,56 @@ const Medicine = () => {
                       All Products
                     </button>
                     {category &&
-                            category.length &&
-                            category.map((e) => {
-                              return (
-                    <button
+                      category.length &&
+                      category.map((result) => {
+                        return (
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              loadDataMedicinebycategoryID(result.id);
+                            }}
+                            className="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
+                            data-filter=".women"
+                            style={{
+                              border: "none",
+                              marginRight: 30,
+                              fontSize: "20px",
+                              fontFamily: "Poppins-Regular",
+                              backgroundColor: "white",
+                            }}
+                          >
+                            {result.categoryName}
+                          </button>
+                        );
+                      })}
+
+                    <label
                       className="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-                      data-filter=".women"
+                      htmlFor="toggle"
                       style={{
-                        border: "none",
-                        marginRight: 30,
+                        marginLeft: 400,
+                        cursor: "pointer",
                         fontSize: "20px",
-                        fontFamily: "Poppins-Regular",
-                        backgroundColor: "white",
                       }}
                     >
-                      {e.categoryName}
-                    </button>
- );
-})}
-                 
-                      <label className="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" htmlFor="toggle" style={{ marginLeft:400,cursor:"pointer",fontSize: "20px",}}>
                       <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          class="bi bi-filter"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
-                        </svg>
-                        &nbsp; Filter
-                     </label>
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-filter"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                      </svg>
+                      &nbsp; Filter
+                    </label>
                     <nav className="nav1">
                       <input id="toggle" type="checkbox" defaultChecked />
-                      <button className="button-16" style={{margin:10,display:"none"}} >
+                      <button
+                        className="button-16"
+                        style={{ margin: 10, display: "none" }}
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="16"
@@ -286,20 +316,16 @@ const Medicine = () => {
                           <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
                         </svg>
                         &nbsp; Filter
-
                       </button>
-                  
+
                       <div
-                     
                         style={{
                           height: 250,
                           width: 1200,
                           backgroundColor: "#f9f9f9",
                           marginRight: 1000,
-                          marginTop:30
-                        
+                          marginTop: 30,
                         }}
-                        
                       >
                         <div className="col-12 col-md-8 col-lg-12">
                           <div className="shop_grid_product_area">
@@ -391,69 +417,75 @@ const Medicine = () => {
                         </div>
                       </div>
                     </nav>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
                     <div className="container ">
-              <div className="row karl-new-arrivals ">
-                {drug &&
-                  drug.length &&
-                  drug.map((item, index) => {
-                    return (
-                      <div
-                        className=" col-md-2 single_gallery_item women wow fadeInUpBig "
-                        data-wow-delay="0.2s"
-                      >
-                        {/* Product Image */}
-                        <div
-                          className="product-img"
-                          style={{ borderRadius: 5 }}
-                          onClick={() => {
-                            viewDetail(item.id);
-                          }}
-                        >
-                          <img
-                            src={item.imageModel.imageURL}
-                            alt=""
-                            style={{ objectFit: "cover", height: 250 }}
-                          />
-                          <div className="product-quicview">
-                            <a
-                              href="#"
-                              data-toggle="modal"
-                              data-target="#quickview"
-                            >
-                              <BsPlus style={{ marginBottom: 10 }} />
-                            </a>
-                          </div>
-                        </div>
+                      <div className="row karl-new-arrivals ">
+                        {drug &&
+                          drug.length &&
+                          drug.map((item, index) => {
+                            return (
+                              <div
+                                className=" col-md-2 single_gallery_item women wow fadeInUpBig "
+                                data-wow-delay="0.2s"
+                              >
+                                {/* Product Image */}
+                                <Link
+                                  to={`/ViewDetail/${item.id}`}
+                                  className="product-img"
+                                  style={{ borderRadius: 5 }}
+                                  // onClick={() => {
+                                  //   viewDetail(item.id);
+                                  // }}
+                                >
+                                  <img
+                                    src={item.imageModel.imageURL}
+                                    alt=""
+                                    style={{ objectFit: "cover", height: 250 }}
+                                  />
+                                  <div className="product-quicview">
+                                    <a
+                                      href="#"
+                                      data-toggle="modal"
+                                      data-target="#quickview"
+                                    >
+                                      <BsPlus style={{ marginBottom: 10 }} />
+                                    </a>
+                                  </div>
+                                </Link>
 
-                        {/* Product Description */}
-                        <div className="product-description">
-                          <p style={{ height: 90 ,color: '#334155'}}>{item.name}</p>
-                          <h4
-                            className="product-price"
-                            style={{ color: "#82aae3" }}
-                          >
-                            {" "}
-                            {item.priceAfterDiscount.toLocaleString("en-US")} /
-                            {item.productUnitReferences[0].unitName}
-                            <td>
-                              {item.price === item.priceAfterDiscount ? (
-                                ""
-                              ) : (
-                                <del>{item.price}</del>
-                              )}
-                            </td>
-                          </h4>
-                          {/* Add to Cart */}
-                        </div>
+                                {/* Product Description */}
+                                <div className="product-description">
+                                  <p style={{ height: 90, color: "#334155" }}>
+                                    {item.name}
+                                  </p>
+                                  <h4
+                                    className="product-price"
+                                    style={{ color: "#82aae3" }}
+                                  >
+                                    {" "}
+                                    {item.priceAfterDiscount.toLocaleString(
+                                      "en-US"
+                                    )}{" "}
+                                    /{item.productUnitReferences[0].unitName}
+                                    <td>
+                                      {item.price ===
+                                      item.priceAfterDiscount ? (
+                                        ""
+                                      ) : (
+                                        <del>{item.price}</del>
+                                      )}
+                                    </td>
+                                  </h4>
+                                  {/* Add to Cart */}
+                                </div>
+                              </div>
+                            );
+                          })}
                       </div>
-                    );
-                  })}
-              </div>
-            </div>
+                    </div>
                   </div>
                 </div>
               </div>

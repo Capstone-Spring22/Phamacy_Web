@@ -16,6 +16,7 @@ const VNPay = (props) => {
   const vnp_PayDate = urlParams.get("vnp_PayDate");
   const vnp_TransactionNo = urlParams.get("vnp_TransactionNo");
   const storedCartData = localStorage.getItem("cartData");
+  const cartID1 = localStorage.getItem("cartID1");
   const productCheckOut = JSON.parse(localStorage.getItem("product"));
   const [product, setProduct] = useState({
     orderId: productCheckOut.orderId,
@@ -50,6 +51,7 @@ const VNPay = (props) => {
       console.log("display du lieu", data);
       if (res && res.status === 200) {
         Swal.fire("Create Success", "", "success");
+        handleRemoveCart();
       }
     } else {
       const data = product;
@@ -60,7 +62,15 @@ const VNPay = (props) => {
       console.log("display du lieu", data);
       if (res && res.status === 200) {
         Swal.fire("Create Success", "", "success");
+        handleRemoveCart();
       }
+    }
+  }
+  async function handleRemoveCart() {
+    const res = await axios.delete(
+      `https://betterhealthapi.azurewebsites.net/api/v1/Cart/${cartID1}`
+    );
+    if (res !== null && res !== undefined && res.status === 200) {
     }
   }
   useEffect(() => {

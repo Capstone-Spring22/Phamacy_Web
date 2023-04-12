@@ -589,10 +589,11 @@ const Home = () => {
             >
               {category.map((item, index) => {
                 return (
-                  <div
-                    onClick={() => {
-                      viewProduct(item.id);
-                    }}
+                  <Link
+                  to={`/Medicine/${item.id}`}
+                    // onClick={() => {
+                    //   viewProduct(item.id);
+                    // }}
                     className="col-md-2 col-lg-1 mb-1 mb-lg-2 hv"
                     style={{ width: 160, height: 220 }}
                   >
@@ -627,7 +628,7 @@ const Home = () => {
                         </h6>
                       </a>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
 
@@ -663,12 +664,13 @@ const Home = () => {
                         data-wow-delay="0.2s"
                       >
                         {/* Product Image */}
-                        <div
+                        <Link
+                         to={`/ViewDetail/${item.id}`}
                           className="product-img"
                           style={{ borderRadius: 5 }}
-                          onClick={() => {
-                            viewDetail(item.id);
-                          }}
+                          // onClick={() => {
+                          //   viewDetail(item.id);
+                          // }}
                         >
                           <img
                             src={item.imageModel.imageURL}
@@ -684,7 +686,7 @@ const Home = () => {
                               <BsPlus style={{ marginBottom: 10 }} />
                             </a>
                           </div>
-                        </div>
+                        </Link>
 
                         {/* Product Description */}
                         <div className="product-description">
@@ -694,7 +696,7 @@ const Home = () => {
                             style={{ color: "#82aae3" }}
                           >
                             {" "}
-                            {item.price.toLocaleString("en-US")}
+                            {item.price.toLocaleString("en-US")} đ
                           </h4>
                           {/* Add to Cart */}
                         </div>
@@ -753,12 +755,13 @@ const Home = () => {
                         data-wow-delay="0.2s"
                       >
                         {/* Product Image */}
-                        <div
+                        <Link
+                        to={`/ViewDetail/${item.id}`}
                           className="product-img"
                           style={{ borderRadius: 5 }}
-                          onClick={() => {
-                            viewDetail(item.id);
-                          }}
+                          // onClick={() => {
+                          //   viewDetail(item.id);
+                          // }}
                         >
                           <img
                             src={item.imageModel.imageURL}
@@ -774,7 +777,7 @@ const Home = () => {
                               <BsPlus style={{ marginBottom: 10 }} />
                             </a>
                           </div>
-                        </div>
+                        </Link>
 
                         {/* Product Description */}
                         <div className="product-description">
@@ -786,13 +789,13 @@ const Home = () => {
                             style={{ color: "#82aae3" }}
                           >
                             {" "}
-                            {item.priceAfterDiscount.toLocaleString("en-US")} /
+                            {item.priceAfterDiscount.toLocaleString("en-US")} đ /
                             {item.productUnitReferences[0].unitName}
                             <td>
                               {item.price === item.priceAfterDiscount ? (
                                 ""
                               ) : (
-                                <del>{item.price}</del>
+                                <del>{item.price} đ</del>
                               )}
                             </td>
                           </h4>

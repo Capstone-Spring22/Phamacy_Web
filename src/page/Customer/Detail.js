@@ -7,7 +7,9 @@ import { createDataByPath, getDataByPath } from "../../services/data.service";
 import { useState } from "react";
 import { Carousel } from "react-bootstrap";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 const DetailMedicine = () => {
+  const { productId } = useParams();
 
   const detailId = localStorage.getItem("detailId");
   const [product, setProduct] = useState([]);
@@ -15,9 +17,8 @@ const DetailMedicine = () => {
   const [cart, setCart] = useState([]);
   const [imageUrl, setImageUrl] = useState([]);
   const [quantity, setQuantity] = useState(1);
-  const [productID1, setproductID1] = useState(
-    localStorage.getItem("detailId")
-  );
+  const [productID1, setproductID1] = useState(productId);
+  const [manufacturer, setManufacturer] = useState([]);
   const update = (deviceId) => {
     localStorage.setItem("deviceId", deviceId);
 
@@ -35,7 +36,7 @@ const DetailMedicine = () => {
   const unselectedUnitClass = "button-unit";
   const selectedUnitClass = "button-unit-active";
   async function loadDataProductId() {
-    const path = `Product/View/${detailId}`;
+    const path = `Product/View/${productId}`;
     const res = await getDataByPath(path, "", "");
     console.log("res", res.data.name);
     console.log("productcc", product);
@@ -60,6 +61,17 @@ const DetailMedicine = () => {
       setSubCategory(res.data.items);
     }
   }
+  async function loadDataManufacturer() {
+    const path = `Manufacturer?pageIndex=1&pageItems=111`;
+    const res = await getDataByPath(path, "", "");
+    console.log("check", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setManufacturer(res.data.items);
+    }
+  }
+  useEffect(() => {
+    loadDataManufacturer();
+  }, []);
   useEffect(() => {
     loadDataCategory();
   }, []);
@@ -120,6 +132,12 @@ const DetailMedicine = () => {
     (sc) => sc.id === product.subCategoryId
   );
   const subCategoryName = subCategorys ? subCategorys.subCategoryName : "";
+  const subManufacturer = manufacturer.find(
+    (sc) => sc.id === product.manufacturerId
+  );
+  const subManufacturerName = subManufacturer
+    ? subManufacturer.manufacturerName
+    : "";
   useEffect(() => {
     loadDataProductId();
   }, []);
@@ -220,7 +238,7 @@ const DetailMedicine = () => {
                             ? selectedUnitClass
                             : unselectedUnitClass
                         }
-                        style={{ marginLeft: 10 }}
+                        style={{ marginLeft: 10, cursor: "pointer" }}
                         onClick={() => {
                           setproductID1(product.id);
                           setShowPrice({
@@ -243,6 +261,7 @@ const DetailMedicine = () => {
                                   : unselectedUnitClass
                               }
                               key={unit.id}
+                              style={{ marginLeft: 10, cursor: "pointer" }}
                               onClick={() => {
                                 setproductID1(unit.id);
                                 setShowPrice({
@@ -260,21 +279,26 @@ const DetailMedicine = () => {
                     </div>
 
                     <div className="widget size mb-50">
-                      <h6 className="widget-title" style={{ color: "#334155" }}>
-                        Danh Mục: {subCategoryName}{" "}
-                      </h6>
-                      <h6 className="widget-title" style={{ color: "#334155" }}>
-                        Nhà Sản Xuất: {product.manufacturerId}{" "}
-                      </h6>
-                      <h6
-                        className="widget-title"
-                        style={{ color: "#334155", width: 700 }}
-                      >
-                        Công Dụng:{" "}
-                        <div style={{ fontWeight: 400, lineHeight: 2 }}>
-                          {descriptionModels.effect}{" "}
-                        </div>
-                      </h6>
+                      <div style={{display:"flex"}}>
+                         <div style={{ color: "#334155",  fontWeight:500, marginRight:10 }}>
+                        Danh Mục: {" "}
+                      </div>
+                      <div>{subCategoryName}</div>
+                      </div>
+                     <div style={{display:"flex"}}>
+                      <div  style={{ color: "#334155",  fontWeight:500, marginRight:10 }}>
+                        Nhà Sản Xuất: {" "}
+                      </div>
+                      <div>{subManufacturerName}</div>
+                     </div>
+                     <div style={{display:"flex"}}>
+                      <div  style={{ color: "#334155",  fontWeight:500, marginRight:10 }}>
+                        Công dụng: {" "}
+                      </div>
+                      <div>{descriptionModels.effect}</div>
+                     </div>
+                      
+                      
                     </div>
 
                     {/* Add to Cart Form */}
