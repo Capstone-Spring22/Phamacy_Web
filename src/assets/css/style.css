@@ -4605,13 +4605,19 @@ a {
 }
 .product-cart-p {
   margin-top: 20px;
-  margin-left: -130px;
+  margin-left: 20px;
   height: auto;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
   border-radius: 10px;
   padding: 20px;
-  display: flex;
+  background-color: white;
   width: 800px;
+  display: flex;
+}
+.product-cart-p img {
+  height: 80px;
+
+  width: 200px;
 }
 .scroll-p {
   overflow-x: hidden;
@@ -4630,7 +4636,7 @@ a {
 }
 .search-result2 {
   height: 00px;
-  background-color: transparent;
+  background-color: white;
   width: 1200px;
   margin-left: 28px;
   margin-top: 10px;
@@ -4641,30 +4647,83 @@ a {
 }
 .product-cart-p2 {
   margin-top: 20px;
-  margin-left: 80px;
+  margin-left: -20px;
   height: auto;
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+
   border-radius: 10px;
   padding: 20px;
   display: flex;
-  width: 1000px;
+  width: 400px;
 }
-.button-unit{
+.button-unit {
   border-radius: 5px;
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   font-size: 15px;
   padding: 5px 10px;
-  margin-left:10px
+  margin-left: 10px;
 }
-.button-unit-active{
+.button-unit-active {
   border-radius: 5px;
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   font-size: 15px;
   padding: 5px 10px;
-  margin-left:10px;
+  margin-left: 10px;
   background-color: #82aae3;
   color: white;
 }
-.button-tim{
+.button-tim {
+}
+.cart-pharmacist {
+  width: 1000px;
+  background-color: transparent;
+}
+.name-product-pharmacist {
+  width: 390px;
+  margin-right: 30px;
+  margin-left: 10px;
+  height: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.name-product-pharmacist2 {
+  width: 230px;
+  margin-right: 25px;
+  margin-left: 10px;
+  height: 60px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.input-quantity-pharma {
+  border: none;
+}
+.button-minus {
+  width: 20px;
+  height: 20px;
+  margin-top: 10px;
+  background-color: #acc7ee;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.button-plus {
+  width: 20px;
+  height: 20px;
+  margin-top: 10px;
+  background-color: #acc7ee;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.cart-pharmacist-checkout{
  
+  width:900px;
+  height:300px;
+  overflow-x:hidden;
+  overflow-y:auto;
 }

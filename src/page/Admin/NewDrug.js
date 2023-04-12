@@ -24,7 +24,7 @@ const NewDrug = () => {
   const [manufactunerSelected, setManufactunerSelected] = useState(false);
   const [isBatches, setIsBatches] = useState(false);
   const [isPrescription, setIsPrescription] = useState(false);
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(100);
   const resDataRef = useRef(null);
@@ -71,7 +71,7 @@ const NewDrug = () => {
   });
 
   async function loadDataUnit() {
-    const path = `Unit?pageIndex=1&pageItems=111`;
+    const path = `Unit?isCountable=true&pageIndex=1&pageItems=111`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setUnit(res.data.items);
@@ -119,7 +119,7 @@ const NewDrug = () => {
   }
 
   async function loadDataUnit2() {
-    const path = `Unit?pageIndex=1&pageItems=111`;
+    const path = `Unit?isCountable=false&pageIndex=1&pageItems=111`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setUnit2(res.data.items);
@@ -185,7 +185,7 @@ const NewDrug = () => {
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      if (checkValidation()) {
+      if (checkValidationProduct()) {
         const selectedImageIndex = product.imageModel.findIndex(
           (image) => image.isFirstImage !== null
         );
@@ -204,8 +204,10 @@ const NewDrug = () => {
         console.log("display", data);
         console.log("res", changeImg);
         if (res && res.status === 201) {
-          Swal.fire("Create Success", "", "success");
+          Swal.fire("Thêm Sản Phẩm Thành Công", "", "success");
           // window.location.reload();
+        } else {
+          Swal.fire("Bar Code Bị Trùng", "", "error");
         }
       }
     }
@@ -253,10 +255,100 @@ const NewDrug = () => {
     }
   }
   const checkValidation = () => {
-    // if (id.trim() === "") {
-    //   Swal.fire("ID Can't Empty", "", "question");
-    //   return false;
-    // }
+    return true;
+  };
+  const checkValidationProduct = () => {
+    const {
+      name,
+      subCategoryId,
+      manufacturerId,
+      productDetailModel,
+      descriptionModel,
+      imageModel,
+    } = product;
+
+    if (!name.trim()) {
+      Swal.fire("Tên không được để trống", "", "question");
+      return false;
+    }
+
+    if (!subCategoryId.trim()) {
+      Swal.fire("ID danh mục con không được để trống", "", "question");
+      return false;
+    }
+
+    if (!manufacturerId.trim()) {
+      Swal.fire("ID nhà sản xuất không được để trống", "", "question");
+      return false;
+    }
+
+    for (const detail of productDetailModel) {
+      if (!detail.unitId.trim()) {
+        Swal.fire("ID đơn vị không được để trống", "", "question");
+        return false;
+      }
+
+      if (!detail.price.trim()) {
+        Swal.fire("Giá không được để trống", "", "question");
+        return false;
+      }
+      if (!detail.barCode.trim()) {
+        Swal.fire("Bar Code không được để trống", "", "question");
+        return false;
+      }
+    }
+
+    const {
+      effect,
+      instruction,
+      sideEffect,
+      contraindications,
+      preserve,
+      ingredientModel,
+    } = descriptionModel;
+
+    if (!effect.trim()) {
+      Swal.fire("Tác dụng không được để trống", "", "question");
+      return false;
+    }
+
+    if (!instruction.trim()) {
+      Swal.fire("Hướng dẫn sử dụng không được để trống", "", "question");
+      return false;
+    }
+
+    if (!sideEffect.trim()) {
+      Swal.fire("Tác dụng phụ không được để trống", "", "question");
+      return false;
+    }
+
+    if (!contraindications.trim()) {
+      Swal.fire("Chống chỉ định không được để trống", "", "question");
+      return false;
+    }
+
+    if (!preserve.trim()) {
+      Swal.fire("Bảo quản không được để trống", "", "question");
+      return false;
+    }
+
+    for (const ingredient of ingredientModel) {
+      if (!ingredient.ingredientId.trim()) {
+        Swal.fire("ID thành phần không được để trống", "", "question");
+        return false;
+      }
+
+      if (!ingredient.content.trim()) {
+        Swal.fire("Nội dung thành phần không được để trống", "", "question");
+        return false;
+      }
+
+      if (!ingredient.unitId.trim()) {
+        Swal.fire("ID đơn vị thành phần không được để trống", "", "question");
+        return false;
+      }
+    }
+
     return true;
   };
 
@@ -358,7 +450,6 @@ const NewDrug = () => {
                 </div>
               </div>
               {/* /Search */}
-            
             </div>
           </nav>
 
@@ -846,6 +937,12 @@ const NewDrug = () => {
                                       );
                                     })}
                                 </select>
+                              </div>
+                              <div
+                                className="form-text"
+                                style={{ color: "red" }}
+                              >
+                                
                               </div>
                             </div>
                             <div

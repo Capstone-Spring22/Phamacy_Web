@@ -85,6 +85,7 @@ const Home = () => {
       localStorage.removeItem("email");
       localStorage.removeItem("phoneNo");
       localStorage.removeItem("roleName");
+      localStorage.removeItem("id");
     } catch (error) {
       console.log(error.message);
     }
@@ -576,10 +577,10 @@ const Home = () => {
             <div className="title-section text-center col-12">
               <h2 className="text-uppercase">Danh Mục</h2>
             </div>
-            <div className="row align-items-stretch section-overlap">
+            <div className="row align-items-stretch section-overlap" style={{marginLeft:10}}>
               {category.map((item, index) => {
                 return (
-                  <div className="col-md-2 col-lg-2 mb-2 mb-lg-2 hv">
+                  <div className="col-md-2 col-lg-1 mb-1 mb-lg-2 hv" style={{width:160,height:220}}>
                     <div
                       className="banner-wrap  h-100"
                       style={{ backgroundColor: "#e8f5fd" }}
@@ -599,15 +600,15 @@ const Home = () => {
                         <br />
                         <h6
                           key={index}
-                          style={{ color: "black", fontSize: 17 }}
+                          style={{ color: "black", fontSize: 13 ,height:30}}
                         >
-                          {item.categoryName}
+                          {item.categoryName} 
                         </h6>
                         <h6
                           key={index}
-                          style={{ color: "black", fontSize: 17 }}
+                          style={{ color: "black", fontSize: 13 }}
                         >
-                          {item.noOfProducts}
+                          {item.noOfProducts} sản phẩm
                         </h6>
                       </a>
                     </div>

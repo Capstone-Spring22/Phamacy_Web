@@ -12,18 +12,50 @@ const Medicine = () => {
     history.push("/ViewDetail");
   };
   const [apartment, setApartment] = useState([]);
+  const [category, setCategory] = useState([]);
+  const [categoryName, setCategoryName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [drug, setDrug] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(12);
+  const [totalRecord, setTotalRecord] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [rooms, setRooms] = useState([]);
+  const [roomsMsg, setRoomsMsg] = useState([]);
+  const [userRoom, setUserRoom] = useState([]);
+  const [patientId, setPatientId] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
+  const [newMessageType, setNewMessageType] = useState("text");
+  const roomId = "";
+  const [countUs, setCountUs] = useState("2");
+  const id = localStorage.getItem("id");
   console.log("checkp", apartment);
 
   async function loadDataMedicine() {
-    const path = `posts?_limit=10&_page=1`;
+    const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
+    const res = await getDataByPath(path, "", "");
+    console.log("display", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setDrug(res.data.items);
+      setTotalRecord(res.data.totalRecord);
+      console.log("display", currentPage);
+    }
+  }
+  async function loadDataCategory2() {
+    const path = `MainCategory?pageIndex=1&pageItems=10`;
     const res = await getDataByPath(path, "", "");
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
-      setApartment(res.data);
+      setCategory(res.data.items);
+
     }
   }
   useEffect(() => {
     loadDataMedicine();
+  }, []);
+  useEffect(() => {
+    loadDataCategory2();
   }, []);
 
   return (
@@ -207,7 +239,10 @@ const Medicine = () => {
                     >
                       All Products
                     </button>
-
+                    {category &&
+                            category.length &&
+                            category.map((e) => {
+                              return (
                     <button
                       className="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
                       data-filter=".women"
@@ -219,64 +254,10 @@ const Medicine = () => {
                         backgroundColor: "white",
                       }}
                     >
-                      Tim mach
+                      {e.categoryName}
                     </button>
-
-                    <button
-                      className="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-                      data-filter=".men"
-                      style={{
-                        border: "none",
-                        marginRight: 30,
-                        fontSize: "20px",
-                        fontFamily: "Poppins-Regular",
-                        backgroundColor: "white",
-                      }}
-                    >
-                      Tieu Hoa
-                    </button>
-
-                    <button
-                      className=" stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-                      data-filter=".bag"
-                      style={{
-                        border: "none",
-                        marginRight: 30,
-                        fontSize: "20px",
-                        fontFamily: "Poppins-Regular",
-                        backgroundColor: "white",
-                      }}
-                    >
-                      Thần Kinh
-                    </button>
-
-                    <button
-                      className="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-                      data-filter=".shoes"
-                      style={{
-                        border: "none",
-                        marginRight: 30,
-                        fontSize: "20px",
-                        fontFamily: "Poppins-Regular",
-                        backgroundColor: "white",
-                      }}
-                    >
-                      Cơ thể
-                    </button>
-
-                    <button
-                      className="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-                      data-filter=".watches"
-                      style={{
-                        border: "none",
-                        marginRight: 30,
-                        fontSize: "20px",
-                        fontFamily: "Poppins-Regular",
-                        backgroundColor: "white",
-                      }}
-                    >
-                      Dụng cu Yte
-                    </button>
+ );
+})}
                  
                       <label className="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" htmlFor="toggle" style={{ marginLeft:400,cursor:"pointer",fontSize: "20px",}}>
                       <svg
@@ -414,76 +395,65 @@ const Medicine = () => {
                     <br/>
                     <br/>
                     <br/>
-                    <div className="col-12 col-md-8 col-lg-12" >
-                      <div className="shop_grid_product_area">
-                        <div className="row">
-                          {ListProduct.map((item, index) => {
-                            return (
-                              <div
-                                className="col-12 col-sm-6 col-lg-3 single_gallery_item wow fadeInUpBig"
-                                data-wow-delay="0.2s"
-                              >
-                                {/* Product Image */}
-                                <div
-                                  className="product-img"
-                                  onClick={() => {
-                                    viewDetail();
-                                  }}
-                                  style={{ borderRadius: 5, height: 350 }}
-                                >
-                                  <img src={item.src} alt="" />
-                                  <div className="product-quicview">
-                                    <a
-                                      href="#"
-                                      data-toggle="modal"
-                                      data-target="#quickview"
-                                    >
-                                      <BsPlus style={{ marginBottom: 10 }} />
-                                    </a>
-                                  </div>
-                                </div>
-                                {/* Product Description */}
-                                <div className="product-description">
-                                  <h4 className="product-price">
-                                    {item.price}
-                                  </h4>
-                                  <p>{item.name}</p>
-                                  {/* Add to Cart */}
-                                  <a href="#" className="add-to-cart-btn">
-                                    ADD TO CART
-                                  </a>
-                                </div>
-                              </div>
-                            );
-                          })}
-                          {/* Single gallery Item */}
+                    <div className="container ">
+              <div className="row karl-new-arrivals ">
+                {drug &&
+                  drug.length &&
+                  drug.map((item, index) => {
+                    return (
+                      <div
+                        className=" col-md-2 single_gallery_item women wow fadeInUpBig "
+                        data-wow-delay="0.2s"
+                      >
+                        {/* Product Image */}
+                        <div
+                          className="product-img"
+                          style={{ borderRadius: 5 }}
+                          onClick={() => {
+                            viewDetail(item.id);
+                          }}
+                        >
+                          <img
+                            src={item.imageModel.imageURL}
+                            alt=""
+                            style={{ objectFit: "cover", height: 250 }}
+                          />
+                          <div className="product-quicview">
+                            <a
+                              href="#"
+                              data-toggle="modal"
+                              data-target="#quickview"
+                            >
+                              <BsPlus style={{ marginBottom: 10 }} />
+                            </a>
+                          </div>
+                        </div>
+
+                        {/* Product Description */}
+                        <div className="product-description">
+                          <p style={{ height: 90 ,color: '#334155'}}>{item.name}</p>
+                          <h4
+                            className="product-price"
+                            style={{ color: "#82aae3" }}
+                          >
+                            {" "}
+                            {item.priceAfterDiscount.toLocaleString("en-US")} /
+                            {item.productUnitReferences[0].unitName}
+                            <td>
+                              {item.price === item.priceAfterDiscount ? (
+                                ""
+                              ) : (
+                                <del>{item.price}</del>
+                              )}
+                            </td>
+                          </h4>
+                          {/* Add to Cart */}
                         </div>
                       </div>
-                      <div
-                        className="shop_pagination_area wow fadeInUp"
-                        data-wow-delay="1.1s"
-                      >
-                        <nav aria-label="Page navigation">
-                          <ul className="pagination pagination-sm">
-                            <li className="page-item active">
-                              <a className="page-link" href="#">
-                                01
-                              </a>
-                            </li>
-                            <li className="page-item">
-                              <a className="page-link" href="#">
-                                02
-                              </a>
-                            </li>
-                            <li className="page-item">
-                              <a className="page-link" href="#">
-                                03
-                              </a>
-                            </li>
-                          </ul>
-                        </nav>
-                      </div>
-                    </div>
+                    );
+                  })}
+              </div>
+            </div>
                   </div>
                 </div>
               </div>

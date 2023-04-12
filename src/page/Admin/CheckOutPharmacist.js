@@ -5,13 +5,9 @@ import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarPharmacist";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import {
-  getDataByPath,
-  createDataByPath,
-} from "../../services/data.service";
+import { getDataByPath, createDataByPath } from "../../services/data.service";
 
 const CheckOutPharmacist = () => {
-
   const [activeItem, setActiveItem] = useState("CheckOutPharmacist");
   const [drug, setDrug] = useState(null);
   const [listCart, setListCart] = useState([]);
@@ -135,13 +131,13 @@ const CheckOutPharmacist = () => {
           name: drug1.name,
         });
         setListCart([...listCart]);
-        setCount(parseInt(count) +1)
+        setCount(parseInt(count) + 1);
       }
 
       console.log("display", listCart);
     }
   }
- 
+
   const [newArrayOfObjects, setNewArrayOfObjects] = useState([]);
 
   const [product, setProduct] = useState({
@@ -213,6 +209,7 @@ const CheckOutPharmacist = () => {
       })
     );
   }
+
   function updateProductID(productId, newQuantity) {
     setListCart((prevState) =>
       prevState.map((item) => {
@@ -227,26 +224,25 @@ const CheckOutPharmacist = () => {
     );
   }
 
-useEffect(() =>{
-setProduct({...product,
-  totalPrice:product?.products?.reduce(
-    (total, curent) => total + curent.quantity * curent.discountPrice,
-    0
-  ),
-})
-},[count])
+  useEffect(() => {
+    setProduct({
+      ...product,
+      totalPrice: product?.products?.reduce(
+        (total, curent) => total + curent.quantity * curent.discountPrice,
+        0
+      ),
+    });
+  }, [count]);
 
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
         <SideBar activeItem={activeItem} />
 
-        <div
-          className="layout-page"
-          style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
-        >
+        <div className="layout-page" style={{ backgroundColor: "#f4f6fb" }}>
           {/* Navbar */}
           <nav
+            style={{ marginLeft: 150, width: 850 }}
             className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
             id="layout-navbar"
           >
@@ -277,51 +273,116 @@ setProduct({...product,
               </div>
 
               {/* /Search */}
-             
             </div>
           </nav>
 
           {/* / Navbar */}
           {/* Content wrapper */}
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
-            {drug && drug.length ? (
-              <div className="search-result">
-                {drug.map((e) => {
-                  return (
+          <div style={{ display: "flex", flexWrap: "wrap", marginLeft: 180 }}>
+            {/* <div className="search-result">
+              {drug.map((e) => {
+                return (
+                  <div
+                    key={e.id}
+                    className="product-cart-p2"
+                    onClick={() => addToCart(e.id)}
+                  >
+                    <img
+                      src={e.imageModel.imageURL}
+                      style={{
+                        height: 90,
+                        width: 70,
+                        borderRadius: 7,
+                        objectFit: "cover",
+                      }}
+                    />
                     <div
-                      key={e.id}
-                      className="product-cart-p2"
-                      onClick={() => addToCart(e.id)}
+                      style={{ width: 380, marginRight: 30, marginLeft: 30 }}
                     >
-                      <img
-                        src={e.imageModel.imageURL}
-                        style={{
-                          height: 90,
-                          width: 70,
-                          borderRadius: 7,
-                          objectFit: "cover",
-                        }}
-                      />
-                      <div
-                        style={{ width: 380, marginRight: 30, marginLeft: 30 }}
-                      >
-                        <div>Tên sản phẩm:</div>
-                        <div> {e.name}</div>
-                      </div>
-
-                      <div style={{ width: 380 }}>
-                        <div>Số Lượng Tồn Kho:</div>
-                        <div>{e.productInventoryModel.quantity}</div>
-                      </div>
+                      <div>Tên sản phẩm:</div>
+                      <div> {e.name}</div>
                     </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="search-result2"></div>
-            )}
+
+                    <div style={{ width: 380 }}>
+                      <div>Số Lượng Tồn Kho:</div>
+                      <div>{e.productInventoryModel.quantity}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div> */}
 
             <div
+              className="row cart-pharmacist "
+              style={{ marginTop: 10, marginLeft: -50 }}
+            >
+              <div className="col-xl">
+                <div className="" style={{ backgroundColor: "transparent" }}>
+                  <div className="card-body scroll-p">
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "auto auto",
+                        padding: 30,
+                        marginLeft: 100,
+                        height: 620,
+                      }}
+                    >
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <div className="input-group input-group-merge ">
+                          <div
+                            type="text"
+                            id="basic-icon-default-fullname"
+                            placeholder="Tên Sản Phẩm"
+                            aria-label="Tên Sản Phẩm"
+                            aria-describedby="basic-icon-default-fullname2"
+                            style={{ marginLeft: -110 }}
+                          >
+                            {drug &&
+                              drug.map((e) => {
+                                return (
+                                  <div
+                                    key={e.id}
+                                    className="product-cart-p"
+                                    onClick={() => addToCart(e.id)}
+                                  >
+                                    <img
+                                      src={e.imageModel.imageURL}
+                                      style={{
+                                        height: 70,
+                                        width: 60,
+                                        borderRadius: 7,
+                                        objectFit: "cover",
+                                      }}
+                                    />
+                                    <div className="name-product-pharmacist">
+                                      <div>Tên Sản Phẩm</div>
+                                      <div> {e.name}</div>
+                                    </div>
+
+                                    <div style={{ width: 380 }}>
+                                      <div>Số Lượng Tồn Kho:</div>
+                                      <div>
+                                        {e.productInventoryModel.quantity}   {e.productInventoryModel.unitName}
+                                      
+                                      </div>
+                                    </div>
+                                    <div style={{ width: 380 }}>
+                                      <div>Giá</div>
+                                      <div>{e.priceAfterDiscount} đ /  {e.productInventoryModel.unitName}</div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* <div
               className="row "
               style={{ width: 900, marginTop: -30, marginLeft: 25 }}
             >
@@ -472,13 +533,13 @@ setProduct({...product,
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
             <div
               className="row "
-              style={{ width: 300, marginTop: -30, marginLeft: 20 }}
+              style={{ width: 440, marginTop: -70, marginLeft: -80 }}
             >
               <div className="col-xl">
-                <div className="card mb-4">
+                <div className="card mb-4" style={{ height: 700 }}>
                   <div
                     className="card-header d-flex justify-content-between align-items-center"
                     style={{
@@ -494,12 +555,149 @@ setProduct({...product,
                   <div className="card-body">
                     <div
                       style={{
-                        display: "grid",
-
-                        padding: 15,
+                        display: "flex",
+                        flexWrap: "wrap",
+                        padding: 1,
                       }}
-                    >
-                      <div className="mb-3" style={{ width: "95%" }}>
+                      
+                    ><div className="cart-pharmacist-checkout">{listCart.length === 0 ? (
+                        <img
+                          style={{ height: 200 }}
+                          src="https://rtworkspace.com/wp-content/plugins/rtworkspace-ecommerce-wp-plugin/assets/img/empty-cart.png"
+                        />
+                      ) : (
+                        <>
+                          {listCart &&
+                            listCart.map((product) => {
+                              return (
+                                <div className="product-cart-p2">
+                                  <img
+                                    src={product.imageURL}
+                                    style={{
+                                      height: 30,
+                                      width: 30,
+                                      borderRadius: 7,
+                                      objectFit: "cover",
+                                      marginTop: 10,
+                                    }}
+                                  />
+                                  <div key={product.id} style={{ width: 400 }}>
+                                    <div className="name-product-pharmacist2">
+                                      {" "}
+                                      {product.name}
+                                      <div style={{ display: "flex" }}>
+                                        <button
+                                        className="button-minus"
+                                          onClick={() => {
+                                            updateQuantity(
+                                              product.productId,
+                                              product.quantity - 1
+                                            );
+                                          }}
+                                        >
+                                          -
+                                        </button>
+                                        <input
+                                          style={{ height: 30, width: 30 ,marginLeft:15,marginTop:5 }}
+                                          className="input-quantity-pharma"
+                                          value={product.quantity}
+                                          onChange={(e) => {
+                                            setCount(parseInt(count) + 1);
+                                            updateQuantity(
+                                              product.productId,
+                                              e.target.value
+                                            );
+                                          }}
+                                        ></input>{" "}
+                                        <button
+                                        className="button-plus"
+                                          onClick={() => {
+                                            updateQuantity(
+                                              product.productId,
+                                              product.quantity + 1
+                                            );
+                                          }}
+                                        >
+                                          +
+                                        </button>
+                                        <select
+                                          style={{
+                                            height: 30,
+                                            marginLeft: 10,
+                                            border: "none",
+                                          }}
+                                          onChange={(e) => {
+                                            setCount(parseInt(count) + 1);
+                                            updateProductID(
+                                              product.productId,
+                                              e.target.value
+                                            );
+                                          }}
+                                        >
+                                          {product.productPrefer.map((unit) => {
+                                            return (
+                                              <option
+                                                key={unit.id}
+                                                value={unit.id}
+                                              >
+                                                {unit.unitName}
+                                              </option>
+                                            );
+                                          })}
+                                        </select>
+                                        <div
+                                          style={{
+                                            height: 30,
+                                            marginLeft: 10,
+                                            border: "none",
+                                            marginTop: 5,
+                                          }}
+                                        >
+                                          {product.originalPrice} đ
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <button
+                                    style={{
+                                      height: 30,
+                                    
+                                      backgroundColor: "white",
+                                      border: "1px solid white",
+                                      color: "red",
+                                    }}
+                                    onClick={() => {
+                                      const newList = listCart.filter(
+                                        (item) =>
+                                          item.productId !== product.productId
+                                      );
+
+                                      setListCart(newList);
+                                    }}
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      fill="currentColor"
+                                      class="bi bi-trash3"
+                                      viewBox="0 0 16 16"
+                                     
+                                    >
+                                      <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                                    </svg>
+                                  </button>
+                                </div>
+                              );
+                            })}
+                        </>
+                      )}</div>
+                      
+                      <div
+                        className="mb-3"
+                        style={{ width: "45%", marginRight: 20 }}
+                      >
                         <label
                           className="form-label"
                           htmlFor="basic-icon-default-fullname"
@@ -511,7 +709,7 @@ setProduct({...product,
                             type="text"
                             className="form-control"
                             id="basic-icon-default-fullname"
-                            placeholder="Số điện thoại người Mua"
+                            placeholder="Số điện thoại"
                             aria-label="Tên Người Mua"
                             aria-describedby="basic-icon-default-fullname2"
                             onChange={(e) => {
@@ -534,6 +732,39 @@ setProduct({...product,
                         >
                           Tìm
                         </div>
+
+                        {point !== 0 ? (
+                          <div>
+                            <div>Điểm : {point}</div>
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-fullname"
+                            >
+                              Điểm Tich Luỹ
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <input
+                                type="text"
+                                className="form-control"
+                                id="basic-icon-default-fullname"
+                                placeholder="Nhập Điểm "
+                                aria-label="Tên Sản Phẩm"
+                                aria-describedby="basic-icon-default-fullname2"
+                                value={product.usedPoint}
+                                onChange={(e) =>
+                                  setProduct({
+                                    ...product,
+                                    usedPoint: e.target.value,
+                                  })
+                                }
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <div></div>
+                        )}
+                      </div>
+                      <div className="mb-3" style={{ width: "45%" }}>
                         <label
                           className="form-label"
                           htmlFor="basic-icon-default-fullname"
@@ -560,36 +791,6 @@ setProduct({...product,
                             }
                           />
                         </div>
-                        {point !== 0 ? (
-                          <div>
-                            <div>Điểm : {point}</div>
-                            <label
-                              className="form-label"
-                              htmlFor="basic-icon-default-fullname"
-                            >
-                              Điểm Tich Luỹ
-                            </label>
-                            <div className="input-group input-group-merge">
-                              <input
-                                type="text"
-                                className="form-control"
-                                id="basic-icon-default-fullname"
-                                placeholder="Tên người nhận"
-                                aria-label="Tên Sản Phẩm"
-                                aria-describedby="basic-icon-default-fullname2"
-                                value={product.usedPoint}
-                                onChange={(e) =>
-                                  setProduct({
-                                    ...product,
-                                    usedPoint: e.target.value,
-                                  })
-                                }
-                              />
-                            </div>
-                          </div>
-                        ) : (
-                          <div></div>
-                        )}
                       </div>
                       <a
                         className="button-28"

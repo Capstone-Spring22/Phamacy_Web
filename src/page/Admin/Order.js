@@ -5,6 +5,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import "../../assets/css/core.css";
 import { getDataByPath } from "../../services/data.service";
 import ReactPaginate from "react-paginate";
+import { Header } from "antd/es/layout/layout";
 const Order = () => {
   const [drug, setDrug] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,11 +40,10 @@ const Order = () => {
     <>
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
-          <SideBar activeItem={activeItem} />
-
+        <SideBar activeItem={activeItem} />
           <div
             className="layout-page"
-            style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
+            style={{ backgroundColor: "#f4f6fb" }}
           >
             {/* Navbar */}
             <nav

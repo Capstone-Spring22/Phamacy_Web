@@ -27,6 +27,7 @@ const Header = () => {
       localStorage.removeItem("email");
       localStorage.removeItem("phoneNo");
       localStorage.removeItem("roleName");
+      localStorage.removeItem("id");
       navigate.push("/Home");
     } catch (error) {
       console.log(error.message);

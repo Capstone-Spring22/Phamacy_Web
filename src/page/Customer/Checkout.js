@@ -146,6 +146,7 @@ const Home = (props) => {
       const accessToken = localStorage.getItem("accessToken");
       const path = `Customer/${localStorage.getItem("id")}`;
       const res = await getDataByPath(path, accessToken, "");
+      console.log("res.data.customerAddressList", res.data.customerAddressList);
       if (res !== null && res !== undefined && res.status === 200) {
         setListAddress(res.data.customerAddressList);
       }
@@ -247,7 +248,7 @@ const Home = (props) => {
     const dateTime = event.target.value;
     setDateTime(dateTime);
   };
-
+  const id = localStorage.getItem("id");
   const handlecity = (event) => {
     event.preventDefault();
     const cityID = event.target.value;
@@ -291,12 +292,13 @@ const Home = (props) => {
           // window.location.reload();
         }
       } else if (product.payType === 2) {
+        const currentUrl = `${window.location.origin}/VNpay`;
         const url =
           await axios.get(`https://betterhealthapi.azurewebsites.net/api/v1/VNPay?Amount=${
             cartData.total.totalCartPrice
           }&OrderId=${orderID}&IpAddress=${localStorage.getItem(
             "deviceId"
-          )}&UrlCallBack=http%3A%2F%2Flocalhost%3A3000%2FVnpay
+          )}&UrlCallBack=${encodeURIComponent(currentUrl)}
         `);
         if (url && url.status === 200) {
           window.location.href = `${url.data}`;
@@ -314,14 +316,16 @@ const Home = (props) => {
       console.log("Check res", res);
       console.log("display du lieu", data);
       if (res && res.status === 200) {
-        setcCountAddress(parseInt(countAddress) + 1)
-        setAddressUser({customerId: localStorage.getItem("id"),
-        cityId: "",
-        districtId: "",
-        wardId: "",
-        homeAddress: "",
-        isMainAddress: false,})
-        setInputAddress(false)
+        setcCountAddress(parseInt(countAddress) + 1);
+        setAddressUser({
+          customerId: localStorage.getItem("id"),
+          cityId: "",
+          districtId: "",
+          wardId: "",
+          homeAddress: "",
+          isMainAddress: false,
+        });
+        setInputAddress(false);
 
         // Swal.fire("Create Success", "", "success");
         // window.location.reload();
@@ -335,7 +339,7 @@ const Home = (props) => {
       const res = await deleteDataByPath(path, accessToken, "");
       console.log("Check res", res);
       if (res && res.status === 200) {
-        setcCountAddress(parseInt(countAddress) + 1)
+        setcCountAddress(parseInt(countAddress) + 1);
         // Swal.fire("Create Success", "", "success");
         // window.location.reload();
       }
@@ -1030,206 +1034,66 @@ const Home = (props) => {
                               <div onClick={Addaddressuser}>lưu</div>
                             </div>
                           )}
-                          <div className="checkout-payment">
-                            {listAddress.length > 0 ? (
-                              listAddress &&
-                              listAddress.map((address, index) => {
-                                const id = `credit-card-${index}`;
-                                return (
-                                  <div
-                                    key={address.id}
-                                    // onClick={() =>
-                                    //   setProduct((prevState) => ({
-                                    //     ...prevState,
-                                    //     siteId: siteInfo.siteId,
-                                    //   }))
-                                    // }
-                                  >
+                          {listAddress.length > 0 ? (
+                            <div className="checkout-payment">
+                              {listAddress.length > 0 ? (
+                                listAddress &&
+                                listAddress.map((address, index) => {
+                                  const id = `credit-card-${index}`;
+                                  return (
                                     <div
-                                      className="payment-cart"
+                                      key={address.id}
                                       onClick={() =>
-                                        document.getElementById(id).click()
+                                        setProduct({
+                                          ...product,
+                                          reveicerInformation: {
+                                            ...product.reveicerInformation,
+                                            cityId: address.cityId,
+                                            districtId: address.districtId,
+                                            wardId: address.wardId,
+                                            homeAddress: address.homeAddress,
+                                          },
+                                        })
                                       }
                                     >
-                                      <label htmlFor={id}>
-                                        <input
-                                          type="radio"
-                                          id={id}
-                                          name="payment"
-                                          value="credit-card"
-                                          style={{ marginRight: 10 }}
-                                        />
-                                        <div>
-                                          Địa chỉ: {address.fullyAddress}
-                                        </div>
-                                      </label>
+                                      <div
+                                        className="payment-cart"
+                                        onClick={() =>
+                                          document.getElementById(id).click()
+                                        }
+                                      >
+                                        <label htmlFor={id}>
+                                          <input
+                                            type="radio"
+                                            id={id}
+                                            name="payment"
+                                            value="credit-card"
+                                            style={{ marginRight: 10 }}
+                                          />
+                                          <div>
+                                            Địa chỉ: {address.fullyAddress}
+                                          </div>
+                                        </label>
+                                      </div>
+                                      <div
+                                        onClick={() =>
+                                          deleteaddressuser(address.id)
+                                        }
+                                      >
+                                        Xoá
+                                      </div>
                                     </div>
-                                    <div onClick={()=>deleteaddressuser(address.id)}>Xoá</div>
-                                  </div>
-                                );
-                              })
-                            ) : (
-                              <p>No site info found.</p>
-                            )}
-                          </div>{" "}
+                                  );
+                                })
+                              ) : (
+                                <p>No site info found.</p>
+                              )}
+                            </div>
+                          ) : (
+                           <></>
+                          )}
                         </div>
 
-                        <div className="col-12 mb-3">
-                          <label htmlFor="street_address">
-                            Thành phố <span>*</span>
-                          </label>
-                          <select
-                            name="city"
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            style={{
-                              border: "1px solid #e4e7eb",
-                              backgroundColor: "white",
-                              borderRadius: 5,
-                            }}
-                            onChange={(e) => {
-                              handlecity(e);
-                              setProduct({
-                                ...product,
-                                reveicerInformation: {
-                                  ...product.reveicerInformation,
-                                  cityId: e.target.value,
-                                },
-                              });
-                            }}
-                            value={cityID}
-                          >
-                            {!citySelected && (
-                              <option value="" style={{ color: "#8899b8" }}>
-                                Chọn Tỉnh/ Thành Phô
-                              </option>
-                            )}
-                            {city &&
-                              city.length &&
-                              city.map((e, index) => {
-                                return (
-                                  <>
-                                    <option key={e.id} value={e.id}>
-                                      {e.cityName}
-                                    </option>
-                                  </>
-                                );
-                              })}
-                          </select>
-                        </div>
-
-                        <div className="col-12 mb-3">
-                          <label htmlFor="postcode">
-                            Quận/Huyện <span>*</span>
-                          </label>
-
-                          <select
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            style={{
-                              border: "1px solid #e4e7eb",
-                              backgroundColor: "white",
-                              borderRadius: 5,
-                            }}
-                            onChange={(e) => {
-                              handleDistrict(e);
-                              setProduct({
-                                ...product,
-                                reveicerInformation: {
-                                  ...product.reveicerInformation,
-                                  districtId: e.target.value,
-                                },
-                              });
-                            }}
-                            value={districtID}
-                          >
-                            {!districsSelected && (
-                              <option value="" style={{ color: "#8899b8" }}>
-                                Chọn Quận / Huyện
-                              </option>
-                            )}
-                            {districs &&
-                              districs.length &&
-                              districs.map((e, index) => {
-                                return (
-                                  <>
-                                    <option key={e.id} value={e.id}>
-                                      {e.districtName}
-                                    </option>
-                                  </>
-                                );
-                              })}
-                          </select>
-                        </div>
-
-                        <div className="col-12 mb-3">
-                          <label htmlFor="city">
-                            Phường <span>*</span>
-                          </label>
-
-                          <select
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            style={{
-                              border: "1px solid #e4e7eb",
-                              backgroundColor: "white",
-                              borderRadius: 5,
-                            }}
-                            value={wardID}
-                            onChange={(e) => {
-                              handleWards(e);
-                              setProduct({
-                                ...product,
-                                reveicerInformation: {
-                                  ...product.reveicerInformation,
-                                  wardId: e.target.value,
-                                },
-                              });
-                            }}
-                          >
-                            {!wardSelected && (
-                              <option value="" style={{ color: "#8899b8" }}>
-                                Chọn Phường
-                              </option>
-                            )}
-                            {ward &&
-                              ward.length &&
-                              ward.map((e, index) => {
-                                return (
-                                  <>
-                                    <option key={e.id} value={e.id}>
-                                      {e.wardName}
-                                    </option>
-                                  </>
-                                );
-                              })}
-                          </select>
-                        </div>
-                        <div className="col-12 mb-3">
-                          <label htmlFor="state">
-                            Địa chỉ cụ thể <span>*</span>
-                          </label>
-                          <input
-                            type="text"
-                            style={{
-                              border: "1px solid #e4e7eb",
-                              backgroundColor: "white",
-                              borderRadius: 5,
-                            }}
-                            className="form-control"
-                            id="state"
-                            defaultValue=""
-                            onChange={(e) =>
-                              setProduct({
-                                ...product,
-                                reveicerInformation: {
-                                  ...product.reveicerInformation,
-                                  homeAddress: e.target.value,
-                                },
-                              })
-                            }
-                          />
-                        </div>
                         <div className="col-12 mb-3">
                           <label htmlFor="street_address">
                             Ghi Chú <span>*</span>
@@ -1362,34 +1226,38 @@ const Home = (props) => {
                     </label>
                   </div>
                 </div>
-                <div className="checkout-payment">
-                  <div className="payment-cart">
-                    <label for="credit-card">
-                      <label htmlFor="state">
-                        Điểm Thưởng
-                        <span> Số điểm Còn Lại Của Bạn Là {point}</span>
+                {id ? (
+                  <div className="checkout-payment">
+                    <div className="payment-cart">
+                      <label for="credit-card">
+                        <label htmlFor="state">
+                          Điểm Thưởng
+                          <span> Số điểm Còn Lại Của Bạn Là {point}</span>
+                        </label>
+                        <input
+                          type="number"
+                          style={{
+                            border: "1px solid #e4e7eb",
+                            backgroundColor: "white",
+                            borderRadius: 5,
+                          }}
+                          placeholder="Nhập Điểm Thưởng"
+                          className="form-control"
+                          id="state"
+                          max={3}
+                          onChange={(e) =>
+                            setProduct((prevState) => ({
+                              ...prevState,
+                              usedPoint: 0,
+                            }))
+                          }
+                        />
                       </label>
-                      <input
-                        type="number"
-                        style={{
-                          border: "1px solid #e4e7eb",
-                          backgroundColor: "white",
-                          borderRadius: 5,
-                        }}
-                        placeholder="Nhập Điểm Thưởng"
-                        className="form-control"
-                        id="state"
-                        max={3}
-                        onChange={(e) =>
-                          setProduct((prevState) => ({
-                            ...prevState,
-                            usedPoint: 0,
-                          }))
-                        }
-                      />
-                    </label>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </div>
