@@ -55,6 +55,9 @@ const Home = () => {
     localStorage.setItem("detailId", detailId);
     history.push("/ViewDetail");
   };
+  const viewProduct = (categoryID) => {
+    history.push("/Medicine", categoryID);
+  };
   const userName = localStorage.getItem("userName");
   const roleName = localStorage.getItem("roleName");
 
@@ -338,7 +341,10 @@ const Home = () => {
                 className="site-navigation text-right text-md-center"
                 role="navigation"
               >
-                <ul className="site-menu js-clone-nav d-none d-lg-block" style={{marginLeft:-30}}>
+                <ul
+                  className="site-menu js-clone-nav d-none d-lg-block"
+                  style={{ marginLeft: -30 }}
+                >
                   <li className="active">
                     <Link activeClassName="active" to="/Home" exact>
                       <span>Home</span>
@@ -351,7 +357,7 @@ const Home = () => {
                   </li>
 
                   {buttonHistory}
-                 
+
                   {buttonLogout}
                 </ul>
               </nav>
@@ -577,10 +583,19 @@ const Home = () => {
             <div className="title-section text-center col-12">
               <h2 className="text-uppercase">Danh Mục</h2>
             </div>
-            <div className="row align-items-stretch section-overlap" style={{marginLeft:10}}>
+            <div
+              className="row align-items-stretch section-overlap"
+              style={{ marginLeft: 10 }}
+            >
               {category.map((item, index) => {
                 return (
-                  <div className="col-md-2 col-lg-1 mb-1 mb-lg-2 hv" style={{width:160,height:220}}>
+                  <div
+                    onClick={() => {
+                      viewProduct(item.id);
+                    }}
+                    className="col-md-2 col-lg-1 mb-1 mb-lg-2 hv"
+                    style={{ width: 160, height: 220 }}
+                  >
                     <div
                       className="banner-wrap  h-100"
                       style={{ backgroundColor: "#e8f5fd" }}
@@ -600,9 +615,9 @@ const Home = () => {
                         <br />
                         <h6
                           key={index}
-                          style={{ color: "black", fontSize: 13 ,height:30}}
+                          style={{ color: "black", fontSize: 13, height: 30 }}
                         >
-                          {item.categoryName} 
+                          {item.categoryName}
                         </h6>
                         <h6
                           key={index}
@@ -763,7 +778,9 @@ const Home = () => {
 
                         {/* Product Description */}
                         <div className="product-description">
-                          <p style={{ height: 90 ,color: '#334155'}}>{item.name}</p>
+                          <p style={{ height: 90, color: "#334155" }}>
+                            {item.name}
+                          </p>
                           <h4
                             className="product-price"
                             style={{ color: "#82aae3" }}

@@ -258,7 +258,7 @@ const Drug = () => {
                               </thead>
                               <tbody className="table-border-bottom-0">
                                 {drug &&
-                                  drug.length &&
+                                  drug.length >0  &&
                                   drug.map((e) => {
                                     const subCategorys = subCategory.find((sc) => sc.id === e.subCategoryId);
                                     const subCategoryName = subCategorys ? subCategorys.subCategoryName : "";

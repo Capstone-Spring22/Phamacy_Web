@@ -561,7 +561,7 @@ const MainCategory = () => {
                         </thead>
                         <tbody className="table-border-bottom-0">
                           {category &&
-                            category.length &&
+                            category.length > 0 &&
                             category.map((e) => {
                               return (
                                 <tr key={e.id}>

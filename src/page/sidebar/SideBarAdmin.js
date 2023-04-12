@@ -62,8 +62,8 @@ const Sidebar = ({ activeItem }) => {
               src="https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png"
             />
           )}
-          {user && user.username && (
-            <div className="header-sidebar-name">{user.username}</div>
+          {user && user.fullname && (
+            <div className="header-sidebar-name">{user.fullname}</div>
           )}
         </div>
         <div className="menu-inner-shadow" />

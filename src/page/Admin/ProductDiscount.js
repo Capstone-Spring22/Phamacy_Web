@@ -240,7 +240,7 @@ const ProductDiscount = () => {
                             </thead>
                             <tbody className="table-border-bottom-0">
                               {drug &&
-                                drug.length &&
+                                drug.length>0 &&
                                 drug.map((e) => {
                                   return (
                                     <tr key={e.id}>

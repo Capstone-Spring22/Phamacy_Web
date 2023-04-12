@@ -18,7 +18,7 @@ const Sidebar = ({ activeItem }) => {
       console.log("localStorage", localStorage);
       const path = `User/${localStorage.userID}`;
       const res = await getDataByPath(path, accessToken, "");
-      console.log("res", res.data.username);
+      console.log("res", res.data);
       console.log("user", user);
       if (res !== null && res !== undefined && res.status === 200) {
         setUser(res.data);
@@ -71,8 +71,8 @@ const Sidebar = ({ activeItem }) => {
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAEUTUFvPsiiOjdB2ocRUt0wh10kho3Mt9dA&usqp=CAU"
             />
           )}
-          {user && user.username && (
-            <div className="header-sidebar-name">{user.username}</div>
+          {user && user.fullname && (
+            <div className="header-sidebar-name">{user.fullname}</div>
           )}
         </div>
 

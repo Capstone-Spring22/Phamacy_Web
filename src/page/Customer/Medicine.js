@@ -33,7 +33,7 @@ const Medicine = () => {
   console.log("checkp", apartment);
 
   async function loadDataMedicine() {
-    const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `Product?isSellFirstLevel=true&mainCategoryID=&pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
     console.log("display", res);
     if (res !== null && res !== undefined && res.status === 200) {

@@ -4,10 +4,7 @@ import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarManager";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import {
-  getDataByPath,
-  createDataByPath,
-} from "../../services/data.service";
+import { getDataByPath, createDataByPath } from "../../services/data.service";
 import AddProductCard from "./components/AddProductCard";
 
 const AddImportProduct = () => {
@@ -20,9 +17,7 @@ const AddImportProduct = () => {
   const [productIngredient, setProductIngredient] = useState([]);
   const [unit, setUnit] = useState([]);
   const [unit2, setUnit2] = useState([]);
- 
 
-  
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(100);
   const [drug, setDrug] = useState([]);
@@ -97,6 +92,22 @@ const AddImportProduct = () => {
       const accessToken = localStorage.getItem("accessToken");
       if (checkValidation()) {
         const data = product;
+        const path = "ProductImport";
+        const res = await createDataByPath(path, accessToken, data);
+        console.log("Check res", res);
+        console.log("display du lieu", data);
+        if (res && res.status === 201) {
+          Swal.fire("Create Success", "", "success");
+          // window.location.reload();
+        }
+      }
+    }
+  }
+  async function createNewProductsRelease() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      if (checkValidation()) {
+        const data = { ...product, isReleased: true };
         const path = "ProductImport";
         const res = await createDataByPath(path, accessToken, data);
         console.log("Check res", res);
@@ -269,7 +280,6 @@ const AddImportProduct = () => {
     setUnitCount(unitCount + 1);
   };
   const [activeItem, setActiveItem] = useState("ImportProduct");
- 
 
   return (
     <div className="layout-wrapper layout-content-navbar">
@@ -310,7 +320,6 @@ const AddImportProduct = () => {
                 </div>
               </div>
               {/* /Search */}
-             
             </div>
           </nav>
 
@@ -348,7 +357,6 @@ const AddImportProduct = () => {
                           setCountQuantity={setCountQuantity}
                           drug={drug}
                           setcountPrice={setcountPrice}
-                          
                         />
                       );
                     }
@@ -535,7 +543,26 @@ const AddImportProduct = () => {
                         </div>
                       </div>
                     </div>
-
+                    <button
+                      type="submit"
+                      className="button-28"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        createNewProductsRelease();
+                      }}
+                      style={{
+                        height: 35,
+                        width: 100,
+                        fontSize: 13,
+                        paddingTop: 1,
+                        marginLeft: "90%",
+                        marginTop: "20px",
+                        backgroundColor: "#82AAE3",
+                        color: "white",
+                      }}
+                    >
+                      Duyệt
+                    </button>
                     <button
                       type="submit"
                       className="button-28"
@@ -554,7 +581,7 @@ const AddImportProduct = () => {
                         color: "white",
                       }}
                     >
-                      Lưu
+                      Lưu Nháp
                     </button>
                   </div>
                 </div>
