@@ -36,6 +36,7 @@ import HistoryOrder from "./page/Customer/HistoryOrder";
 import Chat from "./page/Customer/Chat";
 import ChatPharmacist from "./page/Admin/ChatPhamacist";
 import { Redirect } from "react-router-dom";
+import ViewImportProduct from "./page/Admin/ViewImportProduct";
 function App() {
   return (
     <div className="site-wrap">
@@ -131,6 +132,9 @@ function App() {
           </Route>
           <Route path="/ChatPharmacist">
             <ChatPharmacist />
+          </Route>
+          <Route path="/ViewImportProduct">
+            <ViewImportProduct />
           </Route>
         </Switch>
       </BrowserRouter>

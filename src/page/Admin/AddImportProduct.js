@@ -90,7 +90,7 @@ const AddImportProduct = () => {
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      if (checkValidation()) {
+      if (checkValidationImport()) {
         const data = product;
         const path = "ProductImport";
         const res = await createDataByPath(path, accessToken, data);
@@ -106,7 +106,7 @@ const AddImportProduct = () => {
   async function createNewProductsRelease() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      if (checkValidation()) {
+      if (checkValidationImport()) {
         const data = { ...product, isReleased: true };
         const path = "ProductImport";
         const res = await createDataByPath(path, accessToken, data);
@@ -164,6 +164,71 @@ const AddImportProduct = () => {
     // }
     return true;
   };
+  const checkValidationImport = () => {
+    const { productImportDetails, note, totalProductPrice, taxPrice, totalShippingFee, totalPrice } = product;
+  
+    for (const detail of productImportDetails) {
+      if (!detail.productId.trim()) {
+        Swal.fire("Product ID Can't Be Empty", "", "question");
+        return false;
+      }
+  
+      if (!detail.quantity) {
+        Swal.fire("Quantity Can't Be Empty", "", "question");
+        return false;
+      }
+  
+      if (!detail.importPrice) {
+        Swal.fire("Import Price Can't Be Empty", "", "question");
+        return false;
+      }
+  
+      for (const batch of detail.productBatches) {
+        if (!batch.quantity) {
+          Swal.fire("Batch Quantity Can't Be Empty", "", "question");
+          return false;
+        }
+  
+        if (!batch.manufactureDate.trim()) {
+          Swal.fire("Manufacture Date Can't Be Empty", "", "question");
+          return false;
+        }
+  
+        if (!batch.expireDate.trim()) {
+          Swal.fire("Expire Date Can't Be Empty", "", "question");
+          return false;
+        }
+      }
+    }
+  
+    if (!note.trim()) {
+      Swal.fire("Note Can't Be Empty", "", "question");
+      return false;
+    }
+  
+    if (!totalProductPrice) {
+      Swal.fire("Total Product Price Can't Be Empty", "", "question");
+      return false;
+    }
+  
+    if (!taxPrice) {
+      Swal.fire("Tax Price Can't Be Empty", "", "question");
+      return false;
+    }
+  
+    if (!totalShippingFee) {
+      Swal.fire("Total Shipping Fee Can't Be Empty", "", "question");
+      return false;
+    }
+  
+    if (!totalPrice) {
+      Swal.fire("Total Price Can't Be Empty", "", "question");
+      return false;
+    }
+  
+    return true;
+  };
+  
 
   // useEffect(() => {
   //   loadDataEmployee();

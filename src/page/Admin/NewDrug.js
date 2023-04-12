@@ -183,6 +183,7 @@ const NewDrug = () => {
     value: e.id,
   }));
   async function createNewProducts() {
+    
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
       if (checkValidationProduct()) {
@@ -207,7 +208,7 @@ const NewDrug = () => {
           Swal.fire("Thêm Sản Phẩm Thành Công", "", "success");
           // window.location.reload();
         } else {
-          Swal.fire("Bar Code Bị Trùng", "", "error");
+          Swal.fire(res.data.duplicateBarCode, "", "error");
         }
       }
     }
@@ -957,7 +958,7 @@ const NewDrug = () => {
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
-                                  type="text"
+                                  type="number"
                                   id={`quantitative${index}`}
                                   className="form-control"
                                   placeholder="Định Lượng"
@@ -1044,7 +1045,7 @@ const NewDrug = () => {
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
-                                  type="text"
+                                  type="number"
                                   id={`price${index}`}
                                   className="form-control"
                                   placeholder="Giá Của Sản Phẩm"
@@ -1085,7 +1086,7 @@ const NewDrug = () => {
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
-                                  type="text"
+                                  type="number"
                                   id={`barCode${index}`}
                                   className="form-control"
                                   placeholder="Mã BarCode"
@@ -1298,7 +1299,7 @@ const NewDrug = () => {
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
-                                  type="text"
+                                  type="number"
                                   id={`content${index}`}
                                   className="form-control"
                                   placeholder="DUNG TÍCH"

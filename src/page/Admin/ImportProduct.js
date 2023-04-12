@@ -25,6 +25,10 @@ const Drug = () => {
     localStorage.setItem("id", myId);
     history.push("/UpdateImportProduct");
   };
+  const view = (myId) => {
+    localStorage.setItem("id", myId);
+    history.push("/ViewImportProduct");
+  };
   const create = () => {
     history.push("/AddImportProduct");
   };
@@ -251,7 +255,7 @@ const Drug = () => {
                                               role="button"
                                               href="#my-dialog2"
                                               onClick={() => {
-                                                update(e.id);
+                                                view(e.id);
                                               }}
                                             >
                                               <svg
