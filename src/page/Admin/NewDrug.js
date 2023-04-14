@@ -78,12 +78,12 @@ const NewDrug = () => {
     }
   }
   const userUsages = [
-    { name: "trẻ em", value: 1 },
-    { name: "người lớn", value: 2 },
-    { name: "người cao tuổi", value: 3 },
-    { name: "phụ nữ cho con bú", value: 4 },
-    { name: "phụ nữ", value: 5 },
-    { name: "mọi lứa tuổi", value: "" },
+    { name: "Trẻ em", value: 1 },
+    { name: "Người lớn", value: 2 },
+    { name: "Người cao tuổi", value: 3 },
+    { name: "Phụ nữ cho con bú", value: 4 },
+    { name: "Phụ nữ", value: 5 },
+    { name: "Mọi lứa tuổi", value: "" },
   ];
   async function loadDataCategory() {
     const path = `SubCategory?pageIndex=1&pageItems=111`;
@@ -258,6 +258,7 @@ const NewDrug = () => {
   const checkValidation = () => {
     return true;
   };
+
   const checkValidationProduct = () => {
     const {
       name,
@@ -298,7 +299,7 @@ const NewDrug = () => {
         return false;
       }
     }
-
+   
     const {
       effect,
       instruction,
@@ -386,7 +387,18 @@ const NewDrug = () => {
     });
     setIngredientCount(ingredientCount + 1);
   };
-
+  const handleDeleteIngredient = (index) => {
+    const newIngredientModel = [...product.descriptionModel.ingredientModel];
+    newIngredientModel.splice(index, 1);
+    setProduct({
+      ...product,
+      descriptionModel: {
+        ...product.descriptionModel,
+        ingredientModel: newIngredientModel,
+      },
+    });
+    setIngredientCount(ingredientCount - 1);
+  };
   const handleAddUnit = () => {
     setProduct({
       ...product,
@@ -701,7 +713,7 @@ const NewDrug = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Thêm Công Dụng Cho Sản Phẩm</h5>
+                    <h5 className="mb-0">Mô Tả Sản Phẩm</h5>
                   </div>{" "}
                   <div className="card-body">
                     <div
@@ -723,7 +735,7 @@ const NewDrug = () => {
                             type="text"
                             id="basic-icon-default-company"
                             className="form-control"
-                            placeholder="Công dung"
+                            placeholder="Công dụng"
                             aria-label="Công dung"
                             aria-describedby="basic-icon-default-company2"
                             onChange={(e) =>
@@ -954,7 +966,7 @@ const NewDrug = () => {
                                 className="form-label"
                                 htmlFor={`unitId${index}`}
                               >
-                                định lượng
+                                Giá Trị Quy Đổi
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
@@ -1041,7 +1053,7 @@ const NewDrug = () => {
                                 className="form-label"
                                 htmlFor={`unitId${index}`}
                               >
-                                Giá
+                                Giá Bán
                               </label>
                               <div className="input-group input-group-merge">
                                 <input
@@ -1223,7 +1235,7 @@ const NewDrug = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Nguyên Nguyên Liệu</h5>
+                    <h5 className="mb-0">Nguyên Liệu</h5>
                   </div>
 
                   {Array.from({ length: ingredientCount }, (_, i) => i + 1).map(
@@ -1389,12 +1401,21 @@ const NewDrug = () => {
                                 </select>
                               </div>
                             </div>
+                         
                           </div>
+                          <button
+  style={{ marginLeft: 10 }}
+  onClick={() => handleDeleteIngredient(index)}
+>
+  Xóa
+</button>
+
                         </div>
                         <hr />
                       </div>
                     )
                   )}
+               
                   <button
                     style={{
                       height: 50,
@@ -1423,7 +1444,7 @@ const NewDrug = () => {
                         d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
                       />
                     </svg>
-                    them nguyen lieu
+                   Thêm Nguyên Liệu
                   </button>
                 </div>
               </div>

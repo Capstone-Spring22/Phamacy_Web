@@ -312,27 +312,24 @@ const ViewImportProduct = () => {
                                     type="text"
                                     readOnly
                                     id={`quantitative${index}`}
-                                 
                                     aria-label="Unit Id"
                                     aria-describedby={`quantitative${index}2`}
-                                    value={
-                                      drug?.find(
-                                        (sc) =>
-                                          sc.id ===
-                                          product?.productImportDetails[
-                                            index - 1
-                                          ]?.productId
-                                      )?.name
-                                        ? drug?.find(
-                                            (sc) =>
-                                              sc.id ===
-                                              product?.productImportDetails[
-                                                index - 1
-                                              ]?.productId
-                                          )?.name
-                                        : "Đang Tải ..."
-                                    }
-                                  />
+                                  >
+                                    {drug?.find(
+                                      (sc) =>
+                                        sc.id ===
+                                        product?.productImportDetails[index - 1]
+                                          ?.productId
+                                    )?.name
+                                      ? drug?.find(
+                                          (sc) =>
+                                            sc.id ===
+                                            product?.productImportDetails[
+                                              index - 1
+                                            ]?.productId
+                                        )?.name
+                                      : "Đang Tải ..."}
+                                  </div>
                                 </div>
                               </div>
                               <div
@@ -346,41 +343,15 @@ const ViewImportProduct = () => {
                                   Số lượng
                                 </label>
                                 <div className="input-group input-group-merge">
-                                  <input
-                                    type="text"
-                                    id={`quantitative${index}`}
-                                    className="form-control"
-                                    placeholder="Số lượng"
-                                    aria-label="Unit Id"
-                                    aria-describedby={`quantitative${index}2`}
-                                    value={
+                                  <div
+                                  
+                                  >
+                                
+                                    {
                                       product.productImportDetails[index - 1]
                                         .quantity
                                     }
-                                    onChange={(e) => {
-                                      setcountPrice(
-                                        (countprice) => parseInt(countprice) + 1
-                                      );
-                                      setProduct({
-                                        ...product,
-                                        productImportDetails: [
-                                          ...product.productImportDetails.slice(
-                                            0,
-                                            index - 1
-                                          ),
-                                          {
-                                            ...product.productImportDetails[
-                                              index - 1
-                                            ],
-                                            quantity: e.target.value,
-                                          },
-                                          ...product.productImportDetails.slice(
-                                            index
-                                          ),
-                                        ],
-                                      });
-                                    }}
-                                  />
+                                  </div>
                                 </div>
                               </div>
                               <div

@@ -3,10 +3,7 @@ import { useHistory } from "react-router-dom";
 import SideBar from "../sidebar/SideBarAdmin";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import {
-  getDataByPath,
-
-} from "../../services/data.service";
+import { getDataByPath } from "../../services/data.service";
 import ReactPaginate from "react-paginate";
 
 const Employees = () => {
@@ -16,10 +13,10 @@ const Employees = () => {
   const [districs, setDistrics] = useState([]);
   const [districtID, setDistrictID] = useState([]);
   const [ward, setWard] = useState([]);
- 
+
   const [totalEmployees, setTotalEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(7);
+  const [perPage, setPerPage] = useState(3);
   const [role, setRole] = useState("");
   let history = useHistory();
 
@@ -37,11 +34,10 @@ const Employees = () => {
       if (res !== null && res !== undefined && res.status === 200) {
         setEmployees(res.data.items);
         setTotalEmployees(res.data.totalRecord);
-        console.log('display',currentPage)
+        console.log("display", currentPage);
       }
     }
   }
-
 
   async function loadDataCity() {
     const path = `Address/City`;
@@ -75,7 +71,6 @@ const Employees = () => {
     }
   }
 
-
   useEffect(() => {
     loadDataCity();
   }, []);
@@ -90,17 +85,18 @@ const Employees = () => {
   }, [districtID]);
   const [activeItem, setActiveItem] = useState("Employees");
   useEffect(() => {
-   
-      loadDataEmployee();
- 
+    loadDataEmployee();
   }, [currentPage, perPage]);
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
-        <SideBar activeItem={activeItem} />
+          <SideBar activeItem={activeItem} />
 
-          <div className="layout-page" style={{ backgroundColor: "#f4f6fb", marginLeft:260 }}>
+          <div
+            className="layout-page"
+            style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
+          >
             {/* Navbar */}
             <nav
               className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
@@ -131,7 +127,6 @@ const Employees = () => {
                   </div>
                 </div>
                 {/* /Search */}
-               
               </div>
             </nav>
 
@@ -216,7 +211,16 @@ const Employees = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              &nbsp; &nbsp;Tên
+                              &nbsp; &nbsp;Hình Ảnh
+                            </th>
+                            <th
+                              style={{
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
+                              Tên
                             </th>
                             <th
                               style={{
@@ -243,10 +247,8 @@ const Employees = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Địa chỉ chi nhánh
+                             Chi Nhánh Làm Việc
                             </th>
-
-                            
                           </tr>
                         </thead>
                         <tbody className="table-border-bottom-0">
@@ -255,11 +257,31 @@ const Employees = () => {
                             employees.map((e) => {
                               return (
                                 <tr key={e.id}>
-                                  <td>&nbsp; &nbsp;{e.fullname}</td>
+                                  <td>
+                                    <img
+                                      src={e.imageUrl}
+                                      style={{
+                                        height: 90,
+                                        width: 70,
+                                        borderRadius: 7,
+                                        objectFit: "cover",
+                                      }}
+                                    />
+                                  </td>
+                                  <td>{e.fullname}</td>
                                   <td>{e.username}</td>
-                                  <td>{e.roleName}</td>
+                                  <td>
+                                    {e.roleName === "Manager"
+                                      ? "Quản Lý Chi Nhánh"
+                                      : e.roleName === "Pharmacist"
+                                      ? "Nhân Viên"
+                                      : e.roleName === "Admin"
+                                      ? "Admin"
+                                      : e.roleName === "Owner"
+                                      ? "Chủ sở hữu"
+                                      : e.roleName}
+                                  </td>
                                   <td>{e.siteName}</td>
-                                  
 
                                   {/* <td>
                                    
@@ -285,23 +307,20 @@ const Employees = () => {
                             })}
                         </tbody>
                       </table>
-                 
-                           <ReactPaginate
-                          
-                          className="pagination "
-                          breakLabel="..."
-                          nextLabel=">"
-                          previousLabel="< "
-                          nextClassName="next-button"
-                          pageClassName="page-item"
-                          activeClassName="ac"
-                          previousClassName="previous-button"
-                          pageCount={totalEmployees / perPage}
-                          onPageChange={(e) =>
-                            setCurrentPage(e.selected + 1)
-                          }
-                          currentPage={currentPage}
-                        />
+
+                      <ReactPaginate
+                        className="pagination "
+                        breakLabel="..."
+                        nextLabel=">"
+                        previousLabel="< "
+                        nextClassName="next-button"
+                        pageClassName="page-item"
+                        activeClassName="ac"
+                        previousClassName="previous-button"
+                        pageCount={totalEmployees / perPage}
+                        onPageChange={(e) => setCurrentPage(e.selected + 1)}
+                        currentPage={currentPage}
+                      />
                     </div>
                   </div>
                 </div>

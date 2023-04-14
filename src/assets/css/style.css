@@ -4261,6 +4261,22 @@ a {
   line-height: 30.5px;
   text-align: left;
 }
+.fontagon2 {
+  color: #121313;
+  font-family: Open Sans;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 30.5px;
+  text-align: left;
+}
+.fontagon3 {
+  color: #121313;
+  font-family: Open Sans;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 30.5px;
+  text-align: left;
+}
 .button-batches {
   width: 90px;
   height: 40px;
@@ -4726,4 +4742,19 @@ a {
   height:300px;
   overflow-x:hidden;
   overflow-y:auto;
+}
+.block-header-dashboard{
+  display: flex;
+}
+.block-content-dashboard{
+  box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
+background-color:white;
+margin-left: 50px;
+margin-top: 30px;
+height:150px;
+width: 250px;
+border-radius: 5px;
+}
+.table-view-order{
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
 }

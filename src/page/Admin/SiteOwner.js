@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
-import SideBar from "../sidebar/SideBarAdmin";
+import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";
@@ -13,7 +13,7 @@ import {
   updateDataByPath,
 } from "../../services/data.service";
 
-const Site = () => {
+const SiteOwner = () => {
   const [site, setSite] = useState(null);
   const [city, setCity] = useState([]);
   const [cityID, setCityID] = useState("");
@@ -34,8 +34,9 @@ const Site = () => {
   const [siteNameErrorMessage, setSiteNameErrorMessage] = useState("");
   const [cityErrorMessage, setCityErrorMessage] = useState("");
   const [districtsErrorMessage, setDistrictsErrorMessage] = useState("");
-
+ 
   const [countUs, setCountUs] = useState("2");
+ 
 
   let history = useHistory();
 
@@ -47,8 +48,12 @@ const Site = () => {
   const checkValidation = () => {
     let isValid = true;
 
+    
+
     return true;
   };
+
+
 
   async function loadDataSite() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -171,7 +176,9 @@ const Site = () => {
         if (res1 && res1.status === 200) {
           setCountUs(parseInt(countUs) + 1);
           Swal.fire("Update successfully!", "", "success");
+         
         } else if (res1 && res1.status === 400) {
+          
           Swal.fire(
             "Cửa hàng này chưa đủ nhân viên nên chưa mở cửa!",
             "Không thể mở cửa",
@@ -194,8 +201,9 @@ const Site = () => {
         if (res1 && res1.status === 200) {
           setCountUs(parseInt(countUs) + 1);
           Swal.fire("Update successfully!", "", "success");
-          history.push("/Site");
+          history.push("/SiteOwner");
         } else if (res1 && res1.status === 400) {
+          
           Swal.fire(
             "Cửa hàng này chưa đủ nhân viên nên chưa mở cửa!",
             "Không thể mở cửa",
@@ -245,7 +253,7 @@ const Site = () => {
     const wardID = event.target.value;
     setWardID(wardID);
   };
-  const [activeItem, setActiveItem] = useState("Site");
+  const [activeItem, setActiveItem] = useState("SiteOwner");
   useEffect(() => {
     loadDataSite();
   }, [currentPage, perPage, countUs]);
@@ -299,6 +307,7 @@ const Site = () => {
                   </div>
                 </div>
                 {/* /Search */}
+               
               </div>
             </nav>
 
@@ -434,14 +443,14 @@ const Site = () => {
                                             placeholder="Image"
                                             aria-label="ACME Inc."
                                             aria-describedby="basic-icon-default-company2"
-                                        
+                                            
                                             onChange={(e) => {
                                               setImageUrl(e.target.value);
                                             }}
                                           />
                                         </div>
                                       </div>
-                                    
+                                   
                                       <div
                                         className="mb-3"
                                         style={{ width: "95%" }}
@@ -594,7 +603,7 @@ const Site = () => {
                                             aria-label=" Home Address"
                                             aria-describedby="basic-icon-default-message2"
                                             defaultValue={""}
-                                       
+                                        
                                             onChange={(e) => {
                                               setHomeAddress(e.target.value);
                                             }}
@@ -654,7 +663,7 @@ const Site = () => {
                                             aria-label="Description"
                                             aria-describedby="basic-icon-default-message2"
                                             defaultValue={""}
-                                          
+                                            
                                             onChange={(e) => {
                                               setDescription(e.target.value);
                                             }}
@@ -766,7 +775,7 @@ const Site = () => {
                                           />
                                         </div>
                                       </div>
-                                      
+                                     
                                       <div
                                         className="mb-3"
                                         style={{ width: "95%" }}
@@ -966,7 +975,7 @@ const Site = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-message"
                                         >
-                                          Mô tả
+                                          Mô Tả
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <textarea
@@ -1350,7 +1359,7 @@ const Site = () => {
                             >
                               Vị trí
                             </th>
-
+                           
                             <th
                               style={{
                                 backgroundColor: "#f6f9fc",
@@ -1358,7 +1367,7 @@ const Site = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Thao Tác
+                              Cập Nhật
                             </th>
                             {/* <th
                               style={{
@@ -1405,24 +1414,16 @@ const Site = () => {
                               return (
                                 <tr key={e.id}>
                                   <td>&nbsp; &nbsp;{e.siteName}</td>
-                                  <td>
-                                    <a
-                                      target="_blank"
-                                      href={`https://www.google.com/maps/search/?api=1&query=${e.fullyAddress}`}
-                                    >
-                                      {e.fullyAddress}
-                                    </a>
-                                  </td>
-
+                                  <td><a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${e.fullyAddress}`}>{e.fullyAddress}</a></td>
+                                 
                                   {/* <td>50</td>
                                   <td>
                                     <span className="badge bg-label-primary me-1">
                                       Blister Packs
                                     </span>
                                   </td> */}
-
                                   <td>
-                                    <a
+                                  <a
                                       class="button-81"
                                       role="button"
                                       href="#my-dialog3"
@@ -1467,24 +1468,21 @@ const Site = () => {
                                         />
                                       </svg>
                                     </a>
+
                                   </td>
 
-                                  <td>
-                                    <Switch
+                                  <td><Switch
                                       checked={e.isActivate}
                                       onChange={async () => {
                                         loadDataSiteID(e.id);
                                       }}
-                                    />
-                                  </td>
-                                  <td>
-                                    <Switch
+                                    /></td>
+                                  <td><Switch
                                       checked={e.isDelivery}
                                       onChange={async () => {
                                         loadDataSiteIDtoDelivery(e.id);
                                       }}
-                                    />
-                                  </td>
+                                    /></td>
                                 </tr>
                               );
                             })}
@@ -1519,4 +1517,4 @@ const Site = () => {
     </>
   );
 };
-export default Site;
+export default SiteOwner;

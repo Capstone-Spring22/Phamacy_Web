@@ -20,7 +20,7 @@ const HistoryOrder = () => {
   let history = useHistory();
   const update = (myId) => {
     localStorage.setItem("id", myId);
-    history.push("/OrderDetail");
+    history.push("/ViewOrderDetail");
   };
   async function loadDataOrder() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -181,7 +181,7 @@ const HistoryOrder = () => {
                                   <a
                                     class="button-81"
                                     role="button"
-                                    href="#my-dialog2"
+                                 
                                     onClick={() => {
                                       update(e.id);
                                     }}

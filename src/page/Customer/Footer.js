@@ -42,15 +42,15 @@ const Footer = () => {
             </div>
             <div className="col-md-6 col-lg-3">
               <div className="block-5 mb-5">
-                <h3 className="footer-heading mb-4">Contact Info</h3>
+                <h3 className="footer-heading mb-4">Thông Tin Liên Lạc</h3>
                 <ul className="list-unstyled">
                   <li className="address">
-                    203 Fake St. Mountain View, San Francisco, California, USA
+                    123, Vườn Lài, Quận Tân Phú
                   </li>
                   <li className="phone">
                     <a href="tel://23923929210">+2 392 3929 210</a>
                   </li>
-                  <li className="email">emailaddress@domain.com</li>
+                  <li className="email">phu159123@gmail.com</li>
                 </ul>
               </div>
             </div>

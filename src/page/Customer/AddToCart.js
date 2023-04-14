@@ -166,166 +166,191 @@ const AddToCart = () => {
                     className="cart-table clearfix"
                     style={{ marginTop: -22 }}
                   >
-                    <table className="table">
-                      <thead
-                        style={{
-                          backgroundColor: "#f6f9fc",
-                          borderColor: "white",
-                          color: "",
-                        }}
-                      >
-                        <tr>
-                          <th
-                            style={{
-                              width: 150,
-                              backgroundColor: "#f6f9fc",
-                              borderColor: "white",
-                              color: "#bfc8d3",
-                            }}
-                          >
-                            &nbsp; &nbsp;Hình ảnh
-                          </th>
-                          <th
-                            style={{
-                              backgroundColor: "#f6f9fc",
-                              borderColor: "white",
-                              color: "#bfc8d3",
-                            }}
-                          >
-                            &nbsp; &nbsp;tên
-                          </th>
-                          <th
-                            style={{
-                              backgroundColor: "#f6f9fc",
-                              borderColor: "white",
-                              color: "#bfc8d3",
-                            }}
-                          >
-                            &nbsp; &nbsp;Giá
-                          </th>
-                          <th
-                            style={{
-                              backgroundColor: "#f6f9fc",
-                              borderColor: "white",
-                              color: "#bfc8d3",
-                            }}
-                          >
-                            &nbsp; &nbsp;Số lượng
-                          </th>
-                          <th
-                            style={{
-                              width: 110,
-                              backgroundColor: "#f6f9fc",
-                              borderColor: "white",
-                              color: "#bfc8d3",
-                            }}
-                          >
-                            &nbsp; &nbsp;Tổng giá
-                          </th>
-                          <th
-                            style={{
-                              width: 100,
-                              backgroundColor: "#f6f9fc",
-                              borderColor: "white",
-                              color: "#bfc8d3",
-                            }}
-                          >
-                            Xoá SP
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="table-border-bottom-0">
-                        {drug &&
-                          drug.length &&
-                          drug.map((item, index) => {
-                            return (
-                              <tr key={item.id}>
-                                <td>
-                                  <img
-                                    className="cart-img"
-                                    alt="Product"
-                                    src={item.productImageUrl}
-                                  />
-                                </td>
-                                <td>{item.productName}</td>
-                                <td className="price">
-                                  <span>
-                                    ${item.price.toLocaleString("en-US")}
-                                  </span>
-                                </td>
-                                <td className="qty">
-                                  <div className="quantity">
-                                    <span className="qty-minus">
-                                      <i
-                                        className="fa fa-minus"
-                                        aria-hidden="true"
-                                      />
-                                    </span>
-                                    <input
-                                      type="number"
-                                      className="qty-text"
-                                      id="qty"
-                                      step={1}
-                                      min={1}
-                                      max={99}
-                                      name="quantity"
-                                      value={item.quantity}
-                                      onChange={(e) => {
-                                        e.preventDefault();
-                                        handleUpdateCart(
-                                          item.productId,
-                                          e.target.value
-                                        );
-                                        updateQuantity(
-                                          item.productId,
-                                          e.target.value
-                                        );
-                                      }}
+                    <div
+                      className="card"
+                      style={{
+                        backgroundColor: "#ffffff",
+                       
+                        boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",
+                        borderRadius: 5,
+                        border: "none",
+                      }}
+                    >
+                      <div style={{ display: "flex" }}>
+                        <h5
+                          className="card-header"
+                          style={{
+                            padding: "20px 24px",
+                            backgroundColor: "#ffffff",
+                            borderColor: "white",
+                          }}
+                        >
+                          <h3 className="fontagon">Quản Lý Đơn Hàng</h3>
+                        </h5>
+
+                        <></>
+                      </div>
+                      <table className="table">
+                        <thead
+                          style={{
+                            backgroundColor: "#f6f9fc",
+                            borderColor: "white",
+                            color: "",
+                          }}
+                        >
+                          <tr>
+                            <th
+                              style={{
+                                width: 150,
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
+                              &nbsp; &nbsp;Hình ảnh
+                            </th>
+                            <th
+                              style={{
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
+                              &nbsp; &nbsp;tên
+                            </th>
+                            <th
+                              style={{
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
+                              &nbsp; &nbsp;Giá
+                            </th>
+                            <th
+                              style={{
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
+                              &nbsp; &nbsp;Số lượng
+                            </th>
+                            <th
+                              style={{
+                                width: 110,
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
+                              &nbsp; &nbsp;Tổng giá
+                            </th>
+                            <th
+                              style={{
+                                width: 100,
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
+                              Xoá SP
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="table-border-bottom-0" style={{ borderColor: "white" }}>
+                          {drug &&
+                            drug.length &&
+                            drug.map((item, index) => {
+                              return (
+                                <tr key={item.id}>
+                                  <td>
+                                    <img
+                                      className="cart-img"
+                                      alt="Product"
+                                      src={item.productImageUrl}
                                     />
-                                    <span
-                                      className="qty-plus"
-                                      onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"
-                                    >
-                                      <i
-                                        className="fa fa-plus"
-                                        aria-hidden="true"
-                                      />
+                                  </td>
+                                  <td>{item.productName}</td>
+                                  <td className="price">
+                                    <span>
+                                      ${item.price.toLocaleString("en-US")}
                                     </span>
-                                  </div>
-                                </td>
-                                <td className="total_price">
-                                  <span style={{ marginLeft: 20 }}>
-                                    {(
-                                      item.quantity * item.price
-                                    ).toLocaleString("en-US")}
-                                  </span>
-                                </td>
-                                <td>
-                                  <button
-                                    class="button-81"
-                                    style={{ color: "red" }}
-                                    onClick={() => {
-                                      console.log("display", item.productId);
-                                      handleRemoveCart(item.productId);
-                                    }}
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="16"
-                                      height="16"
-                                      fill="currentColor"
-                                      class="bi bi-trash3"
-                                      viewBox="0 0 16 16"
+                                  </td>
+                                  <td className="qty">
+                                    <div className="quantity">
+                                      <span className="qty-minus">
+                                        <i
+                                          className="fa fa-minus"
+                                          aria-hidden="true"
+                                        />
+                                      </span>
+                                      <input
+                                        type="number"
+                                        className="qty-text"
+                                        id="qty"
+                                        step={1}
+                                        min={1}
+                                        max={99}
+                                        name="quantity"
+                                        value={item.quantity}
+                                        onChange={(e) => {
+                                          e.preventDefault();
+                                          handleUpdateCart(
+                                            item.productId,
+                                            e.target.value
+                                          );
+                                          updateQuantity(
+                                            item.productId,
+                                            e.target.value
+                                          );
+                                        }}
+                                      />
+                                      <span
+                                        className="qty-plus"
+                                        onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"
+                                      >
+                                        <i
+                                          className="fa fa-plus"
+                                          aria-hidden="true"
+                                        />
+                                      </span>
+                                    </div>
+                                  </td>
+                                  <td className="total_price">
+                                    <span style={{ marginLeft: 20 }}>
+                                      {(
+                                        item.quantity * item.price
+                                      ).toLocaleString("en-US")}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <button
+                                      class="button-81"
+                                      style={{ color: "red" }}
+                                      onClick={() => {
+                                        console.log("display", item.productId);
+                                        handleRemoveCart(item.productId);
+                                      }}
                                     >
-                                      <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
-                                    </svg>
-                                  </button>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                      </tbody>
-                    </table>
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        fill="currentColor"
+                                        class="bi bi-trash3"
+                                        viewBox="0 0 16 16"
+                                      >
+                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                                      </svg>
+                                    </button>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                   <div
                     className="col-12 col-md-6 col-lg-4 ml-lg-auto"
@@ -349,25 +374,30 @@ const AddToCart = () => {
                         className="order-details-form "
                         style={{ padding: 0, fontSize: 20 }}
                       >
-                        {total && total.subTotalPrice && (
+                     
                           <li style={{ fontSize: 15 }}>
-                            <span>Subtotal</span>{" "}
+                            <span>Tổng Giá</span>{" "}
                             <span>
-                              {total.subTotalPrice.toLocaleString("en-US")} VND
+                              {total.subTotalPrice?.toLocaleString("en-US")} VND
                             </span>
                           </li>
-                        )}
-                        <li style={{ fontSize: 15 }}>
-                          <span>Shipping</span> <span>Free</span>
-                        </li>
-                        {total && total.totalCartPrice && (
+               
+                    
+                          <li style={{ fontSize: 15 }}>
+                            <span>Giá Giảm</span>{" "}
+                            <span>
+                              {total.discountPrice?.toLocaleString("en-US")} Vnd
+                            </span>
+                          </li>
+                   
+                    
                           <li style={{ fontSize: 15 }}>
                             <span>Tạm Tính</span>{" "}
                             <span>
-                              {total.totalCartPrice.toLocaleString("en-US")} Vnd
+                              {total.totalCartPrice?.toLocaleString("en-US")} Vnd
                             </span>
                           </li>
-                        )}
+                    
                       </ul>
 
                       <a
@@ -379,7 +409,7 @@ const AddToCart = () => {
                             CheckoutSiteObjectProduct,
                             CheckoutSiteObjectQuantity,
                             orderID,
-                            cartID
+                            cartID,
                           })
                         }
                         style={{

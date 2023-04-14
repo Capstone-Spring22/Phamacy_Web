@@ -4,10 +4,8 @@ import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarAdmin";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import {
-  getDataByPath,
-  createDataByPath,
-} from "../../services/data.service";
+import { getDataByPath, createDataByPath } from "../../services/data.service";
+import { useHistory } from "react-router-dom";
 
 const NewEmployees = () => {
   const [site, setSite] = useState(null);
@@ -41,6 +39,7 @@ const NewEmployees = () => {
       setTotalEmployees(res.data.totalRecord);
     }
   }
+  let history = useHistory();
   const genders = [
     { name: "Male", value: 0 },
     { name: "FeMale", value: 1 },
@@ -87,7 +86,6 @@ const NewEmployees = () => {
     return isValid;
   };
 
-
   const dataForCreate = () => {
     return {
       username: username,
@@ -117,8 +115,7 @@ const NewEmployees = () => {
         console.log("display", data);
         if (res && res.status === 201) {
           Swal.fire("Create Success", "", "success");
-          // deleteForCreate();
-         
+          history.push("/Employees");
         }
       }
     }
@@ -154,6 +151,7 @@ const NewEmployees = () => {
   async function loadDataRole() {
     const path = `Role`;
     const res = await getDataByPath(path, "", "");
+     console.log('res.data',res.data)
     if (res !== null && res !== undefined && res.status === 200) {
       setRole(res.data);
     }
@@ -223,13 +221,16 @@ const NewEmployees = () => {
       loadDataEmployee(accessToken);
     }
   }, [currentPage, perPage]);
-  
+
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
         <SideBar />
 
-        <div className="layout-page" style={{ backgroundColor: "#f4f6fb", marginLeft:260 }}>
+        <div
+          className="layout-page"
+          style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
+        >
           {/* Navbar */}
           <nav
             className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
@@ -260,7 +261,6 @@ const NewEmployees = () => {
                 </div>
               </div>
               {/* /Search */}
-            
             </div>
           </nav>
 
@@ -282,7 +282,7 @@ const NewEmployees = () => {
                     borderColor: "#f4f4f4",
                   }}
                 >
-                  <h5 className="mb-0">Add new Employees</h5>
+                  <h5 className="mb-0">Thêm Mới Nhân Viên</h5>
                 </div>
                 <div className="card-body">
                   <div
@@ -310,7 +310,9 @@ const NewEmployees = () => {
                           onChange={(e) => setFullname(e.target.value)}
                         />
                       </div>
-                      <div className="form-text" style={{color:"red"}}>{fullnameErrorMessage}</div>
+                      <div className="form-text" style={{ color: "red" }}>
+                        {fullnameErrorMessage}
+                      </div>
                     </div>
                     <div className="mb-3" style={{ width: "100%" }}>
                       <label
@@ -349,7 +351,9 @@ const NewEmployees = () => {
                           onChange={(e) => setPhone(e.target.value)}
                         />
                       </div>
-                      <div className="form-text" style={{color:"red"}}>{phoneErrorMessage}</div>
+                      <div className="form-text" style={{ color: "red" }}>
+                        {phoneErrorMessage}
+                      </div>
                     </div>
                     <div className="mb-3" style={{ width: "100%" }}>
                       <label
@@ -369,7 +373,9 @@ const NewEmployees = () => {
                           onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
-                      <div className="form-text" style={{color:"red"}}>{emailErrorMessage}</div>
+                      <div className="form-text" style={{ color: "red" }}>
+                        {emailErrorMessage}
+                      </div>
                     </div>
                     <div className="mb-3" style={{ width: "95%" }}>
                       <label
@@ -528,40 +534,6 @@ const NewEmployees = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-phone"
                       >
-                        Chi Nhánh
-                      </label>
-                      <div className="input-group input-group-merge">
-                        <select
-                          name="Site"
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          onChange={(e) => handleSite(e)}
-                        >
-                          {site &&
-                            site.length &&
-                            site.map((e, index) => {
-                              return (
-                                <>
-                                  <option
-                                    key={e.id}
-                                    value={e.id}
-                                    onClick={() => {
-                                      setSite(e.id);
-                                    }}
-                                  >
-                                    {e.siteName}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="mb-3" style={{ width: "95%" }}>
-                      <label
-                        className="form-label"
-                        htmlFor="basic-icon-default-phone"
-                      >
                         Giới Tính
                       </label>
                       <div className="input-group input-group-merge">
@@ -591,6 +563,43 @@ const NewEmployees = () => {
                         </select>
                       </div>
                     </div>
+                    {roleID === "3"|| roleID === "4"? null : (
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-phone"
+                        >
+                          Chi Nhánh
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <select
+                            name="Site"
+                            id="basic-icon-default-email"
+                            className="form-control"
+                            onChange={(e) => handleSite(e)}
+                          >
+                            {site &&
+                              site.length &&
+                              site.map((e, index) => {
+                                return (
+                                  <>
+                                    <option
+                                      key={e.id}
+                                      value={e.id}
+                                      onClick={() => {
+                                        setSite(e.id);
+                                      }}
+                                    >
+                                      {e.siteName}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                          </select>
+                        </div>
+                      </div>
+                    )}
+                    
                   </div>
 
                   <button
@@ -611,7 +620,7 @@ const NewEmployees = () => {
                       color: "white",
                     }}
                   >
-                    Save
+                    Lưu
                   </button>
                 </div>
               </div>

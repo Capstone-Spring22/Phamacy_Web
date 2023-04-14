@@ -521,7 +521,7 @@ const UpdateDrug = () => {
 
                     <div className="col-md">
                       <small
-                        className="text-light fw-semibold d-block"
+                        className=" fw-semibold d-block"
                         style={{ color: "white" }}
                       >
                         Inline Checkboxes
@@ -554,6 +554,7 @@ const UpdateDrug = () => {
                           onChange={handleBatchChange}
                           className="form-check-input"
                           type="checkbox"
+                        
                           id="inlineCheckbox2"
                           defaultValue="option2"
                           style={{
@@ -562,6 +563,7 @@ const UpdateDrug = () => {
                             backgroundColor: "#86a8c5",
                             borderColor: "#86a8c5",
                           }}
+                          disabled 
                         />
                         <label
                           className="form-check-label"
@@ -816,6 +818,7 @@ const UpdateDrug = () => {
                             <div className="input-group input-group-merge">
                               <select
                                 name="city"
+                                disabled
                                 id="basic-icon-default-email"
                                 className="form-control"
                                 placeholder="đơn vị tính cho sản phẩm"
@@ -867,11 +870,12 @@ const UpdateDrug = () => {
                               className="form-label"
                               htmlFor={`unitId${index}`}
                             >
-                              Định lượng
+                              Giá Trị Quy Đổi
                             </label>
                             <div className="input-group input-group-merge">
                               <input
                                 type="text"
+                                disabled
                                 id={`quantitative${index}`}
                                 className="form-control"
                                 placeholder="Định lượng"
@@ -904,51 +908,7 @@ const UpdateDrug = () => {
                               />
                             </div>
                           </div>
-                          <div
-                            className="mb-3"
-                            style={{ width: "20%", marginRight: 20 }}
-                          >
-                            <label
-                              className="form-label"
-                              htmlFor={`unitId${index}`}
-                            >
-                              Số lượng bán
-                            </label>
-                            <div className="input-group input-group-merge">
-                              <input
-                                type="text"
-                                id={`sellQuantity${index}`}
-                                className="form-control"
-                                placeholder="Số lượng bán"
-                                aria-label="Unit Id"
-                                aria-describedby={`sellQuantity${index}2`}
-                                value={
-                                  product.productDetailModel[index - 1]
-                                    .sellQuantity
-                                }
-                                onChange={(e) =>
-                                  setProduct({
-                                    ...product,
-                                    productDetailModel: [
-                                      ...product.productDetailModel.slice(
-                                        0,
-                                        index - 1
-                                      ),
-                                      {
-                                        ...product.productDetailModel[
-                                          index - 1
-                                        ],
-                                        sellQuantity: e.target.value,
-                                      },
-                                      ...product.productDetailModel.slice(
-                                        index
-                                      ),
-                                    ],
-                                  })
-                                }
-                              />
-                            </div>
-                          </div>
+                        
                           <div
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}

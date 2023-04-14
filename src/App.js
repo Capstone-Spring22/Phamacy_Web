@@ -38,6 +38,12 @@ import ChatPharmacist from "./page/Admin/ChatPhamacist";
 import ViewImportProduct from "./page/Admin/ViewImportProduct";
 
 import { Redirect } from "react-router-dom";
+import SiteOwner from "./page/Admin/SiteOwner";
+import Dashboard from "./page/dashboard/DashBoardOwner";
+import DashBoardOwner from "./page/dashboard/DashBoardOwner";
+import ViewOrderDetail from "./page/Customer/ViewOrderDetail";
+import Manufacturer from "./page/Admin/Manufature";
+import DashBoardAdmin from "./page/dashboard/DashBoardAdmin";
 function App() {
   return (
     <div className="site-wrap">
@@ -139,6 +145,21 @@ function App() {
           </Route>
           <Route path="/ViewImportProduct">
             <ViewImportProduct />
+          </Route>
+          <Route path="/SiteOwner">
+            <SiteOwner />
+          </Route>
+          <Route path="/DashBoardOwner">
+            <DashBoardOwner />
+          </Route>
+          <Route path="/ViewOrderDetail">
+            <ViewOrderDetail />
+          </Route>
+          <Route path="/Manufacturer">
+            <Manufacturer />
+          </Route>
+          <Route path="/DashBoardAdmin">
+            <DashBoardAdmin />
           </Route>
         </Switch>
       </BrowserRouter>

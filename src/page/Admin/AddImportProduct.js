@@ -165,70 +165,76 @@ const AddImportProduct = () => {
     return true;
   };
   const checkValidationImport = () => {
-    const { productImportDetails, note, totalProductPrice, taxPrice, totalShippingFee, totalPrice } = product;
-  
+    const {
+      productImportDetails,
+      note,
+      totalProductPrice,
+      taxPrice,
+      totalShippingFee,
+      totalPrice,
+    } = product;
+
     for (const detail of productImportDetails) {
       if (!detail.productId.trim()) {
         Swal.fire("Product ID Can't Be Empty", "", "question");
         return false;
       }
-  
+
       if (!detail.quantity) {
         Swal.fire("Quantity Can't Be Empty", "", "question");
         return false;
       }
-  
+
       if (!detail.importPrice) {
         Swal.fire("Import Price Can't Be Empty", "", "question");
         return false;
       }
-  
+
       for (const batch of detail.productBatches) {
         if (!batch.quantity) {
           Swal.fire("Batch Quantity Can't Be Empty", "", "question");
           return false;
         }
-  
+
         if (!batch.manufactureDate.trim()) {
           Swal.fire("Manufacture Date Can't Be Empty", "", "question");
           return false;
         }
-  
+
         if (!batch.expireDate.trim()) {
           Swal.fire("Expire Date Can't Be Empty", "", "question");
           return false;
         }
       }
     }
-  
+
     if (!note.trim()) {
       Swal.fire("Note Can't Be Empty", "", "question");
       return false;
     }
-  
+
     if (!totalProductPrice) {
       Swal.fire("Total Product Price Can't Be Empty", "", "question");
       return false;
     }
-  
+
     if (!taxPrice) {
       Swal.fire("Tax Price Can't Be Empty", "", "question");
       return false;
     }
-  
+
     if (!totalShippingFee) {
       Swal.fire("Total Shipping Fee Can't Be Empty", "", "question");
       return false;
     }
-  
+
     if (!totalPrice) {
       Swal.fire("Total Price Can't Be Empty", "", "question");
       return false;
     }
-  
+
     return true;
   };
-  
 
   // useEffect(() => {
   //   loadDataEmployee();
@@ -608,46 +614,49 @@ const AddImportProduct = () => {
                         </div>
                       </div>
                     </div>
-                    <button
-                      type="submit"
-                      className="button-28"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        createNewProductsRelease();
-                      }}
-                      style={{
-                        height: 35,
-                        width: 100,
-                        fontSize: 13,
-                        paddingTop: 1,
-                        marginLeft: "90%",
-                        marginTop: "20px",
-                        backgroundColor: "#82AAE3",
-                        color: "white",
-                      }}
-                    >
-                      Duyệt
-                    </button>
-                    <button
-                      type="submit"
-                      className="button-28"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        createNewProducts();
-                      }}
-                      style={{
-                        height: 35,
-                        width: 100,
-                        fontSize: 13,
-                        paddingTop: 1,
-                        marginLeft: "90%",
-                        marginTop: "20px",
-                        backgroundColor: "#82AAE3",
-                        color: "white",
-                      }}
-                    >
-                      Lưu Nháp
-                    </button>
+                    <div style={{ display: "flex" }}>
+                      {" "}
+                      <button
+                        type="submit"
+                        className="button-28"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          createNewProducts();
+                        }}
+                        style={{
+                          height: 35,
+                          width: 100,
+                          fontSize: 13,
+                          paddingTop: 1,
+                          marginLeft: "78%",
+                          marginTop: "20px",
+                          backgroundColor: "#DD5353",
+                          color: "white",
+                        }}
+                      >
+                        Lưu Nháp
+                      </button>
+                      <button
+                        type="submit"
+                        className="button-28"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          createNewProductsRelease();
+                        }}
+                        style={{
+                          height: 35,
+                          width: 100,
+                          fontSize: 13,
+                          paddingTop: 1,
+                          marginLeft: "2%",
+                          marginTop: "20px",
+                          backgroundColor: "#82AAE3",
+                          color: "white",
+                        }}
+                      >
+                        Duyệt
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
