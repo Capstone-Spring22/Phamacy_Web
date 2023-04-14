@@ -1,4 +1,4 @@
-import { useEffect, useState  } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -7,12 +7,14 @@ import ReactPaginate from "react-paginate";
 import axios from "axios";
 import {
   getDataByPath,
-createDataByPath,
+  createDataByPath,
   updateDataByPath,
 } from "../../services/data.service";
 import "@pnotify/core/dist/PNotify.css";
 import "@pnotify/mobile/dist/PNotifyMobile.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Select from "react-select";
+
 const Manufacturer = () => {
   const [category, setCategory] = useState([]);
   const [name, setName] = useState("");
@@ -21,6 +23,8 @@ const Manufacturer = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(6);
   const [isOpen, setIsOpen] = useState(true);
+  const [countryList, setCountryList] = useState([]);
+  const [manufacturer, setManufacturer] = useState([]);
   const [categoryUpdate, setCategoryUpdate] = useState({
     name: "",
     countryID: "",
@@ -57,6 +61,26 @@ const Manufacturer = () => {
       console.log("display", currentPage);
     }
   }
+  async function loadDataCountry() {
+    const path = `Country`;
+    const res = await getDataByPath(path, "", "");
+    console.log("check", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setCountryList(res.data);
+    }
+  }
+  async function loadDataManufacturerByID(id) {
+    const path = `Manufacturer/${id}`;
+    const res = await getDataByPath(path, "", "");
+    console.log("check", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setManufacturer(res.data);
+    }
+  }
+  const options = countryList.map((e) => ({
+    label: e.name,
+    value: e.id,
+  }));
   async function loadDataMainCategoryID(id) {
     const path = `MainCategory/${id}`;
     const res = await getDataByPath(path, "", "");
@@ -83,23 +107,29 @@ const Manufacturer = () => {
   useEffect(() => {
     loadDataUserByID();
   }, []);
- 
+  useEffect(() => {
+    loadDataCountry();
+  }, []);
 
   const dataForCreate = () => {
-     
     return {
-        name: name,
-        countryID: countryID,
+      name: name,
+      countryID: countryID,
     };
   };
   async function updateProducts() {
-    const data = categoryUpdate;
-    const path = `MainCategory`;
+    const data = {
+      id: manufacturer.id,
+      name: manufacturer.manufacturerName,
+      countryID: manufacturer.countryId,
+    };
+    const path = `Manufacturer`;
     const res = await updateDataByPath(path, "", data);
     console.log("checkRes", res);
     if (res && res.status === 200) {
-      Swal.fire("Update successfully!", "", "success");
+      Swal.fire("Cập nhật nhà sản xuất thành công!", "", "success");
       setIsOpen(false);
+      loadDataCategory2();
     }
   }
   const handlePageChange = (page) => {
@@ -113,14 +143,16 @@ const Manufacturer = () => {
   async function createNewCategory() {
     if (checkValidation()) {
       const data = dataForCreate();
-      console.log("data", data);
-      const path = "MainCategory";
+      const path = "Manufacturer";
       const res = await createDataByPath(path, "", data);
+
+      console.log("display", data);
       console.log("Check res", res);
       if (res && res.status === 201) {
-        Swal.fire("Update successfully!", "", "success");
+        Swal.fire("Thêm nhà sản xuất thành công!", "", "success");
         deleteForCreate();
         setIsOpen(false);
+        loadDataCategory2();
       }
     }
   }
@@ -167,7 +199,6 @@ const Manufacturer = () => {
                   </div>
                 </div>
                 {/* /Search */}
-                
               </div>
             </nav>
 
@@ -255,7 +286,9 @@ const Manufacturer = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Thêm Danh Mục Mới</h5>
+                                  <h5 className="mb-0">
+                                    Thêm Nhà Sản Xuất Mới
+                                  </h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -283,12 +316,8 @@ const Manufacturer = () => {
                                             id="basic-icon-default-fullname"
                                             placeholder="Tên Của Danh Mục"
                                             aria-label="John Doe"
-                                         
+                                            value={name}
                                             onChange={(e) => {
-                                              console.log(
-                                               
-                                                name
-                                              );
                                               setName(e.target.value);
                                             }}
                                             aria-describedby="basic-icon-default-fullname2"
@@ -309,20 +338,14 @@ const Manufacturer = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-company"
                                         >
-                                          Image
+                                          Xuất xứ
                                         </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            type="file"
-                                            
-                                            id="basic-icon-default-company"
-                                            className="form-control"
-                                            placeholder="Image"
-                                            aria-label="ACME Inc."
-                                            aria-describedby="basic-icon-default-company2"
-                                          />
-                                        </div>
-                                        
+                                        <Select
+                                          onChange={(selectedOption) => {
+                                            setCountryID(selectedOption.value);
+                                          }}
+                                          options={options}
+                                        />
                                       </div>
                                     </div>
 
@@ -400,11 +423,14 @@ const Manufacturer = () => {
                                             placeholder="Tên Danh Mục"
                                             aria-label="John Doe"
                                             aria-describedby="basic-icon-default-fullname2"
-                                            value={categoryUpdate.name}
+                                            value={
+                                              manufacturer.manufacturerName
+                                            }
                                             onChange={(e) => {
-                                              setCategoryUpdate({
-                                                ...categoryUpdate,
-                                                name: e.target.value,
+                                              setManufacturer({
+                                                ...manufacturer,
+                                                manufacturerName:
+                                                  e.target.value,
                                               });
                                             }}
                                           />
@@ -418,20 +444,19 @@ const Manufacturer = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-company"
                                         >
-                                          Hình Ảnh
+                                          Xuất xứ
                                         </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            
-                                            type="file"
-                                            id="basic-icon-default-company"
-                                            className="form-control"
-                                            placeholder="Hình ảnh của danh mục"
-                                            aria-label="ACME Inc."
-                                            aria-describedby="basic-icon-default-company2"
-                                          />
-                                        </div>
-                                      
+                                        <Select
+                                          inputValue={manufacturer.countryName}
+                                          onChange={(selectedOption) => {
+                                            setManufacturer({
+                                              ...manufacturer,
+                                              countryId: selectedOption.value,
+                                              countryName:selectedOption.label
+                                            });
+                                          }}
+                                          options={options}
+                                        />
                                       </div>
                                     </div>
 
@@ -503,7 +528,7 @@ const Manufacturer = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Xuất Xứ 
+                              Xuất Xứ
                             </th>
                             <th
                               style={{
@@ -530,7 +555,7 @@ const Manufacturer = () => {
                                       role="button"
                                       href="#my-dialog2"
                                       onClick={() => {
-                                        loadDataMainCategoryID(e.id);
+                                        loadDataManufacturerByID(e.id);
                                         setIsOpen(true);
                                       }}
                                     >

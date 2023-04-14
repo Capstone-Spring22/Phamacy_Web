@@ -8,17 +8,21 @@ import { getDataByPath, createDataByPath } from "../../services/data.service";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 
-const NewEmployees = () => {
+const ViewEmployee = () => {
+  const myId = localStorage.getItem("id");
   const [site, setSite] = useState(null);
   const [siteID, setSiteID] = useState("");
+  const [employees, setEmployees] = useState([]);
   const [city, setCity] = useState([]);
   const [cityID, setCityID] = useState("");
   const [districs, setDistrics] = useState([]);
   const [districtID, setDistrictID] = useState("");
   const [ward, setWard] = useState([]);
   const [wardID, setWardID] = useState("");
-
+    const [address, setAddress] = useState([]);
+  const [id, setID] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [totalEmployees, setTotalEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(100);
   const [role, setRole] = useState("");
@@ -34,7 +38,7 @@ const NewEmployees = () => {
   const [roleSelected, setRoleSelected] = useState(false);
   const [siteSelected, setSiteSelected] = useState(false);
   const [genderSelected, setGenderSelected] = useState(false);
- 
+
   let history = useHistory();
   const genders = [
     { name: "Male", value: 0 },
@@ -135,19 +139,18 @@ const NewEmployees = () => {
     };
   };
   async function createNewURLAdd(e) {
-      const file = e.target.files[0];
-      const data = new FormData();
-      data.append("file", file);
-      const res = await axios.post(
-        "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
-        data
-      );
-      console.log("imageUrl", imageUrl);
-      console.log("hinh anh", res.data);
-      if (res && res.status === 200) {
-        setImageUrl(res.data);
-      }
-    
+    const file = e.target.files[0];
+    const data = new FormData();
+    data.append("file", file);
+    const res = await axios.post(
+      "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
+      data
+    );
+    console.log("imageUrl", imageUrl);
+    console.log("hinh anh", res.data);
+    if (res && res.status === 200) {
+      setImageUrl(res.data);
+    }
   }
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -183,6 +186,27 @@ const NewEmployees = () => {
       console.log("check", res);
       if (res !== null && res !== undefined && res.status === 200) {
         setSite(res.data.items);
+      }
+    }
+  }
+  async function loadAddressByID(id) {
+    const path = `Address/${id}`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      // setSiteUpdate(res.data);
+      setAddress(res.data)
+
+    }
+  }
+  async function loadDataEmployeeById() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `User/${myId}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("check", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setEmployees(res.data);
+        loadAddressByID(res.data.addressID)
       }
     }
   }
@@ -254,6 +278,9 @@ const NewEmployees = () => {
     loadDataCity();
   }, []);
   useEffect(() => {
+    loadDataEmployeeById();
+  }, []);
+  useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     console.log("display", accessToken);
     if (site === null) {
@@ -269,7 +296,6 @@ const NewEmployees = () => {
   useEffect(() => {
     loadDataWard();
   }, [districtID]);
-
 
   return (
     <div className="layout-wrapper layout-content-navbar">
@@ -331,7 +357,7 @@ const NewEmployees = () => {
                     borderColor: "#f4f4f4",
                   }}
                 >
-                  <h5 className="mb-0">Thêm Mới Nhân Viên</h5>
+                  <h5 className="mb-0">Thông Tin Nhân Viên</h5>
                 </div>
                 <div className="card-body">
                   <div
@@ -349,15 +375,19 @@ const NewEmployees = () => {
                         Tên Đầy Đủ
                       </label>
                       <div className="input-group input-group-merge">
-                        <input
+                        <div
                           type="text"
                           className="form-control"
                           id="basic-icon-default-fullname"
                           placeholder="Tên Đầy Đủ"
                           aria-label="John Doe"
                           aria-describedby="basic-icon-default-fullname2"
-                          onChange={(e) => setFullname(e.target.value)}
-                        />
+                          style={{
+                            border: "none",
+                            backgroundColor: "white",
+                          }}
+                          
+                        >{employees.fullname}</div>
                       </div>
                       <div className="form-text" style={{ color: "red" }}>
                         {fullnameErrorMessage}
@@ -371,15 +401,18 @@ const NewEmployees = () => {
                         Tên Tài Khoản
                       </label>
                       <div className="input-group input-group-merge">
-                        <input
+                        <div
                           type="text"
                           id="basic-icon-default-company"
                           className="form-control"
                           placeholder="Tên Tài Khoản"
                           aria-label="ACME Inc."
                           aria-describedby="basic-icon-default-company2"
-                          onChange={(e) => setUsername(e.target.value)}
-                        />
+                          style={{
+                            border: "none",
+                            backgroundColor: "white",
+                          }}
+                        >{employees.username}</div>
                       </div>
                       <div className="form-text" style={{ color: "red" }}>
                         {usernameErrorMessage}
@@ -393,15 +426,18 @@ const NewEmployees = () => {
                         Số điện thoại
                       </label>
                       <div className="input-group input-group-merge">
-                        <input
+                        <div
                           type="text"
-                          id="basic-icon-default-email"
+                          id="basic-icon-default-company"
                           className="form-control"
-                          placeholder="Số điện thoại"
-                          aria-label="Phone Number"
-                          aria-describedby="basic-icon-default-email2"
-                          onChange={(e) => setPhone(e.target.value)}
-                        />
+                          placeholder="Tên Tài Khoản"
+                          aria-label="ACME Inc."
+                          aria-describedby="basic-icon-default-company2"
+                          style={{
+                            border: "none",
+                            backgroundColor: "white",
+                          }}
+                        >{employees.phoneNo}</div>
                       </div>
                       <div className="form-text" style={{ color: "red" }}>
                         {phoneErrorMessage}
@@ -415,15 +451,18 @@ const NewEmployees = () => {
                         Email
                       </label>
                       <div className="input-group input-group-merge">
-                        <input
+                        <div
                           type="text"
-                          id="basic-icon-default-email"
+                          id="basic-icon-default-company"
                           className="form-control"
-                          placeholder="Email"
-                          aria-label="Email"
-                          aria-describedby="basic-icon-default-email2"
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
+                          placeholder="Tên Tài Khoản"
+                          aria-label="ACME Inc."
+                          aria-describedby="basic-icon-default-company2"
+                          style={{
+                            border: "none",
+                            backgroundColor: "white",
+                          }}
+                        >{employees.email}</div>
                       </div>
                       <div className="form-text" style={{ color: "red" }}>
                         {emailErrorMessage}
@@ -437,15 +476,18 @@ const NewEmployees = () => {
                         Hình Ảnh
                       </label>
                       <div className="input-group input-group-merge">
-                        <input
-                          type="file"
-                          id="basic-icon-default-phone"
-                          className="form-control phone-mask"
-                          placeholder="Hình Ảnh"
-                          aria-label="658 799 8941"
-                          aria-describedby="basic-icon-default-phone2"
-                          onChange={(e) => createNewURLAdd(e)}
-                        />
+                        <div
+                          type="text"
+                          id="basic-icon-default-company"
+                          className="form-control"
+                          placeholder="Tên Tài Khoản"
+                          aria-label="ACME Inc."
+                          aria-describedby="basic-icon-default-company2"
+                          style={{
+                            border: "none",
+                            backgroundColor: "white",
+                          }}
+                        >{employees.imageUrl}</div>
                       </div>
                     </div>
                     <div className="mb-3" style={{ width: "95%" }}>
@@ -456,37 +498,18 @@ const NewEmployees = () => {
                         Thành Phố
                       </label>
                       <div className="input-group input-group-merge">
-                        <select
-                          name="city"
-                          id="basic-icon-default-email"
+                        <div
+                          type="text"
+                          id="basic-icon-default-company"
                           className="form-control"
-                          onChange={(e) => {
-                            setCitySelected(true);
-                            handlecity(e);
+                          placeholder="Tên Tài Khoản"
+                          aria-label="ACME Inc."
+                          aria-describedby="basic-icon-default-company2"
+                          style={{
+                            border: "none",
+                            backgroundColor: "white",
                           }}
-                          value={cityID}
-                        >
-                          {!citySelected && (
-                            <option value="">--- Chọn Thành Phố/ Tỉnh </option>
-                          )}
-                          {city &&
-                            city.length &&
-                            city.map((e, index) => {
-                              return (
-                                <>
-                                  <option
-                                    key={e.id}
-                                    value={e.id}
-                                    onClick={() => {
-                                      setCity(e.id);
-                                    }}
-                                  >
-                                    {e.cityName}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
+                        >{address.cityName}</div>
                       </div>
                       <div className="form-text" style={{ color: "red" }}>
                         {cityErrorMessage}
@@ -500,34 +523,18 @@ const NewEmployees = () => {
                         Quận/ Huyện
                       </label>
                       <div className="input-group input-group-merge">
-                        <select
-                          id="basic-icon-default-email"
+                        <div
+                          type="text"
+                          id="basic-icon-default-company"
                           className="form-control"
-                          onChange={(e) => {
-                            handleDistrict(e);
-                            setDistrictSelected(true);
+                          placeholder="Tên Tài Khoản"
+                          aria-label="ACME Inc."
+                          aria-describedby="basic-icon-default-company2"
+                          style={{
+                            border: "none",
+                            backgroundColor: "white",
                           }}
-                          value={districtID}
-                        >
-                          {!districtSelected && (
-                            <option value="">---Chọn Quận/ Huyện</option>
-                          )}
-                          {districs &&
-                            districs.length &&
-                            districs.map((e, index) => {
-                              return (
-                                <>
-                                  <option
-                                    key={e.id}
-                                    value={e.id}
-                                    //onChange={ loadDataDistrics()}
-                                  >
-                                    {e.districtName}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
+                        >{address.districtName}</div>
                       </div>
                       <div className="form-text" style={{ color: "red" }}>
                         {districtErrorMessage}
@@ -541,34 +548,18 @@ const NewEmployees = () => {
                         Phường/Xã
                       </label>
                       <div className="input-group input-group-merge">
-                        <select
-                          id="basic-icon-default-email"
+                        <div
+                          type="text"
+                          id="basic-icon-default-company"
                           className="form-control"
-                          value={wardID}
-                          onChange={(e) => {
-                            handleWards(e);
-                            setWardSelected(true);
+                          placeholder="Tên Tài Khoản"
+                          aria-label="ACME Inc."
+                          aria-describedby="basic-icon-default-company2"
+                          style={{
+                            border: "none",
+                            backgroundColor: "white",
                           }}
-                        >
-                          {!wardSelected && (
-                            <option value="">--- Chọn Phường/ Xã</option>
-                          )}
-                          {ward &&
-                            ward.length &&
-                            ward.map((e, index) => {
-                              return (
-                                <>
-                                  <option
-                                    key={e.id}
-                                    value={e.id}
-                                    //onChange={ loadDataDistrics()}
-                                  >
-                                    {e.wardName}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
+                        >{address.wardName}</div>
                       </div>
                       <div className="form-text" style={{ color: "red" }}>
                         {wardErrorMessage}
@@ -582,36 +573,18 @@ const NewEmployees = () => {
                         Chức Vụ
                       </label>
                       <div className="input-group input-group-merge">
-                        <select
-                          name="city"
-                          id="basic-icon-default-email"
+                        <div
+                          type="text"
+                          id="basic-icon-default-company"
                           className="form-control"
-                          onChange={(e) => {
-                            setRoleSelected(true);
-                            handleRole(e);
+                          placeholder="Tên Tài Khoản"
+                          aria-label="ACME Inc."
+                          aria-describedby="basic-icon-default-company2"
+                          style={{
+                            border: "none",
+                            backgroundColor: "white",
                           }}
-                        >
-                          {!roleSelected && (
-                            <option value="">--- Chọn Chức Vụ </option>
-                          )}
-                          {role &&
-                            role.length &&
-                            role.map((e, index) => {
-                              return (
-                                <>
-                                  <option
-                                    key={e.roleID}
-                                    value={e.roleID}
-                                    onClick={() => {
-                                      setRole(e.roleID);
-                                    }}
-                                  >
-                                    {e.roleName}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
+                        >{employees.roleName}</div>
                       </div>
                       <div className="form-text" style={{ color: "red" }}>
                         {roleErrorMessage}
@@ -629,14 +602,17 @@ const NewEmployees = () => {
                           name="Site"
                           id="basic-icon-default-email"
                           className="form-control"
+                          value={employees.gender}
+                          style={{
+                            border: "none",
+                            backgroundColor: "white",
+                          }}
                           onChange={(e) => {
                             setGenderSelected(false);
                             handleGender(e);
                           }}
                         >
-                          {!genderSelected && (
-                            <option value="">--- Chọn Giới tính </option>
-                          )}
+                         
                           {genders &&
                             genders.length &&
                             genders.map((e, index) => {
@@ -671,37 +647,19 @@ const NewEmployees = () => {
                           Chi Nhánh
                         </label>
                         <div className="input-group input-group-merge">
-                          <select
-                            name="Site"
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            onChange={(e) => {
-                              setSiteSelected(true);
-                              handleSite(e);
-                            }}
-                          >
-                            {!siteSelected && (
-                              <option value="">--- Chọn Chi Nhánh </option>
-                            )}
-                            {site &&
-                              site.length &&
-                              site.map((e, index) => {
-                                return (
-                                  <>
-                                    <option
-                                      key={e.id}
-                                      value={e.id}
-                                      onClick={() => {
-                                        setSite(e.id);
-                                      }}
-                                    >
-                                      {e.siteName}
-                                    </option>
-                                  </>
-                                );
-                              })}
-                          </select>
-                        </div>
+                        <div
+                          type="text"
+                          id="basic-icon-default-company"
+                          className="form-control"
+                          placeholder="Tên Tài Khoản"
+                          aria-label="ACME Inc."
+                          aria-describedby="basic-icon-default-company2"
+                          style={{
+                            border: "none",
+                            backgroundColor: "white",
+                          }}
+                        >{employees.siteName}</div>
+                      </div>
                       </div>
                     )}
                   </div>
@@ -737,4 +695,4 @@ const NewEmployees = () => {
     </div>
   );
 };
-export default NewEmployees;
+export default ViewEmployee;

@@ -44,6 +44,7 @@ import DashBoardOwner from "./page/dashboard/DashBoardOwner";
 import ViewOrderDetail from "./page/Customer/ViewOrderDetail";
 import Manufacturer from "./page/Admin/Manufature";
 import DashBoardAdmin from "./page/dashboard/DashBoardAdmin";
+import ViewEmployee from "./page/Admin/ViewEmployee";
 function App() {
   return (
     <div className="site-wrap">
@@ -91,6 +92,9 @@ function App() {
           </Route>
           <Route path="/NewEmployees">
             <NewEmployees />
+          </Route>
+          <Route path="/ViewEmployee">
+            <ViewEmployee />
           </Route>
           <Route path="/MainCategory">
             <MainCategory />

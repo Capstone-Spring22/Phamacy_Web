@@ -13,6 +13,10 @@ import Header from "../Header/Header";
 import axios from "axios";
 const Home = (props) => {
   let history = useHistory();
+  const update = (myId) => {
+    localStorage.setItem("id", myId);
+    history.push("/ViewOrderDetail");
+  };
   const location = useLocation();
   const { cartData } = location.state;
   const [city, setCity] = useState([]);
@@ -293,6 +297,7 @@ const Home = (props) => {
         if (res && res.status === 200) {
           Swal.fire("Create Success", "", "success");
           handleRemoveCart()
+          update(orderID);
           // window.location.reload();
         }
       } else if (product.payType === 2) {

@@ -12,6 +12,7 @@ import {
   createDataByPath,
   updateDataByPath,
 } from "../../services/data.service";
+import axios from "axios";
 
 const SiteOwner = () => {
   const [site, setSite] = useState(null);
@@ -34,9 +35,8 @@ const SiteOwner = () => {
   const [siteNameErrorMessage, setSiteNameErrorMessage] = useState("");
   const [cityErrorMessage, setCityErrorMessage] = useState("");
   const [districtsErrorMessage, setDistrictsErrorMessage] = useState("");
- 
+
   const [countUs, setCountUs] = useState("2");
- 
 
   let history = useHistory();
 
@@ -48,13 +48,36 @@ const SiteOwner = () => {
   const checkValidation = () => {
     let isValid = true;
 
-    
-
     return true;
   };
+  async function createNewURLAdd(e) {
+    const file = e.target.files[0];
+    const data = new FormData();
+    data.append("file", file);
+    const res = await axios.post(
+      "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
+      data
+    );
+    console.log("imageUrl", imageUrl);
+    console.log("hinh anh", res.data);
+    if (res && res.status === 200) {
+      setImageUrl(res.data);
+    }
+  }
+  async function createNewURL(e) {
+    const file = e.target.files[0];
+    const data = new FormData();
+    data.append("file", file);
 
-
-
+    const res = await axios.post(
+      "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
+      data
+    );
+    console.log("display", res.data);
+    if (res && res.status === 200) {
+      setImageUrl(res.data);
+    }
+  }
   async function loadDataSite() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -176,9 +199,7 @@ const SiteOwner = () => {
         if (res1 && res1.status === 200) {
           setCountUs(parseInt(countUs) + 1);
           Swal.fire("Update successfully!", "", "success");
-         
         } else if (res1 && res1.status === 400) {
-          
           Swal.fire(
             "Cửa hàng này chưa đủ nhân viên nên chưa mở cửa!",
             "Không thể mở cửa",
@@ -203,7 +224,6 @@ const SiteOwner = () => {
           Swal.fire("Update successfully!", "", "success");
           history.push("/SiteOwner");
         } else if (res1 && res1.status === 400) {
-          
           Swal.fire(
             "Cửa hàng này chưa đủ nhân viên nên chưa mở cửa!",
             "Không thể mở cửa",
@@ -307,7 +327,6 @@ const SiteOwner = () => {
                   </div>
                 </div>
                 {/* /Search */}
-               
               </div>
             </nav>
 
@@ -390,14 +409,14 @@ const SiteOwner = () => {
                                   <form>
                                     <div
                                       style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "auto auto",
+                                        display: "flex",
+                                        flexWrap: "wrap",
                                         padding: 30,
                                       }}
                                     >
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{ width: "45%", marginLeft: 10 }}
                                       >
                                         <label
                                           className="form-label"
@@ -411,7 +430,6 @@ const SiteOwner = () => {
                                             className="form-control"
                                             id="basic-icon-default-fullname"
                                             placeholder="Tên Chi Nhánh"
-                                          
                                             onChange={(e) => {
                                               setSiteName(e.target.value);
                                             }}
@@ -427,7 +445,7 @@ const SiteOwner = () => {
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{ width: "45%", marginLeft: 10 }}
                                       >
                                         <label
                                           className="form-label"
@@ -437,182 +455,229 @@ const SiteOwner = () => {
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
-                                            type="text"
+                                            type="file"
                                             id="basic-icon-default-company"
                                             className="form-control"
-                                            placeholder="Image"
+                                            placeholder="Hình Ảnh"
                                             aria-label="ACME Inc."
                                             aria-describedby="basic-icon-default-company2"
-                                            
                                             onChange={(e) => {
-                                              setImageUrl(e.target.value);
+                                              createNewURLAdd(e);
                                             }}
                                           />
                                         </div>
                                       </div>
-                                   
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{
+                                          width: "91%",
+                                          border:
+                                            "0.1px solid rgb(201, 201, 201)",
+                                          borderRadius: "10px",
+                                          marginLeft: 10,
+                                        }}
                                       >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
-                                          Thành Phố/ Tỉnh
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <select
-                                            name="city"
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            onChange={(e) => {
-                                              setCitySelected(true);
-                                              handlecity(e);
-                                            }}
-                                            value={cityID}
-                                          >
-                                            {" "}
-                                            {!citySelected && (
-                                              <option value="">
-                                                --- Chọn Thành Phố/ Tỉnh{" "}
-                                              </option>
-                                            )}
-                                            {city &&
-                                              city.length &&
-                                              city.map((e, index) => {
-                                                return (
-                                                  <>
-                                                    <option
-                                                      key={e.id}
-                                                      value={e.id}
-                                                      onClick={() => {
-                                                        setCity(e.id);
-                                                      }}
-                                                    >
-                                                      {e.cityName}
-                                                    </option>
-                                                  </>
-                                                );
-                                              })}
-                                          </select>
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
-                                          Quận/ Huyện
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <select
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            onChange={(e) => {
-                                              handleDistrict(e);
-                                              setDistrictSelected(true);
-                                            }}
-                                            value={districtID}
-                                          >
-                                            {!districtSelected && (
-                                              <option value="">
-                                                ---Chọn Quận/ Huyện
-                                              </option>
-                                            )}
-                                            {districs &&
-                                              districs.length &&
-                                              districs.map((e, index) => {
-                                                return (
-                                                  <>
-                                                    <option
-                                                      key={e.id}
-                                                      value={e.id}
-                                                      //onChange={ loadDataDistrics()}
-                                                    >
-                                                      {e.districtName}
-                                                    </option>
-                                                  </>
-                                                );
-                                              })}
-                                          </select>
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
-                                          Phường/ Xã
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <select
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            value={wardID}
-                                            onChange={(e) => {
-                                              handleWards(e);
-                                              setWardSelected(true);
-                                            }}
-                                          >
-                                            {!wardSelected && (
-                                              <option value="">
-                                                --- Chọn Phường/ Xã
-                                              </option>
-                                            )}
-                                            {ward &&
-                                              ward.length &&
-                                              ward.map((e, index) => {
-                                                return (
-                                                  <>
-                                                    <option
-                                                      key={e.id}
-                                                      value={e.id}
-                                                      //onChange={ loadDataDistrics()}
-                                                    >
-                                                      {e.wardName}
-                                                    </option>
-                                                  </>
-                                                );
-                                              })}
-                                          </select>
-                                        </div>
-                                      </div>
+                                        <div
+                                          className="card-header d-flex justify-content-between align-items-center"
+                                          style={{
+                                            marginTop: 10,
 
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-message"
+                                            height: 40,
+                                            backgroundColor: "white",
+                                            padding: "20px 24px",
+                                            borderColor: "white",
+                                          }}
                                         >
-                                          Địa Chỉ
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            id="basic-icon-default-message"
-                                            className="form-control"
-                                            placeholder="Địa Chỉ"
-                                            aria-label=" Home Address"
-                                            aria-describedby="basic-icon-default-message2"
-                                            defaultValue={""}
-                                        
-                                            onChange={(e) => {
-                                              setHomeAddress(e.target.value);
+                                          <div
+                                            className="mb-0"
+                                            style={{ fontWeight: "500" }}
+                                          >
+                                            Thông Tin Địa Chỉ
+                                          </div>
+                                        </div>
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                          }}
+                                        >
+                                          <div
+                                            className="mb-3"
+                                            style={{
+                                              width: "45%",
+                                              marginLeft: 50,
                                             }}
-                                          />
+                                          >
+                                            <label
+                                              className="form-label"
+                                              htmlFor="basic-icon-default-phone"
+                                            >
+                                              Thành Phố/ Tỉnh
+                                            </label>
+                                            <div className="input-group input-group-merge">
+                                              <select
+                                                name="city"
+                                                id="basic-icon-default-email"
+                                                className="form-control"
+                                                onChange={(e) => {
+                                                  setCitySelected(true);
+                                                  handlecity(e);
+                                                }}
+                                                value={cityID}
+                                              >
+                                                {" "}
+                                                {!citySelected && (
+                                                  <option value="">
+                                                    --- Chọn Thành Phố/ Tỉnh{" "}
+                                                  </option>
+                                                )}
+                                                {city &&
+                                                  city.length &&
+                                                  city.map((e, index) => {
+                                                    return (
+                                                      <>
+                                                        <option
+                                                          key={e.id}
+                                                          value={e.id}
+                                                          onClick={() => {
+                                                            setCity(e.id);
+                                                          }}
+                                                        >
+                                                          {e.cityName}
+                                                        </option>
+                                                      </>
+                                                    );
+                                                  })}
+                                              </select>
+                                            </div>
+                                          </div>
+                                          <div
+                                            className="mb-3"
+                                            style={{
+                                              width: "45%",
+                                              marginLeft: 10,
+                                            }}
+                                          >
+                                            <label
+                                              className="form-label"
+                                              htmlFor="basic-icon-default-phone"
+                                            >
+                                              Quận/ Huyện
+                                            </label>
+                                            <div className="input-group input-group-merge">
+                                              <select
+                                                id="basic-icon-default-email"
+                                                className="form-control"
+                                                onChange={(e) => {
+                                                  handleDistrict(e);
+                                                  setDistrictSelected(true);
+                                                }}
+                                                value={districtID}
+                                              >
+                                                {!districtSelected && (
+                                                  <option value="">
+                                                    ---Chọn Quận/ Huyện
+                                                  </option>
+                                                )}
+                                                {districs &&
+                                                  districs.length &&
+                                                  districs.map((e, index) => {
+                                                    return (
+                                                      <>
+                                                        <option
+                                                          key={e.id}
+                                                          value={e.id}
+                                                          //onChange={ loadDataDistrics()}
+                                                        >
+                                                          {e.districtName}
+                                                        </option>
+                                                      </>
+                                                    );
+                                                  })}
+                                              </select>
+                                            </div>
+                                          </div>
+                                          <div
+                                            className="mb-3"
+                                            style={{
+                                              width: "45%",
+                                              marginLeft: 50,
+                                            }}
+                                          >
+                                            <label
+                                              className="form-label"
+                                              htmlFor="basic-icon-default-phone"
+                                            >
+                                              Phường/ Xã
+                                            </label>
+                                            <div className="input-group input-group-merge">
+                                              <select
+                                                id="basic-icon-default-email"
+                                                className="form-control"
+                                                value={wardID}
+                                                onChange={(e) => {
+                                                  handleWards(e);
+                                                  setWardSelected(true);
+                                                }}
+                                              >
+                                                {!wardSelected && (
+                                                  <option value="">
+                                                    --- Chọn Phường/ Xã
+                                                  </option>
+                                                )}
+                                                {ward &&
+                                                  ward.length &&
+                                                  ward.map((e, index) => {
+                                                    return (
+                                                      <>
+                                                        <option
+                                                          key={e.id}
+                                                          value={e.id}
+                                                          //onChange={ loadDataDistrics()}
+                                                        >
+                                                          {e.wardName}
+                                                        </option>
+                                                      </>
+                                                    );
+                                                  })}
+                                              </select>
+                                            </div>
+                                          </div>
+
+                                          <div
+                                            className="mb-3"
+                                            style={{
+                                              width: "45%",
+                                              marginLeft: 10,
+                                            }}
+                                          >
+                                            <label
+                                              className="form-label"
+                                              htmlFor="basic-icon-default-message"
+                                            >
+                                              Địa Chỉ
+                                            </label>
+                                            <div className="input-group input-group-merge">
+                                              <input
+                                                id="basic-icon-default-message"
+                                                className="form-control"
+                                                placeholder="Địa Chỉ"
+                                                aria-label=" Home Address"
+                                                aria-describedby="basic-icon-default-message2"
+                                                defaultValue={""}
+                                                onChange={(e) => {
+                                                  setHomeAddress(
+                                                    e.target.value
+                                                  );
+                                                }}
+                                              />
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{ width: "45%", marginLeft: 10 }}
                                       >
                                         <label
                                           className="form-label"
@@ -628,7 +693,6 @@ const SiteOwner = () => {
                                             placeholder="Thông Tin Liên Lạc"
                                             aria-label="Contact Info"
                                             aria-describedby="basic-icon-default-email2"
-                                          
                                             onChange={(e) => {
                                               setContactInfo(e.target.value);
                                             }}
@@ -647,7 +711,7 @@ const SiteOwner = () => {
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{ width: "45%", marginLeft: 10 }}
                                       >
                                         <label
                                           className="form-label"
@@ -663,7 +727,6 @@ const SiteOwner = () => {
                                             aria-label="Description"
                                             aria-describedby="basic-icon-default-message2"
                                             defaultValue={""}
-                                            
                                             onChange={(e) => {
                                               setDescription(e.target.value);
                                             }}
@@ -721,14 +784,14 @@ const SiteOwner = () => {
                                   <form>
                                     <div
                                       style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "auto auto",
+                                        display: "flex",
+                                        flexWrap: "wrap",
                                         padding: 30,
                                       }}
                                     >
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{ width: "45%", marginLeft: 10 }}
                                       >
                                         <label
                                           className="form-label"
@@ -752,7 +815,7 @@ const SiteOwner = () => {
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{ width: "45%", marginLeft: 10 }}
                                       >
                                         <label
                                           className="form-label"
@@ -762,179 +825,232 @@ const SiteOwner = () => {
                                         </label>
                                         <div className="input-group input-group-merge">
                                           <input
-                                            type="text"
+                                            type="file"
                                             id="basic-icon-default-company"
                                             className="form-control"
                                             placeholder="Image"
                                             aria-label="ACME Inc."
                                             aria-describedby="basic-icon-default-company2"
-                                            value={imageUrl}
+                                            // value={imageUrl}
                                             onChange={(e) => {
-                                              setImageUrl(e.target.value);
+                                              createNewURL(e);
                                             }}
                                           />
+                                          <img
+                                            src={imageUrl}
+                                            style={{ height: 30, width: 30 }}
+                                          ></img>
                                         </div>
                                       </div>
-                                     
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{
+                                          width: "91%",
+                                          border:
+                                            "0.1px solid rgb(201, 201, 201)",
+                                          borderRadius: "10px",
+                                          marginLeft: 10,
+                                        }}
                                       >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
-                                          Thành Phố / Tỉnh
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <select
-                                            name="city"
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            onChange={(e) => {
-                                              handlecity(e);
-                                            }}
-                                            value={cityID}
-                                          >
-                                            {city &&
-                                              city.length &&
-                                              city.map((e, index) => {
-                                                return (
-                                                  <>
-                                                    <option
-                                                      key={e.id}
-                                                      value={e.id}
-                                                      onClick={() => {
-                                                        setCity(e.id);
-                                                      }}
-                                                    >
-                                                      {e.cityName}
-                                                    </option>
-                                                  </>
-                                                );
-                                              })}
-                                          </select>
-                                        </div>
                                         <div
-                                          className="form-text"
-                                          style={{ color: "red" }}
-                                        >
-                                          {cityErrorMessage}
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
-                                          Quận/ Huyện
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <select
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            onChange={(e) => {
-                                              handleDistrict(e);
-                                            }}
-                                            value={districtID}
-                                          >
-                                            {districs &&
-                                              districs.length &&
-                                              districs.map((e, index) => {
-                                                return (
-                                                  <>
-                                                    <option
-                                                      key={e.id}
-                                                      value={e.id}
-                                                      // onClick={() => {
-                                                      //   setDistrictID(e.id);
-                                                      // }}
-                                                    >
-                                                      {e.districtName}
-                                                    </option>
-                                                  </>
-                                                );
-                                              })}
-                                          </select>
-                                        </div>
-                                        <div
-                                          className="form-text"
-                                          style={{ color: "red" }}
-                                        >
-                                          {districtsErrorMessage}
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
-                                          Phường/ Xã
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <select
-                                            id="basic-icon-default-email"
-                                            className="form-control"
-                                            value={wardID}
-                                            onChange={(e) => {
-                                              handleWards(e);
-                                            }}
-                                          >
-                                            {ward &&
-                                              ward.length &&
-                                              ward.map((e, index) => {
-                                                return (
-                                                  <>
-                                                    <option
-                                                      key={e.id}
-                                                      value={e.id}
-                                                      // onClick={() => {
-                                                      //   setWardID(e.id);
-                                                      // }}
-                                                    >
-                                                      {e.wardName}
-                                                    </option>
-                                                  </>
-                                                );
-                                              })}
-                                          </select>
-                                        </div>
-                                      </div>
+                                          className="card-header d-flex justify-content-between align-items-center"
+                                          style={{
+                                            marginTop: 10,
 
-                                      <div
-                                        className="mb-3"
-                                        style={{ width: "95%" }}
-                                      >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-message"
+                                            height: 40,
+                                            backgroundColor: "white",
+                                            padding: "20px 24px",
+                                            borderColor: "white",
+                                          }}
                                         >
-                                          Địa Chỉ Cụ Thể
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <input
-                                            id="basic-icon-default-message"
-                                            className="form-control"
-                                            placeholder=" Home Address"
-                                            aria-label=" Home Address"
-                                            aria-describedby="basic-icon-default-message2"
-                                            defaultValue={""}
-                                            value={homeAddress}
-                                            onChange={(e) => {
-                                              setHomeAddress(e.target.value);
+                                          <div
+                                            className="mb-0"
+                                            style={{ fontWeight: "500" }}
+                                          >
+                                            Thông Tin Địa Chỉ
+                                          </div>
+                                        </div>
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                          }}
+                                        >
+                                          <div
+                                            className="mb-3"
+                                            style={{
+                                              width: "45%",
+                                              marginLeft: 50,
                                             }}
-                                          />
+                                          >
+                                            <label
+                                              className="form-label"
+                                              htmlFor="basic-icon-default-phone"
+                                            >
+                                              Thành Phố / Tỉnh
+                                            </label>
+                                            <div className="input-group input-group-merge">
+                                              <select
+                                                name="city"
+                                                id="basic-icon-default-email"
+                                                className="form-control"
+                                                onChange={(e) => {
+                                                  handlecity(e);
+                                                }}
+                                                value={cityID}
+                                              >
+                                                {city &&
+                                                  city.length &&
+                                                  city.map((e, index) => {
+                                                    return (
+                                                      <>
+                                                        <option
+                                                          key={e.id}
+                                                          value={e.id}
+                                                          onClick={() => {
+                                                            setCity(e.id);
+                                                          }}
+                                                        >
+                                                          {e.cityName}
+                                                        </option>
+                                                      </>
+                                                    );
+                                                  })}
+                                              </select>
+                                            </div>
+                                            <div
+                                              className="form-text"
+                                              style={{ color: "red" }}
+                                            >
+                                              {cityErrorMessage}
+                                            </div>
+                                          </div>
+                                          <div
+                                            className="mb-3"
+                                            style={{
+                                              width: "45%",
+                                              marginLeft: 10,
+                                            }}
+                                          >
+                                            <label
+                                              className="form-label"
+                                              htmlFor="basic-icon-default-phone"
+                                            >
+                                              Quận/ Huyện
+                                            </label>
+                                            <div className="input-group input-group-merge">
+                                              <select
+                                                id="basic-icon-default-email"
+                                                className="form-control"
+                                                onChange={(e) => {
+                                                  handleDistrict(e);
+                                                }}
+                                                value={districtID}
+                                              >
+                                                {districs &&
+                                                  districs.length &&
+                                                  districs.map((e, index) => {
+                                                    return (
+                                                      <>
+                                                        <option
+                                                          key={e.id}
+                                                          value={e.id}
+                                                          // onClick={() => {
+                                                          //   setDistrictID(e.id);
+                                                          // }}
+                                                        >
+                                                          {e.districtName}
+                                                        </option>
+                                                      </>
+                                                    );
+                                                  })}
+                                              </select>
+                                            </div>
+                                            <div
+                                              className="form-text"
+                                              style={{ color: "red" }}
+                                            >
+                                              {districtsErrorMessage}
+                                            </div>
+                                          </div>
+                                          <div
+                                            className="mb-3"
+                                            style={{
+                                              width: "45%",
+                                              marginLeft: 50,
+                                            }}
+                                          >
+                                            <label
+                                              className="form-label"
+                                              htmlFor="basic-icon-default-phone"
+                                            >
+                                              Phường/ Xã
+                                            </label>
+                                            <div className="input-group input-group-merge">
+                                              <select
+                                                id="basic-icon-default-email"
+                                                className="form-control"
+                                                value={wardID}
+                                                onChange={(e) => {
+                                                  handleWards(e);
+                                                }}
+                                              >
+                                                {ward &&
+                                                  ward.length &&
+                                                  ward.map((e, index) => {
+                                                    return (
+                                                      <>
+                                                        <option
+                                                          key={e.id}
+                                                          value={e.id}
+                                                          // onClick={() => {
+                                                          //   setWardID(e.id);
+                                                          // }}
+                                                        >
+                                                          {e.wardName}
+                                                        </option>
+                                                      </>
+                                                    );
+                                                  })}
+                                              </select>
+                                            </div>
+                                          </div>
+
+                                          <div
+                                            className="mb-3"
+                                            style={{
+                                              width: "45%",
+                                              marginLeft: 10,
+                                            }}
+                                          >
+                                            <label
+                                              className="form-label"
+                                              htmlFor="basic-icon-default-message"
+                                            >
+                                              Địa Chỉ Cụ Thể
+                                            </label>
+                                            <div className="input-group input-group-merge">
+                                              <input
+                                                id="basic-icon-default-message"
+                                                className="form-control"
+                                                placeholder=" Home Address"
+                                                aria-label=" Home Address"
+                                                aria-describedby="basic-icon-default-message2"
+                                                defaultValue={""}
+                                                value={homeAddress}
+                                                onChange={(e) => {
+                                                  setHomeAddress(
+                                                    e.target.value
+                                                  );
+                                                }}
+                                              />
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{ width: "45%", marginLeft: 10 }}
                                       >
                                         <label
                                           className="form-label"
@@ -969,7 +1085,7 @@ const SiteOwner = () => {
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{ width: "45%", marginLeft: 10 }}
                                       >
                                         <label
                                           className="form-label"
@@ -1036,20 +1152,22 @@ const SiteOwner = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Xem Thông Tin Chi Nhánh</h5>
+                                  <h5 className="mb-0">
+                                    Xem Thông Tin Chi Nhánh
+                                  </h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
                                     <div
                                       style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "auto auto",
+                                        display: "flex",
+                                        flexWrap: "wrap",
                                         padding: 30,
                                       }}
                                     >
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{ width: "45%" }}
                                       >
                                         <label
                                           className="form-label"
@@ -1060,18 +1178,17 @@ const SiteOwner = () => {
                                         <div className="input-group input-group-merge">
                                           <div
                                             type="text"
-                                         
                                             id="basic-icon-default-fullname"
                                             placeholder="Tên Chi Nhánh"
-                                           
-                                            
                                             aria-describedby="basic-icon-default-fullname2"
-                                          >{siteName}</div>
+                                          >
+                                            {siteName}
+                                          </div>
                                         </div>
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{ width: "45%" }}
                                       >
                                         <label
                                           className="form-label"
@@ -1088,47 +1205,231 @@ const SiteOwner = () => {
                                             aria-label="ACME Inc."
                                             aria-describedby="basic-icon-default-company2"
                                             value={imageUrl}
-                                            onChange={(e) => {
-                                              setImageUrl(e.target.value);
-                                            }}
+                                            // onChange={(e) => {
+                                            //   setImageUrl(e.target.value);
+                                            // }}
                                           />
                                         </div>
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{
+                                          width: "90%",
+                                          border:
+                                            "1px solid rgb(201, 201, 201)",
+                                          borderRadius: "10px",
+                                        }}
                                       >
-                                        <label
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-email"
+                                        <div
+                                          className="card-header d-flex justify-content-between align-items-center"
+                                          style={{
+                                            marginTop: 10,
+                                            height: 40,
+                                            backgroundColor: "white",
+                                            padding: "20px 24px",
+                                            borderColor: "white",
+                                          }}
                                         >
-                                          Thông Tin Liên Lạc
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                         
                                           <div
-                                            type="text"
-                                         
-                                            id="basic-icon-default-fullname"
-                                            placeholder="Tên Chi Nhánh"
-                                           
-                                            
-                                            aria-describedby="basic-icon-default-fullname2"
-                                          >{contactInfo}</div>
-                                          
-                                          {/* <span
-                                            id="basic-icon-default-email2"
-                                            className="input-group-text"
+                                            className="mb-0"
+                                            style={{ fontWeight: "500" }}
+                                          >
+                                            Thông Tin Địa Chỉ
+                                          </div>
+                                        </div>
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                          }}
+                                        >
+                                          <div
+                                            className="mb-3"
                                             style={{
-                                              backgroundColor: "#f6f9fc",
+                                              width: "45%",
+                                              marginLeft: "50px",
                                             }}
                                           >
-                                            @gmail.com
-                                          </span> */}
+                                            <label
+                                              className="form-label"
+                                              htmlFor="basic-icon-default-phone"
+                                            >
+                                              Thành Phố / Tỉnh
+                                            </label>
+                                            <div className="input-group input-group-merge">
+                                              <select
+                                                name="city"
+                                                id="basic-icon-default-email"
+                                                disabled
+                                                style={{
+                                                  border: "none",
+                                                  backgroundColor: "white",
+                                                }}
+                                                className="form-control"
+                                                onChange={(e) => {
+                                                  handlecity(e);
+                                                }}
+                                                value={cityID}
+                                              >
+                                                {city &&
+                                                  city.length &&
+                                                  city.map((e, index) => {
+                                                    return (
+                                                      <>
+                                                        <option
+                                                          key={e.id}
+                                                          value={e.id}
+                                                          onClick={() => {
+                                                            setCity(e.id);
+                                                          }}
+                                                        >
+                                                          {e.cityName}
+                                                        </option>
+                                                      </>
+                                                    );
+                                                  })}
+                                              </select>
+                                            </div>
+                                            <div
+                                              className="form-text"
+                                              style={{ color: "red" }}
+                                            >
+                                              {cityErrorMessage}
+                                            </div>
+                                          </div>
+                                          <div
+                                            className="mb-3"
+                                            style={{ width: "45%" }}
+                                          >
+                                            <label
+                                              className="form-label"
+                                              htmlFor="basic-icon-default-phone"
+                                            >
+                                              Quận/ Huyện
+                                            </label>
+                                            <div className="input-group input-group-merge">
+                                              <select
+                                                id="basic-icon-default-email"
+                                                className="form-control"
+                                                disabled
+                                                style={{
+                                                  border: "none",
+                                                  backgroundColor: "white",
+                                                }}
+                                                onChange={(e) => {
+                                                  handleDistrict(e);
+                                                }}
+                                                value={districtID}
+                                              >
+                                                {districs &&
+                                                  districs.length &&
+                                                  districs.map((e, index) => {
+                                                    return (
+                                                      <>
+                                                        <option
+                                                          key={e.id}
+                                                          value={e.id}
+                                                          // onClick={() => {
+                                                          //   setDistrictID(e.id);
+                                                          // }}
+                                                        >
+                                                          {e.districtName}
+                                                        </option>
+                                                      </>
+                                                    );
+                                                  })}
+                                              </select>
+                                            </div>
+                                            <div
+                                              className="form-text"
+                                              style={{ color: "red" }}
+                                            >
+                                              {districtsErrorMessage}
+                                            </div>
+                                          </div>
+                                          <div
+                                            className="mb-3"
+                                            style={{
+                                              width: "45%",
+                                              marginLeft: "50px",
+                                            }}
+                                          >
+                                            <label
+                                              className="form-label"
+                                              htmlFor="basic-icon-default-phone"
+                                            >
+                                              Phường/ Xã
+                                            </label>
+                                            <div className="input-group input-group-merge">
+                                              <select
+                                                id="basic-icon-default-email"
+                                                className="form-control"
+                                                disabled
+                                                style={{
+                                                  border: "none",
+                                                  backgroundColor: "white",
+                                                }}
+                                                value={wardID}
+                                                onChange={(e) => {
+                                                  handleWards(e);
+                                                }}
+                                              >
+                                                {ward &&
+                                                  ward.length &&
+                                                  ward.map((e, index) => {
+                                                    return (
+                                                      <>
+                                                        <option
+                                                          key={e.id}
+                                                          value={e.id}
+                                                          // onClick={() => {
+                                                          //   setWardID(e.id);
+                                                          // }}
+                                                        >
+                                                          {e.wardName}
+                                                        </option>
+                                                      </>
+                                                    );
+                                                  })}
+                                              </select>
+                                            </div>
+                                          </div>
+
+                                          <div
+                                            className="mb-3"
+                                            style={{ width: "45%" }}
+                                          >
+                                            <label
+                                              className="form-label"
+                                              htmlFor="basic-icon-default-message"
+                                            >
+                                              Địa Chỉ Cụ Thể
+                                            </label>
+                                            <div className="input-group input-group-merge">
+                                              <input
+                                                id="basic-icon-default-message"
+                                                disabled
+                                                style={{
+                                                  border: "none",
+                                                  backgroundColor: "white",
+                                                }}
+                                                className="form-control"
+                                                placeholder=" Home Address"
+                                                aria-label=" Home Address"
+                                                aria-describedby="basic-icon-default-message2"
+                                                defaultValue={""}
+                                                value={homeAddress}
+                                                onChange={(e) => {
+                                                  setHomeAddress(
+                                                    e.target.value
+                                                  );
+                                                }}
+                                              />
+                                            </div>
+                                          </div>
                                         </div>
-                                        <div className="form-text"></div>
                                       </div>
-                                      <div
+                                      {/* <div
                                         className="mb-3"
                                         style={{ width: "95%" }}
                                       >
@@ -1139,12 +1440,14 @@ const SiteOwner = () => {
                                           Thành Phố / Tỉnh
                                         </label>
                                         <div className="input-group input-group-merge">
-                                     
                                           <select
                                             name="city"
                                             id="basic-icon-default-email"
                                             disabled
-                                            style={{border: "none",backgroundColor: "white"}}
+                                            style={{
+                                              border: "none",
+                                              backgroundColor: "white",
+                                            }}
                                             className="form-control"
                                             onChange={(e) => {
                                               handlecity(e);
@@ -1192,7 +1495,10 @@ const SiteOwner = () => {
                                             id="basic-icon-default-email"
                                             className="form-control"
                                             disabled
-                                            style={{border: "none",backgroundColor: "white"}}
+                                            style={{
+                                              border: "none",
+                                              backgroundColor: "white",
+                                            }}
                                             onChange={(e) => {
                                               handleDistrict(e);
                                             }}
@@ -1239,7 +1545,10 @@ const SiteOwner = () => {
                                             id="basic-icon-default-email"
                                             className="form-control"
                                             disabled
-                                            style={{border: "none",backgroundColor: "white"}}
+                                            style={{
+                                              border: "none",
+                                              backgroundColor: "white",
+                                            }}
                                             value={wardID}
                                             onChange={(e) => {
                                               handleWards(e);
@@ -1280,7 +1589,10 @@ const SiteOwner = () => {
                                           <input
                                             id="basic-icon-default-message"
                                             disabled
-                                            style={{border: "none",backgroundColor: "white"}}
+                                            style={{
+                                              border: "none",
+                                              backgroundColor: "white",
+                                            }}
                                             className="form-control"
                                             placeholder=" Home Address"
                                             aria-label=" Home Address"
@@ -1292,10 +1604,42 @@ const SiteOwner = () => {
                                             }}
                                           />
                                         </div>
+                                      </div> */}
+                                      <div
+                                        className="mb-3"
+                                        style={{ width: "45%" }}
+                                      >
+                                        <label
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-email"
+                                        >
+                                          Thông Tin Liên Lạc
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <div
+                                            type="text"
+                                            id="basic-icon-default-fullname"
+                                            placeholder="Tên Chi Nhánh"
+                                            aria-describedby="basic-icon-default-fullname2"
+                                          >
+                                            {contactInfo}
+                                          </div>
+
+                                          {/* <span
+                                            id="basic-icon-default-email2"
+                                            className="input-group-text"
+                                            style={{
+                                              backgroundColor: "#f6f9fc",
+                                            }}
+                                          >
+                                            @gmail.com
+                                          </span> */}
+                                        </div>
+                                        <div className="form-text"></div>
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{ width: "95%" }}
+                                        style={{ width: "45%" }}
                                       >
                                         <label
                                           className="form-label"
@@ -1307,7 +1651,10 @@ const SiteOwner = () => {
                                           <textarea
                                             id="basic-icon-default-message"
                                             disabled
-                                            style={{border: "none",backgroundColor: "white"}}
+                                            style={{
+                                              border: "none",
+                                              backgroundColor: "white",
+                                            }}
                                             className="form-control"
                                             placeholder="Description"
                                             aria-label="Description"
@@ -1320,8 +1667,6 @@ const SiteOwner = () => {
                                         </div>
                                       </div>
                                     </div>
-
-                                 
                                   </form>
                                 </div>
                               </div>
@@ -1359,7 +1704,7 @@ const SiteOwner = () => {
                             >
                               Vị trí
                             </th>
-                           
+
                             <th
                               style={{
                                 backgroundColor: "#f6f9fc",
@@ -1414,8 +1759,15 @@ const SiteOwner = () => {
                               return (
                                 <tr key={e.id}>
                                   <td>&nbsp; &nbsp;{e.siteName}</td>
-                                  <td><a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${e.fullyAddress}`}>{e.fullyAddress}</a></td>
-                                 
+                                  <td>
+                                    <a
+                                      target="_blank"
+                                      href={`https://www.google.com/maps/search/?api=1&query=${e.fullyAddress}`}
+                                    >
+                                      {e.fullyAddress}
+                                    </a>
+                                  </td>
+
                                   {/* <td>50</td>
                                   <td>
                                     <span className="badge bg-label-primary me-1">
@@ -1423,7 +1775,7 @@ const SiteOwner = () => {
                                     </span>
                                   </td> */}
                                   <td>
-                                  <a
+                                    <a
                                       class="button-81"
                                       role="button"
                                       href="#my-dialog3"
@@ -1468,21 +1820,24 @@ const SiteOwner = () => {
                                         />
                                       </svg>
                                     </a>
-
                                   </td>
 
-                                  <td><Switch
+                                  <td>
+                                    <Switch
                                       checked={e.isActivate}
                                       onChange={async () => {
                                         loadDataSiteID(e.id);
                                       }}
-                                    /></td>
-                                  <td><Switch
+                                    />
+                                  </td>
+                                  <td>
+                                    <Switch
                                       checked={e.isDelivery}
                                       onChange={async () => {
                                         loadDataSiteIDtoDelivery(e.id);
                                       }}
-                                    /></td>
+                                    />
+                                  </td>
                                 </tr>
                               );
                             })}

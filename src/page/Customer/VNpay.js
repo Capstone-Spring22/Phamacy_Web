@@ -12,6 +12,11 @@ import { useHistory, useLocation, Link } from "react-router-dom";
 import Header from "../Header/Header";
 import axios from "axios";
 const VNPay = (props) => {
+  let history = useHistory();
+  const update = (myId) => {
+    localStorage.setItem("id", myId);
+    history.push("/ViewOrderDetail");
+  };
   const urlParams = new URLSearchParams(window.location.search);
   const vnp_PayDate = urlParams.get("vnp_PayDate");
   const vnp_TransactionNo = urlParams.get("vnp_TransactionNo");
@@ -52,6 +57,7 @@ const VNPay = (props) => {
       if (res && res.status === 200) {
         Swal.fire("Create Success", "", "success");
         handleRemoveCart();
+        update(productCheckOut.orderId);
       }
     } else {
       const data = product;
@@ -63,6 +69,7 @@ const VNPay = (props) => {
       if (res && res.status === 200) {
         Swal.fire("Create Success", "", "success");
         handleRemoveCart();
+        update(productCheckOut.orderId);
       }
     }
   }
