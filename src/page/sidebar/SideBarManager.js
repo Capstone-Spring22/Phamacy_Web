@@ -32,6 +32,7 @@ const Sidebar = ({activeItem}) => {
       navigate.push("/LoginAdmin");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("roleID");
+      localStorage.removeItem("userID");
     } catch (error) {
       console.log(error.message);
     }

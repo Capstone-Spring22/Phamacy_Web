@@ -14,7 +14,7 @@ import SideBar from "./page/sidebar/SideBarAdmin";
 import Drug from "./page/Admin/Drug";
 import Site from "./page/Admin/Site";
 import Employees from "./page/Admin/Employee";
-import Profile from "./page/Admin/Profile";
+
 import Order from "./page/Admin/Order";
 import Login from "./page/Customer/Login";
 import NewEmployees from "./page/Admin/NewEmployee";
@@ -45,6 +45,7 @@ import ViewOrderDetail from "./page/Customer/ViewOrderDetail";
 import Manufacturer from "./page/Admin/Manufature";
 import DashBoardAdmin from "./page/dashboard/DashBoardAdmin";
 import ViewEmployee from "./page/Admin/ViewEmployee";
+import ProfileOwner from "./page/Profile/ProfileOwner";
 function App() {
   return (
     <div className="site-wrap">
@@ -87,8 +88,8 @@ function App() {
           <Route path="/Site">
             <Site />
           </Route>
-          <Route path="/Profile">
-            <Profile />
+          <Route path="/ProfileOwner">
+            <ProfileOwner />
           </Route>
           <Route path="/NewEmployees">
             <NewEmployees />

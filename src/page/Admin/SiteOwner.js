@@ -1712,7 +1712,7 @@ const SiteOwner = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Cập Nhật
+                              Thao Tác
                             </th>
                             {/* <th
                               style={{

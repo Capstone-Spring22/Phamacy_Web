@@ -549,9 +549,10 @@ const AddImportProduct = () => {
                         </label>
                         <div className="input-group input-group-merge">
                           <input
-                            type="text"
+                            type="number"
                             name="city"
                             placeholder="Thuế"
+                            defaultValue={0}
                             id="basic-icon-default-email"
                             className="form-control"
                             onChange={(e) =>
@@ -572,8 +573,9 @@ const AddImportProduct = () => {
                         </label>
                         <div className="input-group input-group-merge">
                           <input
-                            type="text"
+                            type="number"
                             name="city"
+                            defaultValue={0}
                             placeholder="Phí ship"
                             id="basic-icon-default-email"
                             className="form-control"

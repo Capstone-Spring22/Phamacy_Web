@@ -278,7 +278,7 @@ const OrderDetail = () => {
 
         <div
           className="layout-page"
-          style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
+          style={{ backgroundColor: "#f4f6fb"}}
         >
           {/* Navbar */}
           <nav
@@ -637,7 +637,7 @@ const OrderDetail = () => {
           </div>
           {/* / Navbar */}
           {/* Content wrapper */}
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex", marginLeft: 100  }} >
             <div>
               <div className="content-wrapper">
                 {/* Content */}
