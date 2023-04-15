@@ -1,4 +1,4 @@
-import { useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
@@ -20,7 +20,7 @@ const SubCategory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
   const [isOpen, setIsOpen] = useState(true);
-  
+  const [categorySelect, setCategorySelect] = useState(false);
   const [categoryUpdate, setCategoryUpdate] = useState({
     subCategoryName: "",
     mainCategoryId: "",
@@ -186,7 +186,6 @@ const SubCategory = () => {
                   </div>
                 </div>
                 {/* /Search */}
-             
               </div>
             </nav>
 
@@ -357,11 +356,18 @@ const SubCategory = () => {
                                             name="city"
                                             id="basic-icon-default-email"
                                             className="form-control"
-                                            onChange={(e) =>
-                                              handleMainCategory(e)
-                                            }
+                                            onChange={(e) => {
+                                              setCategorySelect(true);
+                                                handleMainCategory(e);
+                                            }}
                                             value={mainCategoryId}
                                           >
+                                            {!categorySelect && (
+                                              <option value="">
+                                                --- Chọn Danh Mục
+                                              </option>
+                                            )}
+                                            
                                             {mainCategory &&
                                               mainCategory.length &&
                                               mainCategory.map((e, index) => {
@@ -626,7 +632,7 @@ const SubCategory = () => {
                         </thead>
                         <tbody className="table-border-bottom-0">
                           {subCategory &&
-                            subCategory.length >0 &&
+                            subCategory.length > 0 &&
                             subCategory.map((e) => {
                               return (
                                 <tr key={e.id}>
