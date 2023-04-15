@@ -179,17 +179,9 @@ const ProductDiscount = () => {
                                     color: "#bfc8d3",
                                   }}
                                 >
-                                  Giảm Giá (%)
+                                  Giảm Giá
                                 </th>
-                                <th
-                                  style={{
-                                    backgroundColor: "#f6f9fc",
-                                    borderColor: "white",
-                                    color: "#bfc8d3",
-                                  }}
-                                >
-                                  Số tiền Giảm Giá
-                                </th>
+                              
                                 <th
                                   style={{
                                     backgroundColor: "#f6f9fc",
@@ -256,17 +248,16 @@ const ProductDiscount = () => {
                                       </td>
                                       <td>
                                         {e.discountPercent === null
-                                          ? "0"
-                                          : e.discountPercent}
-                                        %
-                                      </td>
-                                      <td>
-                                        {e.discountMoney === null
-                                          ? "0"
-                                          : e.discountMoney.toLocaleString(
+                                          ? `Giảm thẳng ${e.discountMoney.toLocaleString(
                                               "en-US"
-                                            )}{" "}
-                                        đ
+                                            )} đ`
+                                          : e.discountMoney === null
+                                          ? `Giảm ${e.discountPercent}%`
+                                          : `${
+                                              e.discountPercent
+                                            }% ${e.discountMoney.toLocaleString(
+                                              "en-US"
+                                            )} đ`}
                                       </td>
                                       <td>{e.totalProduct}</td>
                                       <td>

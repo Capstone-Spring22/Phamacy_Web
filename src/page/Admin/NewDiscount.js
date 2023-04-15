@@ -5,15 +5,12 @@ import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import {
-  getDataByPath,
-  createDataByPath,
-} from "../../services/data.service";
+import { getDataByPath, createDataByPath } from "../../services/data.service";
 
 import Select from "react-select";
 const NewDiscount = () => {
   const [unitCount, setUnitCount] = useState(1);
- 
+
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
   const [totalRecord, setTotalRecord] = useState([]);
@@ -31,6 +28,11 @@ const NewDiscount = () => {
       },
     ],
   });
+  const [discountType, setDiscountType] = useState("percent");
+  const discountOptions = [
+    { value: "percent", label: "Giảm giá theo %" },
+    { value: "money", label: "Giảm giá theo tiền" },
+  ];
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -126,7 +128,6 @@ const NewDiscount = () => {
                 </div>
               </div>
               {/* /Search */}
-              
             </div>
           </nav>
 
@@ -207,52 +208,73 @@ const NewDiscount = () => {
                           />
                         </div>
                       </div>
-                      <div className="mb-3" style={{ width: "95%" }}>
-                        <label
-                          className="form-label"
-                          htmlFor="basic-icon-default-phone"
-                        >
-                          Giảm Giá (%)
-                        </label>
-                        <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            name="city"
-                            placeholder=" Giảm Giá (%)"
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                discountPercent: e.target.value,
-                              }))
-                            }
+                 
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label className="form-label" htmlFor="discount-type">
+                           Chọn Loại Giảm Giá 
+                          </label>
+                          <Select
+                            id="discount-type"
+                            options={discountOptions}
+                            defaultValue={discountOptions[0]}
+                            onChange={(selectedOption) => {
+                              setDiscountType(selectedOption.value);
+                            }}
                           />
                         </div>
-                      </div>
-                      <div className="mb-3" style={{ width: "95%" }}>
-                        <label
-                          className="form-label"
-                          htmlFor="basic-icon-default-phone"
-                        >
-                          Số tiền giảm
-                        </label>
-                        <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            name="city"
-                            placeholder="  Số tiền giảm"
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                discountMoney: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
+
+                        {discountType === "percent" && (
+                          <div className="mb-3" style={{ width: "95%" }}>
+                            <label
+                              className="form-label"
+                              htmlFor="discount-percent"
+                            >
+                              Giảm giá (%)
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <input
+                                type="text"
+                                name="discount-percent"
+                                placeholder="Giảm giá (%)"
+                                id="discount-percent"
+                                className="form-control"
+                                onChange={(e) =>
+                                  setProduct((prevState) => ({
+                                    ...prevState,
+                                    discountPercent: e.target.value,
+                                  }))
+                                }
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {discountType === "money" && (
+                          <div className="mb-3" style={{ width: "95%" }}>
+                            <label
+                              className="form-label"
+                              htmlFor="discount-money"
+                            >
+                              Số tiền giảm
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <input
+                                type="text"
+                                name="discount-money"
+                                placeholder="Số tiền giảm"
+                                id="discount-money"
+                                className="form-control"
+                                onChange={(e) =>
+                                  setProduct((prevState) => ({
+                                    ...prevState,
+                                    discountMoney: e.target.value,
+                                  }))
+                                }
+                              />
+                            </div>
+                          </div>
+                        )}
+                   
 
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
@@ -368,30 +390,24 @@ const NewDiscount = () => {
                                 >
                                   Id sản phẩm
                                 </label>
-                           
-                                  
-                                  <Select
-                              
-                                    onChange={(selectedOption) => {
-                                      setSelectedOption(selectedOption);
-                                        setProduct({
-                                        ...product,
-                                        products: [
-                                          ...product.products.slice(
-                                            0,
-                                            index - 1
-                                          ),
-                                          {
-                                            ...product.products[index - 1],
-                                            productId: selectedOption.value,
-                                          },
-                                          ...product.products.slice(index),
-                                        ],
-                                      });
-                                    }}
-                                    options={options}
-                                  />
-                       
+
+                                <Select
+                                  onChange={(selectedOption) => {
+                                    setSelectedOption(selectedOption);
+                                    setProduct({
+                                      ...product,
+                                      products: [
+                                        ...product.products.slice(0, index - 1),
+                                        {
+                                          ...product.products[index - 1],
+                                          productId: selectedOption.value,
+                                        },
+                                        ...product.products.slice(index),
+                                      ],
+                                    });
+                                  }}
+                                  options={options}
+                                />
                               </div>
                             </div>
                           </div>
