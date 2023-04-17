@@ -360,6 +360,18 @@ const ViewEmployee = () => {
                   <h5 className="mb-0">Thông Tin Nhân Viên</h5>
                 </div>
                 <div className="card-body">
+                {employees.imageUrl && (
+                    <img
+                      style={{
+                        height: 200,
+                        width: 200,
+                        objectFit: "cover",
+                        marginLeft: 20,
+                        marginTop: 10,
+                      }}
+                      src={employees.imageUrl}
+                    />
+                  )}
                   <div
                     style={{
                       display: "grid",
@@ -468,7 +480,7 @@ const ViewEmployee = () => {
                         {emailErrorMessage}
                       </div>
                     </div>
-                    <div className="mb-3" style={{ width: "95%" }}>
+                    {/* <div className="mb-3" style={{ width: "95%" }}>
                       <label
                         className="form-label"
                         htmlFor="basic-icon-default-phone"
@@ -489,7 +501,7 @@ const ViewEmployee = () => {
                           }}
                         >{employees.imageUrl}</div>
                       </div>
-                    </div>
+                    </div> */}
                     <div className="mb-3" style={{ width: "95%" }}>
                       <label
                         className="form-label"

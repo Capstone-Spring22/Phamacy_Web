@@ -55,7 +55,11 @@ const Sidebar = ({ activeItem }) => {
         }}
       >
         <div className="app-brand demo" style={{ marginLeft: -30 }}>
-          <Link to="/Home" className="app-brand-link" style={{ marginTop: 40 }}>
+          <Link
+            to="/Order"
+            className="app-brand-link"
+            style={{ marginTop: 40 }}
+          >
             <img src={logo} style={{ marginRight: 60 }} />
           </Link>
         </div>
@@ -79,7 +83,7 @@ const Sidebar = ({ activeItem }) => {
               src="https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png"
             />
           )}
-           {/* {user && user.fullname && (
+          {/* {user && user.fullname && (
             <div className="header-sidebar-name">{user.fullname}</div>
           )} */}
         </div>

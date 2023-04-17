@@ -52,11 +52,12 @@ import ProfileAdmin from "./page/Profile/ProfileAdmin";
 import ViewDiscount from "./page/Admin/ViewDiscount";
 import DashBoardManager from "./page/dashboard/DashBoardManager";
 function App() {
+ 
   return (
     <div className="site-wrap">
       <BrowserRouter>
         <Switch>
-        <Route exact path="/" render={() => <Redirect to="/home" />} />
+          <Route exact path="/" render={() => <Redirect to="/home" />} />
           <Route path="/Home">
             <Home />
           </Route>
@@ -111,6 +112,7 @@ function App() {
           <Route path="/LoginAdmin">
             <LoginAdmin />
           </Route>
+
           <Route path="/NewDrug">
             <NewDrug />
           </Route>

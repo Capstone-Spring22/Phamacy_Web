@@ -34,7 +34,7 @@ const NewEmployees = () => {
   const [roleSelected, setRoleSelected] = useState(false);
   const [siteSelected, setSiteSelected] = useState(false);
   const [genderSelected, setGenderSelected] = useState(false);
- 
+
   let history = useHistory();
   const genders = [
     { name: "Male", value: 0 },
@@ -135,19 +135,18 @@ const NewEmployees = () => {
     };
   };
   async function createNewURLAdd(e) {
-      const file = e.target.files[0];
-      const data = new FormData();
-      data.append("file", file);
-      const res = await axios.post(
-        "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
-        data
-      );
-      console.log("imageUrl", imageUrl);
-      console.log("hinh anh", res.data);
-      if (res && res.status === 200) {
-        setImageUrl(res.data);
-      }
-    
+    const file = e.target.files[0];
+    const data = new FormData();
+    data.append("file", file);
+    const res = await axios.post(
+      "https://betterhealthapi.azurewebsites.net/api/v1/Utility/UploadFile",
+      data
+    );
+    console.log("imageUrl", imageUrl);
+    console.log("hinh anh", res.data);
+    if (res && res.status === 200) {
+      setImageUrl(res.data);
+    }
   }
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -270,7 +269,6 @@ const NewEmployees = () => {
     loadDataWard();
   }, [districtID]);
 
-
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
@@ -334,6 +332,18 @@ const NewEmployees = () => {
                   <h5 className="mb-0">Thêm Mới Nhân Viên</h5>
                 </div>
                 <div className="card-body">
+                  {imageUrl && (
+                    <img
+                      style={{
+                        height: 200,
+                        width: 200,
+                        objectFit: "cover",
+                        marginLeft: 500,
+                        marginTop: 10,
+                      }}
+                      src={imageUrl}
+                    />
+                  )}
                   <div
                     style={{
                       display: "grid",
@@ -617,49 +627,7 @@ const NewEmployees = () => {
                         {roleErrorMessage}
                       </div>
                     </div>
-                    <div className="mb-3" style={{ width: "95%" }}>
-                      <label
-                        className="form-label"
-                        htmlFor="basic-icon-default-phone"
-                      >
-                        Giới Tính
-                      </label>
-                      <div className="input-group input-group-merge">
-                        <select
-                          name="Site"
-                          id="basic-icon-default-email"
-                          className="form-control"
-                          onChange={(e) => {
-                            setGenderSelected(false);
-                            handleGender(e);
-                          }}
-                        >
-                          {!genderSelected && (
-                            <option value="">--- Chọn Giới tính </option>
-                          )}
-                          {genders &&
-                            genders.length &&
-                            genders.map((e, index) => {
-                              return (
-                                <>
-                                  <option
-                                    key={e.name}
-                                    value={e.value}
-                                    onClick={() => {
-                                      setGender(e.value);
-                                    }}
-                                  >
-                                    {e.name}
-                                  </option>
-                                </>
-                              );
-                            })}
-                        </select>
-                      </div>
-                      <div className="form-text" style={{ color: "red" }}>
-                        {genderErrorMessage}
-                      </div>
-                    </div>
+                    
                     {roleID === "3" || roleID === "4" ? (
                       <div></div>
                     ) : (
@@ -704,6 +672,50 @@ const NewEmployees = () => {
                         </div>
                       </div>
                     )}
+                    <div className="mb-3" style={{ width: "95%" }}>
+                      <label
+                        className="form-label"
+                        htmlFor="basic-icon-default-phone"
+                      >
+                        Giới Tính
+                      </label>
+                      <div className="input-group input-group-merge">
+                        <select
+                          name="Site"
+                          id="basic-icon-default-email"
+                          className="form-control"
+                          onChange={(e) => {
+                            setGenderSelected(false);
+                            handleGender(e);
+                          }}
+                        >
+                          {!genderSelected && (
+                            <option value="">--- Chọn Giới tính </option>
+                          )}
+                          {genders &&
+                            genders.length &&
+                            genders.map((e, index) => {
+                              return (
+                                <>
+                                  <option
+                                    key={e.name}
+                                    value={e.value}
+                                    onClick={() => {
+                                      setGender(e.value);
+                                    }}
+                                  >
+                                    {e.name}
+                                  </option>
+                                </>
+                              );
+                            })}
+                        </select>
+                      </div>
+                      <div className="form-text" style={{ color: "red" }}>
+                        {genderErrorMessage}
+                      </div>
+                    </div>
+                   
                   </div>
 
                   <button

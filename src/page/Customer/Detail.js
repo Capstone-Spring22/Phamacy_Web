@@ -32,7 +32,7 @@ const DetailMedicine = () => {
   useEffect(() => {
     console.log("Updated cart:", cart);
   }, [cart]);
-  const [selectedUnitID, setSelectedUnitID] = useState(product.id);
+  const [selectedUnitID, setSelectedUnitID] = useState(productId);
   const unselectedUnitClass = "button-unit";
   const selectedUnitClass = "button-unit-active";
   async function loadDataProductId() {
@@ -86,7 +86,7 @@ const DetailMedicine = () => {
       const data = {
         deviceId: deviceId,
         item: {
-          productId: localStorage.getItem("detailId"),
+          productId: productID1,
           quantity: quantity,
         },
       };
@@ -132,11 +132,16 @@ const DetailMedicine = () => {
     (sc) => sc.id === product.subCategoryId
   );
   const subCategoryName = subCategorys ? subCategorys.subCategoryName : "";
+
   const subManufacturer = manufacturer.find(
     (sc) => sc.id === product.manufacturerId
   );
   const subManufacturerName = subManufacturer
     ? subManufacturer.manufacturerName
+    : "";
+
+    const countryName = subManufacturer
+    ? subManufacturer.countryName
     : "";
   useEffect(() => {
     loadDataProductId();
@@ -311,6 +316,24 @@ const DetailMedicine = () => {
                       <div
                         style={{
                           display: "flex",
+                          marginBottom: 20,
+                          width: 650,
+                        }}
+                      >
+                        <div
+                          style={{
+                            color: "#334155",
+                            fontWeight: 500,
+                            marginRight: 10,
+                          }}
+                        >
+                          Xuất Xứ:{" "}
+                        </div>
+                        <div>{countryName}</div>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
                           width: 650,
                           marginBottom: 20,
                         }}
@@ -344,7 +367,7 @@ const DetailMedicine = () => {
                           onChange={(e) => setQuantity(e.target.value)}
                         />
                       </div>
-                      {product.isPrescription === true ? (
+                      {product.isPrescription === 1 ? (
                         <button
                           value={5}
                           className="btn cart-submit d-block"

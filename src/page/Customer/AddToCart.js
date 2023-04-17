@@ -170,7 +170,7 @@ const AddToCart = () => {
                       className="card"
                       style={{
                         backgroundColor: "#ffffff",
-                       
+
                         boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",
                         borderRadius: 5,
                         border: "none",
@@ -244,11 +244,21 @@ const AddToCart = () => {
                                 color: "#bfc8d3",
                               }}
                             >
+                              &nbsp; &nbsp;Đơn vị
+                            </th>
+                            <th
+                              style={{
+                                width: 110,
+                                backgroundColor: "#f6f9fc",
+                                borderColor: "white",
+                                color: "#bfc8d3",
+                              }}
+                            >
                               &nbsp; &nbsp;Tổng giá
                             </th>
                             <th
                               style={{
-                                width: 100,
+                                width: 80,
                                 backgroundColor: "#f6f9fc",
                                 borderColor: "white",
                                 color: "#bfc8d3",
@@ -258,9 +268,12 @@ const AddToCart = () => {
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="table-border-bottom-0" style={{ borderColor: "white" }}>
+                        <tbody
+                          className="table-border-bottom-0"
+                          style={{ borderColor: "white" }}
+                        >
                           {drug &&
-                            drug.length &&
+                            drug.length > 0 &&
                             drug.map((item, index) => {
                               return (
                                 <tr key={item.id}>
@@ -316,6 +329,11 @@ const AddToCart = () => {
                                         />
                                       </span>
                                     </div>
+                                  </td>
+                                  <td>
+                                    <span style={{ marginLeft: 20 }}>
+                                      {item.unitName}
+                                    </span>
                                   </td>
                                   <td className="total_price">
                                     <span style={{ marginLeft: 20 }}>
@@ -374,30 +392,26 @@ const AddToCart = () => {
                         className="order-details-form "
                         style={{ padding: 0, fontSize: 20 }}
                       >
-                     
-                          <li style={{ fontSize: 15 }}>
-                            <span>Tổng Giá</span>{" "}
-                            <span>
-                              {total.subTotalPrice?.toLocaleString("en-US")} VND
-                            </span>
-                          </li>
-               
-                    
-                          <li style={{ fontSize: 15 }}>
-                            <span>Giá Giảm</span>{" "}
-                            <span>
-                              {total.discountPrice?.toLocaleString("en-US")} Vnd
-                            </span>
-                          </li>
-                   
-                    
-                          <li style={{ fontSize: 15 }}>
-                            <span>Tạm Tính</span>{" "}
-                            <span>
-                              {total.totalCartPrice?.toLocaleString("en-US")} Vnd
-                            </span>
-                          </li>
-                    
+                        <li style={{ fontSize: 15 }}>
+                          <span>Tổng Giá</span>{" "}
+                          <span>
+                            {total.subTotalPrice?.toLocaleString("en-US")} VND
+                          </span>
+                        </li>
+
+                        <li style={{ fontSize: 15 }}>
+                          <span>Giá Giảm</span>{" "}
+                          <span>
+                            {total.discountPrice?.toLocaleString("en-US")} Vnd
+                          </span>
+                        </li>
+
+                        <li style={{ fontSize: 15 }}>
+                          <span>Tạm Tính</span>{" "}
+                          <span>
+                            {total.totalCartPrice?.toLocaleString("en-US")} Vnd
+                          </span>
+                        </li>
                       </ul>
 
                       <a

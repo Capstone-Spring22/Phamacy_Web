@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarManager";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import { getDataByPath, updateDataByPath } from "../../services/data.service";
+import { createDataByPath, getDataByPath, updateDataByPath } from "../../services/data.service";
 
 const UpdateImportProduct = () => {
   const myId = localStorage.getItem("id");
@@ -59,7 +59,21 @@ const UpdateImportProduct = () => {
       }
     }
   }
-
+  async function createNewProductsRelease() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+        const data = { ...product, isReleased: true };
+        const path = "ProductImport";
+        const res = await createDataByPath(path, accessToken, data);
+        console.log("Check res", res);
+        console.log("display du lieu", data);
+        if (res && res.status === 201) {
+          Swal.fire("Create Success", "", "success");
+          // window.location.reload();
+        
+      }
+    }
+  }
   async function loadDataUnit() {
     const path = `Unit?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -433,10 +447,17 @@ const UpdateImportProduct = () => {
                                 <div></div>
                               ) : (
                                 <div className="productimport-border">
-                                  {product.productImportDetails[
-                                    index - 1
-                                  ].productBatches.map((productBatch) => {
-                                    return (
+                                  {Array.from(
+                                    {
+                                      length:
+                                        product.productImportDetails[index - 1]
+                                          .productBatches.length,
+                                    },
+                                    (_, j) => j + 1
+                                  ).map((batchIndex) => (
+                                    <React.Fragment
+                                      key={`${index}-${batchIndex}`}
+                                    >
                                       <div className="productimport">
                                         {" "}
                                         <div
@@ -461,9 +482,16 @@ const UpdateImportProduct = () => {
                                               aria-label="Unit Id"
                                               aria-describedby={`barCode${index}2`}
                                               value={
-                                                productBatch.manufactureDate
+                                                product.productImportDetails[
+                                                  index - 1
+                                                ].productBatches[batchIndex - 1]
+                                                  .manufactureDate
                                                   ? new Date(
-                                                      productBatch.manufactureDate
+                                                      product.productImportDetails[
+                                                        index - 1
+                                                      ].productBatches[
+                                                        batchIndex - 1
+                                                      ].manufactureDate
                                                     )
                                                       .toISOString()
                                                       .slice(0, 10)
@@ -484,7 +512,7 @@ const UpdateImportProduct = () => {
                                                 // : ""
                                               }
                                               onChange={(e) => {
-                                                setProduct({
+                                                setProduct((product) => ({
                                                   ...product,
                                                   productImportDetails: [
                                                     ...product.productImportDetails.slice(
@@ -492,26 +520,25 @@ const UpdateImportProduct = () => {
                                                       index - 1
                                                     ),
                                                     {
-                                                      ...product
-                                                        .productImportDetails[
-                                                        index - 1
-                                                      ],
+                                                      ...product.productImportDetails[index - 1],
                                                       productBatches: [
+                                                        ...product.productImportDetails[
+                                                          index - 1
+                                                        ].productBatches.slice(0, batchIndex - 1),
                                                         {
-                                                          ...product
-                                                            .productImportDetails[
+                                                          ...product.productImportDetails[
                                                             index - 1
-                                                          ].productBatches[0],
-                                                          manufactureDate:
-                                                            e.target.value,
+                                                          ].productBatches[batchIndex - 1],
+                                                          manufactureDate: e.target.value,
                                                         },
+                                                        ...product.productImportDetails[
+                                                          index - 1
+                                                        ].productBatches.slice(batchIndex),
                                                       ],
                                                     },
-                                                    ...product.productImportDetails.slice(
-                                                      index
-                                                    ),
+                                                    ...product.productImportDetails.slice(index),
                                                   ],
-                                                });
+                                                }));
                                               }}
                                             />
                                           </div>
@@ -538,9 +565,16 @@ const UpdateImportProduct = () => {
                                               aria-label="Unit Id"
                                               aria-describedby={`price${index}2`}
                                               value={
-                                                productBatch.expireDate
+                                                product.productImportDetails[
+                                                  index - 1
+                                                ].productBatches[batchIndex - 1]
+                                                  .expireDate
                                                   ? new Date(
-                                                      productBatch.expireDate
+                                                      product.productImportDetails[
+                                                        index - 1
+                                                      ].productBatches[
+                                                        batchIndex - 1
+                                                      ].expireDate
                                                     )
                                                       .toISOString()
                                                       .slice(0, 10)
@@ -561,7 +595,7 @@ const UpdateImportProduct = () => {
                                                 // : ""
                                               }
                                               onChange={(e) => {
-                                                setProduct({
+                                                setProduct((product) => ({
                                                   ...product,
                                                   productImportDetails: [
                                                     ...product.productImportDetails.slice(
@@ -569,26 +603,25 @@ const UpdateImportProduct = () => {
                                                       index - 1
                                                     ),
                                                     {
-                                                      ...product
-                                                        .productImportDetails[
-                                                        index - 1
-                                                      ],
+                                                      ...product.productImportDetails[index - 1],
                                                       productBatches: [
+                                                        ...product.productImportDetails[
+                                                          index - 1
+                                                        ].productBatches.slice(0, batchIndex - 1),
                                                         {
-                                                          ...product
-                                                            .productImportDetails[
+                                                          ...product.productImportDetails[
                                                             index - 1
-                                                          ].productBatches[0],
-                                                          expireDate:
-                                                            e.target.value,
+                                                          ].productBatches[batchIndex - 1],
+                                                          expireDate: e.target.value,
                                                         },
+                                                        ...product.productImportDetails[
+                                                          index - 1
+                                                        ].productBatches.slice(batchIndex),
                                                       ],
                                                     },
-                                                    ...product.productImportDetails.slice(
-                                                      index
-                                                    ),
+                                                    ...product.productImportDetails.slice(index),
                                                   ],
-                                                });
+                                                }));
                                               }}
                                             />
                                           </div>
@@ -615,7 +648,12 @@ const UpdateImportProduct = () => {
                                               placeholder="Phone Number"
                                               aria-label="Phone Number"
                                               aria-describedby="basic-icon-default-email2"
-                                              value={productBatch.quantity}
+                                              value={
+                                                product.productImportDetails[
+                                                  index - 1
+                                                ].productBatches[batchIndex - 1]
+                                                  .quantity
+                                              }
                                               onChange={(e) => {
                                                 setIndexUnit(index);
                                                 setCountQuantity(
@@ -625,29 +663,32 @@ const UpdateImportProduct = () => {
                                                 setProduct({
                                                   ...product,
                                                   productImportDetails: [
-                                                    ...product.productImportDetails.slice(
-                                                      0,
-                                                      index - 1
-                                                    ),
+                                                    ...product.productImportDetails.slice(0, index - 1),
                                                     {
-                                                      ...product
-                                                        .productImportDetails[
-                                                        index - 1
-                                                      ],
+                                                      ...product.productImportDetails[index - 1],
                                                       productBatches: [
+                                                        ...product.productImportDetails[index - 1].productBatches.slice(
+                                                          0,
+                                                          batchIndex - 1
+                                                        ),
                                                         {
-                                                          ...product
-                                                            .productImportDetails[
-                                                            index - 1
-                                                          ].productBatches[0],
-                                                          quantity:
-                                                            e.target.value,
+                                                          ...product.productImportDetails[index - 1].productBatches[
+                                                            batchIndex - 1
+                                                          ],
+                                                          quantity: parseInt(e.target.value),
                                                         },
+                                                        ...product.productImportDetails[index - 1].productBatches.slice(
+                                                          batchIndex
+                                                        ),
                                                       ],
+                                                      quantity: product.productImportDetails[
+                                                        index - 1
+                                                      ].productBatches.reduce(
+                                                        (total, curent) => total + curent.quantity,
+                                                        0
+                                                      ),
                                                     },
-                                                    ...product.productImportDetails.slice(
-                                                      index
-                                                    ),
+                                                    ...product.productImportDetails.slice(index),
                                                   ],
                                                 });
                                               }}
@@ -657,8 +698,8 @@ const UpdateImportProduct = () => {
                                           <div className="form-text"></div>
                                         </div>
                                       </div>
-                                    );
-                                  })}{" "}
+                                    </React.Fragment>
+                                  ))}{" "}
                                 </div>
                               )}
                             </div>
@@ -825,6 +866,7 @@ const UpdateImportProduct = () => {
                     {product.isReleased === true ? (
                       <div></div>
                     ) : (
+                      <div style={{ display: "flex" }}>
                       <button
                         type="submit"
                         className="button-28"
@@ -833,18 +875,39 @@ const UpdateImportProduct = () => {
                           createNewProducts();
                         }}
                         style={{
-                          height: 30,
-                          width: 80,
+                          height: 35,
+                          width: 100,
                           fontSize: 13,
                           paddingTop: 1,
-                          marginLeft: "90%",
+                          marginLeft: "78%",
                           marginTop: "20px",
-                          backgroundColor: "#82AAE3",
+                          backgroundColor: "#DD5353",
                           color: "white",
                         }}
                       >
-                        Lưu
+                        Lưu Nháp
                       </button>
+                      <button
+                      type="submit"
+                      className="button-28"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        createNewProductsRelease();
+                      }}
+                      style={{
+                        height: 35,
+                        width: 100,
+                        fontSize: 13,
+                        paddingTop: 1,
+                        marginLeft: "2%",
+                        marginTop: "20px",
+                        backgroundColor: "#82AAE3",
+                        color: "white",
+                      }}
+                    >
+                      Duyệt
+                    </button>
+                    </div>
                     )}
                   </div>
                 </div>

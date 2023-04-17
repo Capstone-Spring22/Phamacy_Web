@@ -58,7 +58,7 @@ const Sidebar = ({ activeItem }) => {
         }}
       >
         <div className="app-brand demo" style={{ marginLeft: -30 }}>
-          <Link to="/Home" className="app-brand-link" style={{ marginTop: 40 }}>
+          <Link to="/DashBoardOwner" className="app-brand-link" style={{ marginTop: 40 }}>
             <img src={logo} style={{ marginRight: 60 }} />
           </Link>
         </div>

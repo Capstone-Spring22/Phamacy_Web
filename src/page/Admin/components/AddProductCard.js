@@ -1,5 +1,6 @@
 import Select from "react-select";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function AddProductCard({
   options,
@@ -16,7 +17,16 @@ export default function AddProductCard({
   const [currentNumBatches, setCurrentNumBatches] = useState(0);
   const [isBatches, setIsBatches] = useState(false);
   const [options2, setOptions2] = useState([]);
-
+  const [message, setMessage] = useState("");
+  const getMessageAPI = async (productid, quantity) => {
+    if (productid && quantity > 0) {
+      const res = await axios.get(
+        `https://betterhealthapi.azurewebsites.net/api/v1/ProductImport/Message?ProductId=${productid}&Quantity=${quantity}`
+      );
+      setMessage(res.data.templateMessage);
+      console.log("display", res.data.templateMessage);
+    }
+  };
   const handleSelectProduct = (productId) => {
     const isBatch = drug.find((item) => item.id === productId).isBatches;
     setIsBatches(isBatch);
@@ -34,7 +44,25 @@ export default function AddProductCard({
           },
           ...product.productImportDetails.slice(index),
         ],
-      }))
+      }));
+    } else {
+      setProduct((product) => ({
+        ...product,
+        productImportDetails: [
+          ...product.productImportDetails.slice(0, index - 1),
+          {
+            ...product.productImportDetails[index - 1],
+            productBatches: [
+              {
+                quantity: 0,
+                manufactureDate: "",
+                expireDate: "",
+              },
+            ],
+          },
+          ...product.productImportDetails.slice(index),
+        ],
+      }));
     }
   };
 
@@ -43,6 +71,15 @@ export default function AddProductCard({
       product.productImportDetails[index - 1]?.productBatches?.length || 0
     );
   }, [product]);
+  useEffect(() => {
+    getMessageAPI(
+      product.productImportDetails[index - 1].productId,
+      product.productImportDetails[index - 1].quantity
+    );
+  }, [
+    product.productImportDetails[index - 1].productId,
+    product.productImportDetails[index - 1].quantity,
+  ]);
 
   return (
     <div className="card-body" style={{ marginLeft: -30 }}>
@@ -169,6 +206,7 @@ export default function AddProductCard({
               />
             </div>
           </div>
+          {message&&<div>{message}</div>}
           {selectedOption && isBatches && (
             <div className="productimport-border">
               {selectedOption &&

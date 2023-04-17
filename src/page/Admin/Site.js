@@ -18,10 +18,13 @@ const Site = () => {
   const [site, setSite] = useState(null);
   const [city, setCity] = useState([]);
   const [cityID, setCityID] = useState("");
+  const [cityID2, setCityID2] = useState("");
   const [districs, setDistrics] = useState([]);
   const [districtID, setDistrictID] = useState("");
+  const [districtID2, setDistrictID2] = useState("");
   const [ward, setWard] = useState([]);
   const [wardID, setWardID] = useState("");
+  const [wardID2, setWardID2] = useState("");
   const [siteName, setSiteName] = useState("");
   const [description, setDescription] = useState("");
   const [contactInfo, setContactInfo] = useState("");
@@ -152,9 +155,9 @@ const Site = () => {
       description: description,
       contactInfo: contactInfo,
       imageUrl: imageUrl,
-      cityID: cityID,
-      districtID: districtID,
-      wardID: wardID,
+      cityID: cityID2,
+      districtID: districtID2,
+      wardID: wardID2,
       homeAddress: homeAddress,
     };
   };
@@ -181,7 +184,7 @@ const Site = () => {
         if (res && res.status === 201) {
           Swal.fire("Create Success", "", "success");
           deleteForCreate();
-         loadDataSite()
+          loadDataSite();
         }
       }
     }
@@ -272,6 +275,21 @@ const Site = () => {
     event.preventDefault();
     const wardID = event.target.value;
     setWardID(wardID);
+  };
+  const handlecity2 = (event) => {
+    event.preventDefault();
+    const cityID = event.target.value;
+    setCityID2(cityID);
+  };
+  const handleDistrict2 = (event) => {
+    event.preventDefault();
+    const districtID = event.target.value;
+    setDistrictID2(districtID);
+  };
+  const handleWards2 = (event) => {
+    event.preventDefault();
+    const wardID = event.target.value;
+    setWardID2(wardID);
   };
   const [activeItem, setActiveItem] = useState("Site");
   useEffect(() => {
@@ -373,6 +391,7 @@ const Site = () => {
                             backgroundColor: "#82AAE3",
                             color: "white",
                           }}
+                          
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -521,9 +540,9 @@ const Site = () => {
                                                 className="form-control"
                                                 onChange={(e) => {
                                                   setCitySelected(true);
-                                                  handlecity(e);
+                                                  handlecity2(e);
                                                 }}
-                                                value={cityID}
+                                                value={cityID2}
                                               >
                                                 {" "}
                                                 {!citySelected && (
@@ -569,10 +588,10 @@ const Site = () => {
                                                 id="basic-icon-default-email"
                                                 className="form-control"
                                                 onChange={(e) => {
-                                                  handleDistrict(e);
+                                                  handleDistrict2(e);
                                                   setDistrictSelected(true);
                                                 }}
-                                                value={districtID}
+                                                value={districtID2}
                                               >
                                                 {!districtSelected && (
                                                   <option value="">
@@ -614,9 +633,9 @@ const Site = () => {
                                               <select
                                                 id="basic-icon-default-email"
                                                 className="form-control"
-                                                value={wardID}
+                                                value={wardID2}
                                                 onChange={(e) => {
-                                                  handleWards(e);
+                                                  handleWards2(e);
                                                   setWardSelected(true);
                                                 }}
                                               >

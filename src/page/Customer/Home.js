@@ -52,7 +52,6 @@ const Home = () => {
     // history.push("/ViewCart");
   };
 
-
   const userName = localStorage.getItem("userName");
   const roleName = localStorage.getItem("roleName");
 
@@ -244,7 +243,7 @@ const Home = () => {
     fetchChatById();
   }, []);
   useEffect(() => {
-    loadDataMedicineUse();
+    loadDataMedicineUse("");
   }, []);
   useEffect(() => {
     loadDataCategory2();
@@ -285,7 +284,7 @@ const Home = () => {
       setLoading(false);
     });
   }
- 
+
   const [showChat, setShowChat] = useState(false);
   const handleChatToggle = () => {
     setShowChat(!showChat);
@@ -315,7 +314,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-       
+
         <div className="container" style={{ marginTop: 15, marginBottom: 15 }}>
           <div className="d-flex align-items-center justify-content-between">
             <div className="logo">
@@ -382,41 +381,45 @@ const Home = () => {
           </div>
         </div>
       </div>
-      {roleName === "Customer" ? (<div><div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: 30,
-        }}
-      >
-        <div
-          style={{
-            borderBottom: "1px solid black",
-            flexGrow: 1,
+      {roleName === "Customer" ? (
+        <div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: 30,
+            }}
+          >
+            <div
+              style={{
+                borderBottom: "1px solid black",
+                flexGrow: 1,
 
-            marginLeft: 400,
-            marginRight: 50,
-            width: "30%",
-          }}
-        />
-       
-          <div style={{ whiteSpace: "nowrap", fontSize: "20px" }}>
-            Chào Mừng <strong>{userName}</strong> Đã Đến Cửa Hàng
+                marginLeft: 400,
+                marginRight: 50,
+                width: "30%",
+              }}
+            />
+
+            <div style={{ whiteSpace: "nowrap", fontSize: "20px" }}>
+              Chào Mừng <strong>{userName}</strong> Đã Đến Cửa Hàng
+            </div>
+
+            <div
+              style={{
+                borderBottom: "1px solid black",
+                flexGrow: 1,
+                marginLeft: 50,
+                marginRight: 400,
+                width: "30%",
+              }}
+            />
           </div>
-      
-
-        <div
-          style={{
-            borderBottom: "1px solid black",
-            flexGrow: 1,
-            marginLeft: 50,
-            marginRight: 400,
-            width: "30%",
-          }}
-        />
-      </div></div>):(<div></div>)}
-      
+        </div>
+      ) : (
+        <div></div>
+      )}
 
       <div className="site-wrap">
         <div className="carousel-header">
@@ -631,7 +634,7 @@ const Home = () => {
 
               <div className="container " style={{ display: "flex" }}>
                 {drug &&
-                  drug.length &&
+                  drug.length > 0 &&
                   drug.map((item, index) => {
                     return (
                       <Link
@@ -656,11 +659,14 @@ const Home = () => {
                               đ /{item.productUnitReferences[0].unitName}
                             </p>
                           </div>
-                          <p> {item.price === item.priceAfterDiscount ? (
-                                ""
-                              ) : (
-                                <del>{item.price} đ</del>
-                              )}</p>
+                          <p>
+                            {" "}
+                            {item.price === item.priceAfterDiscount ? (
+                              ""
+                            ) : (
+                              <del>{item.price} đ</del>
+                            )}
+                          </p>
                         </div>
                       </Link>
                     );
@@ -684,7 +690,7 @@ const Home = () => {
               <br />
               <div style={{ display: "flex" }}>
                 {userUsages &&
-                  userUsages.length &&
+                  userUsages.length > 0 &&
                   userUsages.map((e, index) => {
                     return (
                       <div
@@ -709,7 +715,7 @@ const Home = () => {
               </div>
               <div className="container " style={{ display: "flex" }}>
                 {drugUserTarget &&
-                  drugUserTarget.length &&
+                  drugUserTarget.length > 0 &&
                   drugUserTarget.map((item, index) => {
                     return (
                       <Link
@@ -733,13 +739,15 @@ const Home = () => {
                               )}{" "}
                               đ /{item.productUnitReferences[0].unitName}
                             </p>
-                            
                           </div>
-                          <p> {item.price === item.priceAfterDiscount ? (
-                                ""
-                              ) : (
-                                <del>{item.price} đ</del>
-                              )}</p>
+                          <p>
+                            {" "}
+                            {item.price === item.priceAfterDiscount ? (
+                              ""
+                            ) : (
+                              <del>{item.price} đ</del>
+                            )}
+                          </p>
                         </div>
                       </Link>
                     );
@@ -762,7 +770,7 @@ const Home = () => {
             <div className="container ">
               <div className="row karl-new-arrivals ">
                 {drug &&
-                  drug.length &&
+                  drug.length > 0 &&
                   drug.map((item, index) => {
                     return (
                       <div

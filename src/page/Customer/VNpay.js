@@ -17,6 +17,10 @@ const VNPay = (props) => {
     localStorage.setItem("id", myId);
     history.push("/ViewOrderDetail");
   };
+  const update1 = (myId) => {
+    localStorage.setItem("id", myId);
+    history.push("/home");
+  };
   const urlParams = new URLSearchParams(window.location.search);
   const vnp_PayDate = urlParams.get("vnp_PayDate");
   const vnp_TransactionNo = urlParams.get("vnp_TransactionNo");
@@ -45,6 +49,13 @@ const VNPay = (props) => {
     },
     orderPickUp: productCheckOut.orderPickUp,
   });
+  async function handleRemoveCart() {
+    const res = await axios.delete(
+      `https://betterhealthapi.azurewebsites.net/api/v1/Cart/${cartID1}`
+    );
+    if (res !== null && res !== undefined && res.status === 200) {
+    }
+  }
   async function Checkout() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -69,17 +80,11 @@ const VNPay = (props) => {
       if (res && res.status === 200) {
         Swal.fire("Create Success", "", "success");
         handleRemoveCart();
-        update(productCheckOut.orderId);
+        update1(productCheckOut.orderId);
       }
     }
   }
-  async function handleRemoveCart() {
-    const res = await axios.delete(
-      `https://betterhealthapi.azurewebsites.net/api/v1/Cart/${cartID1}`
-    );
-    if (res !== null && res !== undefined && res.status === 200) {
-    }
-  }
+
   useEffect(() => {
     if (productCheckOut) {
       console.log(productCheckOut.orderId);

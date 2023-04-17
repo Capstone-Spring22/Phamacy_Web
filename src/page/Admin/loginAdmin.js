@@ -20,6 +20,7 @@ const LoginAdmin = () => {
   const handleLogin = (e) => {
     e.preventDefault();
   };
+
   const [error, setError] = useState("");
   async function loginWithUsernamePassword(username, password) {
     if (!username || !password) {
@@ -77,7 +78,24 @@ const LoginAdmin = () => {
       }
     }
   }
-
+  async function Authen() {
+    if (localStorage && localStorage.getItem("roleID")) {
+      const roleID = localStorage.getItem("roleID");
+      console.log("display", roleID);
+      if (roleID === "Manager") {
+        navigate.push("/DashBoardManager");
+      } else if (roleID === "Pharmacist") {
+        navigate.push("/Order");
+      } else if (roleID === "Admin") {
+        navigate.push("/DashBoardAdmin");
+      } else if (roleID === "Owner") {
+        navigate.push("/DashBoardOwner");
+      }
+    }
+  }
+  useEffect(() => {
+    Authen();
+  }, []);
   return (
     <>
       <>
@@ -187,7 +205,6 @@ const LoginAdmin = () => {
                       </button>
                     </div>
                   </form>
-                 
                 </div>
               </div>
               {/* /Register */}
