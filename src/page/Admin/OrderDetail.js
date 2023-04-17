@@ -51,13 +51,13 @@ const OrderDetail = () => {
       console.log("data", data);
       if (res !== null && res !== undefined && res.status === 200) {
         setIsOpen2(false);
-        
+
         Swal.fire("Thêm Ghi Chú Thành Công", "", "success");
       }
     }
   }
   const handleNoteID = (id) => {
-    setNodeUpdate([{...noteUpdate, orderDetailId: id }]);
+    setNodeUpdate([{ ...noteUpdate, orderDetailId: id }]);
     setIsOpen(true);
   };
   const [activeItem, setActiveItem] = useState("Order");
@@ -69,7 +69,6 @@ const OrderDetail = () => {
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setOrderStatus(res.data);
-     
     }
   }
   useEffect(() => {
@@ -147,8 +146,8 @@ const OrderDetail = () => {
   }
   const productNoteFromPharmacist = ProductDetail.find(
     (product) => product.id === noteUpdate[0].orderDetailId
-  )?.productNoteFromPharmacist
- 
+  )?.productNoteFromPharmacist;
+
   const date = new Date(OrderDetail.createdDate);
 
   const createDateVN = date.toLocaleString("vi-VN", {
@@ -276,41 +275,9 @@ const OrderDetail = () => {
       <div className="layout-container">
         <SideBar activeItem={activeItem} />
 
-        <div
-          className="layout-page"
-          style={{ backgroundColor: "#f4f6fb"}}
-        >
+        <div className="layout-page" style={{ backgroundColor: "#f4f6fb" }}>
           {/* Navbar */}
-          <nav
-            className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
-            id="layout-navbar"
-          >
-            <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
-              <a
-                className="nav-item nav-link px-0 me-xl-4"
-                href="javascript:void(0)"
-              >
-                <i className="bx bx-menu bx-sm" />
-              </a>
-            </div>
-            <div
-              className="navbar-nav-right d-flex align-items-center"
-              id="navbar-collapse"
-            >
-              {/* Search */}
-              <div className="navbar-nav align-items-center">
-                <div className="nav-item d-flex align-items-center">
-                  <i className="bx bx-search fs-4 lh-0" />
-                  <input
-                    type="text"
-                    className="form-control border-0 shadow-none"
-                    placeholder="Search..."
-                    aria-label="Search..."
-                  />
-                </div>
-              </div>
-            </div>
-          </nav>
+
           <div
             className={`dialog overlay ${isOpen2 ? "" : "hidden"}`}
             id="my-dialog2"
@@ -593,7 +560,11 @@ const OrderDetail = () => {
                               placeholder="Viết Mô Tả "
                               aria-label="John Doe"
                               aria-describedby="basic-icon-default-fullname2"
-                              value={productNoteFromPharmacist===""?"":productNoteFromPharmacist}
+                              value={
+                                productNoteFromPharmacist === ""
+                                  ? ""
+                                  : productNoteFromPharmacist
+                              }
                               onChange={(e) =>
                                 setNodeUpdate((prevNote) => [
                                   {
@@ -637,7 +608,7 @@ const OrderDetail = () => {
           </div>
           {/* / Navbar */}
           {/* Content wrapper */}
-          <div style={{ display: "flex", marginLeft: 100  }} >
+          <div style={{ display: "flex", marginLeft: 100 }}>
             <div>
               <div className="content-wrapper">
                 {/* Content */}
@@ -1085,49 +1056,94 @@ const OrderDetail = () => {
                             >
                               <tel>{orderContactInfo.phoneNumber}</tel>
                             </div>
-                            <div className="form-text" style={{ color: "red" }}>
-                              Gọi Khách Hàng Xác Nhận Lại
-                            </div>
+                            {OrderDetail.orderTypeName === "Bán tại chỗ" ? (
+                              <div
+                                className="form-text"
+                                style={{ color: "red" }}
+                              ></div>
+                            ) : (
+                              <div
+                                className="form-text"
+                                style={{ color: "red" }}
+                              >
+                                Gọi Khách Hàng Xác Nhận Lại
+                              </div>
+                            )}
                           </div>
                         </div>
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="basic-icon-default-phone"
-                          >
-                            Email Người mua
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <div
-                              type="text"
-                              style={{ flexWrap: "wrap", width: 220 }}
-                              id="basic-icon-default-fullname"
-                              placeholder="Tên Sản Phẩm"
-                              aria-label="Tên Sản Phẩm"
-                              aria-describedby="basic-icon-default-fullname2"
-                            >
-                              {orderContactInfo.email}
+                        <div>
+                          {OrderDetail.orderTypeName === "Bán tại chỗ" ? (
+                            <div></div>
+                          ) : (
+                            <div>
+                              <div className="mb-3" style={{ width: "95%" }}>
+                                <label
+                                  className="form-label"
+                                  htmlFor="basic-icon-default-phone"
+                                >
+                                  Email Người mua
+                                </label>
+                                <div className="input-group input-group-merge">
+                                  <div
+                                    type="text"
+                                    style={{ flexWrap: "wrap", width: 220 }}
+                                    id="basic-icon-default-fullname"
+                                    placeholder="Tên Sản Phẩm"
+                                    aria-label="Tên Sản Phẩm"
+                                    aria-describedby="basic-icon-default-fullname2"
+                                  >
+                                    {orderContactInfo.email}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="mb-3" style={{ width: "95%" }}>
+                                {OrderDetail.orderTypeName ===
+                                "Đến lấy tại cửa hàng" ? (
+                                  <div>
+                                    {" "}
+                                    <label
+                                      className="form-label"
+                                      htmlFor="basic-icon-default-phone"
+                                    >
+                                      Địa Chỉ Của Cửa Hàng
+                                    </label>
+                                    <div className="input-group input-group-merge">
+                                      <div
+                                        type="text"
+                                        id="basic-icon-default-fullname"
+                                        placeholder="Tên Sản Phẩm"
+                                        aria-label="Tên Sản Phẩm"
+                                        aria-describedby="basic-icon-default-fullname2"
+                                      >
+                                        {orderDelivery?.homeNumber}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div>
+                                    {" "}
+                                    <label
+                                      className="form-label"
+                                      htmlFor="basic-icon-default-phone"
+                                    >
+                                      Địa Chỉ Của Người Mua
+                                    </label>
+                                    <div className="input-group input-group-merge">
+                                      <div
+                                        type="text"
+                                        id="basic-icon-default-fullname"
+                                        placeholder="Tên Sản Phẩm"
+                                        aria-label="Tên Sản Phẩm"
+                                        aria-describedby="basic-icon-default-fullname2"
+                                      >
+                                        {orderDelivery?.homeNumber}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="basic-icon-default-phone"
-                          >
-                            Địa Chỉ Của Người Mua
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <div
-                              type="text"
-                              id="basic-icon-default-fullname"
-                              placeholder="Tên Sản Phẩm"
-                              aria-label="Tên Sản Phẩm"
-                              aria-describedby="basic-icon-default-fullname2"
-                            >
-                              {orderDelivery?.homeNumber}
-                            </div>
-                          </div>
+                          )}
                         </div>
                       </div>
                     </div>

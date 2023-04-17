@@ -46,6 +46,11 @@ import Manufacturer from "./page/Admin/Manufature";
 import DashBoardAdmin from "./page/dashboard/DashBoardAdmin";
 import ViewEmployee from "./page/Admin/ViewEmployee";
 import ProfileOwner from "./page/Profile/ProfileOwner";
+import ProfilePharmacist from "./page/Profile/ProfilePharmacist";
+import ProfileManager from "./page/Profile/ProfileManager";
+import ProfileAdmin from "./page/Profile/ProfileAdmin";
+import ViewDiscount from "./page/Admin/ViewDiscount";
+import DashBoardManager from "./page/dashboard/DashBoardManager";
 function App() {
   return (
     <div className="site-wrap">
@@ -165,6 +170,21 @@ function App() {
           </Route>
           <Route path="/DashBoardAdmin">
             <DashBoardAdmin />
+          </Route>
+          <Route path="/ProfilePharmacist">
+            <ProfilePharmacist />
+          </Route>
+          <Route path="/ProfileManager">
+            <ProfileManager />
+          </Route>
+          <Route path="/ProfileAdmin">
+            <ProfileAdmin />
+          </Route>
+          <Route path="/ViewDiscount">
+            <ViewDiscount />
+          </Route>
+          <Route path="/DashBoardManager">
+            <DashBoardManager />
           </Route>
         </Switch>
       </BrowserRouter>

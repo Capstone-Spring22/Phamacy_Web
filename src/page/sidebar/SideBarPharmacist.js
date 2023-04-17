@@ -27,7 +27,11 @@ const Sidebar = ({ activeItem }) => {
   useEffect(() => {
     loadDataUserByID();
   }, []);
-
+  const myId = localStorage.getItem("userID");
+  const view = (myId) => {
+    localStorage.setItem("userID", myId);
+    navigate.push("/ProfilePharmacist");
+  };
   const handleLogout = async () => {
     try {
       navigate.push("/LoginAdmin");
@@ -60,7 +64,13 @@ const Sidebar = ({ activeItem }) => {
           <span className="menu-header-text"></span>
         </li>
 
-        <div className="header-sidebar">
+        <div
+          className="header-sidebar"
+          onClick={(a) => {
+            a.preventDefault();
+            view(myId);
+          }}
+        >
           {user.imageUrl ? (
             <img className="header-img" src={user.imageUrl} />
           ) : (
@@ -69,6 +79,9 @@ const Sidebar = ({ activeItem }) => {
               src="https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png"
             />
           )}
+           {/* {user && user.fullname && (
+            <div className="header-sidebar-name">{user.fullname}</div>
+          )} */}
         </div>
         <div className="menu-inner-shadow" />
         <ul className="menu-inner py-1">

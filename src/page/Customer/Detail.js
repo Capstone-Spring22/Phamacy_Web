@@ -150,28 +150,18 @@ const DetailMedicine = () => {
       <div className="site-wrap">
         <>
           <Toaster toastOptions={{ duration: 4000 }} />
-          <div className="breadcumb_area">
-            <div className="container">
-              <div className="row">
-                <div className="col-12">
-                  <ol className="breadcrumb d-flex align-items-center">
-                    <li className="breadcrumb-item">
-                      <div href="#">Home</div>
-                    </li>
-                    <li className="breadcrumb-item">
-                      <a
-                        href="#"
-                        style={{ textDecoration: "none", color: "black" }}
-                      >
-                        {subCategoryName}
-                      </a>
-                    </li>
-                    <li className="breadcrumb-item active">{product.name}</li>
-                  </ol>
-                  {/* btn */}
-                  <div href="#" className="backToHome d-block">
-                    <i className="fa fa-angle-double-left" /> Back to Category
-                  </div>
+          <div class="bg-light py-3" style={{ marginBottom: 40 }}>
+            <div class="container">
+              <div class="row">
+                <div class="col-md-12 mb-0">
+                  <a
+                    href="Home"
+                    style={{ textDecoration: "none", color: "black" }}
+                  >
+                    Home
+                  </a>{" "}
+                  <span class="mx-2 mb-0">/</span>{" "}
+                  <strong class="text-black">Detail</strong>
                 </div>
               </div>
             </div>
@@ -279,26 +269,64 @@ const DetailMedicine = () => {
                     </div>
 
                     <div className="widget size mb-50">
-                      <div style={{display:"flex"}}>
-                         <div style={{ color: "#334155",  fontWeight:500, marginRight:10 }}>
-                        Danh Mục: {" "}
+                      <div
+                        style={{
+                          display: "flex",
+                          marginBottom: 20,
+                          width: 650,
+                        }}
+                      >
+                        <div
+                          style={{
+                            color: "#334155",
+                            width: 90,
+                            fontWeight: 500,
+                            marginRight: 18,
+                          }}
+                        >
+                          Danh Mục:{" "}
+                        </div>
+                        <div style={{ color: "#82aae3" }}>
+                          {subCategoryName}
+                        </div>
                       </div>
-                      <div>{subCategoryName}</div>
+                      <div
+                        style={{
+                          display: "flex",
+                          marginBottom: 20,
+                          width: 650,
+                        }}
+                      >
+                        <div
+                          style={{
+                            color: "#334155",
+                            fontWeight: 500,
+                            marginRight: 10,
+                          }}
+                        >
+                          Nhà Sản Xuất:{" "}
+                        </div>
+                        <div>{subManufacturerName}</div>
                       </div>
-                     <div style={{display:"flex"}}>
-                      <div  style={{ color: "#334155",  fontWeight:500, marginRight:10 }}>
-                        Nhà Sản Xuất: {" "}
+                      <div
+                        style={{
+                          display: "flex",
+                          width: 650,
+                          marginBottom: 20,
+                        }}
+                      >
+                        <div
+                          style={{
+                            color: "#334155",
+                            width: 90,
+                            fontWeight: 500,
+                            marginRight: 18,
+                          }}
+                        >
+                          Công dụng:
+                        </div>
+                        <div>{descriptionModels.effect}</div>
                       </div>
-                      <div>{subManufacturerName}</div>
-                     </div>
-                     <div style={{display:"flex"}}>
-                      <div  style={{ color: "#334155",  fontWeight:500, marginRight:10 }}>
-                        Công dụng: {" "}
-                      </div>
-                      <div>{descriptionModels.effect}</div>
-                     </div>
-                      
-                      
                     </div>
 
                     {/* Add to Cart Form */}
@@ -338,82 +366,25 @@ const DetailMedicine = () => {
                     </div>
                   </div>
                 </div>
-                <div id="accordion" role="tablist">
-                  <div className="card" style={{ border: "none" }}>
-                    <div className="card-header" role="tab" id="headingOne">
-                      <h6 className="mb-0">
-                        <div
-                          data-toggle="collapse"
-                          href="#collapseOne"
-                          aria-expanded="true"
-                          aria-controls="collapseOne"
-                        >
-                          Công Dụng
-                        </div>
-                      </h6>
-                    </div>
-                    <div
-                      id="collapseOne"
-                      className="collapse show"
-                      role="tabpanel"
-                      aria-labelledby="headingOne"
-                      data-parent="#accordion"
-                    >
-                      <div className="card-body">
-                        <p>{descriptionModels.effect}</p>
+                <div>
+                  <div className="detail-card">
+                   
+                    <div>
+                      <div className="card-header-detail">
+                        Công Dụng Sản Phẩm
                       </div>
-                    </div>
-                  </div>
-                  <div className="card">
-                    <div className="card-header" role="tab" id="headingOne">
-                      <h6 className="mb-0">
-                        <div
-                          data-toggle="collapse"
-                          href="#collapseOne"
-                          aria-expanded="true"
-                          aria-controls="collapseOne"
-                        >
-                          Công Dụng
-                        </div>
-                      </h6>
-                    </div>
-                    <div
-                      id="collapseOne"
-                      className="collapse show"
-                      role="tabpanel"
-                      aria-labelledby="headingOne"
-                      data-parent="#accordion"
-                    >
-                      <div className="card-body">
-                        <p>{descriptionModels.effect}</p>
+                      <div className="card-body-content">
+                        {descriptionModels.effect}
                       </div>
                     </div>
                   </div>
 
-                  <div className="card">
-                    <div
-                      id="collapseThree"
-                      className="collapse"
-                      role="tabpanel"
-                      aria-labelledby="headingThree"
-                      data-parent="#accordion"
-                    >
-                      <div className="card-body">
-                        <p>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Esse quo sint repudiandae suscipit ab soluta
-                          delectus voluptate, vero vitae, tempore maxime rerum
-                          iste dolorem mollitia perferendis distinctio.
-                          Quibusdam laboriosam rerum distinctio. Repudiandae
-                          fugit odit, sequi id!
-                        </p>
-                        <p>
-                          Lorem ipsum dolor sit amet, consectetur adipisicing
-                          elit. Beatae qui maxime consequatur laudantium
-                          temporibus ad et. A optio inventore deleniti ipsa.
-                        </p>
-                      </div>
-                    </div>
+                  <div>
+                    <table className="table">
+                      <tr>
+                        <th>Thành Phần</th>
+                      </tr>
+                    </table>
                   </div>
                 </div>
               </div>

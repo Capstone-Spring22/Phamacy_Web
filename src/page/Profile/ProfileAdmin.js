@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
-import SideBar from "../sidebar/SideBarOwner";
+import SideBar from "../sidebar/SideBarAdmin";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";
@@ -13,7 +13,7 @@ import {
 } from "../../services/data.service";
 import axios from "axios";
 
-const ProfileOwner = () => {
+const ProfileAdmin = () => {
   const [site, setSite] = useState(null);
   const [siteID, setSiteID] = useState("");
   const [city, setCity] = useState([]);
@@ -955,7 +955,7 @@ const ProfileOwner = () => {
                                 htmlFor="file-input"
                                 className="btn btn-primary"
                               >
-                                Đổi Ảnh
+                                Chọn tệp
                               </label>
                               <input
                                 id="file-input"
@@ -1092,4 +1092,4 @@ const ProfileOwner = () => {
     </>
   );
 };
-export default ProfileOwner;
+export default ProfileAdmin;

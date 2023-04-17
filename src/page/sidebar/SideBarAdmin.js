@@ -27,6 +27,11 @@ const Sidebar = ({ activeItem }) => {
   useEffect(() => {
     loadDataUserByID();
   }, []);
+  const myId = localStorage.getItem("userID");
+  const view = (myId) => {
+    localStorage.setItem("userID", myId);
+    navigate.push("/ProfileAdmin");
+  };
   const handleLogout = async () => {
     try {
       navigate.push("/LoginAdmin");
@@ -54,7 +59,13 @@ const Sidebar = ({ activeItem }) => {
           <span className="menu-header-text">Welcome</span>
         </li>
 
-        <div className="header-sidebar">
+        <div
+          className="header-sidebar"
+          onClick={(a) => {
+            a.preventDefault();
+            view(myId);
+          }}
+        >
           {user.imageUrl ? (
             <img className="header-img" src={user.imageUrl} />
           ) : (
@@ -76,7 +87,11 @@ const Sidebar = ({ activeItem }) => {
           <li className="menu-header small text-uppercase">
             <span className="menu-header-text">Quản Lý</span>
           </li>
-          <li className={`menu-item ${activeItem == "DashBoardAdmin" ? "active" : ""}`}>
+          <li
+            className={`menu-item ${
+              activeItem == "DashBoardAdmin" ? "active" : ""
+            }`}
+          >
             <Link to="DashBoardAdmin" className="menu-link">
               <svg
                 style={{ margin: "5" }}

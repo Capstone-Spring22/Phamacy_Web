@@ -728,7 +728,7 @@ const NewDrug = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-company"
                         >
-                          Công dung
+                          Công dụng
                         </label>
                         <div className="input-group input-group-merge">
                           <textarea

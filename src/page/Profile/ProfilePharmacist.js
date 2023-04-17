@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
-import SideBar from "../sidebar/SideBarOwner";
+import SideBar from "../sidebar/SideBarPharmacist";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";
@@ -13,7 +13,7 @@ import {
 } from "../../services/data.service";
 import axios from "axios";
 
-const ProfileOwner = () => {
+const ProfilePharmacist = () => {
   const [site, setSite] = useState(null);
   const [siteID, setSiteID] = useState("");
   const [city, setCity] = useState([]);
@@ -392,12 +392,13 @@ const ProfileOwner = () => {
 
           <div
             className="layout-page"
-            style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
+            style={{ backgroundColor: "#f4f6fb" }}
           >
             {/* Navbar */}
             <nav
               className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
               id="layout-navbar"
+              style={{marginLeft:100}}
             >
               <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
                 <a
@@ -955,7 +956,7 @@ const ProfileOwner = () => {
                                 htmlFor="file-input"
                                 className="btn btn-primary"
                               >
-                                Đổi Ảnh
+                                Chọn tệp
                               </label>
                               <input
                                 id="file-input"
@@ -1092,4 +1093,4 @@ const ProfileOwner = () => {
     </>
   );
 };
-export default ProfileOwner;
+export default ProfilePharmacist;

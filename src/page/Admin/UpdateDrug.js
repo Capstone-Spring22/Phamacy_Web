@@ -4,11 +4,7 @@ import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import {
-  getDataByPath,
-  updateDataByPath,
-
-} from "../../services/data.service";
+import { getDataByPath, updateDataByPath } from "../../services/data.service";
 import axios from "axios";
 const UpdateDrug = () => {
   const myId = localStorage.getItem("id");
@@ -23,7 +19,6 @@ const UpdateDrug = () => {
 
   const [unit, setUnit] = useState([]);
   const [unit2, setUnit2] = useState([]);
-
 
   const [isBatches, setIsBatches] = useState(false);
   const [isPrescription, setIsPrescription] = useState(false);
@@ -161,11 +156,11 @@ const UpdateDrug = () => {
   };
   const [userUsage, setUserUsage] = useState([]);
   const userUsages = [
-    { name: "trẻ em", value: 1 },
-    { name: "người lớn", value: 2 },
-    { name: "người cao tuổi", value: 3 },
-    { name: "phụ nữ cho con bú", value: 4 },
-    { name: "mọi lứa tuổi", value: "" },
+    { name: "Trẻ em", value: 1 },
+    { name: "Người lớn", value: 2 },
+    { name: "Người cao tuổi", value: 3 },
+    { name: "Phụ nữ cho con bú", value: 4 },
+    { name: "Mọi lứa tuổi", value: "" },
   ];
   const handlePrescriptionChange = (event) => {
     setIsPrescription(event.target.checked);
@@ -203,7 +198,7 @@ const UpdateDrug = () => {
       const res = await updateDataByPath(path, accessToken, data);
       // console.log("display", data.homeAddress);
       if (res && res.status === 200) {
-        Swal.fire("Update successfully!", "", "success");
+        Swal.fire("Cập Nhật Sản Phẩm Thành Công", "", "success");
       }
     }
   }
@@ -349,7 +344,6 @@ const UpdateDrug = () => {
                 </div>
               </div>
               {/* /Search */}
-             
             </div>
           </nav>
 
@@ -554,7 +548,6 @@ const UpdateDrug = () => {
                           onChange={handleBatchChange}
                           className="form-check-input"
                           type="checkbox"
-                        
                           id="inlineCheckbox2"
                           defaultValue="option2"
                           style={{
@@ -563,7 +556,7 @@ const UpdateDrug = () => {
                             backgroundColor: "#86a8c5",
                             borderColor: "#86a8c5",
                           }}
-                          disabled 
+                          disabled
                         />
                         <label
                           className="form-check-label"
@@ -579,26 +572,6 @@ const UpdateDrug = () => {
                     <div className="col-md"></div>
                   </div>
 
-                  <button
-                    type="submit"
-                    className="button-28"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      updateProducts();
-                    }}
-                    style={{
-                      height: 30,
-                      width: 80,
-                      fontSize: 13,
-                      paddingTop: 1,
-                      marginLeft: "90%",
-                      marginTop: "20px",
-                      backgroundColor: "#11cdef",
-                      color: "white",
-                    }}
-                  >
-                    Save
-                  </button>
                 </div>
               </div>
             </div>
@@ -618,7 +591,7 @@ const UpdateDrug = () => {
                     borderColor: "#f4f4f4",
                   }}
                 >
-                  <h5 className="mb-0">Thêm Công Dụng Cho Sản Phẩm</h5>
+                  <h5 className="mb-0">Cập Nhật Mô Tả Sản Phẩm</h5>
                 </div>{" "}
                 <div className="card-body">
                   <div
@@ -633,14 +606,14 @@ const UpdateDrug = () => {
                         className="form-label"
                         htmlFor="basic-icon-default-company"
                       >
-                        Công dung
+                        Công Dụng
                       </label>
                       <div className="input-group input-group-merge">
                         <textarea
                           type="text"
                           id="basic-icon-default-company"
                           className="form-control"
-                          placeholder="Công dung"
+                          placeholder="Công dụng"
                           aria-label="Công dung"
                           aria-describedby="basic-icon-default-company2"
                           value={product.descriptionModel.effect}
@@ -908,7 +881,7 @@ const UpdateDrug = () => {
                               />
                             </div>
                           </div>
-                        
+
                           <div
                             className="mb-3"
                             style={{ width: "20%", marginRight: 20 }}
@@ -1092,7 +1065,7 @@ const UpdateDrug = () => {
                                 className="form-check-label"
                                 htmlFor={`isSell${index}`}
                               >
-                                For sale
+                                Cho Bán
                               </label>
                             </div>
                           </div>
@@ -1470,8 +1443,30 @@ const UpdateDrug = () => {
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </div> <button
+                    type="submit"
+                    className="button-28"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      updateProducts();
+                    }}
+                    style={{
+                      height: 35,
+                        width: 100,
+                        fontSize: 13,
+                        paddingTop: 1,
+                        marginLeft: "90%",
+                        marginTop: "-40px",
+                        backgroundColor: "#82AAE3",
+                        color: "white",
+                        marginBottom: 30,
+                    }}
+                  >
+                    Lưu
+                  </button>
                 </div>
+                
+               
               </div>
             </div>
           </div>

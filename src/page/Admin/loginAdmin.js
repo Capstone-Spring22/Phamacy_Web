@@ -63,13 +63,13 @@ const LoginAdmin = () => {
           console.log("ss", jwtDecode(res.data.token));
 
           if (roleID === "Manager") {
-            navigate.push("/ImportProduct");
+            navigate.push("/DashBoardManager");
           } else if (roleID === "Pharmacist") {
             navigate.push("/Order");
           } else if (roleID === "Admin") {
-            navigate.push("/Employees");
+            navigate.push("/DashBoardAdmin");
           } else if (roleID === "Owner") {
-            navigate.push("/Drug");
+            navigate.push("/DashBoardOwner");
           }
         }
       } else {

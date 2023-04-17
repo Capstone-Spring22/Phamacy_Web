@@ -394,7 +394,7 @@ const NewEmployees = () => {
                       </label>
                       <div className="input-group input-group-merge">
                         <input
-                          type="text"
+                          type="number"
                           id="basic-icon-default-email"
                           className="form-control"
                           placeholder="Số điện thoại"

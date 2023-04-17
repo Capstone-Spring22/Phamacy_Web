@@ -103,7 +103,7 @@ const MainCategory = () => {
     }
   }
   async function createNewURLAdd(e) {
-    if (checkValidation()) {
+   
       const file = e.target.files[0];
       const data = new FormData();
       data.append("file", file);
@@ -117,7 +117,7 @@ const MainCategory = () => {
       if (res && res.status === 200) {
         setImageUrl(res.data);
       }
-    }
+    
   }
   const dataForCreate = () => {
      console.log('imageUrl',imageUrl)
@@ -293,6 +293,18 @@ const MainCategory = () => {
                                 </div>
                                 <div className="card-body">
                                   <form>
+                                  {imageUrl && (
+                                          <img
+                                            style={{
+                                              height: 200,
+                                              width: 200,
+                                              objectFit: "cover",
+                                              marginLeft:300,
+                                              marginTop:10
+                                            }}
+                                            src={imageUrl}
+                                          />
+                                        )}
                                     <div
                                       style={{
                                         display: "grid",
@@ -358,14 +370,7 @@ const MainCategory = () => {
                                             aria-describedby="basic-icon-default-company2"
                                           />
                                         </div>
-                                        <img
-                                          style={{
-                                            height: 200,
-                                            width: 200,
-                                            objectFit: "cover",
-                                          }}
-                                          src={imageUrl}
-                                        />
+                                     
                                       </div>
                                     </div>
 
@@ -418,6 +423,16 @@ const MainCategory = () => {
                                 </div>
                                 <div className="card-body">
                                   <form>
+                                  <img
+                                          style={{
+                                            height: 200,
+                                            width: 200,
+                                            objectFit: "cover",
+                                            marginLeft:300,
+                                            marginTop:10
+                                          }}
+                                          src={categoryUpdate.imageUrl}
+                                        />
                                     <div
                                       style={{
                                         display: "grid",
@@ -425,6 +440,7 @@ const MainCategory = () => {
                                         padding: 30,
                                       }}
                                     >
+                                      
                                       <div
                                         className="mb-3"
                                         style={{ width: "95%" }}
@@ -476,14 +492,7 @@ const MainCategory = () => {
                                             aria-describedby="basic-icon-default-company2"
                                           />
                                         </div>
-                                        <img
-                                          style={{
-                                            height: 200,
-                                            width: 200,
-                                            objectFit: "cover",
-                                          }}
-                                          src={categoryUpdate.imageUrl}
-                                        />
+                                        
                                       </div>
                                     </div>
 

@@ -21,9 +21,16 @@ const ProductDiscount = () => {
 
     history.push("/UpdateDiscount");
   };
+  
+  const view = (myId) => {
+    localStorage.setItem("id", myId);
+
+    history.push("/ViewDiscount");
+  };
   const create = () => {
     history.push("/NewDiscount");
   };
+  
 
   async function loadDataMedicine() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -283,7 +290,7 @@ const ProductDiscount = () => {
                                             role="button"
                                             href="#my-dialog2"
                                             onClick={() => {
-                                              update(e.id);
+                                              view(e.id);
                                             }}
                                           >
                                             <svg

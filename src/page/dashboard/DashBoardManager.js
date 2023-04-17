@@ -1,159 +1,544 @@
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import SideBar from "../sidebar/SideBarManager";
+
+import ReactPaginate from "react-paginate";
+import axios from "axios";
+import {
+  getDataByPath,
+  createDataByPath,
+  updateDataByPath,
+} from "../../services/data.service";
+import laptop from "../../assets/laptop.png";
 import { useHistory } from "react-router-dom";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { getDataByPath, deleteDataByPath } from "../../services/data.service";
-import "../../assets/css/core.css";
-import { Link } from "react-router-dom";
-import logo from "../../assets/BH.png";
-const Sidebar = ({ activeItem }) => {
-  const navigate = useHistory();
+import { Switch } from "antd";
 
-  const [user, setUser] = useState([]);
+const DashBoardManager = () => {
+  const [drug, setDrug] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(3);
+  const [totalRecord, setTotalRecord] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  let history = useHistory();
 
-  async function loadDataUserByID() {
+  const update = (myId) => {
+    localStorage.setItem("id", myId);
+    history.push("/UpdateImportProduct");
+  };
+  const view = (myId) => {
+    localStorage.setItem("id", myId);
+    history.push("/ViewImportProduct");
+  };
+  const create = () => {
+    history.push("/AddImportProduct");
+  };
+  const [countUs, setCountUs] = useState("2");
+  async function loadDataMedicine() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-
-      console.log("localStorage", localStorage);
-      const path = `User/${localStorage.userID}`;
+      const path = `ProductImport?pageIndex=${currentPage}&pageItems=${perPage}`;
       const res = await getDataByPath(path, accessToken, "");
-      console.log("res", res.data.username);
-      console.log("user", user);
+      console.log("display", res);
       if (res !== null && res !== undefined && res.status === 200) {
-        setUser(res.data);
+        setDrug(res.data.items);
+        setTotalRecord(res.data.totalRecord);
+        console.log("display", currentPage);
+      }
+    }
+    setIsLoading(false);
+  }
+  async function ReleaseImport(id) {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const data = { id: id };
+      const path = `ProductImport/Release`;
+      const res = await updateDataByPath(path, accessToken, data);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setCountUs(parseInt(countUs) + 1);
+        Swal.fire("Update successfully!", "", "success");
+      } else if (res && res.status === 400) {
+        Swal.fire("Đã Xác Nhận Không Thể Sửa", "Không Thể Sửa", "error");
       }
     }
   }
+  const [activeItem, setActiveItem] = useState("DashBoardManager");
   useEffect(() => {
-    loadDataUserByID();
-  }, []);
-  const handleLogout = async () => {
-    try {
-      navigate.push("/LoginAdmin");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("roleID");
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+    loadDataMedicine();
+  }, [currentPage, perPage, countUs]);
   return (
     <>
-      <aside
-        id="layout-menu"
-        className="layout-menu menu-vertical menu bg-menu-theme"
-        style={{ backgroundColor: "#ffffff", position: "fixed", height: 1000 }}
-      >
-        <div className="app-brand demo" style={{ marginLeft: -30 }}>
-          <Link to="/Home" className="app-brand-link" style={{ marginTop: 40 }}>
-            <img src={logo} style={{ marginRight: 60 }} />
-          </Link>
-        </div>
-        <br />
-        <li className="menu-header small text-uppercase">
-          <span className="menu-header-text">Welcome</span>
-        </li>
+      <div className="layout-wrapper layout-content-navbar">
+        <div className="layout-container">
+          <SideBar activeItem={activeItem} />
 
-        <div className="header-sidebar">
-          {user.imageUrl ? (
-            <img className="header-img" src={user.imageUrl} />
-          ) : (
-            <img
-              className="header-img"
-              src="https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png"
-            />
-          )}
-          {user && user.fullname && (
-            <div className="header-sidebar-name">{user.fullname}</div>
-          )}
-        </div>
-        <div className="menu-inner-shadow" />
-        <ul className="menu-inner py-1">
-          {/* Dashboard */}
-
-          {/* Layouts */}
-
-          <li className="menu-header small text-uppercase">
-            <span className="menu-header-text">Quản Lý</span>
-          </li>
-          <li className={`menu-item ${activeItem == "DashBoardAdmin" ? "active" : ""}`}>
-            <Link to="DashBoardAdmin" className="menu-link">
-              <svg
-                style={{ margin: "5" }}
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-house"
-                viewBox="0 0 16 16"
-              >
-                <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z" />
-              </svg>
-              <div data-i18n="Analytics">Dashboard</div>
-            </Link>
-          </li>
-          <li
-            className={`menu-item ${activeItem == "Employees" ? "active" : ""}`}
+          <div
+            className="layout-page"
+            style={{ backgroundColor: "#f4f6fb", marginLeft: 260 }}
           >
-            <Link to="/Employees" className="menu-link">
-              <svg
-                style={{ margin: "5" }}
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-person"
-                viewBox="0 0 16 16"
+            {/* Navbar */}
+            <nav
+              className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+              id="layout-navbar"
+            >
+              <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                <a
+                  className="nav-item nav-link px-0 me-xl-4"
+                  href="javascript:void(0)"
+                >
+                  <i className="bx bx-menu bx-sm" />
+                </a>
+              </div>
+              <div
+                className="navbar-nav-right d-flex align-items-center"
+                id="navbar-collapse"
               >
-                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z" />
-              </svg>
-              <div data-i18n="Support">Nhân Viên</div>
-            </Link>
-          </li>
+                {/* Search */}
+                <div className="navbar-nav align-items-center">
+                  <div className="nav-item d-flex align-items-center">
+                    <i className="bx bx-search fs-4 lh-0" />
+                    
+                  </div>
+                </div>
+                {/* /Search */}
+                <ul className="navbar-nav flex-row align-items-center ms-auto">
+                  {/* Place this tag where you want the button to render. */}
+              
+                  {/* User */}
+                  <li className="nav-item navbar-dropdown dropdown-user dropdown">
+                    <a
+                      className="nav-link dropdown-toggle hide-arrow"
+                      href="javascript:void(0);"
+                      data-bs-toggle="dropdown"
+                    >
+                      <div className="avatar avatar-online">
+                        <img
+                          src="../assets/img/avatars/1.png"
+                          alt=""
+                          className="w-px-40 h-auto rounded-circle"
+                        />
+                      </div>
+                    </a>
+                    <ul className="dropdown-menu dropdown-menu-end">
+                      <li>
+                        <a className="dropdown-item" href="#">
+                          <div className="d-flex">
+                            <div className="flex-shrink-0 me-3">
+                              <div className="avatar avatar-online">
+                                <img
+                                  src="../assets/img/avatars/1.png"
+                                  alt=""
+                                  className="w-px-40 h-auto rounded-circle"
+                                />
+                              </div>
+                            </div>
+                            <div className="flex-grow-1">
+                              <span className="fw-semibold d-block">
+                                John Doe
+                              </span>
+                              <small className="text-muted">Admin</small>
+                            </div>
+                          </div>
+                        </a>
+                      </li>
+                      <li>
+                        <div className="dropdown-divider" />
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="#">
+                          <i className="bx bx-user me-2" />
+                          <span className="align-middle">My Profile</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="#">
+                          <i className="bx bx-cog me-2" />
+                          <span className="align-middle">Settings</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="#">
+                          <span className="d-flex align-items-center align-middle">
+                            <i className="flex-shrink-0 bx bx-credit-card me-2" />
+                            <span className="flex-grow-1 align-middle">
+                              Billing
+                            </span>
+                            <span className="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">
+                              4
+                            </span>
+                          </span>
+                        </a>
+                      </li>
+                      <li>
+                        <div className="dropdown-divider" />
+                      </li>
+                      <li>
+                        <a
+                          className="dropdown-item"
+                          href="auth-login-basic.html"
+                        >
+                          <i className="bx bx-power-off me-2" />
+                          <span className="align-middle">Log Out</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                  {/*/ User */}
+                </ul>
+              </div>
+            </nav>
+            {/* / Navbar */}
+            {/* Content wrapper */}
+            <div className="content-wrapper">
+              {/* Content */}
+              <div className="container-xxl flex-grow-1 container-p-y">
+                <div className="row">
+                  <div className="col-lg-8 mb-4 order-0">
+                    <div
+                      className="card"
+                      style={{ width: 770, marginLeft: 29,height:175 }}
+                    >
+                      <div className="d-flex align-items-end row">
+                        <div className="col-sm-7">
+                          <div className="card-body">
+                            <h5 className="card-title text-primary">Welcome</h5>
+                            <p className="mb-4">
+                              You have done <span className="fw-bold">72%</span>{" "}
+                              more sales today. Check your new badge in your
+                              profile.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="col-sm-5 text-center text-sm-left">
+                          <div className="card-body pb-0 px-0 px-md-4">
+                            <img
+                              src={laptop}
+                              style={{ height: 150 }}
+                              alt="View Badge User"
+                              data-app-dark-img="illustrations/man-with-laptop-dark.png"
+                              data-app-light-img="illustrations/man-with-laptop-light.png"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-lg-4 col-md-4 order-1">
+                    <div className="row">
+                      <div className="col-lg-11 col-md-12 col-6 mb-4">
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="card-title d-flex align-items-start justify-content-between">
+                              <div className="avatar flex-shrink-0">
+                                <div className="rounded">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    class="bi bi-capsule"
+                                    viewBox="0 0 16 16"
+                                  >
+                                    <path d="M1.828 8.9 8.9 1.827a4 4 0 1 1 5.657 5.657l-7.07 7.071A4 4 0 1 1 1.827 8.9Zm9.128.771 2.893-2.893a3 3 0 1 0-4.243-4.242L6.713 5.429l4.243 4.242Z" />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                            <span className="fw-semibold d-block mb-1">
+                              Tổng Sản Phẩm
+                            </span>
+                            <h3 className="card-title mb-2">{totalRecord}</h3>
+                            <small
+                              className=" fw-semibold"
+                              style={{ color: "#abc8f0" }}
+                            >
+                              Xem Thêm
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                     
+                    </div>
+                  </div>
+                  {/* Total Revenue */}
+                  <div className="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
+                    {/* Basic Bootstrap Table */}
+                    <div
+                      className="card"
+                      style={{
+                        backgroundColor: "#ffffff",
+                        width: 1160,
+                        marginLeft: 29,
+                        borderRadius: 5,
+                        border: "none",
+                      }}
+                    >
+                      <div style={{ display: "flex" }}>
+                        <h5
+                          className="card-header"
+                          style={{
+                            padding: "20px 21px",
+                            backgroundColor: "#ffffff",
+                            borderColor: "white",
+                          }}
+                        >
+                          <h3 className="fontagon">Nhập Sản Phẩm</h3>
+                        </h5>
 
-          <li className={`menu-item ${activeItem == "Site" ? "active" : ""}`}>
-            <Link to="/Site" className="menu-link">
-              <svg
-                style={{ margin: "5" }}
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-hospital"
-                viewBox="0 0 16 16"
-              >
-                <path d="M8.5 5.034v1.1l.953-.55.5.867L9 7l.953.55-.5.866-.953-.55v1.1h-1v-1.1l-.953.55-.5-.866L7 7l-.953-.55.5-.866.953.55v-1.1h1ZM13.25 9a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5ZM13 11.25a.25.25 0 0 1 .25-.25h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5a.25.25 0 0 1-.25-.25v-.5Zm.25 1.75a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5Zm-11-4a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5A.25.25 0 0 0 3 9.75v-.5A.25.25 0 0 0 2.75 9h-.5Zm0 2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h.5a.25.25 0 0 0 .25-.25v-.5a.25.25 0 0 0-.25-.25h-.5ZM2 13.25a.25.25 0 0 1 .25-.25h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5a.25.25 0 0 1-.25-.25v-.5Z" />
-                <path d="M5 1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1a1 1 0 0 1 1 1v4h3a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h3V3a1 1 0 0 1 1-1V1Zm2 14h2v-3H7v3Zm3 0h1V3H5v12h1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3Zm0-14H6v1h4V1Zm2 7v7h3V8h-3Zm-8 7V8H1v7h3Z" />
-              </svg>
-              <div data-i18n="Support">Danh Sách Chi Nhánh</div>
-            </Link>
-          </li>
-          <li className="menu-item" onClick={() => handleLogout()}>
-            <Link className="menu-link">
-              <svg
-                style={{ margin: "5" }}
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-box-arrow-right"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"
-                />
-                <path
-                  fill-rule="evenodd"
-                  d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"
-                />
-              </svg>
+                        <>
+                          <a
+                            className=" button-28"
+                            href="#my-dialog"
+                            onClick={create}
+                            style={{
+                              height: 30,
+                              width: 80,
+                              fontSize: 13,
+                              paddingTop: 5,
+                              marginLeft: "74%",
+                              marginTop: "20px",
+                              backgroundColor: "#82AAE3",
+                              color: "white",
+                            }}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="13"
+                              height="13"
+                              fill="currentColor"
+                              class="bi bi-plus-square"
+                              viewBox="0 0 16 16"
+                            >
+                              <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                            &nbsp; Thêm
+                          </a>
+                        </>
+                      </div>
 
-              <div data-i18n="Support">Logout</div>
-            </Link>
-          </li>
-        </ul>
-      </aside>
+                      <div className="table-responsive ">
+                      <table className="table">
+                              <thead
+                                style={{
+                                  backgroundColor: "#f6f9fc",
+                                  borderColor: "white",
+                                  color: "",
+                                }}
+                              >
+                                <tr>
+                                  <th
+                                    style={{
+                                      backgroundColor: "#f6f9fc",
+                                      borderColor: "white",
+                                      color: "#bfc8d3",
+                                    }}
+                                  >
+                                    &nbsp; &nbsp;Tên Quản Lý
+                                  </th>
+                                  <th
+                                    style={{
+                                      backgroundColor: "#f6f9fc",
+                                      borderColor: "white",
+                                      color: "#bfc8d3",
+                                    }}
+                                  >
+                                    Ngày Nhập
+                                  </th>
+                                  <th
+                                    style={{
+                                      backgroundColor: "#f6f9fc",
+                                      borderColor: "white",
+                                      color: "#bfc8d3",
+                                    }}
+                                  >
+                                    Tổng Giá
+                                  </th>
+
+                                  <th
+                                    style={{
+                                      backgroundColor: "#f6f9fc",
+                                      borderColor: "white",
+                                      color: "#bfc8d3",
+                                    }}
+                                  >
+                                    Cập Nhật
+                                  </th>
+                                  <th
+                                    style={{
+                                      backgroundColor: "#f6f9fc",
+                                      borderColor: "white",
+                                      color: "#bfc8d3",
+                                    }}
+                                  >
+                                    Xác Nhận
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody className="table-border-bottom-0">
+                                {drug &&
+                                  drug.length &&
+                                  drug.map((e) => {
+                                    return (
+                                      <tr key={e.id}>
+                                        <td
+                                          style={{
+                                            width: 10,
+                                            whiteSpace: "nowrap",
+                                            overFlow: "hidden",
+                                            textOverflow: "ellipsis",
+                                          }}
+                                        >
+                                          &nbsp; &nbsp;{e.managerName}
+                                        </td>
+                                        <td>
+                                          {new Date(
+                                            e.importDate
+                                          ).toLocaleString("vi-VN", {
+                                            timeZone: "Asia/Ho_Chi_Minh",
+                                          })}
+                                        </td>
+                                        <td>
+                                          {e.totalPrice.toLocaleString("en-US")}{" "}
+                                          đ
+                                        </td>
+                                        <td>
+                                          {e.isReleased === true ? (
+                                            <a
+                                              class="button-81"
+                                              role="button"
+                                              href="#my-dialog2"
+                                              onClick={() => {
+                                                view(e.id);
+                                              }}
+                                            >
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="16"
+                                                height="16"
+                                                fill="currentColor"
+                                                class="bi bi-eye"
+                                                viewBox="0 0 16 16"
+                                              >
+                                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
+                                              </svg>
+                                            </a>
+                                          ) : (
+                                            <a
+                                              class="button-81"
+                                              role="button"
+                                              href="#my-dialog2"
+                                              onClick={() => {
+                                                update(e.id);
+                                              }}
+                                            >
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="16"
+                                                height="16"
+                                                fill="currentColor"
+                                                class="bi bi-pencil-square"
+                                                viewBox="0 0 16 16"
+                                              >
+                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                <path
+                                                  fill-rule="evenodd"
+                                                  d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                                                />
+                                              </svg>
+                                            </a>
+                                          )}
+                                        </td>
+                                        <td>
+                                          <Switch
+                                            checked={e.isReleased}
+                                            onChange={async () => {
+                                              ReleaseImport(e.id);
+                                            }}
+                                          />
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                              </tbody>
+                            </table>
+
+                        <ReactPaginate
+                          className="pagination "
+                          breakLabel="..."
+                          nextLabel=">"
+                          previousLabel="< "
+                          nextClassName="next-button"
+                          pageClassName="page-item"
+                          activeClassName="ac"
+                          previousClassName="previous-button"
+                          pageCount={totalRecord / perPage}
+                          onPageChange={(e) => setCurrentPage(e.selected + 1)}
+                          currentPage={currentPage}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  {/*/ Total Revenue */}
+                
+                </div>
+              </div>
+              {/* / Content */}
+              {/* Footer */}
+              <footer className="content-footer footer bg-footer-theme">
+                <div className="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                  <div className="mb-2 mb-md-0">
+                    © , made with ❤️ by
+                    <a
+                      href="https://themeselection.com"
+                      target="_blank"
+                      className="footer-link fw-bolder"
+                    >
+                      ThemeSelection
+                    </a>
+                  </div>
+                  <div>
+                    <a
+                      href="https://themeselection.com/license/"
+                      className="footer-link me-4"
+                      target="_blank"
+                    >
+                      License
+                    </a>
+                    <a
+                      href="https://themeselection.com/"
+                      target="_blank"
+                      className="footer-link me-4"
+                    >
+                      More Themes
+                    </a>
+                    <a
+                      href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
+                      target="_blank"
+                      className="footer-link me-4"
+                    >
+                      Documentation
+                    </a>
+                    <a
+                      href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
+                      target="_blank"
+                      className="footer-link me-4"
+                    >
+                      Support
+                    </a>
+                  </div>
+                </div>
+              </footer>
+              {/* / Footer */}
+              <div className="content-backdrop fade" />
+            </div>
+            {/* Content wrapper */}
+          </div>
+
+          <div className="layout-overlay layout-menu-toggle" />
+        </div>
+      </div>
     </>
   );
 };
-export default Sidebar;
+export default DashBoardManager;

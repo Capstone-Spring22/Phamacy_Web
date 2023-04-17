@@ -123,7 +123,7 @@ const SiteOwner = () => {
       const data = dataForUpdate();
       const path = `Site`;
       const res = await updateDataByPath(path, accessToken, data);
-      // console.log("display", data.homeAddress);
+       console.log('data',data)
       if (res && res.status === 200) {
         Swal.fire("Update successfully!", "", "success");
         window.location.reload();

@@ -23,7 +23,7 @@ import {
   deleteDataByPath,
   createDataByPath,
 } from "../../services/data.service";
-import logo from "../../assets/BH2.png";
+import logo from "../../assets/BH3.png";
 import { CATEGORIES, ListNewProduct } from "../Data";
 import { toast, Toaster } from "react-hot-toast";
 const Home = () => {
@@ -31,8 +31,9 @@ const Home = () => {
   let history = useHistory();
   const [loading, setLoading] = useState(false);
   const [drug, setDrug] = useState(null);
+  const [drugUserTarget, setDrugUserTarget] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(12);
+  const [perPage, setPerPage] = useState(6);
   const [totalRecord, setTotalRecord] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [category, setCategory] = useState([]);
@@ -51,13 +52,7 @@ const Home = () => {
     // history.push("/ViewCart");
   };
 
-  const viewDetail = (detailId) => {
-    localStorage.setItem("detailId", detailId);
-    history.push("/ViewDetail");
-  };
-  const viewProduct = (categoryID) => {
-    history.push("/Medicine", categoryID);
-  };
+
   const userName = localStorage.getItem("userName");
   const roleName = localStorage.getItem("roleName");
 
@@ -71,6 +66,26 @@ const Home = () => {
       console.log("display", currentPage);
     }
   }
+  const userUsages = [
+    { name: "Mọi lứa tuổi", value: "" },
+    { name: "Trẻ em", value: 1 },
+    { name: "Người lớn", value: 2 },
+    { name: "Người cao tuổi", value: 3 },
+    { name: "Phụ nữ cho con bú", value: 4 },
+    { name: "Phụ nữ", value: 5 },
+  ];
+
+  async function loadDataMedicineUse(userUsagesActive) {
+    const path = `Product?isSellFirstLevel=true&userTarget=${userUsagesActive}&pageIndex=${currentPage}&pageItems=${perPage}`;
+    const res = await getDataByPath(path, "", "");
+    console.log("display", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setDrugUserTarget(res.data.items);
+      setTotalRecord(res.data.totalRecord);
+      console.log("display", currentPage);
+    }
+  }
+
   async function loadDataCategory2() {
     const path = `MainCategory?pageIndex=${1}&pageItems=${12}`;
     const res = await getDataByPath(path, "", "");
@@ -111,29 +126,29 @@ const Home = () => {
   let buttonLogout;
   if (roleName === "Customer") {
     buttonLogout = (
-      <li>
+      <div className="button-login">
         <Link activeClassName="active" onClick={handleLogout}>
-          <span>Logout</span>
+          <span style={{ color: "white" }}>Đăng Xuất</span>
         </Link>
-      </li>
+      </div>
     );
   } else {
     buttonLogout = (
-      <li>
+      <div className="button-login">
         <Link activeClassName="active" to="/Login">
-          <span>login</span>
+          <span style={{ color: "white" }}>Đăng Nhập</span>
         </Link>
-      </li>
+      </div>
     );
   }
   let buttonHistory;
   if (roleName === "Customer") {
     buttonHistory = (
-      <li>
+      <div className="button-login" style={{ marginRight: 10 }}>
         <Link activeClassName="active" to="/HistoryOrder">
-          <span>View History</span>
+          <span style={{ color: "white" }}>Lịch Sử Đơn</span>
         </Link>
-      </li>
+      </div>
     );
   }
   async function fetchChatById() {
@@ -172,6 +187,7 @@ const Home = () => {
 
     setLoading(false);
   }
+
   const handleClickCount = () => {
     setCountUs(parseInt(countUs) + 1);
   };
@@ -228,6 +244,9 @@ const Home = () => {
     fetchChatById();
   }, []);
   useEffect(() => {
+    loadDataMedicineUse();
+  }, []);
+  useEffect(() => {
     loadDataCategory2();
   }, []);
 
@@ -266,35 +285,7 @@ const Home = () => {
       setLoading(false);
     });
   }
-  async function addToCart(productId) {
-    if (localStorage && localStorage.getItem("accessToken")) {
-      const accessToken = localStorage.getItem("accessToken");
-      if (checkValidation()) {
-        const deviceId = await axios
-          .get("https://api.ipify.org/?format=json")
-          .then((res) => res.data.ip);
-        update(deviceId);
-        setProduct({
-          deviceId,
-          item: {
-            productId,
-            quantity:
-              product.item.productId === productId
-                ? product.item.quantity + 1
-                : 1,
-          },
-        });
-        const path = "Cart";
-        const res = await createDataByPath(path, accessToken, product);
-        console.log("Check res", res);
-        console.log("display du lieu", product);
-        if (res && res.status === 200) {
-          toast.success("OTP sended successfully!");
-          // window.location.reload();
-        }
-      }
-    }
-  }
+ 
   const [showChat, setShowChat] = useState(false);
   const handleChatToggle = () => {
     setShowChat(!showChat);
@@ -304,9 +295,10 @@ const Home = () => {
     loadDataMedicine();
   }, [currentPage, perPage]);
   const handleDragStart = (e) => e.preventDefault();
+  const [activeIndex, setActiveIndex] = useState(0);
   return (
     <>
-      <div className="site-navbar py-2">
+      <div className="site-navbar py-2" style={{ backgroundColor: "#e6eeff" }}>
         <div className="search-wrap">
           <div className="container">
             <div className="search-box">
@@ -323,8 +315,8 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <Toaster toastOptions={{ duration: 4000 }} />
-        <div className="container">
+       
+        <div className="container" style={{ marginTop: 15, marginBottom: 15 }}>
           <div className="d-flex align-items-center justify-content-between">
             <div className="logo">
               <div
@@ -341,157 +333,139 @@ const Home = () => {
                 className="site-navigation text-right text-md-center"
                 role="navigation"
               >
-                <ul
-                  className="site-menu js-clone-nav d-none d-lg-block"
-                  style={{ marginLeft: -30 }}
-                >
-                  <li className="active">
-                    <Link activeClassName="active" to="/Home" exact>
-                      <span>Home</span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link activeClassName="active" to="/Medicine">
-                      <span>Store</span>
-                    </Link>
-                  </li>
-
-                  {buttonHistory}
-
-                  {buttonLogout}
-                </ul>
+                <div style={{ position: "relative", width: "700px" }}>
+                  <input className="search-home" placeholder="Tìm Kiếm Thuốc" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    height="24"
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      right: "120px",
+                      transform: "translateY(-50%)",
+                    }}
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M21.707 20.293l-4.95-4.95C17.396 14.208 18 12.708 18 11c0-4.411-3.589-8-8-8S2 6.589 2 11s3.589 8 8 8c1.708 0 3.208-.604 4.343-1.643l4.95 4.95a1 1 0 001.414-1.414zM4 11c0-3.309 2.691-6 6-6s6 2.691 6 6-2.691 6-6 6-6-2.691-6-6z"
+                    />
+                  </svg>
+                </div>
               </nav>
             </div>
-            <div className="icons">
-              <div>{userName}</div>
-              <Link
-                to="#"
-                className="icons-btn d-inline-block js-search-open"
-              ></Link>
-              <div className="search-box icons-btn d-inline-block js-search-open">
-                <button className="btn-search">
-                  <span className="icon-search" />
-                </button>
-                <input
-                  type="text"
-                  className="input-search"
-                  placeholder="Type to Search..."
-                  style={{ color: "black" }}
-                />
-              </div>
+            <div className="icons" style={{ display: "flex" }}>
+              {buttonHistory}
+
+              {buttonLogout}
 
               {/* <button onClick={laydata}>Lây data</button> */}
-
-              <Link to="/ViewCart" className="icons-btn d-inline-block bag">
-                <span className="icon-shopping-bag" />
-                <span className="number">2</span>
-              </Link>
-              <Link
-                href="#"
-                className="site-menu-toggle js-menu-toggle ml-3 d-inline-block d-lg-none"
-              >
-                <span className="icon-menu" />
-              </Link>
+              <div className="button-cart">
+                <Link
+                  to="/ViewCart"
+                  className="icons-btn  "
+                  style={{ display: "flex" }}
+                >
+                  <div>
+                    <span
+                      className="icon-shopping-bag"
+                      style={{ color: "white" }}
+                    />
+                  </div>
+                  <div style={{ marginTop: "10px", color: "white" }}>
+                    Giỏ Hàng
+                  </div>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      {roleName === "Customer" ? (<div><div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: 30,
+        }}
+      >
+        <div
+          style={{
+            borderBottom: "1px solid black",
+            flexGrow: 1,
+
+            marginLeft: 400,
+            marginRight: 50,
+            width: "30%",
+          }}
+        />
+       
+          <div style={{ whiteSpace: "nowrap", fontSize: "20px" }}>
+            Chào Mừng <strong>{userName}</strong> Đã Đến Cửa Hàng
+          </div>
+      
+
+        <div
+          style={{
+            borderBottom: "1px solid black",
+            flexGrow: 1,
+            marginLeft: 50,
+            marginRight: 400,
+            width: "30%",
+          }}
+        />
+      </div></div>):(<div></div>)}
+      
 
       <div className="site-wrap">
-        <Carousel fade>
-          <Carousel.Item interval={2000}>
-            <img
-              className="d-block w-100"
-              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1678849856-VRaS-hang-nhat-t3.png"
-              style={{ height: 400 }}
-              alt="First slide"
-            />
-          </Carousel.Item>
-          <Carousel.Item interval={5000}>
-            <img
-              className="d-block w-100 "
-              style={{ height: 400 }}
-              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1677150972-hsMN-cam-cum.png"
-              alt="Second slide"
-            />
-          </Carousel.Item>
-          <Carousel.Item interval={8000}>
-            <img
-              className="d-block w-100"
-              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1679725085-Ha7S-phong-benh-sot-xuat-huyet.png"
-              style={{ height: 400 }}
-              alt="Third slide"
-            />
-          </Carousel.Item>
-        </Carousel>
-
-        <div className="site-section" style={{ marginBottom: -111 }}>
-          <div className="container">
-            <div className="title-section text-center col-12">
-              <h2 className="text-uppercase" style={{}}>
-                Mua Thuốc Dễ Dàng{" "}
-              </h2>
+        <div className="carousel-header">
+          <Carousel fade>
+            <Carousel.Item interval={2000}>
+              <img
+                className="d-block w-100"
+                src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1678849856-VRaS-hang-nhat-t3.png"
+                style={{ height: 260, borderRadius: 10 }}
+                alt="First slide"
+              />
+            </Carousel.Item>
+            <Carousel.Item interval={5000}>
+              <img
+                className="d-block w-100 "
+                style={{ height: 260, borderRadius: 10 }}
+                src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1677150972-hsMN-cam-cum.png"
+                alt="Second slide"
+              />
+            </Carousel.Item>
+            <Carousel.Item interval={8000}>
+              <img
+                className="d-block w-100"
+                src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1679725085-Ha7S-phong-benh-sot-xuat-huyet.png"
+                style={{ height: 260, borderRadius: 10 }}
+                alt="Third slide"
+              />
+            </Carousel.Item>
+          </Carousel>
+          <div>
+            <div className="carousel-left">
+              <img
+                className="d-block w-100"
+                src="https://data-service.pharmacity.io/pmc-ecm-webapp-config-api/production/banner/392x134-1681377061965.png"
+                style={{ height: 125, borderRadius: 10 }}
+                alt="Third slide"
+              />
             </div>
-            <section class="ftco-section ftco-no-pt ftco-no-pb">
-              <div class="container">
-                <div class="row no-gutters ftco-services">
-                  <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
-                    <div class="media block-6 services p-4 py-md-5">
-                      <div class="media-body">
-                        <div class="icon d-flex justify-content-center align-items-center mb-4">
-                          <img
-                            src="https://nhathuoclongchau.com/frontend_v3/images/banner-html/home/chuptoathuoc.png"
-                            style={{ height: 100, width: 100 }}
-                          />
-                        </div>
-                        <h3 class="heading">
-                          {" "}
-                          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                          &nbsp; &nbsp; &nbsp;PHOTOGRAPHY OF MEDICINE
-                        </h3>
-                        <p>simple & fast</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
-                    <div class="media block-6 services p-4 py-md-5">
-                      <div class="media-body">
-                        <div class="icon d-flex justify-content-center align-items-center mb-4">
-                          <img
-                            src="https://nhathuoclongchau.com/frontend_v3/images/banner-html/home/info-ct.png"
-                            style={{ height: 100, width: 100 }}
-                          />
-                        </div>
-                        <h3 class="heading">
-                          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ENTER CONTACT
-                          INFORMATION &nbsp; &nbsp; &nbsp;
-                          &nbsp;&nbsp;&nbsp;&nbsp;
-                        </h3>
-                        <p>for ordering advice</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
-                    <div class="media block-6 services p-4 py-md-5">
-                      <div class="media-body">
-                        <div class="icon d-flex justify-content-center align-items-center mb-4">
-                          <img
-                            src="https://nhathuoclongchau.com/frontend_v3/images/banner-html/home/duoc-sy.png"
-                            style={{ height: 100, width: 100 }}
-                          />
-                        </div>
-                        <h3 class="heading">
-                          GET A PRICE FROM THE PHARMACEUTICAL
-                        </h3>
-                        <p>Free consultation included</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <div className="carousel-left-2">
+              <img
+                className="d-block w-100"
+                src="https://cdn.tgdd.vn/2023/03/banner/Banner-slide---CS-Ca-Nhan---Selsun---592x182-592x182.png"
+                style={{ height: 125, borderRadius: 10 }}
+                alt="Third slide"
+              />
+            </div>
           </div>
         </div>
+
         <button onClick={handleChatToggle} className="button-open-chat">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -590,7 +564,7 @@ const Home = () => {
               {category.map((item, index) => {
                 return (
                   <Link
-                  to={`/Medicine/${item.id}`}
+                    to={`/Medicine/${item.id}`}
                     // onClick={() => {
                     //   viewProduct(item.id);
                     // }}
@@ -642,97 +616,138 @@ const Home = () => {
           </div>
         </div>
 
-        <section class="new_arrivals_area section_padding_10_0 clearfix">
-          <div className="container">
-            <div className="row">
-              <div className=" col-12">
-                <h3 className="" style={{ marginLeft: 20 }}>
-                  Sản Phẩm Mới
-                </h3>
+        <div className="form-product-new">
+          {" "}
+          <section class="new_arrivals_area section_padding_10_0 clearfix">
+            <div className="container">
+              <div className="row">
+                <div className=" col-12">
+                  <h3 className="" style={{ marginLeft: 20, marginTop: 20 }}>
+                    Sản Phẩm Mới
+                  </h3>
+                </div>
               </div>
-            </div>
-            <br />
+              <br />
 
-            <div className="container ">
-              <div className="row karl-new-arrivals ">
+              <div className="container " style={{ display: "flex" }}>
                 {drug &&
                   drug.length &&
                   drug.map((item, index) => {
                     return (
-                      <div
-                        className=" col-md-2 single_gallery_item women wow fadeInUpBig "
-                        data-wow-delay="0.2s"
+                      <Link
+                        className="product-card"
+                        key={item.id}
+                        to={`/ViewDetail/${item.id}`}
                       >
-                        {/* Product Image */}
-                        <Link
-                         to={`/ViewDetail/${item.id}`}
-                          className="product-img"
-                          style={{ borderRadius: 5 }}
-                          // onClick={() => {
-                          //   viewDetail(item.id);
-                          // }}
-                        >
-                          <img
-                            src={item.imageModel.imageURL}
-                            alt=""
-                            style={{ objectFit: "cover", height: 250 }}
-                          />
-                          <div className="product-quicview">
-                            <a
-                              href="#"
-                              data-toggle="modal"
-                              data-target="#quickview"
-                            >
-                              <BsPlus style={{ marginBottom: 10 }} />
-                            </a>
+                        <img
+                          src={item.imageModel.imageURL}
+                          className="product-img-new"
+                          alt="Product Image"
+                        />
+                        <div className="product-info">
+                          {" "}
+                          <h2 className="product-name">{item.name}</h2>
+                          <div style={{ display: "flex" }}>
+                            <p className="product-price">
+                              {" "}
+                              {item.priceAfterDiscount.toLocaleString(
+                                "en-US"
+                              )}{" "}
+                              đ /{item.productUnitReferences[0].unitName}
+                            </p>
                           </div>
-                        </Link>
-
-                        {/* Product Description */}
-                        <div className="product-description">
-                          <p style={{ height: 90 }}>{item.name}</p>
-                          <h4
-                            className="product-price"
-                            style={{ color: "#82aae3" }}
-                          >
-                            {" "}
-                            {item.price.toLocaleString("en-US")} đ
-                          </h4>
-                          {/* Add to Cart */}
+                          <p> {item.price === item.priceAfterDiscount ? (
+                                ""
+                              ) : (
+                                <del>{item.price} đ</del>
+                              )}</p>
                         </div>
+                      </Link>
+                    );
+                  })}
+              </div>
+              {/* <button to="/medicine" className="button-redirect"> Xem Thêm</button> */}
+            </div>
+          </section>
+        </div>
+        <div className="form-product-new-blue">
+          {" "}
+          <section class="new_arrivals_area section_padding_10_0 clearfix">
+            <div className="container">
+              <div className="row">
+                <div className=" col-12">
+                  <h3 className="" style={{ marginLeft: 20, marginTop: 20 }}>
+                    Theo Đối Tượng
+                  </h3>
+                </div>
+              </div>
+              <br />
+              <div style={{ display: "flex" }}>
+                {userUsages &&
+                  userUsages.length &&
+                  userUsages.map((e, index) => {
+                    return (
+                      <div
+                        onClick={() => {
+                          {
+                            loadDataMedicineUse(e.value);
+                          }
+                          setActiveIndex(index);
+                        }}
+                        className={` ${
+                          activeIndex === index
+                            ? "button-user-target-active"
+                            : "button-user-target"
+                        }`}
+                        style={{ display: "flex" }}
+                      >
+                        {" "}
+                        {e.name}
                       </div>
                     );
                   })}
               </div>
+              <div className="container " style={{ display: "flex" }}>
+                {drugUserTarget &&
+                  drugUserTarget.length &&
+                  drugUserTarget.map((item, index) => {
+                    return (
+                      <Link
+                        className="product-card"
+                        key={item.id}
+                        to={`/ViewDetail/${item.id}`}
+                      >
+                        <img
+                          src={item.imageModel.imageURL}
+                          className="product-img-new"
+                          alt="Product Image"
+                        />
+                        <div className="product-info">
+                          {" "}
+                          <h2 className="product-name">{item.name}</h2>
+                          <div style={{ display: "flex" }}>
+                            <p className="product-price">
+                              {" "}
+                              {item.priceAfterDiscount.toLocaleString(
+                                "en-US"
+                              )}{" "}
+                              đ /{item.productUnitReferences[0].unitName}
+                            </p>
+                            
+                          </div>
+                          <p> {item.price === item.priceAfterDiscount ? (
+                                ""
+                              ) : (
+                                <del>{item.price} đ</del>
+                              )}</p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+              </div>
             </div>
-          </div>
-        </section>
-        <Carousel fade>
-          <Carousel.Item interval={1000}>
-            <img
-              className="d-block w-100"
-              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1676971969-r79p-co-qua-anh-duoc-ve-nha-8-3.png"
-              style={{ height: 400 }}
-              alt="First slide"
-            />
-          </Carousel.Item>
-          <Carousel.Item interval={500}>
-            <img
-              className="d-block w-100 "
-              style={{ height: 400 }}
-              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1677728079-Ssmc-brauer-tang-de-khang.png"
-              alt="Second slide"
-            />
-          </Carousel.Item>
-          <Carousel.Item>
-            <img
-              className="d-block w-100"
-              src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1678076840-UxPd-sua-abbott.png"
-              style={{ height: 400 }}
-              alt="Third slide"
-            />
-          </Carousel.Item>
-        </Carousel>
+          </section>
+        </div>
         <section class="new_arrivals_area section_padding_100_0 clearfix">
           <div className="container">
             <div className="row">
@@ -756,7 +771,7 @@ const Home = () => {
                       >
                         {/* Product Image */}
                         <Link
-                        to={`/ViewDetail/${item.id}`}
+                          to={`/ViewDetail/${item.id}`}
                           className="product-img"
                           style={{ borderRadius: 5 }}
                           // onClick={() => {
@@ -789,8 +804,8 @@ const Home = () => {
                             style={{ color: "#82aae3" }}
                           >
                             {" "}
-                            {item.priceAfterDiscount.toLocaleString("en-US")} đ /
-                            {item.productUnitReferences[0].unitName}
+                            {item.priceAfterDiscount.toLocaleString("en-US")} đ
+                            /{item.productUnitReferences[0].unitName}
                             <td>
                               {item.price === item.priceAfterDiscount ? (
                                 ""

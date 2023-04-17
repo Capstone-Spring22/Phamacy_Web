@@ -11,12 +11,13 @@ import {
   updateDataByPath,
 } from "../../services/data.service";
 import ReactPaginate from "react-paginate";
+import { useHistory } from "react-router-dom";
 
 const UpdateDiscount = () => {
   const myId = localStorage.getItem("id");
 
   const [unitCount, setUnitCount] = useState(1);
- 
+  let history = useHistory();
   const [productIngredient, setProductIngredient] = useState([]);
  
   const [currentPage, setCurrentPage] = useState(1);
@@ -69,7 +70,7 @@ const UpdateDiscount = () => {
         console.log("display du lieu", data);
         if (res && res.status === 200) {
           Swal.fire("Update Success", "", "success");
-          // window.location.reload();
+         history.push("/ProductDiscount")
         } else {
           Swal.fire("như lol đây là bản nháp", "You failed!", "error");
         }
@@ -185,14 +186,14 @@ const UpdateDiscount = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-fullname"
                         >
-                          Tên
+                          Tên Chương Trình
                         </label>
                         <div className="input-group input-group-merge">
                           <input
                             type="text"
                             className="form-control"
                             id="basic-icon-default-fullname"
-                            placeholder="Tên Sản Phẩm"
+                            placeholder="Tên Chương Trình"
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
                             value={product.title}

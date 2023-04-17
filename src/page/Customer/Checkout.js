@@ -362,6 +362,7 @@ const Home = (props) => {
         usingPoint: product.usedPoint,
       }
     );
+     console.log('res',res)
     if (res && res.status === 200) {
       setcCountAddress(parseInt(countAddress) + 1);
     }

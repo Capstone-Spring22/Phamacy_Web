@@ -5,79 +5,75 @@ import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import { getDataByPath, createDataByPath } from "../../services/data.service";
+import { getDataByPath, updateDataByPath } from "../../services/data.service";
+import ReactPaginate from "react-paginate";
 
-import Select from "react-select";
-const NewDiscount = () => {
+const ViewDiscount = () => {
+  const myId = localStorage.getItem("id");
+
   const [unitCount, setUnitCount] = useState(1);
+
+  const [productIngredient, setProductIngredient] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
-  const [totalRecord, setTotalRecord] = useState([]);
-  const [drug, setDrug] = useState([]);
   const [product, setProduct] = useState({
+    id: "",
     title: "",
     reason: "",
-    discountPercent: "",
-    discountMoney: "",
+    discountPercent: 0,
+    discountMoney: 0,
     startDate: "",
     endDate: "",
-    products: [
-      {
-        productId: "",
-      },
-    ],
   });
-  const [discountType, setDiscountType] = useState("percent");
-  const discountOptions = [
-    { value: "percent", label: "Giảm giá theo %" },
-    { value: "money", label: "Giảm giá theo tiền" },
-  ];
+
+  async function loadDataImportProductByID() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `ProductDiscount/${myId}`;
+      const res = await getDataByPath(path, accessToken, "");
+
+      if (res !== null && res !== undefined && res.status === 200) {
+        setProduct(res.data);
+        setUnitCount(res.data.products.length);
+      }
+    }
+  }
+
+  async function loadDataProductIngredient() {
+    const path = `ProductIngredient?pageIndex=${currentPage}&pageItems=${perPage}`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setProductIngredient(res.data.items);
+    }
+  }
+
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
       if (checkValidation()) {
         const data = product;
         const path = "ProductDiscount";
-        const res = await createDataByPath(path, accessToken, data);
+        const res = await updateDataByPath(path, accessToken, data);
         console.log("Check res", res);
         console.log("display du lieu", data);
-        if (res && res.status === 201) {
-          Swal.fire("Create Success", "", "success");
+        if (res && res.status === 200) {
+          Swal.fire("Update Success", "", "success");
           // window.location.reload();
+        } else {
+          Swal.fire("như lol đây là bản nháp", "You failed!", "error");
         }
       }
     }
   }
-  async function loadDataDrug() {
-    if (localStorage && localStorage.getItem("accessToken")) {
-      const accessToken = localStorage.getItem("accessToken");
-      const path = `Product?pageIndex=${currentPage}&pageItems=${perPage}`;
-      const res = await getDataByPath(path, accessToken, "");
-      console.log("display", res);
-      if (res !== null && res !== undefined && res.status === 200) {
-        setDrug(res.data.items);
-        setTotalRecord(res.data.totalRecord);
-        console.log("display", currentPage);
-      }
-    }
-  }
+
   const checkValidation = () => {
-    const discountPercent = parseInt(product.discountPercent);
-    if (discountPercent > 50) {
-      Swal.fire("Không Được Giảm Quá 50%", "", "question");
-      return false;
-    }
+    // if (id.trim() === "") {
+    //   Swal.fire("ID Can't Empty", "", "question");
+    //   return false;
+    // }
     return true;
   };
-  useEffect(() => {
-    loadDataDrug();
-  }, []);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const options = drug.map((e) => ({
-    label: e.name,
-    value: e.id,
-  }));
   const handleAddUnit = () => {
     setProduct({
       ...product,
@@ -90,20 +86,14 @@ const NewDiscount = () => {
     });
     setUnitCount(unitCount + 1);
   };
-  const handleDiscountTypeChange = (selectedOption) => {
-    setDiscountType(selectedOption.value);
-    if (selectedOption.value === "percent") {
-      setProduct((prevState) => ({
-        ...prevState,
-        discountMoney: "",
-      }));
-    } else if (selectedOption.value === "money") {
-      setProduct((prevState) => ({
-        ...prevState,
-        discountPercent: "",
-      }));
-    }
-  };
+
+  useEffect(() => {
+    loadDataProductIngredient();
+  }, []);
+  useEffect(() => {
+    loadDataImportProductByID();
+  }, []);
+
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
@@ -165,7 +155,7 @@ const NewDiscount = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Thêm Chương Trình Giảm Giá</h5>
+                    <h5 className="mb-0">Xem Thông Tin Giảm Giá</h5>
                   </div>
                   <div className="card-body">
                     <div
@@ -187,9 +177,15 @@ const NewDiscount = () => {
                             type="text"
                             className="form-control"
                             id="basic-icon-default-fullname"
-                            placeholder=" Tên Chương Trình"
+                            placeholder="Tên Sản Phẩm"
+                            disabled
+                            style={{
+                              border: "none",
+                              backgroundColor: "white",
+                            }}
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
+                            value={product.title}
                             onChange={(e) =>
                               setProduct((prevState) => ({
                                 ...prevState,
@@ -204,16 +200,22 @@ const NewDiscount = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-company"
                         >
-                          Lí Do
+                          reason
                         </label>
                         <div className="input-group input-group-merge">
                           <input
                             type="text"
                             id="basic-icon-default-company"
                             className="form-control"
-                            placeholder=" Lí Do"
+                            disabled
+                            style={{
+                              border: "none",
+                              backgroundColor: "white",
+                            }}
+                            placeholder="Tên Loại Con Sản Phẩm"
                             aria-label="Tên Loại Con Sản Phẩm"
                             aria-describedby="basic-icon-default-company2"
+                            value={product.reason}
                             onChange={(e) =>
                               setProduct((prevState) => ({
                                 ...prevState,
@@ -223,61 +225,27 @@ const NewDiscount = () => {
                           />
                         </div>
                       </div>
-                 
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label className="form-label" htmlFor="discount-type">
-                           Chọn Loại Giảm Giá 
-                          </label>
-                          <Select
-                            id="discount-type"
-                            options={discountOptions}
-                            defaultValue={discountOptions[0]}
-                            onChange={handleDiscountTypeChange}
-                            
-                          />
-                        </div>
-
-                        {discountType === "percent" && (
-                          <div className="mb-3" style={{ width: "95%" }}>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        {product.discountMoney === 0  ? (
+                          <div>
                             <label
                               className="form-label"
-                              htmlFor="discount-percent"
-                            >
-                              Giảm giá (%)
-                            </label>
-                            <div className="input-group input-group-merge">
-                              <input
-                                type="text"
-                                name="discount-percent"
-                                placeholder="Giảm giá (%)"
-                                id="discount-percent"
-                                className="form-control"
-                                onChange={(e) =>
-                                  setProduct((prevState) => ({
-                                    ...prevState,
-                                    discountPercent: e.target.value,
-                                  }))
-                                }
-                              />
-                            </div>
-                          </div>
-                        )}
-
-                        {discountType === "money" && (
-                          <div className="mb-3" style={{ width: "95%" }}>
-                            <label
-                              className="form-label"
-                              htmlFor="discount-money"
+                              htmlFor="basic-icon-default-phone"
                             >
                               Số tiền giảm
                             </label>
                             <div className="input-group input-group-merge">
                               <input
                                 type="text"
-                                name="discount-money"
-                                placeholder="Số tiền giảm"
-                                id="discount-money"
+                                name="city"
+                                disabled
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "white",
+                                }}
+                                id="basic-icon-default-email"
                                 className="form-control"
+                                value={product.discountMoney}
                                 onChange={(e) =>
                                   setProduct((prevState) => ({
                                     ...prevState,
@@ -287,8 +255,37 @@ const NewDiscount = () => {
                               />
                             </div>
                           </div>
+                        ) : (
+                            <div>
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-phone"
+                            >
+                              Giảm Giá (%)
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <input
+                                type="text"
+                                name="city"
+                                disabled
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "white",
+                                }}
+                                id="basic-icon-default-email"
+                                className="form-control"
+                                value={product.discountPercent}
+                                onChange={(e) =>
+                                  setProduct((prevState) => ({
+                                    ...prevState,
+                                    discountPercent: e.target.value,
+                                  }))
+                                }
+                              />
+                            </div>
+                          </div> 
                         )}
-                   
+                      </div>
 
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
@@ -300,10 +297,22 @@ const NewDiscount = () => {
                         <div className="input-group input-group-merge">
                           <input
                             type="date"
+                            disabled
+                            style={{
+                              border: "none",
+                              backgroundColor: "white",
+                            }}
                             id="basic-icon-default-company"
                             className="form-control"
                             placeholder="Công dung"
                             aria-label="Công dung"
+                            value={
+                              product.startDate
+                                ? new Date(product.startDate)
+                                    .toISOString()
+                                    .substr(0, 10)
+                                : ""
+                            }
                             aria-describedby="basic-icon-default-company2"
                             onChange={(e) =>
                               setProduct((prevState) => ({
@@ -328,6 +337,18 @@ const NewDiscount = () => {
                             className="form-control"
                             placeholder="Công dung"
                             aria-label="Công dung"
+                            disabled
+                            style={{
+                              border: "none",
+                              backgroundColor: "white",
+                            }}
+                            value={
+                              product.endDate
+                                ? new Date(product.endDate)
+                                    .toISOString()
+                                    .substr(0, 10)
+                                : ""
+                            }
                             aria-describedby="basic-icon-default-company2"
                             onChange={(e) =>
                               setProduct((prevState) => ({
@@ -339,126 +360,7 @@ const NewDiscount = () => {
                         </div>
                       </div>
                     </div>
-
-                    <button
-                      type="submit"
-                      className="button-28"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        createNewProducts();
-                      }}
-                      style={{
-                        height: 30,
-                        width: 80,
-                        fontSize: 13,
-                        paddingTop: 1,
-                        marginLeft: "90%",
-                        marginTop: "20px",
-                        backgroundColor: "#82AAE3",
-                        color: "white",
-                      }}
-                    >
-                      Lưu
-                    </button>
                   </div>
-                </div>
-              </div>
-            </div>
-            <div
-              className="row "
-              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
-            >
-              <div className="col-xl">
-                <div className="card mb-4">
-                  <div
-                    className="card-header d-flex justify-content-between align-items-center"
-                    style={{
-                      height: 70,
-                      backgroundColor: "white",
-                      padding: "20px 24px",
-                      borderColor: "#f4f4f4",
-                    }}
-                  >
-                    <h5 className="mb-0">Thêm Sản phẩm </h5>
-                  </div>{" "}
-                  {Array.from({ length: unitCount }, (_, i) => i + 1).map(
-                    (index) => {
-                      return (
-                        <div className="card-body" style={{ marginLeft: -30 }}>
-                          <div key={index}>
-                            <div
-                              style={{
-                                display: "flex",
-                                marginLeft: 100,
-                                padding: 30,
-                                flexWrap: "wrap",
-                              }}
-                            >
-                              <div
-                                className="mb-3"
-                                style={{ width: "30%", marginRight: 20 }}
-                              >
-                                <label
-                                  className="form-label"
-                                  htmlFor="basic-icon-default-phone"
-                                >
-                                  Id sản phẩm
-                                </label>
-
-                                <Select
-                                  onChange={(selectedOption) => {
-                                    setSelectedOption(selectedOption);
-                                    setProduct({
-                                      ...product,
-                                      products: [
-                                        ...product.products.slice(0, index - 1),
-                                        {
-                                          ...product.products[index - 1],
-                                          productId: selectedOption.value,
-                                        },
-                                        ...product.products.slice(index),
-                                      ],
-                                    });
-                                  }}
-                                  options={options}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <hr />
-                        </div>
-                      );
-                    }
-                  )}
-                  <button
-                    className="button-28"
-                    style={{
-                      height: 50,
-                      width: 200,
-                      fontSize: 13,
-                      paddingTop: 1,
-                      marginLeft: "44%",
-                      marginBottom: "20px",
-                      backgroundColor: "#fff",
-                    }}
-                    onClick={handleAddUnit}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      class="bi bi-plus-lg"
-                      viewBox="0 0 16 16"
-                      style={{ marginRight: 10 }}
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
-                      />
-                    </svg>{" "}
-                    Thêm Sản phẩm
-                  </button>
                 </div>
               </div>
             </div>
@@ -469,4 +371,4 @@ const NewDiscount = () => {
     </div>
   );
 };
-export default NewDiscount;
+export default ViewDiscount;

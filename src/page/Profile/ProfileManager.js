@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Swal from "sweetalert2";
-import SideBar from "../sidebar/SideBarOwner";
+import SideBar from "../sidebar/SideBarManager";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";
@@ -13,7 +13,7 @@ import {
 } from "../../services/data.service";
 import axios from "axios";
 
-const ProfileOwner = () => {
+const ProfileManager = () => {
   const [site, setSite] = useState(null);
   const [siteID, setSiteID] = useState("");
   const [city, setCity] = useState([]);
@@ -1092,4 +1092,4 @@ const ProfileOwner = () => {
     </>
   );
 };
-export default ProfileOwner;
+export default ProfileManager;

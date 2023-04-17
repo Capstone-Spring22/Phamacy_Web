@@ -275,6 +275,18 @@ const SubCategory = () => {
                                 </div>
                                 <div className="card-body">
                                   <form>
+                                  {imageUrl && (
+                                          <img
+                                            style={{
+                                              height: 200,
+                                              width: 200,
+                                              objectFit: "cover",
+                                              marginLeft:300,
+                                              marginTop:10
+                                            }}
+                                            src={imageUrl}
+                                          />
+                                        )}
                                     <div
                                       style={{
                                         display: "grid",
@@ -332,14 +344,8 @@ const SubCategory = () => {
                                             }}
                                           />
                                         </div>
-                                        <img
-                                          style={{
-                                            height: 200,
-                                            width: 200,
-                                            objectFit: "cover",
-                                          }}
-                                          src={imageUrl}
-                                        />
+                                      
+                                         
                                       </div>
                                       <div
                                         className="mb-3"
@@ -358,7 +364,7 @@ const SubCategory = () => {
                                             className="form-control"
                                             onChange={(e) => {
                                               setCategorySelect(true);
-                                                handleMainCategory(e);
+                                              handleMainCategory(e);
                                             }}
                                             value={mainCategoryId}
                                           >
@@ -367,7 +373,7 @@ const SubCategory = () => {
                                                 --- Chọn Danh Mục
                                               </option>
                                             )}
-                                            
+
                                             {mainCategory &&
                                               mainCategory.length &&
                                               mainCategory.map((e, index) => {
@@ -441,6 +447,18 @@ const SubCategory = () => {
                                 </div>
                                 <div className="card-body">
                                   <form>
+                                  {categoryUpdate.imageUrl && (
+                                          <img
+                                            style={{
+                                              height: 200,
+                                              width: 200,
+                                              objectFit: "cover",
+                                              marginLeft:300,
+                                              marginTop:10
+                                            }}
+                                            src={categoryUpdate.imageUrl}
+                                          />
+                                        )}
                                     <div
                                       style={{
                                         display: "grid",
@@ -502,21 +520,11 @@ const SubCategory = () => {
                                           />
                                         </div>
 
-                                        <img
-                                          style={{
-                                            height: 200,
-                                            width: 200,
-                                            objectFit: "cover",
-                                          }}
-                                          src={categoryUpdate.imageUrl}
-                                        />
+                                       
                                       </div>
                                       <div
                                         className="mb-3"
-                                        style={{
-                                          width: "95%",
-                                          marginTop: -200,
-                                        }}
+                                       
                                       >
                                         <label
                                           className="form-label"
