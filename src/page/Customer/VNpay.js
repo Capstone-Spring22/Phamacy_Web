@@ -57,8 +57,8 @@ const VNPay = (props) => {
     }
   }
   async function Checkout() {
-    if (localStorage && localStorage.getItem("accessToken")) {
-      const accessToken = localStorage.getItem("accessToken");
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
       const data = product;
       console.log("data", data);
       const path = "Order/Checkout";

@@ -56,7 +56,7 @@ const Home = () => {
   const roleName = localStorage.getItem("roleName");
 
   async function loadDataMedicine() {
-    const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
+    const path = `Product?isSellFirstLevel=true&pageIndex=1&pageItems=12`;
     const res = await getDataByPath(path, "", "");
     console.log("display", res);
     if (res !== null && res !== undefined && res.status === 200) {
@@ -97,7 +97,7 @@ const Home = () => {
   const handleLogout = async () => {
     try {
       navigate.push("/Login");
-      localStorage.removeItem("accessToken");
+      localStorage.removeItem("accessTokenUser");
       localStorage.removeItem("userName");
       localStorage.removeItem("email");
       localStorage.removeItem("phoneNo");
@@ -632,13 +632,14 @@ const Home = () => {
               </div>
               <br />
 
-              <div className="container " style={{ display: "flex" }}>
+              <div className="container " style={{ display: "flex",flexWrap: "wrap" }}>
                 {drug &&
                   drug.length > 0 &&
                   drug.map((item, index) => {
                     return (
                       <Link
                         className="product-card"
+                        style={{width: "190px"}}
                         key={item.id}
                         to={`/ViewDetail/${item.id}`}
                       >
@@ -672,7 +673,7 @@ const Home = () => {
                     );
                   })}
               </div>
-              {/* <button to="/medicine" className="button-redirect"> Xem Thêm</button> */}
+              <button to="/medicine" className="button-redirect"> Xem Thêm</button>
             </div>
           </section>
         </div>

@@ -178,7 +178,7 @@ const OrderDetail = () => {
             className="button-28"
             style={{
               height: 40,
-              width: 200,
+              width: 250,
               fontSize: 13,
               paddingTop: 10,
 
@@ -217,7 +217,7 @@ const OrderDetail = () => {
             className="button-28"
             style={{
               height: 40,
-              width: 200,
+              width: 250,
               fontSize: 13,
               paddingTop: 10,
 
@@ -253,7 +253,7 @@ const OrderDetail = () => {
             className="button-28"
             style={{
               height: 40,
-              width: 200,
+              width: 250,
               fontSize: 13,
               paddingTop: 10,
 
@@ -619,7 +619,7 @@ const OrderDetail = () => {
                     style={{
                       width: "100%",
                       backgroundColor: "#ffffff",
-                      width: 870,
+                      width: 950,
                       margin: 30,
                       borderRadius: 5,
                       border: "none",
@@ -640,8 +640,8 @@ const OrderDetail = () => {
                       <></>
                     </div>
 
-                    <div className="table-responsive ">
-                      <table className="table">
+                 
+                      <table className="table table-view-order">
                         <thead
                           style={{
                             backgroundColor: "#f6f9fc",
@@ -652,6 +652,7 @@ const OrderDetail = () => {
                           <tr>
                             <th
                               style={{
+                                width: 130,
                                 backgroundColor: "#f6f9fc",
                                 borderColor: "white",
                                 color: "#bfc8d3",
@@ -662,7 +663,7 @@ const OrderDetail = () => {
 
                             <th
                               style={{
-                                width: 500,
+                                width: 400,
                                 backgroundColor: "#f6f9fc",
                                 borderColor: "white",
                                 color: "#bfc8d3",
@@ -763,8 +764,49 @@ const OrderDetail = () => {
                               );
                             })}
                         </tbody>
+                        <tbody >
+                        <tr style={{border:"1px solid white"}}>
+                          <td style={{ fontSize: 15, fontWeight: 500 }}>
+                            &nbsp; &nbsp;Tổng Giá
+                          </td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+
+                          <td style={{ fontSize: 15, fontWeight: 500 }}>
+                            {OrderDetail.subTotalPrice?.toLocaleString("en-US")} đ
+                          </td>
+                        </tr>
+                        <tr style={{border:"1px solid white"}}>
+                          <td style={{ fontSize: 15, fontWeight: 500 }}>
+                            &nbsp; &nbsp;Giá Giảm
+                          </td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+
+                          <td style={{ fontSize: 15, fontWeight: 500 }}>
+                            {OrderDetail.discountPrice?.toLocaleString("en-US")} đ
+                          </td>
+                        </tr>
+                        <tr style={{border:"1px solid white",width:100}}>
+                          <td style={{ fontSize: 15, fontWeight: 500,width:100 }}>
+                            &nbsp; &nbsp;Thành Tiền
+                          </td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+
+                          <td style={{ fontSize: 15, fontWeight: 500 }}>
+                            {OrderDetail.totalPrice?.toLocaleString("en-US")} đ
+                          </td>
+                        </tr>
+                      </tbody>
                       </table>
-                    </div>
+                   
                   </div>
                 </div>
 
@@ -772,7 +814,7 @@ const OrderDetail = () => {
               </div>
               <div
                 className="row "
-                style={{ width: 900, marginTop: -30, marginLeft: 25 }}
+                style={{ width: 980, marginTop: -30, marginLeft: 25 }}
               >
                 <div className="col-xl">
                   <div className="card mb-4">
@@ -968,7 +1010,7 @@ const OrderDetail = () => {
               </div>
             </div>
             <div>
-              <div className="row " style={{ width: 300, marginTop: 55 }}>
+              <div className="row " style={{ width: 350, marginTop: 55 }}>
                 <div className="col-xl">
                   <div className="card mb-4">
                     <div
@@ -997,7 +1039,7 @@ const OrderDetail = () => {
                   </div>
                 </div>
               </div>
-              <div className="row " style={{ width: 300 }}>
+              <div className="row " style={{ width: 350 }}>
                 <div className="col-xl">
                   <div className="card mb-4">
                     <div

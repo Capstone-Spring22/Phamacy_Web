@@ -29,8 +29,8 @@ const ViewOrderDetail = () => {
   ]);
   const [descriptionStatus, setDescriptionStatus] = useState("");
   async function loadDataOrderById() {
-    if (localStorage && localStorage.getItem("accessToken")) {
-      const accessToken = localStorage.getItem("accessToken");
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
       const path = `Order/${myId}`;
       const res = await getDataByPath(path, accessToken, "");
       console.log("res", res.data.orderTypeId);
@@ -45,8 +45,8 @@ const ViewOrderDetail = () => {
     }
   }
   async function updateNote() {
-    if (localStorage && localStorage.getItem("accessToken")) {
-      const accessToken = localStorage.getItem("accessToken");
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
       const data = noteUpdate;
       const path = `Order/UpdateOrderProductNote`;
       const res = await updateDataByPath(path, accessToken, data);

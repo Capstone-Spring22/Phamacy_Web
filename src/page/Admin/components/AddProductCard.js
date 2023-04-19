@@ -206,7 +206,7 @@ export default function AddProductCard({
               />
             </div>
           </div>
-          {message&&<div>{message}</div>}
+      
           {selectedOption && isBatches && (
             <div className="productimport-border">
               {selectedOption &&
@@ -353,6 +353,7 @@ export default function AddProductCard({
                 )}
             </div>
           )}
+              {message&&<div style={{marginTop:20,fontStyle: "oblique",color:"#E96479"}}>{message}</div>}
           {selectedOption && isBatches && (
             <button
               className="button-batches"

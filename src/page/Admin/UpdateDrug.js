@@ -1053,6 +1053,7 @@ const UpdateDrug = () => {
                                     ],
                                   })
                                 }
+                                disabled={index === 1} 
                                 defaultValue="option2"
                                 style={{
                                   height: 20,

@@ -77,8 +77,8 @@ const DetailMedicine = () => {
   }, []);
 
   async function addToCart() {
-    if (localStorage && localStorage.getItem("accessToken")) {
-      const accessToken = localStorage.getItem("accessToken");
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
       const deviceId = await axios
         .get("https://api.ipify.org/?format=json")
         .then((res) => res.data.ip);

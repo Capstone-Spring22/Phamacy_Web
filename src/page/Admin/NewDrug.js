@@ -43,7 +43,7 @@ const NewDrug = () => {
         unitId: "",
         unitLevel: 1,
         quantitative: 1,
-        price: "",
+        price: 1,
         isSell: 1,
         barCode: "",
       },
@@ -283,7 +283,7 @@ const NewDrug = () => {
       Swal.fire("ID nhà sản xuất không được để trống", "", "question");
       return false;
     }
-
+    let prevPrice = -1; 
     for (const detail of productDetailModel) {
       if (!detail.unitId.trim()) {
         Swal.fire("ID đơn vị không được để trống", "", "question");
@@ -298,6 +298,13 @@ const NewDrug = () => {
         Swal.fire("Bar Code không được để trống", "", "question");
         return false;
       }
+      const price = parseFloat(detail.price);
+      if (detail.unitLevel > 1 && price > prevPrice) {
+        Swal.fire("Giá đơn vị cấp dưới không được cao hơn cấp trên", "", "question");
+        return false;
+      }
+    
+      prevPrice = price;
     }
    
     const {
@@ -336,7 +343,7 @@ const NewDrug = () => {
 
     for (const ingredient of ingredientModel) {
       if (!ingredient.ingredientId.trim()) {
-        Swal.fire("ID thành phần không được để trống", "", "question");
+        Swal.fire(" Tên Nguyên Liệu không được để trống", "", "question");
         return false;
       }
 

@@ -49,6 +49,12 @@ const NewDiscount = () => {
       }
     }
   }
+  
+  const [price, setPrice] = useState(null);
+  const getPriceById = (id) => {
+    const selectedDrug = drug.find((e) => e.id === id);
+    return selectedDrug ? selectedDrug.price : null;
+  };
   async function loadDataDrug() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -58,16 +64,54 @@ const NewDiscount = () => {
       if (res !== null && res !== undefined && res.status === 200) {
         setDrug(res.data.items);
         setTotalRecord(res.data.totalRecord);
-        console.log("display", currentPage);
+        console.log("display", res.data.items);
       }
     }
   }
   const checkValidation = () => {
     const discountPercent = parseInt(product.discountPercent);
+    const productId = product.products[0].productId;
+    const productPrice = getPriceById(productId);
+  
     if (discountPercent > 50) {
       Swal.fire("Không Được Giảm Quá 50%", "", "question");
       return false;
     }
+  
+    if (product.discountMoney > productPrice * 0.5) {
+      Swal.fire("Giá giảm không được cao hơn 50% giá sản phẩm", "", "question");
+      return false;
+    }
+
+    const startDate = new Date(product.startDate);
+    const endDate = new Date(product.endDate);
+
+    if (startDate < new Date().setHours(0, 0, 0, 0)) {
+      Swal.fire("Ngày bắt đầu không thể là ngày trong quá khứ", "", "question");
+      return false;
+    }
+
+    if (startDate > endDate) {
+      Swal.fire(
+        "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu",
+        "",
+        "question"
+      );
+      return false;
+    }
+
+    const today = new Date();
+    const oneDay = 24 * 60 * 60 * 1000;
+
+    if (endDate - today < oneDay) {
+      Swal.fire(
+        "Ngày kết thúc phải cách ngày hiện tại trên 1 ngày",
+        "",
+        "question"
+      );
+      return false;
+    }
+
     return true;
   };
   useEffect(() => {
@@ -223,72 +267,70 @@ const NewDiscount = () => {
                           />
                         </div>
                       </div>
-                 
+
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label className="form-label" htmlFor="discount-type">
+                          Chọn Loại Giảm Giá
+                        </label>
+                        <Select
+                          id="discount-type"
+                          options={discountOptions}
+                          defaultValue={discountOptions[0]}
+                          onChange={handleDiscountTypeChange}
+                        />
+                      </div>
+
+                      {discountType === "percent" && (
                         <div className="mb-3" style={{ width: "95%" }}>
-                          <label className="form-label" htmlFor="discount-type">
-                           Chọn Loại Giảm Giá 
+                          <label
+                            className="form-label"
+                            htmlFor="discount-percent"
+                          >
+                            Giảm giá (%)
                           </label>
-                          <Select
-                            id="discount-type"
-                            options={discountOptions}
-                            defaultValue={discountOptions[0]}
-                            onChange={handleDiscountTypeChange}
-                            
-                          />
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              name="discount-percent"
+                              placeholder="Giảm giá (%)"
+                              id="discount-percent"
+                              className="form-control"
+                              onChange={(e) =>
+                                setProduct((prevState) => ({
+                                  ...prevState,
+                                  discountPercent: e.target.value,
+                                }))
+                              }
+                            />
+                          </div>
                         </div>
+                      )}
 
-                        {discountType === "percent" && (
-                          <div className="mb-3" style={{ width: "95%" }}>
-                            <label
-                              className="form-label"
-                              htmlFor="discount-percent"
-                            >
-                              Giảm giá (%)
-                            </label>
-                            <div className="input-group input-group-merge">
-                              <input
-                                type="text"
-                                name="discount-percent"
-                                placeholder="Giảm giá (%)"
-                                id="discount-percent"
-                                className="form-control"
-                                onChange={(e) =>
-                                  setProduct((prevState) => ({
-                                    ...prevState,
-                                    discountPercent: e.target.value,
-                                  }))
-                                }
-                              />
-                            </div>
+                      {discountType === "money" && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="discount-money"
+                          >
+                            Số tiền giảm
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              name="discount-money"
+                              placeholder="Số tiền giảm"
+                              id="discount-money"
+                              className="form-control"
+                              onChange={(e) =>
+                                setProduct((prevState) => ({
+                                  ...prevState,
+                                  discountMoney: e.target.value,
+                                }))
+                              }
+                            />
                           </div>
-                        )}
-
-                        {discountType === "money" && (
-                          <div className="mb-3" style={{ width: "95%" }}>
-                            <label
-                              className="form-label"
-                              htmlFor="discount-money"
-                            >
-                              Số tiền giảm
-                            </label>
-                            <div className="input-group input-group-merge">
-                              <input
-                                type="text"
-                                name="discount-money"
-                                placeholder="Số tiền giảm"
-                                id="discount-money"
-                                className="form-control"
-                                onChange={(e) =>
-                                  setProduct((prevState) => ({
-                                    ...prevState,
-                                    discountMoney: e.target.value,
-                                  }))
-                                }
-                              />
-                            </div>
-                          </div>
-                        )}
-                   
+                        </div>
+                      )}
 
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
@@ -398,6 +440,11 @@ const NewDiscount = () => {
                                 className="mb-3"
                                 style={{ width: "30%", marginRight: 20 }}
                               >
+                {selectedOption && (
+      <div>
+        <p>Price: {price}</p>
+      </div>
+    )}
                                 <label
                                   className="form-label"
                                   htmlFor="basic-icon-default-phone"
@@ -407,7 +454,10 @@ const NewDiscount = () => {
 
                                 <Select
                                   onChange={(selectedOption) => {
+                                    const drugObj = drug.find((d) => d.id === selectedOption.value);
+                                    const price = drugObj ? drugObj.price : 0;
                                     setSelectedOption(selectedOption);
+                                    setPrice(getPriceById(selectedOption.value));
                                     setProduct({
                                       ...product,
                                       products: [
@@ -423,6 +473,7 @@ const NewDiscount = () => {
                                   options={options}
                                 />
                               </div>
+                              
                             </div>
                           </div>
                           <hr />
@@ -430,6 +481,7 @@ const NewDiscount = () => {
                       );
                     }
                   )}
+                  
                   <button
                     className="button-28"
                     style={{

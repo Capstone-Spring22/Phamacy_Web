@@ -49,6 +49,7 @@ const Order = () => {
             <nav
               className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
               id="layout-navbar"
+              style={{marginLeft:100}}
             >
               <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
                 <a
@@ -90,7 +91,7 @@ const Order = () => {
                     style={{
                       width: "100%",
                       backgroundColor: "#ffffff",
-                      width: 1200,
+                      width: 1300,
                       margin: 30,
                       borderRadius: 5,
                       border: "none",

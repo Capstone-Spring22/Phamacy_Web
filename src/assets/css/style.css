@@ -4432,8 +4432,9 @@ a {
   height: 40px;
   width: 200px;
   background-color: white;
-
+  margin-left: 500px;
   margin-bottom: 40px;
+  border: none;
 }
 .button-user-target {
   height: 40px;
@@ -4461,6 +4462,34 @@ a {
   background-color: #82aae3;
   color: white;
 }
+.button-save-address {
+  height: 40px;
+  width: 60px;
+  border: 1px solid #82aae3;
+  padding-top: 7px;
+  padding-bottom: 30px;
+  margin-bottom: 30px;
+  margin-left: 20px;
+  padding-left: 15px;
+  padding-right: 10px;
+  border-radius: 8px;
+}
+.button-save-address2 {
+  height: 40px;
+  width: 60px;
+  border: 1px solid #82aae3;
+  padding-top: 7px;
+  padding-bottom: 30px;
+  margin-bottom: 30px;
+  margin-left: 20px;
+  padding-left: 11px;
+  padding-right: 10px;
+  border-radius: 8px;
+}
+.button-save-address:hover {
+  background-color: #82aae3;
+  color: white;
+}
 .button-login {
   height: 40px;
   width: 90px;
@@ -4470,22 +4499,21 @@ a {
   padding-left: 8px;
   border-radius: 5px;
 }
-.card-header-detail{
+.card-header-detail {
   font-size: 24px;
   font-weight: 500;
 }
 .card-body-content {
   margin-top: 20px;
- 
+
   color: #171f35 !important;
   line-height: 24px;
   font-weight: 400;
   letter-spacing: 0.08px;
   font-size: 17px;
 }
-.detail-card{
-  padding:50px;
-  
+.detail-card {
+  padding: 50px;
 }
 .button-cart {
   height: 40px;

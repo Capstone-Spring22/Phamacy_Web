@@ -38,6 +38,7 @@ const Sidebar = ({ activeItem }) => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("roleID");
       localStorage.removeItem("userID");
+      localStorage.removeItem("id");
     } catch (error) {
       console.log(error.message);
     }

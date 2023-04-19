@@ -22,6 +22,8 @@ const SiteOwner = () => {
   const [districtID, setDistrictID] = useState("");
   const [ward, setWard] = useState([]);
   const [wardID, setWardID] = useState("");
+  const [wardID2, setWardID2] = useState("");
+  const [districtID2, setDistrictID2] = useState("");
   const [siteName, setSiteName] = useState("");
   const [description, setDescription] = useState("");
   const [contactInfo, setContactInfo] = useState("");
@@ -123,7 +125,7 @@ const SiteOwner = () => {
       const data = dataForUpdate();
       const path = `Site`;
       const res = await updateDataByPath(path, accessToken, data);
-       console.log('data',data)
+      console.log("data", data);
       if (res && res.status === 200) {
         Swal.fire("Update successfully!", "", "success");
         window.location.reload();
@@ -372,6 +374,11 @@ const SiteOwner = () => {
                             marginTop: "20px",
                             backgroundColor: "#82AAE3",
                             color: "white",
+                          }}
+                          onClick={(e) => {
+                            setCityID("");
+                            setDistrictID("");
+                            setWardID("");
                           }}
                         >
                           <svg

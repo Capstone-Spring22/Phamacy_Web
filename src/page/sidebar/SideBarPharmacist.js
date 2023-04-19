@@ -4,7 +4,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import { getDataByPath, deleteDataByPath } from "../../services/data.service";
 import "../../assets/css/core.css";
 import { Link } from "react-router-dom";
-import logo from "../../assets/BH.png";
+import logo from "../../assets/BH5.png";
 const Sidebar = ({ activeItem }) => {
   const navigate = useHistory();
 
@@ -38,6 +38,7 @@ const Sidebar = ({ activeItem }) => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("roleID");
       localStorage.removeItem("userID");
+      localStorage.removeItem("id");
     } catch (error) {
       console.log(error.message);
     }
@@ -54,13 +55,13 @@ const Sidebar = ({ activeItem }) => {
           width: 80,
         }}
       >
-        <div className="app-brand demo" style={{ marginLeft: -30 }}>
+        <div  style={{ marginLeft: -30 }}>
           <Link
             to="/Order"
             className="app-brand-link"
             style={{ marginTop: 40 }}
           >
-            <img src={logo} style={{ marginRight: 60 }} />
+            <img src={logo} style={{ marginRight: 50,marginLeft:40,width:60 }} />
           </Link>
         </div>
         <br />
@@ -80,6 +81,7 @@ const Sidebar = ({ activeItem }) => {
           ) : (
             <img
               className="header-img"
+             
               src="https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png"
             />
           )}

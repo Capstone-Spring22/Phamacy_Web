@@ -23,8 +23,8 @@ const HistoryOrder = () => {
     history.push("/ViewOrderDetail");
   };
   async function loadDataOrder() {
-    if (localStorage && localStorage.getItem("accessToken")) {
-      const accessToken = localStorage.getItem("accessToken");
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
       const path = `Order?pageIndex=${currentPage}&pageItems=${perPage}`;
       const res = await getDataByPath(path, accessToken, "");
       console.log("check", res);

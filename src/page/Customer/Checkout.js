@@ -106,6 +106,11 @@ const Home = (props) => {
       alert("Số lượng Điểm Thưởng đã nhập vượt quá số Điểm Thưởng hiện có");
       return false;
     }
+    if (product.orderTypeId === 2 && !product.orderPickUp) {
+      Swal.fire("Vui lòng nhập thông tin địa chỉ lấy hàng", "", "question");
+      return false;
+    }
+  
     return true;
   };
 
@@ -137,8 +142,8 @@ const Home = (props) => {
     }
   }
   async function loadPoint() {
-    if (localStorage && localStorage.getItem("accessToken")) {
-      const accessToken = localStorage.getItem("accessToken");
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
       const path = `CustomerPoint/${phoneNo}/CustomerAvailablePoint`;
       console.log("point", point);
       const res = await getDataByPath(path, accessToken, "");
@@ -149,8 +154,8 @@ const Home = (props) => {
   }
   const [listAddress, setListAddress] = useState([]);
   async function loadUserByID() {
-    if (localStorage && localStorage.getItem("accessToken")) {
-      const accessToken = localStorage.getItem("accessToken");
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
       const path = `Customer/${localStorage.getItem("id")}`;
       const res = await getDataByPath(path, accessToken, "");
       console.log("res.data.customerAddressList", res.data.customerAddressList);
@@ -317,8 +322,8 @@ const Home = (props) => {
     }
   }
   const Addaddressuser = async () => {
-    if (localStorage && localStorage.getItem("accessToken")) {
-      const accessToken = localStorage.getItem("accessToken");
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
       const data = addressUser;
       const path = "CustomerAddress";
       const res = await createDataByPath(path, accessToken, data);
@@ -342,8 +347,8 @@ const Home = (props) => {
     }
   };
   const deleteaddressuser = async (id) => {
-    if (localStorage && localStorage.getItem("accessToken")) {
-      const accessToken = localStorage.getItem("accessToken");
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
       const path = `CustomerAddress/${id}`;
       const res = await deleteDataByPath(path, accessToken, "");
       console.log("Check res", res);
@@ -907,9 +912,10 @@ const Home = (props) => {
                           {listAddress.length > 0 ? (
                             <div className="checkout-payment">
                               <div
+                              className="button-save-address2"
                                 onClick={(e) => setInputAddress(!inputAddress)}
                               >
-                                Add
+                                Thêm
                               </div>
                               {listAddress.length > 0 ? (
                                 listAddress &&
@@ -954,6 +960,7 @@ const Home = (props) => {
                                         onClick={() =>
                                           deleteaddressuser(address.id)
                                         }
+                                        className="button-save-address"
                                       >
                                         Xoá
                                       </div>
@@ -966,7 +973,7 @@ const Home = (props) => {
                             </div>
                           ) : (
                             <>
-                              {" "}
+                         
                               {id ? (
                                 <div>
                                   <div className="col-12 mb-3">
@@ -1120,7 +1127,7 @@ const Home = (props) => {
                                       }
                                     />
                                   </div>
-                                  <div onClick={Addaddressuser}>lưu</div>
+                                  <div className="button-save-address" onClick={Addaddressuser}>lưu</div>
                                 </div>
                               ) : (
                                 <div>
@@ -1444,7 +1451,7 @@ const Home = (props) => {
                                   }
                                 />
                               </div>
-                              <div onClick={Addaddressuser}>lưu</div>
+                              <div     className="button-save-address" onClick={Addaddressuser}>lưu</div>
                             </div>
                           )}
                         </div>
@@ -1569,6 +1576,7 @@ const Home = (props) => {
                           }));
                         }}
                       />
+                      <img style={{ height:50,width:50 ,marginRight:10}}src="https://png.pngtree.com/png-vector/20191028/ourlarge/pngtree-cash-in-hand-icon-cartoon-style-png-image_1893442.jpg"/>
                       Thanh Toán Tiền Mặt Khi Nhận Hàng
                     </label>
                   </div>
@@ -1592,6 +1600,8 @@ const Home = (props) => {
                           }));
                         }}
                       />
+                      <img style={{ height:50,width:50 ,marginRight:10}}src="https://inkythuatso.com/uploads/images/2021/12/vnpay-logo-inkythuatso-01-13-16-26-42.jpg"/>
+
                       Thanh Toán Bằng VNPay
                     </label>
                   </div>
