@@ -718,6 +718,7 @@ const CheckOutPharmacist = () => {
                                         color: "red",
                                       }}
                                       onClick={() => {
+                                        setCount(parseInt(count) + 1);
                                         const newList = listCart.filter(
                                           (item) =>
                                             item.productId !== product.productId
