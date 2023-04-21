@@ -90,12 +90,12 @@ const Sidebar = ({ activeItem }) => {
           )} */}
         </div>
         <div className="menu-inner-shadow" />
-        <ul className="menu-inner py-1">
+        <ul className="menu-inner py-1" style={{width: '50%'}} >
           {/* Dashboard */}
 
           {/* Layouts */}
 
-          <li className="menu-item ">
+          <li style={{ width: 90 }} className="menu-item ">
             <a href="#" className="menu-link">
               <svg
                 style={{ margin: "5" }}
@@ -159,7 +159,7 @@ const Sidebar = ({ activeItem }) => {
 
           {/* Misc */}
 
-          <li className="menu-item">
+          <li style={{ width: 90 }} className="menu-item">
             <Link to="/ChatPharmacist" className="menu-link">
               <svg
                 style={{ margin: "5" }}
@@ -175,7 +175,7 @@ const Sidebar = ({ activeItem }) => {
               </svg>
             </Link>
           </li>
-          <li className="menu-item" onClick={() => handleLogout()}>
+          <li style={{ width: 90 }} className="menu-item" onClick={() => handleLogout()}>
             <Link className="menu-link">
               <svg
                 style={{ margin: "5" }}

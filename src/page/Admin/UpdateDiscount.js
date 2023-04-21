@@ -5,11 +5,7 @@ import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarOwner";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import {
-  getDataByPath,
-
-  updateDataByPath,
-} from "../../services/data.service";
+import { getDataByPath, updateDataByPath } from "../../services/data.service";
 import ReactPaginate from "react-paginate";
 import { useHistory } from "react-router-dom";
 
@@ -19,7 +15,7 @@ const UpdateDiscount = () => {
   const [unitCount, setUnitCount] = useState(1);
   let history = useHistory();
   const [productIngredient, setProductIngredient] = useState([]);
- 
+
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
   const [product, setProduct] = useState({
@@ -30,7 +26,6 @@ const UpdateDiscount = () => {
     discountMoney: 0,
     startDate: "",
     endDate: "",
-   
   });
 
   async function loadDataImportProductByID() {
@@ -38,7 +33,7 @@ const UpdateDiscount = () => {
       const accessToken = localStorage.getItem("accessToken");
       const path = `ProductDiscount/${myId}`;
       const res = await getDataByPath(path, accessToken, "");
-
+      console.log("res discount", res);
       if (res !== null && res !== undefined && res.status === 200) {
         setProduct(res.data);
         setUnitCount(res.data.products.length);
@@ -54,11 +49,6 @@ const UpdateDiscount = () => {
     }
   }
 
-
-
- 
-
-
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -70,7 +60,7 @@ const UpdateDiscount = () => {
         console.log("display du lieu", data);
         if (res && res.status === 200) {
           Swal.fire("Update Success", "", "success");
-         history.push("/ProductDiscount")
+          history.push("/ProductDiscount");
         } else {
           Swal.fire("như lol đây là bản nháp", "You failed!", "error");
         }
@@ -98,16 +88,12 @@ const UpdateDiscount = () => {
     setUnitCount(unitCount + 1);
   };
 
-
-
   useEffect(() => {
     loadDataProductIngredient();
   }, []);
   useEffect(() => {
     loadDataImportProductByID();
   }, []);
-
-
 
   return (
     <div className="layout-wrapper layout-content-navbar">
@@ -148,7 +134,6 @@ const UpdateDiscount = () => {
                 </div>
               </div>
               {/* /Search */}
-             
             </div>
           </nav>
 
@@ -285,23 +270,29 @@ const UpdateDiscount = () => {
                         >
                           Ngày Bắt Đầu
                         </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="date"
-                              id="basic-icon-default-company"
-                              className="form-control"
-                              placeholder="Công dung"
-                              aria-label="Công dung"
-                              value={product.startDate ? new Date(product.startDate).toISOString().substr(0, 10) : ''}
-                              aria-describedby="basic-icon-default-company2"
-                              onChange={(e) =>
-                                setProduct((prevState) => ({
-                                  ...prevState,
-                                  startDate: e.target.value,
-                                }))
-                              }
-                            />
-                          </div>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="date"
+                            id="basic-icon-default-company"
+                            className="form-control"
+                            placeholder="Công dung"
+                            aria-label="Công dung"
+                            value={
+                              product.startDate
+                                ? new Date(product.startDate)
+                                    .toISOString()
+                                    .substr(0, 10)
+                                : ""
+                            }
+                            aria-describedby="basic-icon-default-company2"
+                            onChange={(e) =>
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                startDate: e.target.value,
+                              }))
+                            }
+                          />
+                        </div>
                       </div>
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
@@ -317,8 +308,13 @@ const UpdateDiscount = () => {
                             className="form-control"
                             placeholder="Công dung"
                             aria-label="Công dung"
-                        
-                            value={product.endDate ? new Date(product.endDate).toISOString().substr(0, 10) : ''}
+                            value={
+                              product.endDate
+                                ? new Date(product.endDate)
+                                    .toISOString()
+                                    .substr(0, 10)
+                                : ""
+                            }
                             aria-describedby="basic-icon-default-company2"
                             onChange={(e) =>
                               setProduct((prevState) => ({
@@ -355,7 +351,6 @@ const UpdateDiscount = () => {
                 </div>
               </div>
             </div>
-        
           </div>
         </div>
         <div className="layout-overlay layout-menu-toggle" />

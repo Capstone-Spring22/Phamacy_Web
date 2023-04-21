@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {  useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import SideBar from "../sidebar/SideBarPharmacist";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
@@ -11,17 +11,23 @@ const Order = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
   const [totalRecord, setTotalRecord] = useState([]);
- 
+
   let history = useHistory();
   const update = (myId) => {
     localStorage.setItem("id", myId);
     history.push("/OrderDetail");
   };
+  const NotAcceptable = [
+    { name: "Đơn Chờ Xử Lý", value: "" },
+    { name: "Đơn Chờ Xử Lý", value: true },
+    { name: "Đơn Đang Thực Hiện", value: false },
+  ];
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  async function loadDataOrder() {
+  async function loadDataOrder2(search) {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      const path = `Order?pageIndex=${currentPage}&pageItems=${perPage}`;
+      const path = `Order?NotAcceptable=${search}&&pageIndex=${currentPage}&pageItems=${perPage}`;
       const res = await getDataByPath(path, accessToken, "");
       console.log("check", res);
       if (res !== null && res !== undefined && res.status === 200) {
@@ -33,23 +39,20 @@ const Order = () => {
 
   const [activeItem, setActiveItem] = useState("Order");
   useEffect(() => {
-    loadDataOrder();
+    loadDataOrder2("");
   }, [currentPage, perPage]);
 
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
         <div className="layout-container">
-        <SideBar activeItem={activeItem} />
-          <div
-            className="layout-page"
-            style={{ backgroundColor: "#f4f6fb" }}
-          >
+          <SideBar activeItem={activeItem} />
+          <div className="layout-page" style={{ backgroundColor: "#f4f6fb" }}>
             {/* Navbar */}
             <nav
               className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
               id="layout-navbar"
-              style={{marginLeft:100}}
+              style={{ marginLeft: 100 }}
             >
               <div className="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
                 <a
@@ -75,7 +78,6 @@ const Order = () => {
                     />
                   </div>
                 </div>
-              
               </div>
             </nav>
 
@@ -108,10 +110,32 @@ const Order = () => {
                       >
                         <h3 className="fontagon">Quản Lý Đơn Hàng</h3>
                       </h5>
-
-                      <></>
                     </div>
-
+                    <div style={{ display: "flex" }}>
+                      {NotAcceptable &&
+                        NotAcceptable.length > 0 &&
+                        NotAcceptable.map((e, index) => {
+                          return (
+                            <div
+                              onClick={() => {
+                                {
+                                  loadDataOrder2(e.value);
+                                }
+                                setActiveIndex(index);
+                              }}
+                              className={` ${
+                                activeIndex === index
+                                  ? "button-user-target-active"
+                                  : "button-user-target"
+                              }`}
+                              style={{ display: "flex" }}
+                            >
+                              {" "}
+                              {e.name}
+                            </div>
+                          );
+                        })}
+                    </div>
                     <div className="table-responsive ">
                       <table className="table">
                         <thead
@@ -202,7 +226,9 @@ const Order = () => {
                                 <tr key={e.id}>
                                   <td>&nbsp; &nbsp;{e.id}</td>
                                   <td>{e.orderTypeName}</td>
-                                  <td>{e.totalPrice.toLocaleString("en-US")} đ</td>
+                                  <td>
+                                    {e.totalPrice.toLocaleString("en-US")} đ
+                                  </td>
                                   <td>{e.orderStatusName}</td>
                                   {e.needAcceptance === true ? (
                                     <td>Chưa Xác Nhận</td>

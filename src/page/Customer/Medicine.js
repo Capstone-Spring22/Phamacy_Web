@@ -421,71 +421,47 @@ const Medicine = () => {
                     <br />
                     <br />
                     <br />
-                    <div className="container ">
-                      <div className="row karl-new-arrivals ">
-                        {drug &&
-                          drug.length &&
-                          drug.map((item, index) => {
-                            return (
-                              <div
-                                className=" col-md-2 single_gallery_item women wow fadeInUpBig "
-                                data-wow-delay="0.2s"
-                              >
-                                {/* Product Image */}
-                                <Link
-                                  to={`/ViewDetail/${item.id}`}
-                                  className="product-img"
-                                  style={{ borderRadius: 5 }}
-                                  // onClick={() => {
-                                  //   viewDetail(item.id);
-                                  // }}
-                                >
-                                  <img
-                                    src={item.imageModel.imageURL}
-                                    alt=""
-                                    style={{ objectFit: "cover", height: 250 }}
-                                  />
-                                  <div className="product-quicview">
-                                    <a
-                                      href="#"
-                                      data-toggle="modal"
-                                      data-target="#quickview"
-                                    >
-                                      <BsPlus style={{ marginBottom: 10 }} />
-                                    </a>
-                                  </div>
-                                </Link>
-
-                                {/* Product Description */}
-                                <div className="product-description">
-                                  <p style={{ height: 90, color: "#334155" }}>
-                                    {item.name}
-                                  </p>
-                                  <h4
-                                    className="product-price"
-                                    style={{ color: "#82aae3" }}
-                                  >
-                                    {" "}
-                                    {item.priceAfterDiscount.toLocaleString(
-                                      "en-US"
-                                    )}{" "}
-                                    /{item.productUnitReferences[0].unitName}
-                                    <td>
-                                      {item.price ===
-                                      item.priceAfterDiscount ? (
-                                        ""
-                                      ) : (
-                                        <del>{item.price}</del>
-                                      )}
-                                    </td>
-                                  </h4>
-                                  {/* Add to Cart */}
-                                </div>
-                              </div>
-                            );
-                          })}
-                      </div>
-                    </div>
+                    <div className="container " style={{ display: "flex",flexWrap: "wrap" }}>
+                {drug &&
+                  drug.length > 0 &&
+                  drug.map((item, index) => {
+                    return (
+                      <Link
+                        className="product-card"
+                        style={{width: "190px"}}
+                        key={item.id}
+                        to={`/ViewDetail/${item.id}`}
+                      >
+                        <img
+                          src={item.imageModel.imageURL}
+                          className="product-img-new"
+                          alt="Product Image"
+                        />
+                        <div className="product-info">
+                          {" "}
+                          <h2 className="product-name">{item.name}</h2>
+                          <div style={{ display: "flex" }}>
+                            <p className="product-price">
+                              {" "}
+                              {item.priceAfterDiscount.toLocaleString(
+                                "en-US"
+                              )}{" "}
+                              đ /{item.productUnitReferences[0].unitName}
+                            </p>
+                          </div>
+                          <p>
+                            {" "}
+                            {item.price === item.priceAfterDiscount ? (
+                              ""
+                            ) : (
+                              <del>{item.price} đ</del>
+                            )}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+              </div>
                   </div>
                 </div>
               </div>

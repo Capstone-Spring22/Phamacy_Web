@@ -24,15 +24,19 @@ const AddToCart = () => {
   const [cartID, setCartID] = useState("");
 
   async function loadDataMedicine() {
-    console.log("display cartID", deviceId);
-    const path = `Cart/${deviceId}`;
-    const res = await getDataByPath(path, "", "");
-    console.log("display", res);
-    if (res !== null && res !== undefined && res.status === 200) {
-      setDrug(res.data.items);
-      setTotal(res.data);
-      setCartID(res.data.cartId);
-      console.log("res.data", res.data);
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
+      console.log("display cartID", deviceId);
+      const path = `Cart/${deviceId}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("display", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setDrug(res.data.items);
+        setTotal(res.data);
+        setCartID(res.data.cartId);
+
+        console.log("res.data", res.data);
+      }
     }
   }
   const CheckoutSiteObjectProduct =
@@ -73,27 +77,30 @@ const AddToCart = () => {
     });
   }
   async function handleUpdateCart(productId, quantity) {
-    const data = {
-      deviceId: deviceId,
-      item: {
-        productId: productId,
-        quantity: quantity,
-      },
-    };
-    console.log("display data", data);
-    const config = {
-      headers: {
-        "Content-Type": "application/json-patch+json",
-      },
-    };
-    const path = "Cart";
-    const res = await createDataByPath(path, "", data);
-    console.log("API response:", res);
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
+      const data = {
+        deviceId: deviceId,
+        item: {
+          productId: productId,
+          quantity: quantity,
+        },
+      };
+      console.log("display data", data);
+      const config = {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      };
+      const path = "Cart";
+      const res = await createDataByPath(path, accessToken, data);
+      console.log("API response:", res);
 
-    if (res && res.status === 200) {
-      toast.success("đã cập nhật");
-      loadDataMedicine();
-      // window.location.reload();
+      if (res && res.status === 200) {
+        toast.success("đã cập nhật");
+        loadDataMedicine();
+        // window.location.reload();
+      }
     }
   }
   async function handleRemoveCart(productId) {
@@ -185,11 +192,12 @@ const AddToCart = () => {
                             borderColor: "white",
                           }}
                         >
-                          <h3 className="fontagon">Quản Lý Đơn Hàng</h3>
+                          <h3 className="fontagon">Giỏ Hàng</h3>
                         </h5>
 
                         <></>
                       </div>
+                      {drug && drug.length > 0 ? (
                       <table className="table">
                         <thead
                           style={{
@@ -214,6 +222,7 @@ const AddToCart = () => {
                                 backgroundColor: "#f6f9fc",
                                 borderColor: "white",
                                 color: "#bfc8d3",
+                                width: 180,
                               }}
                             >
                               &nbsp; &nbsp;tên
@@ -223,6 +232,7 @@ const AddToCart = () => {
                                 backgroundColor: "#f6f9fc",
                                 borderColor: "white",
                                 color: "#bfc8d3",
+                                width: 110,
                               }}
                             >
                               &nbsp; &nbsp;Giá
@@ -238,7 +248,7 @@ const AddToCart = () => {
                             </th>
                             <th
                               style={{
-                                width: 110,
+                                width: 100,
                                 backgroundColor: "#f6f9fc",
                                 borderColor: "white",
                                 color: "#bfc8d3",
@@ -268,106 +278,138 @@ const AddToCart = () => {
                             </th>
                           </tr>
                         </thead>
-                        <tbody
-                          className="table-border-bottom-0"
-                          style={{ borderColor: "white" }}
-                        >
-                          {drug &&
-                            drug.length > 0 &&
-                            drug.map((item, index) => {
-                              return (
-                                <tr key={item.id}>
-                                  <td>
-                                    <img
-                                      className="cart-img"
-                                      alt="Product"
-                                      src={item.productImageUrl}
-                                    />
-                                  </td>
-                                  <td>{item.productName}</td>
-                                  <td className="price">
-                                    <span>
-                                      ${item.price.toLocaleString("en-US")}
-                                    </span>
-                                  </td>
-                                  <td className="qty">
-                                    <div className="quantity">
-                                      <span className="qty-minus">
-                                        <i
-                                          className="fa fa-minus"
-                                          aria-hidden="true"
-                                        />
-                                      </span>
-                                      <input
-                                        type="number"
-                                        className="qty-text"
-                                        id="qty"
-                                        step={1}
-                                        min={1}
-                                        max={99}
-                                        name="quantity"
-                                        value={item.quantity}
-                                        onChange={(e) => {
-                                          e.preventDefault();
-                                          handleUpdateCart(
-                                            item.productId,
-                                            e.target.value
-                                          );
-                                          updateQuantity(
-                                            item.productId,
-                                            e.target.value
-                                          );
-                                        }}
+                      
+                          <tbody
+                            className="table-border-bottom-0"
+                            style={{ borderColor: "white" }}
+                          >
+                            {drug &&
+                              drug.length > 0 &&
+                              drug.map((item, index) => {
+                                return (
+                                  <tr key={item.id}>
+                                    <td>
+                                      <img
+                                        className="cart-img"
+                                        alt="Product"
+                                        src={item.productImageUrl}
                                       />
-                                      <span
-                                        className="qty-plus"
-                                        onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"
-                                      >
-                                        <i
-                                          className="fa fa-plus"
-                                          aria-hidden="true"
-                                        />
+                                    </td>
+                                    <td>{item.productName}</td>
+                                    <td className="price">
+                                      <span>
+                                        {item.priceAfterDiscount.toLocaleString(
+                                          "en-US"
+                                        )}{" "}
+                                        đ
                                       </span>
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <span style={{ marginLeft: 20 }}>
-                                      {item.unitName}
-                                    </span>
-                                  </td>
-                                  <td className="total_price">
-                                    <span style={{ marginLeft: 20 }}>
-                                      {(
-                                        item.quantity * item.price
-                                      ).toLocaleString("en-US")}
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <button
-                                      class="button-81"
-                                      style={{ color: "red" }}
-                                      onClick={() => {
-                                        console.log("display", item.productId);
-                                        handleRemoveCart(item.productId);
-                                      }}
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        fill="currentColor"
-                                        class="bi bi-trash3"
-                                        viewBox="0 0 16 16"
+                                      <div>
+                                        {" "}
+                                        {item.price ===
+                                        item.priceAfterDiscount ? (
+                                          ""
+                                        ) : (
+                                          <del>
+                                            {item.price?.toLocaleString(
+                                              "en-US"
+                                            )}{" "}
+                                            đ
+                                          </del>
+                                        )}
+                                      </div>
+                                    </td>
+                                    <td className="qty">
+                                      <div className="quantity">
+                                        <span className="qty-minus">
+                                          <i
+                                            className="fa fa-minus"
+                                            aria-hidden="true"
+                                          />
+                                        </span>
+                                        <input
+                                          type="number"
+                                          className="qty-text"
+                                          id="qty"
+                                          step={1}
+                                          min={1}
+                                          max={99}
+                                          name="quantity"
+                                          value={item.quantity}
+                                          onChange={(e) => {
+                                            e.preventDefault();
+                                            handleUpdateCart(
+                                              item.productId,
+                                              e.target.value
+                                            );
+                                            updateQuantity(
+                                              item.productId,
+                                              e.target.value
+                                            );
+                                          }}
+                                        />
+                                        <span
+                                          className="qty-plus"
+                                          onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"
+                                        >
+                                          <i
+                                            className="fa fa-plus"
+                                            aria-hidden="true"
+                                          />
+                                        </span>
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <span style={{ marginLeft: 20 }}>
+                                        {item.unitName}
+                                      </span>
+                                    </td>
+                                    <td className="total_price">
+                                      <span style={{ marginLeft: 20 }}>
+                                        {(
+                                          item.quantity *
+                                          item.priceAfterDiscount
+                                        ).toLocaleString("en-US")}
+                                      </span>
+                                    </td>
+                                    <td>
+                                      <button
+                                        class="button-81"
+                                        style={{ color: "red" }}
+                                        onClick={() => {
+                                          console.log(
+                                            "display",
+                                            item.productId
+                                          );
+                                          handleRemoveCart(item.productId);
+                                        }}
                                       >
-                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
-                                      </svg>
-                                    </button>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                        </tbody>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="16"
+                                          height="16"
+                                          fill="currentColor"
+                                          class="bi bi-trash3"
+                                          viewBox="0 0 16 16"
+                                        >
+                                          <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                                        </svg>
+                                      </button>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                          </tbody>
+                      
                       </table>
+                      ) : (
+                        <div>
+                          <img
+                          style={{height:470,width:800}}
+                            src="https://www.adasglobal.com/img/empty-cart.png"
+                            alt="Empty cart"
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div
@@ -393,7 +435,7 @@ const AddToCart = () => {
                         style={{ padding: 0, fontSize: 20 }}
                       >
                         <li style={{ fontSize: 15 }}>
-                          <span>Tổng Giá</span>{" "}
+                          <span>Tạm Tính</span>{" "}
                           <span>
                             {total.subTotalPrice?.toLocaleString("en-US")} VND
                           </span>
@@ -407,13 +449,13 @@ const AddToCart = () => {
                         </li>
 
                         <li style={{ fontSize: 15 }}>
-                          <span>Tạm Tính</span>{" "}
+                          <span>Thành Tiền</span>{" "}
                           <span>
                             {total.totalCartPrice?.toLocaleString("en-US")} Vnd
                           </span>
                         </li>
                       </ul>
-
+                      {drug && drug.length > 0 ? (
                       <a
                         onClick={() =>
                           viewDetail({
@@ -437,6 +479,20 @@ const AddToCart = () => {
                       >
                         Đặt Hàng
                       </a>
+                           ) : (
+                            <a
+                     
+                        style={{
+                          height: 50,
+                          backgroundColor: "grey",
+                          color: "white",
+                          paddingTop: 13,
+                          fontSize: 17,
+                        }}
+                        className="button-28"
+                      >
+                        Đặt Hàng
+                      </a>   )}
                     </div>
                   </div>
                 </div>

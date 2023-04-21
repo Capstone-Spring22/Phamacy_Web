@@ -49,12 +49,13 @@ const NewDiscount = () => {
       }
     }
   }
-  
+
   const [price, setPrice] = useState(null);
   const getPriceById = (id) => {
     const selectedDrug = drug.find((e) => e.id === id);
     return selectedDrug ? selectedDrug.price : null;
   };
+
   async function loadDataDrug() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -72,12 +73,12 @@ const NewDiscount = () => {
     const discountPercent = parseInt(product.discountPercent);
     const productId = product.products[0].productId;
     const productPrice = getPriceById(productId);
-  
+
     if (discountPercent > 50) {
       Swal.fire("Không Được Giảm Quá 50%", "", "question");
       return false;
     }
-  
+
     if (product.discountMoney > productPrice * 0.5) {
       Swal.fire("Giá giảm không được cao hơn 50% giá sản phẩm", "", "question");
       return false;
@@ -440,11 +441,12 @@ const NewDiscount = () => {
                                 className="mb-3"
                                 style={{ width: "30%", marginRight: 20 }}
                               >
-                {selectedOption && (
-      <div>
-        <p>Price: {price}</p>
-      </div>
-    )}
+                                {selectedOption && (
+                                  <div>
+                                    <p>Price: {price}</p>
+                                    <p>Giá Giảm {price - product.discountMoney}</p>
+                                  </div>
+                                )}
                                 <label
                                   className="form-label"
                                   htmlFor="basic-icon-default-phone"
@@ -454,10 +456,14 @@ const NewDiscount = () => {
 
                                 <Select
                                   onChange={(selectedOption) => {
-                                    const drugObj = drug.find((d) => d.id === selectedOption.value);
+                                    const drugObj = drug.find(
+                                      (d) => d.id === selectedOption.value
+                                    );
                                     const price = drugObj ? drugObj.price : 0;
                                     setSelectedOption(selectedOption);
-                                    setPrice(getPriceById(selectedOption.value));
+                                    setPrice(
+                                      getPriceById(selectedOption.value)
+                                    );
                                     setProduct({
                                       ...product,
                                       products: [
@@ -473,7 +479,6 @@ const NewDiscount = () => {
                                   options={options}
                                 />
                               </div>
-                              
                             </div>
                           </div>
                           <hr />
@@ -481,7 +486,6 @@ const NewDiscount = () => {
                       );
                     }
                   )}
-                  
                   <button
                     className="button-28"
                     style={{

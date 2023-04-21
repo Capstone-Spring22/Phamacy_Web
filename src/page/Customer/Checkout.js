@@ -27,7 +27,8 @@ const Home = (props) => {
   const Email = localStorage.getItem("email");
   // Retrieve the cart data from local storage
   const [countAddress, setcCountAddress] = useState(0);
-
+  const [pointUse, setPointUse] = useState([]);
+  const [pointLoad, setPointLoad] = useState(0);
   const [date, setDate] = useState([]);
   const [dateTime, setDateTime] = useState("");
   const [inputAddress, setInputAddress] = useState(false);
@@ -62,9 +63,9 @@ const Home = (props) => {
     orderTypeId: 2,
     siteId: null,
     pharmacistId: null,
-    subTotalPrice: cartData.total.subTotalPrice,
+    subTotalPrice: total.subTotalPrice,
     discountPrice: cartData.total.discountPrice,
-    shippingPrice: 0,
+    shippingPrice: 25000,
     totalPrice: cartData.total.totalCartPrice,
     usedPoint: 0,
     payType: "",
@@ -107,18 +108,36 @@ const Home = (props) => {
       return false;
     }
     if (product.orderTypeId === 2 && !product.orderPickUp) {
-      Swal.fire("Vui lòng nhập thông tin địa chỉ lấy hàng", "", "question");
+      Swal.fire("Vui lòng nhập thông tin thời gian lấy hàng", "", "question");
       return false;
     }
   
     return true;
   };
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleGender = (event) => {
-    event.preventDefault();
-    const genderID = event.target.value;
-    setGender(genderID);
+
+
+  const handleCount = () => {
+    const deduction = pointUse * 1000;
+    const newSubTotal = total.subTotalPrice - deduction;
+    const shippingPrice = 25000;
+    if (deduction > total.subTotalPrice) {
+      setErrorMessage(
+        `Số Điểm Tối Đa Bạn Được Nhập Là ${total.subTotalPrice / 1000}`
+      );
+      deduction = total.subTotalPrice;
+    }
+    const newTotalPrice = newSubTotal + shippingPrice;
+    setProduct((prevState) => ({
+      ...prevState,
+      usedPoint: pointUse,
+      totalPrice: newTotalPrice,
+      discountPrice:deduction,
+    }));
+    setErrorMessage(`Bạn Đã Nhập ${deduction / 1000} tương đương với ${deduction}`);
   };
+
   async function loadDataCity() {
     const path = `Address/City`;
     const res = await getDataByPath(path, "", "");
@@ -166,7 +185,7 @@ const Home = (props) => {
   }
   useEffect(() => {
     loadUserByID();
-  }, [countAddress]);
+  }, [countAddress, pointLoad]);
   useEffect(() => {
     loadPoint();
   }, [point]);
@@ -209,6 +228,7 @@ const Home = (props) => {
       setWard(res.data);
     }
   }
+
   const productIds =
     CheckoutSiteObjectProduct &&
     CheckoutSiteObjectProduct.length &&
@@ -218,27 +238,7 @@ const Home = (props) => {
     CheckoutSiteObjectQuantity.length &&
     CheckoutSiteObjectQuantity.map((product) => product.quantity).join(";");
 
-  async function loadDataCitybyID() {
-    const path = `Address/${districtID}/Ward`;
-    const res = await getDataByPath(path, "", "");
-    if (res !== null && res !== undefined && res.status === 200) {
-      setWard(res.data);
-    }
-  }
-  async function loadDataDistrictbyID() {
-    const path = `Address/${districtID}/Ward`;
-    const res = await getDataByPath(path, "", "");
-    if (res !== null && res !== undefined && res.status === 200) {
-      setWard(res.data);
-    }
-  }
-  async function loadDataWardbyID() {
-    const path = `Address/${districtID}/Ward`;
-    const res = await getDataByPath(path, "", "");
-    if (res !== null && res !== undefined && res.status === 200) {
-      setWard(res.data);
-    }
-  }
+
   async function CheckoutSiteget() {
     const path = `Order/PickUp/Site?ProductId=${productIds}&Quantity=${quantitys}&CityId=${cityID}`;
     const res = await getDataByPath(path, "", "");
@@ -291,6 +291,7 @@ const Home = (props) => {
   useEffect(() => {
     loadDataWard();
   }, [districtID]);
+
   async function Checkout() {
     if (checkValidation()) {
       if (product.payType === 1) {
@@ -912,7 +913,7 @@ const Home = (props) => {
                           {listAddress.length > 0 ? (
                             <div className="checkout-payment">
                               <div
-                              className="button-save-address2"
+                                className="button-save-address2"
                                 onClick={(e) => setInputAddress(!inputAddress)}
                               >
                                 Thêm
@@ -973,7 +974,6 @@ const Home = (props) => {
                             </div>
                           ) : (
                             <>
-                         
                               {id ? (
                                 <div>
                                   <div className="col-12 mb-3">
@@ -1127,7 +1127,12 @@ const Home = (props) => {
                                       }
                                     />
                                   </div>
-                                  <div className="button-save-address" onClick={Addaddressuser}>lưu</div>
+                                  <div
+                                    className="button-save-address"
+                                    onClick={Addaddressuser}
+                                  >
+                                    lưu
+                                  </div>
                                 </div>
                               ) : (
                                 <div>
@@ -1451,7 +1456,12 @@ const Home = (props) => {
                                   }
                                 />
                               </div>
-                              <div     className="button-save-address" onClick={Addaddressuser}>lưu</div>
+                              <div
+                                className="button-save-address"
+                                onClick={Addaddressuser}
+                              >
+                                lưu
+                              </div>
                             </div>
                           )}
                         </div>
@@ -1504,20 +1514,33 @@ const Home = (props) => {
                   >
                     {total && total.subTotalPrice && (
                       <li style={{ fontSize: 15 }}>
-                        <span>Subtotal</span>{" "}
+                        <span>Tổng Giá</span>{" "}
                         <span>
-                          {total.subTotalPrice.toLocaleString("en-US")} VND
+                          {total.subTotalPrice.toLocaleString("en-US")}
+                          VND
                         </span>
                       </li>
                     )}
                     <li style={{ fontSize: 15 }}>
-                      <span>Phí Giao Hàng</span> <span>Free</span>
+                      <span>Số Tiền Giảm </span>{" "}
+                      <span>
+                        {(product.usedPoint * 1000).toLocaleString("en-US")}
+                        VND
+                      </span>
+                    </li>
+                    <li style={{ fontSize: 15 }}>
+                      <span>Phí Giao Hàng</span> <span>25,000VND</span>
                     </li>
                     {total && total.totalCartPrice && (
                       <li style={{ fontSize: 15 }}>
                         <span>Tạm Tính</span>{" "}
                         <span>
-                          {total.totalCartPrice.toLocaleString("en-US")} Vnd
+                          {(
+                            total.totalCartPrice -
+                            product.usedPoint * 1000 +
+                            25000
+                          ).toLocaleString("en-US")}{" "}
+                          Vnd
                         </span>
                       </li>
                     )}
@@ -1576,7 +1599,10 @@ const Home = (props) => {
                           }));
                         }}
                       />
-                      <img style={{ height:50,width:50 ,marginRight:10}}src="https://png.pngtree.com/png-vector/20191028/ourlarge/pngtree-cash-in-hand-icon-cartoon-style-png-image_1893442.jpg"/>
+                      <img
+                        style={{ height: 50, width: 50, marginRight: 10 }}
+                        src="https://png.pngtree.com/png-vector/20191028/ourlarge/pngtree-cash-in-hand-icon-cartoon-style-png-image_1893442.jpg"
+                      />
                       Thanh Toán Tiền Mặt Khi Nhận Hàng
                     </label>
                   </div>
@@ -1600,8 +1626,10 @@ const Home = (props) => {
                           }));
                         }}
                       />
-                      <img style={{ height:50,width:50 ,marginRight:10}}src="https://inkythuatso.com/uploads/images/2021/12/vnpay-logo-inkythuatso-01-13-16-26-42.jpg"/>
-
+                      <img
+                        style={{ height: 50, width: 50, marginRight: 10 }}
+                        src="https://inkythuatso.com/uploads/images/2021/12/vnpay-logo-inkythuatso-01-13-16-26-42.jpg"
+                      />
                       Thanh Toán Bằng VNPay
                     </label>
                   </div>
@@ -1614,32 +1642,38 @@ const Home = (props) => {
                           Điểm Thưởng
                           <span> Số điểm Còn Lại Của Bạn Là {point}</span>
                         </label>
-                        <input
-                          type="number"
-                          style={{
-                            border: "1px solid #e4e7eb",
-                            backgroundColor: "white",
-                            borderRadius: 5,
-                          }}
-                          placeholder="Nhập Điểm Thưởng"
-                          className="form-control"
-                          id="state"
-                          max={3}
-                          onChange={(e) =>
-                            setProduct((prevState) => ({
-                              ...prevState,
-                              usedPoint: 0,
-                            }))
-                          }
-                        />
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleApplyUserPoint();
-                          }}
-                        >
-                          Áp dụng
-                        </button>
+                        <div style={{ display: "flex" ,marginTop:20}}>
+                          <input
+                            type="number"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            placeholder="Nhập Điểm Thưởng"
+                            className="form-control"
+                            id="state"
+                            max={total.subTotalPrice / 1000}
+                            onChange={(e) => {
+                              setPointUse(e.target.value);
+                              setProduct((prevState) => ({
+                                ...prevState,
+                                usedPoint: 0,
+                              }));
+                            }}
+                          />
+                        
+                          <button
+                            className="button-point"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleCount(pointUse);
+                            }}
+                          >
+                            Áp dụng
+                          </button>
+                        </div>
+                        {errorMessage && <p style={{color:"red"}}>{errorMessage}</p>}
                       </label>
                     </div>
                   </div>

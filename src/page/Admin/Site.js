@@ -38,7 +38,7 @@ const Site = () => {
   const [siteNameErrorMessage, setSiteNameErrorMessage] = useState("");
   const [cityErrorMessage, setCityErrorMessage] = useState("");
   const [districtsErrorMessage, setDistrictsErrorMessage] = useState("");
-
+ 
   const [countUs, setCountUs] = useState("2");
 
   let history = useHistory();
@@ -108,6 +108,7 @@ const Site = () => {
       console.log("display 2", id);
     }
   }
+  
   async function loadAddressByID(id) {
     const path = `Address/${id}`;
     const res = await getDataByPath(path, "", "");

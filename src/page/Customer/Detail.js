@@ -28,7 +28,7 @@ const DetailMedicine = () => {
     price: "",
     unitName: "",
   });
-
+  const [ingredientModel, setIngredientModel] = useState([]);
   useEffect(() => {
     console.log("Updated cart:", cart);
   }, [cart]);
@@ -49,6 +49,7 @@ const DetailMedicine = () => {
       });
       setDescriptionModels(res.data.descriptionModels);
       setImageUrl(res.data.imageModels);
+      setIngredientModel(res.data.descriptionModels.ingredientModel);
     }
   }
   const [subCategory, setSubCategory] = useState([]);
@@ -140,9 +141,7 @@ const DetailMedicine = () => {
     ? subManufacturer.manufacturerName
     : "";
 
-    const countryName = subManufacturer
-    ? subManufacturer.countryName
-    : "";
+  const countryName = subManufacturer ? subManufacturer.countryName : "";
   useEffect(() => {
     loadDataProductId();
   }, []);
@@ -160,7 +159,7 @@ const DetailMedicine = () => {
               <div class="row">
                 <div class="col-md-12 mb-0">
                   <a
-                    href="Home"
+                    href="/Home"
                     style={{ textDecoration: "none", color: "black" }}
                   >
                     Home
@@ -217,11 +216,22 @@ const DetailMedicine = () => {
                     <hr />
                     <h5
                       className="price"
-                      style={{ color: "#1e293b", fontSize: 25 }}
+                      style={{
+                        color: "#1e293b",
+                        fontSize: 25,
+                        fontWeight: "500",
+                      }}
                     >
-                      {showPrice.price.toLocaleString("en-US")}/
-                      {showPrice.unitName}
+                      {product.priceAfterDiscount?.toLocaleString("en-US")} / {showPrice.unitName}
                     </h5>
+                    <div>
+                      {" "}
+                      {product.price === product.priceAfterDiscount ? (
+                        ""
+                      ) : (
+                        <del>{showPrice.price?.toLocaleString("en-US")} đ</del>
+                      )}
+                    </div>
                     <div
                       className="available"
                       style={{ display: "flex", fontSize: 20 }}
@@ -324,7 +334,7 @@ const DetailMedicine = () => {
                           style={{
                             color: "#334155",
                             fontWeight: 500,
-                            marginRight: 10,
+                            marginRight: 54,
                           }}
                         >
                           Xuất Xứ:{" "}
@@ -334,16 +344,15 @@ const DetailMedicine = () => {
                       <div
                         style={{
                           display: "flex",
-                          width: 650,
                           marginBottom: 20,
+                          width: 650,
                         }}
                       >
                         <div
                           style={{
                             color: "#334155",
-                            width: 90,
                             fontWeight: 500,
-                            marginRight: 18,
+                            marginRight: 23,
                           }}
                         >
                           Công dụng:
@@ -391,7 +400,6 @@ const DetailMedicine = () => {
                 </div>
                 <div>
                   <div className="detail-card">
-                   
                     <div>
                       <div className="card-header-detail">
                         Công Dụng Sản Phẩm
@@ -402,12 +410,36 @@ const DetailMedicine = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <table className="table">
-                      <tr>
-                        <th>Thành Phần</th>
-                      </tr>
-                    </table>
+                  <div className="detail-card" style={{ marginTop: -90 }}>
+                    <div>
+                      <div className="card-header-detail">Thành Phần</div>
+                      <div className="card-body-content">
+                        <table className="table-ingredient" >
+                          <thead className="tb-header"  style={{borderRadius:20}} >
+                            <tr >
+                              <th style={{padding:20 }}>Thông Tin Thành Phần</th>
+
+                              <th>Hàm Lượng</th>
+                            </tr>
+                          </thead>
+                          <tbody className="tb-body">
+                            {ingredientModel &&
+                              ingredientModel.length &&
+                              ingredientModel.map((e) => {
+                                return (
+                                  <tr>
+                                    <td style={{padding:20}}>{e.ingredientName}</td>
+                                    <td>
+                                      {e.content}
+                                      {e.unitName}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

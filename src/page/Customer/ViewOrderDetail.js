@@ -145,7 +145,7 @@ const ViewOrderDetail = () => {
 
                           <th
                             style={{
-                              width: 360,
+                              width: 330,
                               backgroundColor: "#f6f9fc",
                               borderColor: "white",
                               color: "#bfc8d3",

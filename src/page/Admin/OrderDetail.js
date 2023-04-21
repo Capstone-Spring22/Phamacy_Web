@@ -21,7 +21,7 @@ const OrderDetail = () => {
   const [note, setNote] = useState([]);
   const [noteId, setNoteId] = useState("");
   const [description, setDescription] = useState("");
-
+  const [site, setSite] = useState(null);
   const [noteUpdate, setNodeUpdate] = useState([
     { orderDetailId: "", note: "" },
   ]);
@@ -31,7 +31,6 @@ const OrderDetail = () => {
       const accessToken = localStorage.getItem("accessToken");
       const path = `Order/${myId}`;
       const res = await getDataByPath(path, accessToken, "");
-      console.log("res", res.data.orderTypeId);
       if (res !== null && res !== undefined && res.status === 200) {
         console.log("cc", OrderDetail);
         setOrderDetail(res.data);
@@ -42,6 +41,24 @@ const OrderDetail = () => {
       }
     }
   }
+  async function loadDataSite() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `Site?pageIndex=1&pageItems=10`;
+      console.log("display2", getDataByPath);
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("display31321", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setSite(res.data.items);
+      }
+    }
+  }
+  useEffect(() => {
+    loadDataSite();
+  }, []);
+  const sites = site?.find((sc) => sc.id === OrderDetail.siteId);
+  const fullyAddressSite = sites ? sites.fullyAddress : "";
+  const siteName = sites ? sites.siteName : "";
   async function updateNote() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -107,6 +124,46 @@ const OrderDetail = () => {
       const data = {
         orderId: OrderDetail.id,
         orderStatusId: OrderDetail.orderStatus,
+        description: descriptionStatus,
+      };
+      const path = `Order/ExecuteOrder`;
+      console.log("res", data);
+      const res = await updateDataByPath(path, accessToken, data);
+      console.log("res", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setIsOpen2(false);
+        Swal.fire("Cập Nhật Trạng Thái Thành Công", "", "success");
+        loadDataOrderById();
+      }
+    }
+  }
+  async function updateStatusOrderDeli() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+
+      const data = {
+        orderId: OrderDetail.id,
+        orderStatusId: 7,
+        description: descriptionStatus,
+      };
+      const path = `Order/ExecuteOrder`;
+      console.log("res", data);
+      const res = await updateDataByPath(path, accessToken, data);
+      console.log("res", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setIsOpen2(false);
+        Swal.fire("Cập Nhật Trạng Thái Thành Công", "", "success");
+        loadDataOrderById();
+      }
+    }
+  }
+  async function updateStatusOrderGo() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+
+      const data = {
+        orderId: OrderDetail.id,
+        orderStatusId: 9,
         description: descriptionStatus,
       };
       const path = `Order/ExecuteOrder`;
@@ -269,7 +326,17 @@ const OrderDetail = () => {
       </>
     );
   }
+  const [checkedIds, setCheckedIds] = useState([]);
 
+  const handleCheckboxChange = (e, id) => {
+    if (e.target.checked) {
+      setCheckedIds([...checkedIds, id]);
+    } else {
+      setCheckedIds(checkedIds.filter((checkedId) => checkedId !== id));
+    }
+  };
+
+  const allChecked = ProductDetail.every((e) => checkedIds.includes(e.id));
   return (
     <div className="layout-wrapper layout-content-navbar">
       <div className="layout-container">
@@ -283,112 +350,355 @@ const OrderDetail = () => {
             id="my-dialog2"
           >
             <a href="#" className="overlay-close" />
+            {OrderDetail.orderStatusName === "Đang chuẩn bị hàng" &&
+            OrderDetail.orderTypeId === 3 ? (
+              <div className="row " style={{ width: 900 }}>
+                <div className="col-xl">
+                  <div className="card mb-4">
+                    <div
+                      className="card-header d-flex justify-content-between align-items-center"
+                      style={{
+                        height: 70,
+                        backgroundColor: "white",
 
-            <div className="row " style={{ width: 700 }}>
-              <div className="col-xl">
-                <div className="card mb-4">
-                  <div
-                    className="card-header d-flex justify-content-between align-items-center"
-                    style={{
-                      height: 70,
-                      backgroundColor: "white",
-
-                      marginLeft: 230,
-                      borderColor: "#f4f4f4",
-                    }}
-                  >
-                    <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
-                  </div>
-                  <div className="card-body">
-                    <form>
-                      <div
-                        style={{
-                          display: "grid",
-
-                          padding: 30,
-                        }}
-                      >
+                        marginLeft: 230,
+                        borderColor: "#f4f4f4",
+                      }}
+                    >
+                      <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
+                    </div>
+                    <div className="card-body">
+                      <form>
                         <div
-                          className="input-group input-group-merge"
-                          style={{ width: "95%" }}
+                          style={{
+                            display: "grid",
+
+                            padding: 30,
+                          }}
                         >
-                          <select
-                            name="city"
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            onChange={(e) => {
-                              setOrderDetail({
-                                ...OrderDetail,
-                                orderStatus: e.target.value,
-                              });
-                            }}
-                            value={OrderDetail.orderStatus}
+                          <div
+                            className="input-group input-group-merge"
+                            style={{ width: "95%" }}
                           >
-                            {orderStatus &&
-                              orderStatus.length &&
-                              orderStatus.map((e, index) => {
+                            <select
+                              name="city"
+                              disabled
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              onChange={(e) => {
+                                setOrderDetail({
+                                  ...OrderDetail,
+                                  orderStatus: e.target.value,
+                                });
+                              }}
+                              value={7}
+                            >
+                              {orderStatus &&
+                                orderStatus.length &&
+                                orderStatus.map((e, index) => {
+                                  return (
+                                    <>
+                                      <option
+                                        key={e.orderStatusId}
+                                        value={e.orderStatusId}
+                                      >
+                                        {e.orderStatusName}
+                                      </option>
+                                    </>
+                                  );
+                                })}
+                            </select>
+                          </div>
+                          <div>
+                            {" "}
+                            {ProductDetail &&
+                              ProductDetail.length &&
+                              ProductDetail.map((e) => {
                                 return (
-                                  <>
-                                    <option
-                                      key={e.orderStatusId}
-                                      value={e.orderStatusId}
-                                    >
-                                      {e.orderStatusName}
-                                    </option>
-                                  </>
+                                  <div
+                                    key={e.id}
+                                    className="product-cart-p"
+                                    style={{ width: 700 }}
+                                  >
+                                    <img
+                                      src={e.imageUrl}
+                                      style={{
+                                        height: 70,
+                                        width: 60,
+                                        borderRadius: 7,
+                                        objectFit: "cover",
+                                      }}
+                                    />
+                                    <div className="name-product-pharmacist">
+                                      <div>Tên Sản Phẩm</div>
+                                      <div> {e.productName}</div>
+                                    </div>
+
+                                    <div style={{ width: 380 }}>
+                                      <div>Số Lượng</div>
+                                      <div>
+                                        {e.quantity} {e.unitName}
+                                      </div>
+                                    </div>
+                                    <div style={{ width: 380 }}>
+                                      <div>Xác Nhận</div>
+                                      <input
+                                        type="checkbox"
+                                        onChange={(event) =>
+                                          handleCheckboxChange(event, e.id)
+                                        }
+                                      />
+                                    </div>
+                                  </div>
                                 );
                               })}
-                          </select>
-                        </div>
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="basic-icon-default-phone"
-                          >
-                            Mô Tả
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <textarea
-                              style={{ height: 200 }}
-                              type="text"
-                              className="form-control"
-                              id="basic-icon-default-fullname"
-                              placeholder="Viết Mô Tả "
-                              aria-label="John Doe"
-                              aria-describedby="basic-icon-default-fullname2"
-                              onChange={(e) =>
-                                setDescriptionStatus(e.target.value)
-                              }
-                            />
+                          </div>
+                          <div className="mb-3" style={{ width: "95%" }}>
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-phone"
+                            >
+                              Mô Tả
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <textarea
+                                style={{ height: 100 }}
+                                type="text"
+                                className="form-control"
+                                id="basic-icon-default-fullname"
+                                placeholder="Viết Mô Tả "
+                                aria-label="John Doe"
+                                aria-describedby="basic-icon-default-fullname2"
+                                onChange={(e) =>
+                                  setDescriptionStatus(e.target.value)
+                                }
+                              />
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div style={{ display: "flex" }}>
-                        <button
-                          type="submit"
-                          className="button-28"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            updateStatusOrder();
-                          }}
-                          style={{
-                            height: 30,
-                            width: 80,
-                            fontSize: 13,
-                            marginLeft: 23,
+                        {allChecked && (
+                          <div style={{ display: "flex" }}>
+                            <button
+                              type="submit"
+                              className="button-28"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                updateStatusOrderDeli();
+                              }}
+                              style={{
+                                height: 30,
+                                width: 80,
+                                fontSize: 13,
+                                marginLeft: 23,
 
-                            backgroundColor: "#82AAE3",
-                            color: "white",
-                          }}
-                        >
-                          Xác Nhận
-                        </button>
-                      </div>
-                    </form>
+                                backgroundColor: "#82AAE3",
+                                color: "white",
+                              }}
+                            >
+                              Xác Nhận
+                            </button>
+                          </div>
+                        )}
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ) : OrderDetail.orderStatusName === "Đang giao hàng" ? (
+              <div className="row " style={{ width: 900 }}>
+                <div className="col-xl">
+                  <div className="card mb-4">
+                    <div
+                      className="card-header d-flex justify-content-between align-items-center"
+                      style={{
+                        height: 70,
+                        backgroundColor: "white",
+
+                        marginLeft: 230,
+                        borderColor: "#f4f4f4",
+                      }}
+                    >
+                      <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
+                    </div>
+                    <div className="card-body">
+                      <form>
+                        <div
+                          style={{
+                            display: "grid",
+
+                            padding: 30,
+                          }}
+                        >
+                          <div
+                            className="input-group input-group-merge"
+                            style={{ width: "95%" }}
+                          >
+                            Vui Lòng Chuyển Qua Điện Thoại Để Giao Hàng
+                            <img src="https://jobsgo.vn/blog/wp-content/uploads/2019/09/nhan-vien-giao-hang.png" />
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : OrderDetail.orderStatusName === "Đang chuẩn bị hàng" &&
+              OrderDetail.orderTypeId === 2 ? (
+              <div className="row " style={{ width: 900 }}>
+                <div className="col-xl">
+                  <div className="card mb-4">
+                    <div
+                      className="card-header d-flex justify-content-between align-items-center"
+                      style={{
+                        height: 70,
+                        backgroundColor: "white",
+
+                        marginLeft: 230,
+                        borderColor: "#f4f4f4",
+                      }}
+                    >
+                      <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
+                    </div>
+                    <div className="card-body">
+                      <form>
+                        <div
+                          style={{
+                            display: "grid",
+
+                            padding: 30,
+                          }}
+                        >
+                          <div
+                            className="input-group input-group-merge"
+                            style={{ width: "95%" }}
+                          >
+                            <select
+                              name="city"
+                              disabled
+                              id="basic-icon-default-email"
+                              className="form-control"
+                              onChange={(e) => {
+                                setOrderDetail({
+                                  ...OrderDetail,
+                                  orderStatus: e.target.value,
+                                });
+                              }}
+                              value={9}
+                            >
+                              {orderStatus &&
+                                orderStatus.length &&
+                                orderStatus.map((e, index) => {
+                                  return (
+                                    <>
+                                      <option
+                                        key={e.orderStatusId}
+                                        value={e.orderStatusId}
+                                      >
+                                        {e.orderStatusName}
+                                      </option>
+                                    </>
+                                  );
+                                })}
+                            </select>
+                          </div>
+                          <div>
+                            {" "}
+                            {ProductDetail &&
+                              ProductDetail.length &&
+                              ProductDetail.map((e) => {
+                                return (
+                                  <div
+                                    key={e.id}
+                                    className="product-cart-p"
+                                    style={{ width: 700 }}
+                                  >
+                                    <img
+                                      src={e.imageUrl}
+                                      style={{
+                                        height: 70,
+                                        width: 60,
+                                        borderRadius: 7,
+                                        objectFit: "cover",
+                                      }}
+                                    />
+                                    <div className="name-product-pharmacist">
+                                      <div>Tên Sản Phẩm</div>
+                                      <div> {e.productName}</div>
+                                    </div>
+
+                                    <div style={{ width: 380 }}>
+                                      <div>Số Lượng</div>
+                                      <div>
+                                        {e.quantity} {e.unitName}
+                                      </div>
+                                    </div>
+                                    <div style={{ width: 380 }}>
+                                      <div>Xác Nhận</div>
+                                      <input
+                                        type="checkbox"
+                                        onChange={(event) =>
+                                          handleCheckboxChange(event, e.id)
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                          </div>
+                          <div className="mb-3" style={{ width: "95%" }}>
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-phone"
+                            >
+                              Mô Tả
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <textarea
+                                style={{ height: 100 }}
+                                type="text"
+                                className="form-control"
+                                id="basic-icon-default-fullname"
+                                placeholder="Viết Mô Tả "
+                                aria-label="John Doe"
+                                aria-describedby="basic-icon-default-fullname2"
+                                onChange={(e) =>
+                                  setDescriptionStatus(e.target.value)
+                                }
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        {allChecked && (
+                          <div style={{ display: "flex" }}>
+                            <button
+                              type="submit"
+                              className="button-28"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                updateStatusOrderGo();
+                              }}
+                              style={{
+                                height: 30,
+                                width: 80,
+                                fontSize: 13,
+                                marginLeft: 23,
+
+                                backgroundColor: "#82AAE3",
+                                color: "white",
+                              }}
+                            >
+                              Xác Nhận
+                            </button>
+                          </div>
+                        )}
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div></div>
+            )}
           </div>
           <div
             className={`dialog overlay ${isOpen ? "" : "hidden"}`}
@@ -640,132 +950,131 @@ const OrderDetail = () => {
                       <></>
                     </div>
 
-                 
-                      <table className="table table-view-order">
-                        <thead
-                          style={{
-                            backgroundColor: "#f6f9fc",
-                            borderColor: "white",
-                            color: "",
-                          }}
-                        >
-                          <tr>
-                            <th
-                              style={{
-                                width: 130,
-                                backgroundColor: "#f6f9fc",
-                                borderColor: "white",
-                                color: "#bfc8d3",
-                              }}
-                            >
-                              &nbsp; &nbsp;Hình ảnh
-                            </th>
+                    <table className="table table-view-order">
+                      <thead
+                        style={{
+                          backgroundColor: "#f6f9fc",
+                          borderColor: "white",
+                          color: "",
+                        }}
+                      >
+                        <tr>
+                          <th
+                            style={{
+                              width: 130,
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            &nbsp; &nbsp;Hình ảnh
+                          </th>
 
-                            <th
-                              style={{
-                                width: 400,
-                                backgroundColor: "#f6f9fc",
-                                borderColor: "white",
-                                color: "#bfc8d3",
-                              }}
-                            >
-                              Tên Sản Phẩm
-                            </th>
-                            <th
-                              style={{
-                                backgroundColor: "#f6f9fc",
-                                borderColor: "white",
-                                color: "#bfc8d3",
-                              }}
-                            >
-                              Số Lượng
-                            </th>
-                            <th
-                              style={{
-                                backgroundColor: "#f6f9fc",
-                                borderColor: "white",
-                                color: "#bfc8d3",
-                              }}
-                            >
-                              Đơn vị
-                            </th>
-                            <th
-                              style={{
-                                backgroundColor: "#f6f9fc",
-                                borderColor: "white",
-                                color: "#bfc8d3",
-                              }}
-                            >
-                              Giá
-                            </th>
-                            <th
-                              style={{
-                                backgroundColor: "#f6f9fc",
-                                borderColor: "white",
-                                color: "#bfc8d3",
-                              }}
-                            >
-                              Thêm Ghi Chú
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="table-border-bottom-0">
-                          {ProductDetail &&
-                            ProductDetail.length &&
-                            ProductDetail.map((e) => {
-                              return (
-                                <tr key={e.id}>
-                                  <td>
-                                    &nbsp; &nbsp;
-                                    <img
-                                      src={e.imageUrl}
-                                      style={{
-                                        height: 90,
-                                        width: 70,
-                                        borderRadius: 7,
-                                        objectFit: "cover",
-                                      }}
-                                    />
-                                  </td>
-                                  <td>{e.productName}</td>
-                                  <td>{e.quantity}</td>
-                                  <td>{e.unitName}</td>
-                                  <td>
-                                    {e.priceTotal.toLocaleString("en-US")} đ
-                                  </td>
-                                  <td>
-                                    {" "}
-                                    <a
-                                      class="button-81"
-                                      role="button"
-                                      href="#my-dialog3"
-                                      onClick={() => {
-                                        setIsOpen(true);
-                                        handleNoteID(e.id);
-                                      }}
+                          <th
+                            style={{
+                              width: 400,
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            Tên Sản Phẩm
+                          </th>
+                          <th
+                            style={{
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            Số Lượng
+                          </th>
+                          <th
+                            style={{
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            Đơn vị
+                          </th>
+                          <th
+                            style={{
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            Giá
+                          </th>
+                          <th
+                            style={{
+                              backgroundColor: "#f6f9fc",
+                              borderColor: "white",
+                              color: "#bfc8d3",
+                            }}
+                          >
+                            Thêm Ghi Chú
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="table-border-bottom-0">
+                        {ProductDetail &&
+                          ProductDetail.length &&
+                          ProductDetail.map((e) => {
+                            return (
+                              <tr key={e.id}>
+                                <td>
+                                  &nbsp; &nbsp;
+                                  <img
+                                    src={e.imageUrl}
+                                    style={{
+                                      height: 90,
+                                      width: 70,
+                                      borderRadius: 7,
+                                      objectFit: "cover",
+                                    }}
+                                  />
+                                </td>
+                                <td>{e.productName}</td>
+                                <td>{e.quantity}</td>
+                                <td>{e.unitName}</td>
+                                <td>
+                                  {e.priceTotal.toLocaleString("en-US")} đ
+                                </td>
+                                <td>
+                                  {" "}
+                                  <a
+                                    class="button-81"
+                                    role="button"
+                                    href="#my-dialog3"
+                                    onClick={() => {
+                                      setIsOpen(true);
+                                      handleNoteID(e.id);
+                                    }}
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      fill="currentColor"
+                                      class="bi bi-pencil-square"
+                                      viewBox="0 0 16 16"
                                     >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="16"
-                                        height="16"
-                                        fill="currentColor"
-                                        class="bi bi-pencil-square"
-                                        viewBox="0 0 16 16"
-                                      >
-                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                        <path
-                                          fill-rule="evenodd"
-                                          d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-                                        />
-                                      </svg>
-                                    </a>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                        </tbody>
-                        <tbody >
-                        <tr style={{border:"1px solid white"}}>
+                                      <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                      <path
+                                        fill-rule="evenodd"
+                                        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                                      />
+                                    </svg>
+                                  </a>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                      <tbody>
+                        <tr style={{ border: "1px solid white" }}>
                           <td style={{ fontSize: 15, fontWeight: 500 }}>
                             &nbsp; &nbsp;Tổng Giá
                           </td>
@@ -775,10 +1084,11 @@ const OrderDetail = () => {
                           <td></td>
 
                           <td style={{ fontSize: 15, fontWeight: 500 }}>
-                            {OrderDetail.subTotalPrice?.toLocaleString("en-US")} đ
+                            {OrderDetail.subTotalPrice?.toLocaleString("en-US")}{" "}
+                            đ
                           </td>
                         </tr>
-                        <tr style={{border:"1px solid white"}}>
+                        <tr style={{ border: "1px solid white" }}>
                           <td style={{ fontSize: 15, fontWeight: 500 }}>
                             &nbsp; &nbsp;Giá Giảm
                           </td>
@@ -788,11 +1098,18 @@ const OrderDetail = () => {
                           <td></td>
 
                           <td style={{ fontSize: 15, fontWeight: 500 }}>
-                            {OrderDetail.discountPrice?.toLocaleString("en-US")} đ
+                            {OrderDetail.discountPrice?.toLocaleString("en-US")}{" "}
+                            đ
                           </td>
                         </tr>
-                        <tr style={{border:"1px solid white",width:100}}>
-                          <td style={{ fontSize: 15, fontWeight: 500,width:100 }}>
+                        <tr style={{ border: "1px solid white", width: 100 }}>
+                          <td
+                            style={{
+                              fontSize: 15,
+                              fontWeight: 500,
+                              width: 100,
+                            }}
+                          >
                             &nbsp; &nbsp;Thành Tiền
                           </td>
                           <td></td>
@@ -805,8 +1122,7 @@ const OrderDetail = () => {
                           </td>
                         </tr>
                       </tbody>
-                      </table>
-                   
+                    </table>
                   </div>
                 </div>
 
@@ -1142,22 +1458,44 @@ const OrderDetail = () => {
                                 {OrderDetail.orderTypeName ===
                                 "Đến lấy tại cửa hàng" ? (
                                   <div>
-                                    {" "}
-                                    <label
-                                      className="form-label"
-                                      htmlFor="basic-icon-default-phone"
-                                    >
-                                      Địa Chỉ Của Cửa Hàng
-                                    </label>
-                                    <div className="input-group input-group-merge">
-                                      <div
-                                        type="text"
-                                        id="basic-icon-default-fullname"
-                                        placeholder="Tên Sản Phẩm"
-                                        aria-label="Tên Sản Phẩm"
-                                        aria-describedby="basic-icon-default-fullname2"
+                                    <div>
+                                      {" "}
+                                      <label
+                                        className="form-label"
+                                        htmlFor="basic-icon-default-phone"
                                       >
-                                        {orderDelivery?.homeNumber}
+                                        Tên Cửa Hàng
+                                      </label>
+                                      <div className="input-group input-group-merge">
+                                        <div
+                                          type="text"
+                                          id="basic-icon-default-fullname"
+                                          placeholder="Tên Sản Phẩm"
+                                          aria-label="Tên Sản Phẩm"
+                                          aria-describedby="basic-icon-default-fullname2"
+                                        >
+                                          {siteName}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div>
+                                      {" "}
+                                      <label
+                                        className="form-label"
+                                        htmlFor="basic-icon-default-phone"
+                                      >
+                                        Địa Chỉ Của Cửa Hàng
+                                      </label>
+                                      <div className="input-group input-group-merge">
+                                        <div
+                                          type="text"
+                                          id="basic-icon-default-fullname"
+                                          placeholder="Tên Sản Phẩm"
+                                          aria-label="Tên Sản Phẩm"
+                                          aria-describedby="basic-icon-default-fullname2"
+                                        >
+                                          {fullyAddressSite}
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
@@ -1178,7 +1516,7 @@ const OrderDetail = () => {
                                         aria-label="Tên Sản Phẩm"
                                         aria-describedby="basic-icon-default-fullname2"
                                       >
-                                        {orderDelivery?.homeNumber}
+                                        {orderDelivery?.fullyAddress}
                                       </div>
                                     </div>
                                   </div>
