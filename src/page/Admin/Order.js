@@ -11,6 +11,7 @@ const Order = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
   const [totalRecord, setTotalRecord] = useState([]);
+  const [acceptable, setAcceptable] = useState("");
 
   let history = useHistory();
   const update = (myId) => {
@@ -18,16 +19,16 @@ const Order = () => {
     history.push("/OrderDetail");
   };
   const NotAcceptable = [
-    { name: "Đơn Chờ Xử Lý", value: "" },
+    { name: "Tất Cả Đơn", value: "" },
     { name: "Đơn Chờ Xử Lý", value: true },
     { name: "Đơn Đang Thực Hiện", value: false },
   ];
   const [activeIndex, setActiveIndex] = useState(0);
 
-  async function loadDataOrder2(search) {
+  async function loadDataOrder2(acceptable) {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      const path = `Order?NotAcceptable=${search}&&pageIndex=${currentPage}&pageItems=${perPage}`;
+      const path = `Order?NotAcceptable=${acceptable}&&pageIndex=${currentPage}&pageItems=${perPage}`;
       const res = await getDataByPath(path, accessToken, "");
       console.log("check", res);
       if (res !== null && res !== undefined && res.status === 200) {
@@ -39,8 +40,8 @@ const Order = () => {
 
   const [activeItem, setActiveItem] = useState("Order");
   useEffect(() => {
-    loadDataOrder2("");
-  }, [currentPage, perPage]);
+    loadDataOrder2(acceptable);
+  }, [acceptable, currentPage, perPage]);
 
   return (
     <>
@@ -119,7 +120,7 @@ const Order = () => {
                             <div
                               onClick={() => {
                                 {
-                                  loadDataOrder2(e.value);
+                                  setAcceptable(e.value);
                                 }
                                 setActiveIndex(index);
                               }}

@@ -14,7 +14,7 @@ const CheckOutPharmacist = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [point, setPoint] = useState(0);
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(2);
 
   async function loadDataMedicine(search) {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -131,7 +131,6 @@ const CheckOutPharmacist = () => {
           name: drug1.name,
         });
         setListCart([...listCart]);
-        setCount(parseInt(count) + 1);
       }
 
       console.log("display", listCart);
@@ -210,13 +209,14 @@ const CheckOutPharmacist = () => {
     );
   }
 
-  function updateProductID(productId, newQuantity) {
+  function updateProductID(productId, newQuantity, newPrice) {
     setListCart((prevState) =>
       prevState.map((item) => {
         if (item.productId === productId) {
           return {
             ...item,
             productId: newQuantity,
+            discountPrice: newPrice,
           };
         }
         return item;
@@ -225,13 +225,33 @@ const CheckOutPharmacist = () => {
   }
 
   useEffect(() => {
-    setProduct({
-      ...product,
-      totalPrice: product?.products?.reduce(
+    if (product?.usedPoint > point) {
+      console.log("display", "lỗi quá điểm");
+    }
+    if (
+      parseInt(product?.usedPoint) * 1000 >
+      listCart?.reduce(
         (total, curent) => total + curent.quantity * curent.discountPrice,
         0
-      ),
-    });
+      )
+    ) {
+      console.log("display", "lỗi quá giảm giá");
+    } else {
+      setProduct({
+        ...product,
+        subTotalPrice: listCart?.reduce(
+          (total, curent) => total + curent.quantity * curent.discountPrice,
+          0
+        ),
+        discountPrice: parseInt(product?.usedPoint) * 1000,
+        totalPrice:
+          listCart?.reduce(
+            (total, curent) => total + curent.quantity * curent.discountPrice,
+            0
+          ) -
+          parseInt(product?.usedPoint) * 1000,
+      });
+    }
   }, [count]);
 
   return (
@@ -344,7 +364,10 @@ const CheckOutPharmacist = () => {
                                   <div
                                     key={e.id}
                                     className="product-cart-p"
-                                    onClick={() => addToCart(e.id)}
+                                    onClick={() => {
+                                      addToCart(e.id);
+                                      setCount(parseInt(count) + 1);
+                                    }}
                                   >
                                     <img
                                       src={e.imageModel.imageURL}
@@ -363,13 +386,18 @@ const CheckOutPharmacist = () => {
                                     <div style={{ width: 380 }}>
                                       <div>Số Lượng Tồn Kho:</div>
                                       <div>
-                                        {e.productInventoryModel.quantity}   {e.productInventoryModel.unitName}
-                                      
+                                        {e.productInventoryModel.quantity}{" "}
+                                        {e.productInventoryModel.unitName}
                                       </div>
                                     </div>
                                     <div style={{ width: 380 }}>
                                       <div>Giá</div>
-                                      <div>{e.priceAfterDiscount} đ /  {e.productInventoryModel.unitName}</div>
+                                      <div>
+                                        {e.priceAfterDiscount.toLocaleString(
+                                          "en-US"
+                                        )}{" "}
+                                        đ / {e.productInventoryModel.unitName}
+                                      </div>
                                     </div>
                                   </div>
                                 );
@@ -559,141 +587,163 @@ const CheckOutPharmacist = () => {
                         flexWrap: "wrap",
                         padding: 1,
                       }}
-                      
-                    ><div className="cart-pharmacist-checkout">{listCart.length === 0 ? (
-                        <img
-                          style={{ height: 200 }}
-                          src="https://rtworkspace.com/wp-content/plugins/rtworkspace-ecommerce-wp-plugin/assets/img/empty-cart.png"
-                        />
-                      ) : (
-                        <>
-                          {listCart &&
-                            listCart.map((product) => {
-                              return (
-                                <div className="product-cart-p2">
-                                  <img
-                                    src={product.imageURL}
-                                    style={{
-                                      height: 30,
-                                      width: 30,
-                                      borderRadius: 7,
-                                      objectFit: "cover",
-                                      marginTop: 10,
-                                    }}
-                                  />
-                                  <div key={product.id} style={{ width: 400 }}>
-                                    <div className="name-product-pharmacist2">
-                                      {" "}
-                                      {product.name}
-                                      <div style={{ display: "flex" }}>
-                                        <button
-                                        className="button-minus"
-                                          onClick={() => {
-                                            updateQuantity(
-                                              product.productId,
-                                              product.quantity - 1
-                                            );
-                                          }}
-                                        >
-                                          -
-                                        </button>
-                                        <input
-                                          style={{ height: 30, width: 30 ,marginLeft:15,marginTop:5 }}
-                                          className="input-quantity-pharma"
-                                          value={product.quantity}
-                                          onChange={(e) => {
-                                            setCount(parseInt(count) + 1);
-                                            updateQuantity(
-                                              product.productId,
-                                              e.target.value
-                                            );
-                                          }}
-                                        ></input>{" "}
-                                        <button
-                                        className="button-plus"
-                                          onClick={() => {
-                                            updateQuantity(
-                                              product.productId,
-                                              product.quantity + 1
-                                            );
-                                          }}
-                                        >
-                                          +
-                                        </button>
-                                        <select
-                                          style={{
-                                            height: 30,
-                                            marginLeft: 10,
-                                            border: "none",
-                                          }}
-                                          onChange={(e) => {
-                                            setCount(parseInt(count) + 1);
-                                            updateProductID(
-                                              product.productId,
-                                              e.target.value
-                                            );
-                                          }}
-                                        >
-                                          {product.productPrefer.map((unit) => {
-                                            return (
-                                              <option
-                                                key={unit.id}
-                                                value={unit.id}
-                                              >
-                                                {unit.unitName}
-                                              </option>
-                                            );
-                                          })}
-                                        </select>
-                                        <div
-                                          style={{
-                                            height: 30,
-                                            marginLeft: 10,
-                                            border: "none",
-                                            marginTop: 5,
-                                          }}
-                                        >
-                                          {product.originalPrice} đ
+                    >
+                      <div className="cart-pharmacist-checkout">
+                        {listCart.length === 0 ? (
+                          <img
+                            style={{ height: 200 }}
+                            src="https://rtworkspace.com/wp-content/plugins/rtworkspace-ecommerce-wp-plugin/assets/img/empty-cart.png"
+                          />
+                        ) : (
+                          <>
+                            {listCart &&
+                              listCart.map((product) => {
+                                return (
+                                  <div className="product-cart-p2">
+                                    <img
+                                      src={product.imageURL}
+                                      style={{
+                                        height: 30,
+                                        width: 30,
+                                        borderRadius: 7,
+                                        objectFit: "cover",
+                                        marginTop: 10,
+                                      }}
+                                    />
+                                    <div
+                                      key={product.id}
+                                      style={{ width: 400 }}
+                                    >
+                                      <div className="name-product-pharmacist2">
+                                        {" "}
+                                        {product.name}
+                                        <div style={{ display: "flex" }}>
+                                          <button
+                                            className="button-minus"
+                                            onClick={() => {
+                                              setCount(parseInt(count) + 1);
+                                              updateQuantity(
+                                                product.productId,
+                                                product.quantity - 1
+                                              );
+                                            }}
+                                          >
+                                            -
+                                          </button>
+                                          <input
+                                            style={{
+                                              height: 30,
+                                              width: 30,
+                                              marginLeft: 15,
+                                              marginTop: 5,
+                                            }}
+                                            className="input-quantity-pharma"
+                                            value={product.quantity}
+                                            onChange={(e) => {
+                                              setCount(parseInt(count) + 1);
+                                              updateQuantity(
+                                                product.productId,
+                                                e.target.value
+                                              );
+                                            }}
+                                          ></input>{" "}
+                                          <button
+                                            className="button-plus"
+                                            onClick={() => {
+                                              setCount(parseInt(count) + 1);
+                                              updateQuantity(
+                                                product.productId,
+                                                product.quantity + 1
+                                              );
+                                            }}
+                                          >
+                                            +
+                                          </button>
+                                          <select
+                                            style={{
+                                              height: 30,
+                                              marginLeft: 10,
+                                              border: "none",
+                                            }}
+                                            onChange={(e) => {
+                                              setCount(parseInt(count) + 1);
+                                              updateProductID(
+                                                product.productId,
+                                                e.target.value,
+                                                e.target.options[
+                                                  e.target.selectedIndex
+                                                ].getAttribute("quantity")
+                                              );
+                                            }}
+                                          >
+                                            {product.productPrefer.map(
+                                              (unit) => {
+                                                return (
+                                                  <option
+                                                    key={unit.id}
+                                                    value={unit.id}
+                                                    quantity={
+                                                      unit.priceAfterDiscount
+                                                    }
+                                                  >
+                                                    {unit.unitName}
+                                                  </option>
+                                                );
+                                              }
+                                            )}
+                                          </select>
+                                          <div
+                                            style={{
+                                              height: 30,
+                                              marginLeft: 10,
+                                              border: "none",
+                                              marginTop: 5,
+                                            }}
+                                          >
+                                            {product?.discountPrice?.toLocaleString(
+                                              "en-US"
+                                            )}{" "}
+                                            đ
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
 
-                                  <button
-                                    style={{
-                                      height: 30,
-                                    
-                                      backgroundColor: "white",
-                                      border: "1px solid white",
-                                      color: "red",
-                                    }}
-                                    onClick={() => {
-                                      const newList = listCart.filter(
-                                        (item) =>
-                                          item.productId !== product.productId
-                                      );
+                                    <button
+                                      style={{
+                                        height: 30,
 
-                                      setListCart(newList);
-                                    }}
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="16"
-                                      height="16"
-                                      fill="currentColor"
-                                      class="bi bi-trash3"
-                                      viewBox="0 0 16 16"
-                                     
+                                        backgroundColor: "white",
+                                        border: "1px solid white",
+                                        color: "red",
+                                      }}
+                                      onClick={() => {
+                                        const newList = listCart.filter(
+                                          (item) =>
+                                            item.productId !== product.productId
+                                        );
+
+                                        setListCart(newList);
+                                      }}
                                     >
-                                      <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
-                                    </svg>
-                                  </button>
-                                </div>
-                              );
-                            })}
-                        </>
-                      )}</div>
-                      
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        fill="currentColor"
+                                        class="bi bi-trash3"
+                                        viewBox="0 0 16 16"
+                                      >
+                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                );
+                              })}
+                          </>
+                        )}
+                      </div>
+
                       <div
                         className="mb-3"
                         style={{ width: "45%", marginRight: 20 }}
@@ -751,12 +801,21 @@ const CheckOutPharmacist = () => {
                                 aria-label="Tên Sản Phẩm"
                                 aria-describedby="basic-icon-default-fullname2"
                                 value={product.usedPoint}
-                                onChange={(e) =>
-                                  setProduct({
-                                    ...product,
-                                    usedPoint: e.target.value,
-                                  })
-                                }
+                                onChange={(e) => {
+                                  if (e.target.value === "") {
+                                    setProduct({
+                                      ...product,
+                                      usedPoint: 0,
+                                    });
+                                  } else {
+                                    setProduct({
+                                      ...product,
+                                      usedPoint: e.target.value,
+                                    });
+                                  }
+
+                                  setCount(parseInt(count) + 1);
+                                }}
                               />
                             </div>
                           </div>
@@ -789,6 +848,44 @@ const CheckOutPharmacist = () => {
                                 },
                               })
                             }
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3" style={{ width: "45%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-fullname"
+                        >
+                          Giá trước giảm giá
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="basic-icon-default-fullname"
+                            placeholder="Tên người nhận"
+                            aria-label="Tên Sản Phẩm"
+                            aria-describedby="basic-icon-default-fullname2"
+                            value={product.subTotalPrice}
+                          />
+                        </div>
+                      </div>
+                      <div className="mb-3" style={{ width: "45%" }}>
+                        <label
+                          className="form-label"
+                          htmlFor="basic-icon-default-fullname"
+                        >
+                          Giá sau giảm giá
+                        </label>
+                        <div className="input-group input-group-merge">
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="basic-icon-default-fullname"
+                            placeholder="Tên người nhận"
+                            aria-label="Tên Sản Phẩm"
+                            aria-describedby="basic-icon-default-fullname2"
+                            value={product.totalPrice}
                           />
                         </div>
                       </div>
