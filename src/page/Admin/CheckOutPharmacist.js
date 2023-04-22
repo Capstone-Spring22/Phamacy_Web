@@ -15,14 +15,37 @@ const CheckOutPharmacist = () => {
   const [perPage, setPerPage] = useState(10);
   const [point, setPoint] = useState(0);
   const [count, setCount] = useState(2);
+  const [valueSearch, setvalueSearch] = useState("");
 
-  async function loadDataMedicine(search) {
+  async function loadDataMedicineDefault() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      const path = `Product?isSellFirstLevel=true&productName=${search}&pageIndex=${currentPage}&pageItems=${perPage}`;
+      const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
       const res = await getDataByPath(path, accessToken, "");
+       console.log('display',res)
       if (res !== null && res !== undefined && res.status === 200) {
         setDrug(res.data.items);
+      }
+    }
+  }
+  async function loadDataMedicine(search) {
+    if (search === "") {
+      if (localStorage && localStorage.getItem("accessToken")) {
+        const accessToken = localStorage.getItem("accessToken");
+        const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
+        const res = await getDataByPath(path, accessToken, "");
+        if (res !== null && res !== undefined && res.status === 200) {
+          setDrug(res.data.items);
+        }
+      }
+    } else {
+      if (localStorage && localStorage.getItem("accessToken")) {
+        const accessToken = localStorage.getItem("accessToken");
+        const path = `Product?isSellFirstLevel=true&productName=${search}&pageIndex=${currentPage}&pageItems=${perPage}`;
+        const res = await getDataByPath(path, accessToken, "");
+        if (res !== null && res !== undefined && res.status === 200) {
+          setDrug(res.data.items);
+        }
       }
     }
   }
@@ -176,6 +199,9 @@ const CheckOutPharmacist = () => {
     loadOrderId();
   }, []);
   useEffect(() => {
+    loadDataMedicineDefault();
+  }, []);
+  useEffect(() => {
     setProduct({
       ...product,
       products: newArrayOfObjects,
@@ -287,7 +313,10 @@ const CheckOutPharmacist = () => {
                     className="form-control border-0 shadow-none"
                     placeholder="Search..."
                     aria-label="Search..."
-                    onChange={(e) => loadDataMedicine(e.target.value)}
+                    onChange={(e) => {
+                      loadDataMedicine(e.target.value);
+                      setvalueSearch(e.target.value);
+                    }}
                   />
                 </div>
               </div>
@@ -338,6 +367,11 @@ const CheckOutPharmacist = () => {
             >
               <div className="col-xl">
                 <div className="" style={{ backgroundColor: "transparent" }}>
+                  {valueSearch === "" ? (
+                    <h5>Sản Phẩm Đề Xuất:</h5>
+                  ) : (
+                    <h5>Kết Quả Tra Cứu:</h5>
+                  )}
                   <div className="card-body scroll-p">
                     <div
                       style={{
@@ -386,8 +420,8 @@ const CheckOutPharmacist = () => {
                                     <div style={{ width: 380 }}>
                                       <div>Số Lượng Tồn Kho:</div>
                                       <div>
-                                        {e.productInventoryModel.quantity}{" "}
-                                        {e.productInventoryModel.unitName}
+                                        {e.productInventoryModel?.quantity}{" "}
+                                        {e.productInventoryModel?.unitName}
                                       </div>
                                     </div>
                                     <div style={{ width: 380 }}>
@@ -576,12 +610,14 @@ const CheckOutPharmacist = () => {
                         padding: 1,
                       }}
                     >
-                      <div   style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        padding: 1,
-                        height:200
-                      }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          padding: 1,
+                          height: 200,
+                        }}
+                      >
                         <div
                           className="mb-3"
                           style={{ width: "45%", marginRight: 20 }}

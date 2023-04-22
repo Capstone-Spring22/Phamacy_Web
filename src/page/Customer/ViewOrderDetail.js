@@ -11,10 +11,12 @@ import axios from "axios";
 import Footer from "./Footer";
 import Header from "../Header/Header";
 const ViewOrderDetail = () => {
-  const myId = localStorage.getItem("id");
+  const myId = localStorage.getItem("Oderid");
   const [OrderDetail, setOrderDetail] = useState([]);
   const [ProductDetail, setProductDetail] = useState([]);
   const [orderContactInfo, setOrderContactInfo] = useState([]);
+  const [isOpen4, setIsOpen4] = useState(false);
+  const [reason, setReason] = useState("");
   const [orderDelivery, setOrderDelivery] = useState([]);
   const [actionStatus, setActionStatus] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -33,7 +35,7 @@ const ViewOrderDetail = () => {
       const accessToken = localStorage.getItem("accessTokenUser");
       const path = `Order/${myId}`;
       const res = await getDataByPath(path, accessToken, "");
-      console.log("res", res.data.orderTypeId);
+      console.log("res", res.data);
       if (res !== null && res !== undefined && res.status === 200) {
         console.log("cc", OrderDetail);
         setOrderDetail(res.data);
@@ -58,6 +60,30 @@ const ViewOrderDetail = () => {
       }
     }
   }
+  async function cancelOrder() {
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
+      const deviceId = await axios
+        .get("https://api.ipify.org/?format=json")
+        .then((res) => res.data.ip);
+      const data = {
+        orderId: OrderDetail.id,
+        reason: reason,
+        ipAddress: deviceId,
+      };
+      console.log("data", data);
+      const path = `Order/CancelOrder`;
+      const res = await updateDataByPath(path, accessToken, data);
+      console.log("res1212", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setIsOpen4(false);
+        Swal.fire("Huỷ Thành Công", "", "success");
+        loadDataOrderById();
+      } else {
+        Swal.fire(`${res?.errors?.Reason[0]}`, "", "error");
+      }
+    }
+  }
   const handleNoteID = (id) => {
     setNodeUpdate([{ ...noteUpdate, orderDetailId: id }]);
     setIsOpen(true);
@@ -67,7 +93,7 @@ const ViewOrderDetail = () => {
   async function loadOrderStatusId() {
     console.log("OrderDetail", OrderDetail.orderTypeId);
     const path = `OrderStatus?OrderTypeId=${OrderDetail.orderTypeId}`;
- 
+
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setOrderStatus(res.data);
@@ -94,35 +120,122 @@ const ViewOrderDetail = () => {
                     href="Home"
                     style={{ textDecoration: "none", color: "black" }}
                   >
-                    Home
+                    Trang chủ
                   </a>{" "}
                   <span class="mx-2 mb-0">/</span>{" "}
-                  <strong class="text-black">Cart</strong>
+                  <strong class="text-black">Chi tiết đơn hàng</strong>
                 </div>
               </div>
             </div>
           </div>
+          <div
+            className={`dialog overlay ${isOpen4 ? "" : "hidden"}`}
+            id="my-dialog4"
+          >
+            <a href="#" className="overlay-close" />
 
+            <div className="row " style={{ width: 700 }}>
+              <div className="col-xl">
+                <div className="card mb-4">
+                  <div
+                    className="card-header d-flex justify-content-between align-items-center"
+                    style={{
+                      height: 70,
+                      backgroundColor: "white",
+
+                      marginLeft: 230,
+                      borderColor: "#f4f4f4",
+                    }}
+                  >
+                    <h5 className="mb-0">Huỷ Đơn Hàng</h5>
+                  </div>
+                  <div className="card-body">
+                    <form>
+                      <div
+                        style={{
+                          display: "grid",
+
+                          padding: 30,
+                        }}
+                      >
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-phone"
+                          >
+                            Lý do huỷ
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <textarea
+                              style={{ height: 200 }}
+                              type="text"
+                              className="form-control"
+                              id="basic-icon-default-fullname"
+                              placeholder="Viết Mô Tả "
+                              aria-label="John Doe"
+                              aria-describedby="basic-icon-default-fullname2"
+                              onChange={(e) => setReason(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ display: "flex" }}>
+                        <button
+                          type="submit"
+                          className="button-28"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            cancelOrder();
+                          }}
+                          style={{
+                            height: 30,
+                            width: 80,
+                            fontSize: 13,
+                            paddingTop: 1,
+                            marginLeft: "40%",
+
+                            backgroundColor: "#DF2E38",
+                            color: "white",
+                          }}
+                        >
+                          Huỷ
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className=" section_padding_100 ">
             <div className="container">
               <div className="row">
                 <div style={{ display: "flex" }}>
                   <div className="cart-table " style={{ marginTop: -22 }}>
-                  <div style={{ display: "flex" }}>
-                    <h5
-                      className="card-header"
-                      style={{
-                        padding: "20px 3px",
-                        backgroundColor: "#ffffff",
-                        borderColor: "white",
-                      }}
-                    >
-                      <h3 className="fontagon2">Order #{OrderDetail.id}</h3>
-                      <h5 className="fontagon3">Ngày Tạo: {OrderDetail.createdDate}</h5>
-                    </h5>
+                    <div style={{ display: "flex" }}>
+                      <h5
+                        className="card-header"
+                        style={{
+                          padding: "20px 3px",
+                          backgroundColor: "#ffffff",
+                          borderColor: "white",
+                        }}
+                      >
+                        <h3 className="fontagon2">Order #{OrderDetail.id}</h3>
+                        <h5 className="fontagon3">
+                          Ngày Tạo: &nbsp;&nbsp;&nbsp;
+                          {new Date(OrderDetail.createdDate).toLocaleString(
+                            "vi-VN",
+                            {
+                              timeZone: "Asia/Ho_Chi_Minh",
+                            }
+                          )}{" "}
+                        </h5>
+                      </h5>
 
-                    <></>
-                  </div>
+                      <></>
+                    </div>
                     <table className="table table-view-order">
                       <thead
                         style={{
@@ -213,7 +326,7 @@ const ViewOrderDetail = () => {
                                 <td>{e.quantity}</td>
                                 <td>{e.unitName}</td>
                                 <td>
-                                  {e.originalPrice.toLocaleString("en-US")} đ
+                                  {e.discountPrice.toLocaleString("en-US")} đ
                                 </td>
                                 <td>
                                   {" "}
@@ -235,7 +348,8 @@ const ViewOrderDetail = () => {
                           <td></td>
 
                           <td style={{ fontSize: 15, fontWeight: 500 }}>
-                            {OrderDetail.subTotalPrice?.toLocaleString("en-US")} đ
+                            {OrderDetail.subTotalPrice?.toLocaleString("en-US")}{" "}
+                            đ
                           </td>
                         </tr>
                         <tr>
@@ -248,7 +362,26 @@ const ViewOrderDetail = () => {
                           <td></td>
 
                           <td style={{ fontSize: 15, fontWeight: 500 }}>
-                            {OrderDetail.discountPrice?.toLocaleString("en-US")} đ
+                            {OrderDetail.discountPrice?.toLocaleString("en-US")}{" "}
+                            đ
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ fontSize: 15, fontWeight: 500 }}>
+                            &nbsp; &nbsp;Chi phí khác
+                          </td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+
+                          <td style={{ fontSize: 15, fontWeight: 500 }}>
+                            {(
+                              OrderDetail.totalPrice -
+                              OrderDetail.subTotalPrice +
+                              OrderDetail.discountPrice
+                            ).toLocaleString("en-US")}{" "}
+                            đ
                           </td>
                         </tr>
                         <tr>
@@ -300,15 +433,31 @@ const ViewOrderDetail = () => {
 
                         <li style={{ fontSize: 15 }}>
                           <span>Trạng Thái Đơn Hàng</span>{" "}
-                          <span style={{color:"red"}}>{OrderDetail.orderStatusName}</span>
+                          <span style={{ color: "red" }}>
+                            {OrderDetail.orderStatusName}
+                          </span>
                         </li>
                         <li style={{ fontSize: 15 }}>
                           <span>Loại Đơn Hàng</span>{" "}
                           <span>{OrderDetail.orderTypeName}</span>
                         </li>
+                        {OrderDetail.orderStatusName === "Chờ xác nhận" ? <a
+                          href="#my-dialog4"
+                          onClick={() => {
+                            setIsOpen4(true);
+                          }}
+                          style={{
+                            height: 50,
+                            backgroundColor: "red",
+                            color: "white",
+                            paddingTop: 13,
+                            fontSize: 17,
+                          }}
+                          className="button-28"
+                        >
+                          Huỷ đơn hàng
+                        </a>:<div></div>}
                       </ul>
-
-                
                     </div>
                   </div>
                 </div>

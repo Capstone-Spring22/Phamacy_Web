@@ -7,8 +7,10 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import "../../assets/css/core.css";
 import { getDataByPath, createDataByPath } from "../../services/data.service";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const NewDrug = () => {
+  let history = useHistory();
   const [ingredientCount, setIngredientCount] = useState(1);
   const [unitCount, setUnitCount] = useState(1);
   const [imageInputCount, setImageInputCount] = useState(1);
@@ -206,6 +208,7 @@ const NewDrug = () => {
         console.log("res", changeImg);
         if (res && res.status === 201) {
           Swal.fire("Thêm Sản Phẩm Thành Công", "", "success");
+          history.push("/Drug");
           // window.location.reload();
         } else {
           Swal.fire(res.data.duplicateBarCode, "", "error");
@@ -294,10 +297,7 @@ const NewDrug = () => {
         Swal.fire("Giá không được để trống", "", "question");
         return false;
       }
-      if (!detail.barCode.trim()) {
-        Swal.fire("Bar Code không được để trống", "", "question");
-        return false;
-      }
+     
       const price = parseFloat(detail.price);
       if (detail.unitLevel > 1 && price > prevPrice) {
         Swal.fire("Giá đơn vị cấp dưới không được cao hơn cấp trên", "", "question");

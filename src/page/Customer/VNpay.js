@@ -14,11 +14,10 @@ import axios from "axios";
 const VNPay = (props) => {
   let history = useHistory();
   const update = (myId) => {
-    localStorage.setItem("id", myId);
+    localStorage.setItem("Oderid", myId);
     history.push("/ViewOrderDetail");
   };
   const update1 = (myId) => {
-    localStorage.setItem("id", myId);
     history.push("/home");
   };
   const urlParams = new URLSearchParams(window.location.search);

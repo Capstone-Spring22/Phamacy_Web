@@ -83,13 +83,13 @@ const Medicine = () => {
               <div class="row">
                 <div class="col-md-12 mb-0">
                   <a
-                    href="index.html"
+                    href="/Home"
                     style={{ textDecoration: "none", color: "black" }}
                   >
-                    Home
+                    Trang chủ
                   </a>{" "}
                   <span class="mx-2 mb-0">/</span>{" "}
-                  <strong class="text-black">Store</strong>
+                  <strong class="text-black">Sản phẩm</strong>
                 </div>
               </div>
             </div>
@@ -252,7 +252,7 @@ const Medicine = () => {
                         backgroundColor: "white",
                       }}
                     >
-                      All Products
+                      Tất cả sản phẩm
                     </button>
                     {category &&
                       category.length &&

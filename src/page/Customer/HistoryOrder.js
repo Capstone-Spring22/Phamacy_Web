@@ -19,7 +19,7 @@ const HistoryOrder = () => {
   const [OrderDetail, setOrderDetail] = useState([]);
   let history = useHistory();
   const update = (myId) => {
-    localStorage.setItem("id", myId);
+    localStorage.setItem("Oderid", myId);
     history.push("/ViewOrderDetail");
   };
   async function loadDataOrder() {
@@ -53,10 +53,10 @@ const HistoryOrder = () => {
                     href="Home"
                     style={{ textDecoration: "none", color: "black" }}
                   >
-                    Home
+                    Trang chủ
                   </a>{" "}
                   <span class="mx-2 mb-0">/</span>{" "}
-                  <strong class="text-black">Cart</strong>
+                  <strong class="text-black">Lịch sử đặt hàng</strong>
                 </div>
               </div>
             </div>
@@ -88,7 +88,7 @@ const HistoryOrder = () => {
                         borderColor: "white",
                       }}
                     >
-                      <h3 className="fontagon">Quản Lý Đơn Hàng</h3>
+                      <h3 className="fontagon">Lịch Sử Đơn Hàng</h3>
                     </h5>
 
                     <></>

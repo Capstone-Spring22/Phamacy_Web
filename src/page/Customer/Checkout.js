@@ -14,7 +14,7 @@ import axios from "axios";
 const Home = (props) => {
   let history = useHistory();
   const update = (myId) => {
-    localStorage.setItem("id", myId);
+    localStorage.setItem("Oderid", myId);
     history.push("/ViewOrderDetail");
   };
   const location = useLocation();
@@ -122,14 +122,14 @@ const Home = (props) => {
   const handleCount = () => {
     const deduction = pointUse * 1000;
     const newSubTotal = total.subTotalPrice - deduction;
-    const shippingPrice = 25000;
+    
     if (deduction > total.subTotalPrice) {
       setErrorMessage(
         `Số Điểm Tối Đa Bạn Được Nhập Là ${total.subTotalPrice / 1000}`
       );
       deduction = total.subTotalPrice;
-    }
-    const newTotalPrice = newSubTotal + shippingPrice;
+    }else{
+      const newTotalPrice = newSubTotal + shippingPrice;
     setProduct((prevState) => ({
       ...prevState,
       usedPoint: pointUse,
@@ -137,6 +137,8 @@ const Home = (props) => {
       discountPrice:deduction,
     }));
     setErrorMessage(`Bạn Đã Nhập ${deduction / 1000} tương đương với ${deduction}`);
+    }
+    
   };
 
   async function loadDataCity() {
@@ -211,7 +213,8 @@ const Home = (props) => {
     setProduct((prevState) => ({
       ...prevState,
       orderTypeId: 2,
-      shippingPrice:0
+      shippingPrice:0,
+      totalPrice: cartData.total.totalCartPrice,
     }));
   };
 
@@ -224,7 +227,8 @@ const Home = (props) => {
     setProduct((prevState) => ({
       ...prevState,
       orderTypeId: 3,
-      shippingPrice:25000
+      shippingPrice:25000,
+      totalPrice: product.totalPrice +25000,
     }));
   };
   async function loadDataWard() {
@@ -400,14 +404,14 @@ const Home = (props) => {
                 href="/Home"
                 style={{ textDecoration: "none", color: "black" }}
               >
-                Home
+                Trang chủ
               </a>{" "}
               <span class="mx-2 mb-0">/</span>{" "}
               <a href="/ViewCart" class="text-black">
-                Cart
+                Giỏ hàng
               </a>
               <span class="mx-2 mb-0">/</span>{" "}
-              <strong class="text-black">Check Out</strong>
+              <strong class="text-black">Thanh toán</strong>
             </div>
           </div>
         </div>
@@ -461,7 +465,7 @@ const Home = (props) => {
                           </label>
                           <input
                             type="text"
-                            value={userName}
+                            value={product.reveicerInformation.fullname}
                             style={{
                               border: "1px solid #e4e7eb",
                               backgroundColor: "white",
@@ -487,7 +491,7 @@ const Home = (props) => {
                           </label>
                           <input
                             type="text"
-                            value={phoneNo}
+                            value={product.reveicerInformation.phoneNumber}
                             style={{
                               border: "1px solid #e4e7eb",
                               backgroundColor: "white",
@@ -512,7 +516,7 @@ const Home = (props) => {
                           <label htmlFor="company">Email</label>
                           <input
                             type="text"
-                            value={Email}
+                            value={product.reveicerInformation.email}
                             style={{
                               border: "1px solid #e4e7eb",
                               backgroundColor: "white",
@@ -843,7 +847,7 @@ const Home = (props) => {
                           </label>
                           <input
                             type="text"
-                            value={userName}
+                            value={product.reveicerInformation.fullname}
                             style={{
                               border: "1px solid #e4e7eb",
                               backgroundColor: "white",
@@ -870,7 +874,7 @@ const Home = (props) => {
                           </label>
                           <input
                             type="text"
-                            value={phoneNo}
+                            value={product.reveicerInformation.phoneNumber}
                             style={{
                               border: "1px solid #e4e7eb",
                               backgroundColor: "white",
@@ -895,7 +899,7 @@ const Home = (props) => {
                           <label htmlFor="company">Email</label>
                           <input
                             type="text"
-                            value={Email}
+                            value={product.reveicerInformation.email}
                             style={{
                               border: "1px solid #e4e7eb",
                               backgroundColor: "white",
@@ -1544,7 +1548,7 @@ const Home = (props) => {
                           {(
                             total.totalCartPrice -
                             product.usedPoint * 1000 +
-                            25000
+                            shippingPrice
                           ).toLocaleString("en-US")}{" "}
                           Vnd
                         </span>
@@ -1612,7 +1616,7 @@ const Home = (props) => {
                       Thanh Toán Tiền Mặt Khi Nhận Hàng
                     </label>
                   </div>
-                  <div
+                  {product.totalPrice < 10000 && product.orderTypeId === 2 ? <div></div> :<div
                     className="payment-cart"
                     onClick={() =>
                       document.getElementById("credit-card1").click()
@@ -1638,7 +1642,7 @@ const Home = (props) => {
                       />
                       Thanh Toán Bằng VNPay
                     </label>
-                  </div>
+                  </div>}
                 </div>
                 {id && point > 0 ? (
                   <div className="checkout-payment">

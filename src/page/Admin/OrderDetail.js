@@ -17,7 +17,9 @@ const OrderDetail = () => {
   const [actionStatus, setActionStatus] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
+  const [isOpen4, setIsOpen4] = useState(false);
   const [orderStatus, setOrderStatus] = useState([]);
+  const [reason, setReason] = useState("");
   const [note, setNote] = useState([]);
   const [noteId, setNoteId] = useState("");
   const [description, setDescription] = useState("");
@@ -32,7 +34,7 @@ const OrderDetail = () => {
       const path = `Order/${myId}`;
       const res = await getDataByPath(path, accessToken, "");
       if (res !== null && res !== undefined && res.status === 200) {
-        console.log("cc", OrderDetail);
+        console.log("cc", res.data);
         setOrderDetail(res.data);
         setProductDetail(res.data.orderProducts);
         setOrderContactInfo(res.data.orderContactInfo);
@@ -67,14 +69,31 @@ const OrderDetail = () => {
       const res = await updateDataByPath(path, accessToken, data);
       console.log("data", data);
       if (res !== null && res !== undefined && res.status === 200) {
-        setIsOpen2(false);
-
+        setIsOpen(false);
+        loadDataOrderById();
+        setNodeUpdate([
+          {
+            orderDetailId: "",
+            note: "",
+          },
+        ]);
         Swal.fire("Thêm Ghi Chú Thành Công", "", "success");
       }
     }
   }
   const handleNoteID = (id) => {
-    setNodeUpdate([{ ...noteUpdate, orderDetailId: id }]);
+     console.log('display',id)
+    const productInorder = ProductDetail?.find(
+      (product) => product.id === id
+    );
+     console.log('display',productInorder)
+     setNodeUpdate((prevNote) => [
+      {
+        orderDetailId: productInorder.id,
+        note: productInorder.productNoteFromPharmacist
+      },
+    ])
+   
     setIsOpen(true);
   };
   const [activeItem, setActiveItem] = useState("Order");
@@ -201,9 +220,30 @@ const OrderDetail = () => {
       }
     }
   }
-  const productNoteFromPharmacist = ProductDetail.find(
-    (product) => product.id === noteUpdate[0].orderDetailId
-  )?.productNoteFromPharmacist;
+  async function cancelOrder() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const deviceId = await axios
+        .get("https://api.ipify.org/?format=json")
+        .then((res) => res.data.ip);
+      const data = {
+        orderId: OrderDetail.id,
+        reason: reason,
+        ipAddress: deviceId,
+      };
+      console.log("data", data);
+      const path = `Order/CancelOrder`;
+      const res = await updateDataByPath(path, accessToken, data);
+      console.log("res1212", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setIsOpen4(false);
+        Swal.fire("Huỷ Thành Công", "", "success");
+        loadDataOrderById();
+      } else {
+        Swal.fire(`${res?.errors?.Reason[0]}`, "", "error");
+      }
+    }
+  }
 
   const date = new Date(OrderDetail.createdDate);
 
@@ -250,7 +290,109 @@ const OrderDetail = () => {
         </div>
       </>
     );
-  } else if (OrderDetail.pharmacistId === localStorage.getItem("userID")) {
+  } else if (
+    OrderDetail.pharmacistId === localStorage.getItem("userID") &&
+    OrderDetail.orderStatusName !== "Đơn hàng đã hủy" &&
+    OrderDetail.orderStatusName !== "Bán hàng thành công"
+  ) {
+    OrderStatus = (
+      <>
+        <div className="mb-3" style={{ width: "95%" }}>
+          <div className="input-group input-group-merge">
+            <div
+              type="text"
+              id="basic-icon-default-fullname"
+              placeholder="Tên Sản Phẩm"
+              aria-label="Tên Sản Phẩm"
+              aria-describedby="basic-icon-default-fullname2"
+            >
+              Cập nhật
+            </div>
+          </div>
+
+          <a
+            href="#my-dialog2"
+            onClick={() => {
+              setIsOpen2(true);
+            }}
+            className="button-28"
+            style={{
+              height: 40,
+              width: 250,
+              fontSize: 13,
+              paddingTop: 10,
+
+              marginTop: "20px",
+              marginBottom: -20,
+              backgroundColor: "#82AAE3",
+              color: "white",
+            }}
+          >
+            Cập nhật trạng thái
+          </a>
+          <a
+            href="#my-dialog4"
+            onClick={() => {
+              setIsOpen4(true);
+            }}
+            className="button-28"
+            style={{
+              height: 40,
+              width: 250,
+              fontSize: 13,
+              paddingTop: 10,
+
+              marginTop: "20px",
+              marginBottom: -20,
+              backgroundColor: "#82AAE3",
+              color: "white",
+            }}
+          >
+            Huỷ đơn hàng
+          </a>
+        </div>
+      </>
+    );
+  } else if (
+    OrderDetail.pharmacistId === localStorage.getItem("userID") &&
+    OrderDetail.orderStatusName === "Đơn hàng đã hủy"
+  ) {
+    OrderStatus = (
+      <>
+        <div className="mb-3" style={{ width: "95%" }}>
+          <div className="input-group input-group-merge">
+            <div
+              type="text"
+              id="basic-icon-default-fullname"
+              placeholder="Tên Sản Phẩm"
+              aria-label="Tên Sản Phẩm"
+              aria-describedby="basic-icon-default-fullname2"
+            >
+              Tình trạng đơn hàng
+            </div>
+          </div>
+
+          <div
+            style={{
+              height: 40,
+              width: 250,
+              fontSize: 13,
+              paddingTop: 10,
+              border: "none",
+              marginTop: "20px",
+              marginBottom: -20,
+              color: "red",
+            }}
+          >
+            Đơn hàng đã bị huỷ
+          </div>
+        </div>
+      </>
+    );
+  } else if (
+    OrderDetail.pharmacistId === localStorage.getItem("userID") &&
+    OrderDetail.orderStatusName === "Bán hàng thành công"
+  ) {
     OrderStatus = (
       <>
         <div className="mb-3" style={{ width: "95%" }}>
@@ -824,6 +966,86 @@ const OrderDetail = () => {
             </div>
           </div>
           <div
+            className={`dialog overlay ${isOpen4 ? "" : "hidden"}`}
+            id="my-dialog4"
+          >
+            <a href="#" className="overlay-close" />
+
+            <div className="row " style={{ width: 700 }}>
+              <div className="col-xl">
+                <div className="card mb-4">
+                  <div
+                    className="card-header d-flex justify-content-between align-items-center"
+                    style={{
+                      height: 70,
+                      backgroundColor: "white",
+
+                      marginLeft: 230,
+                      borderColor: "#f4f4f4",
+                    }}
+                  >
+                    <h5 className="mb-0">Huỷ Đơn Hàng</h5>
+                  </div>
+                  <div className="card-body">
+                    <form>
+                      <div
+                        style={{
+                          display: "grid",
+
+                          padding: 30,
+                        }}
+                      >
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-phone"
+                          >
+                            Lý do huỷ
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <textarea
+                              style={{ height: 200 }}
+                              type="text"
+                              className="form-control"
+                              id="basic-icon-default-fullname"
+                              placeholder="Viết Mô Tả "
+                              aria-label="John Doe"
+                              aria-describedby="basic-icon-default-fullname2"
+                              onChange={(e) => setReason(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ display: "flex" }}>
+                        <button
+                          type="submit"
+                          className="button-28"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            cancelOrder();
+                          }}
+                          style={{
+                            height: 30,
+                            width: 80,
+                            fontSize: 13,
+                            paddingTop: 1,
+                            marginLeft: "40%",
+
+                            backgroundColor: "#DF2E38",
+                            color: "white",
+                          }}
+                        >
+                          Huỷ
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
             className={`dialog overlay ${isOpen ? "" : "hidden"}`}
             id="my-dialog3"
           >
@@ -871,9 +1093,7 @@ const OrderDetail = () => {
                               aria-label="John Doe"
                               aria-describedby="basic-icon-default-fullname2"
                               value={
-                                productNoteFromPharmacist === ""
-                                  ? ""
-                                  : productNoteFromPharmacist
+                                 noteUpdate[0].note
                               }
                               onChange={(e) =>
                                 setNodeUpdate((prevNote) => [

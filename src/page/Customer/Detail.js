@@ -164,10 +164,10 @@ const DetailMedicine = () => {
                     href="/Home"
                     style={{ textDecoration: "none", color: "black" }}
                   >
-                    Home
+                    Trang chủ
                   </a>{" "}
                   <span class="mx-2 mb-0">/</span>{" "}
-                  <strong class="text-black">Detail</strong>
+                  <strong class="text-black">Chi tiết sản phẩm</strong>
                 </div>
               </div>
             </div>
@@ -224,12 +224,11 @@ const DetailMedicine = () => {
                         fontWeight: "500",
                       }}
                     >
-                      {showPrice.priceAfterDiscount?.toLocaleString("en-US")} / {showPrice.unitName}
+                      {showPrice.priceAfterDiscount?.toLocaleString("en-US")} đ / {showPrice.unitName}
                     </h5>
                     <div>
-                      {" "}
-                      {product.price === product.priceAfterDiscount ? (
-                        ""
+                      {showPrice.price === showPrice.priceAfterDiscount ? (
+                        <br/>
                       ) : (
                         <del>{showPrice.price?.toLocaleString("en-US")} đ</del>
                       )}

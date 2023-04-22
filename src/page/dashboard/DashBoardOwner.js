@@ -229,11 +229,9 @@ const DashBoardOwner = () => {
                       <div className="d-flex align-items-end row">
                         <div className="col-sm-7">
                           <div className="card-body">
-                            <h5 className="card-title text-primary">Welcome</h5>
+                            <h5 className="card-title text-primary">Chào Mừng</h5>
                             <p className="mb-4">
-                              You have done <span className="fw-bold">72%</span>{" "}
-                              more sales today. Check your new badge in your
-                              profile.
+                              Chúc bạn một ngày làm việc vui vẻ và thuận lợi.
                             </p>
                           </div>
                         </div>
@@ -303,7 +301,7 @@ const DashBoardOwner = () => {
                                 </svg>
                               </div>
                             </div>
-                            <span>Tổng Chi Nhánh</span>
+                            <span className="fw-semibold d-block mb-1">Tổng Chi Nhánh</span>
                             <h3 className="card-title text-nowrap mb-1">{totalSite}</h3>
                             <small
                               className=" fw-semibold"
@@ -635,50 +633,7 @@ const DashBoardOwner = () => {
               </div>
               {/* / Content */}
               {/* Footer */}
-              <footer className="content-footer footer bg-footer-theme">
-                <div className="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-                  <div className="mb-2 mb-md-0">
-                    © , made with ❤️ by
-                    <a
-                      href="https://themeselection.com"
-                      target="_blank"
-                      className="footer-link fw-bolder"
-                    >
-                      ThemeSelection
-                    </a>
-                  </div>
-                  <div>
-                    <a
-                      href="https://themeselection.com/license/"
-                      className="footer-link me-4"
-                      target="_blank"
-                    >
-                      License
-                    </a>
-                    <a
-                      href="https://themeselection.com/"
-                      target="_blank"
-                      className="footer-link me-4"
-                    >
-                      More Themes
-                    </a>
-                    <a
-                      href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                      target="_blank"
-                      className="footer-link me-4"
-                    >
-                      Documentation
-                    </a>
-                    <a
-                      href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-                      target="_blank"
-                      className="footer-link me-4"
-                    >
-                      Support
-                    </a>
-                  </div>
-                </div>
-              </footer>
+              
               {/* / Footer */}
               <div className="content-backdrop fade" />
             </div>

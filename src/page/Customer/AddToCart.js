@@ -155,10 +155,10 @@ const AddToCart = () => {
                     href="Home"
                     style={{ textDecoration: "none", color: "black" }}
                   >
-                    Home
+                    Trang chủ
                   </a>{" "}
                   <span class="mx-2 mb-0">/</span>{" "}
-                  <strong class="text-black">Cart</strong>
+                  <strong class="text-black">Giỏ hàng</strong>
                 </div>
               </div>
             </div>

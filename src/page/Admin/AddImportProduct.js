@@ -6,8 +6,10 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import "../../assets/css/core.css";
 import { getDataByPath, createDataByPath } from "../../services/data.service";
 import AddProductCard from "./components/AddProductCard";
+import { useHistory } from "react-router-dom";
 
 const AddImportProduct = () => {
+  let history = useHistory();
   const [unitCount, setUnitCount] = useState(1);
   const [manufactuner, setManufactuner] = useState([]);
   const [indexUnit, setIndexUnit] = useState(0);
@@ -99,6 +101,7 @@ const AddImportProduct = () => {
         if (res && res.status === 201) {
           Swal.fire("Create Success", "", "success");
           // window.location.reload();
+          history.push("/ImportProduct");
         }
       }
     }

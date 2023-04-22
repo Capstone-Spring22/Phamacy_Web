@@ -657,7 +657,7 @@ const Home = () => {
                               {item.priceAfterDiscount.toLocaleString(
                                 "en-US"
                               )}{" "}
-                              đ /{item.productUnitReferences[0].unitName}
+                              đ / {item.productUnitReferences[0].unitName}
                             </p>
                           </div>
                           <p>
@@ -665,7 +665,9 @@ const Home = () => {
                             {item.price === item.priceAfterDiscount ? (
                               ""
                             ) : (
-                              <del>{item.price} đ</del>
+                              <del>{item.price.toLocaleString(
+                                "en-US"
+                              )} đ</del>
                             )}
                           </p>
                         </div>
@@ -673,7 +675,7 @@ const Home = () => {
                     );
                   })}
               </div>
-              <button to="/medicine" className="button-redirect"> Xem Thêm</button>
+              <Link to="/medicine" className="button-redirect"> Xem Thêm</Link>
             </div>
           </section>
         </div>
@@ -738,7 +740,7 @@ const Home = () => {
                               {item.priceAfterDiscount.toLocaleString(
                                 "en-US"
                               )}{" "}
-                              đ /{item.productUnitReferences[0].unitName}
+                              đ / {item.productUnitReferences[0].unitName}
                             </p>
                           </div>
                           <p>
@@ -746,7 +748,9 @@ const Home = () => {
                             {item.price === item.priceAfterDiscount ? (
                               ""
                             ) : (
-                              <del>{item.price} đ</del>
+                              <del>{item.price.toLocaleString(
+                                "en-US"
+                              )} đ</del>
                             )}
                           </p>
                         </div>
@@ -814,12 +818,14 @@ const Home = () => {
                           >
                             {" "}
                             {item.priceAfterDiscount.toLocaleString("en-US")} đ
-                            /{item.productUnitReferences[0].unitName}
+                            / {item.productUnitReferences[0].unitName}
                             <td>
                               {item.price === item.priceAfterDiscount ? (
                                 ""
                               ) : (
-                                <del>{item.price} đ</del>
+                                <del>{item.price.toLocaleString(
+                                  "en-US"
+                                )} đ</del>
                               )}
                             </td>
                           </h4>

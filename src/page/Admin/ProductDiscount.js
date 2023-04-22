@@ -66,35 +66,7 @@ const ProductDiscount = () => {
                 {/* Navbar */}
                 <nav class="navbar">
                   <div class="navbar-container">
-                    <a href="#" class="navbar-logo"></a>
-                    <ul class="navbar-menu">
-                      <li class="navbar-item">
-                        <a href="#" class="navbar-link">
-                          Name
-                        </a>
-                      </li>
-
-                      <li class="navbar-item">
-                        <div className="avatar-dropdown">
-                          <img
-                            className="avatar"
-                            src="https://toigingiuvedep.vn/wp-content/uploads/2021/05/hinh-anh-avatar-nam-1.jpg"
-                            alt="Avatar"
-                          />
-                          <ul className="dropdown">
-                            <li>
-                              <a href="#">Name</a>
-                            </li>
-                            <li>
-                              <a href="#">Profile</a>
-                            </li>
-                            <li>
-                              <a href="#">Log Out</a>
-                            </li>
-                          </ul>
-                        </div>
-                      </li>
-                    </ul>
+                    
                   </div>
                 </nav>
 

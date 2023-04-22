@@ -28,12 +28,22 @@ const Order = () => {
   async function loadDataOrder2(acceptable) {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      const path = `Order?NotAcceptable=${acceptable}&&pageIndex=${currentPage}&pageItems=${perPage}`;
-      const res = await getDataByPath(path, accessToken, "");
-      console.log("check", res);
-      if (res !== null && res !== undefined && res.status === 200) {
-        setDrug(res.data.items);
-        setTotalRecord(res.data.totalRecord);
+      if (acceptable === true || acceptable === "") {
+        const path = `Order?NotAcceptable=${acceptable}&&pageIndex=${currentPage}&pageItems=${perPage}`;
+        const res = await getDataByPath(path, accessToken, "");
+        console.log("check", res);
+        if (res !== null && res !== undefined && res.status === 200) {
+          setDrug(res.data.items);
+          setTotalRecord(res.data.totalRecord);
+        }
+      } else if (acceptable === false) {
+        const path = `Order?NotAcceptable=${acceptable}&ShowOnlyPharmacist=true&isCompleted=false&pageIndex=${currentPage}&pageItems=${perPage}`;
+        const res = await getDataByPath(path, accessToken, "");
+        console.log("check", res);
+        if (res !== null && res !== undefined && res.status === 200) {
+          setDrug(res.data.items);
+          setTotalRecord(res.data.totalRecord);
+        }
       }
     }
   }
