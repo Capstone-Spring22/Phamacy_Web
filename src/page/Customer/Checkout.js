@@ -58,6 +58,7 @@ const Home = (props) => {
   const [orderTypeId, setOrderTypeId] = useState(2);
   const [selectedButton, setSelectedButton] = useState("button1");
   const [point, setPoint] = useState([]);
+  const [shippingPrice, setShippingPrice] = useState(0);
   const [product, setProduct] = useState({
     orderId: orderID,
     orderTypeId: 2,
@@ -65,7 +66,7 @@ const Home = (props) => {
     pharmacistId: null,
     subTotalPrice: total.subTotalPrice,
     discountPrice: cartData.total.discountPrice,
-    shippingPrice: 25000,
+    shippingPrice: 0,
     totalPrice: cartData.total.totalCartPrice,
     usedPoint: 0,
     payType: "",
@@ -177,6 +178,7 @@ const Home = (props) => {
       const accessToken = localStorage.getItem("accessTokenUser");
       const path = `Customer/${localStorage.getItem("id")}`;
       const res = await getDataByPath(path, accessToken, "");
+       console.log('showPrice',shippingPrice)
       console.log("res.data.customerAddressList", res.data.customerAddressList);
       if (res !== null && res !== undefined && res.status === 200) {
         setListAddress(res.data.customerAddressList);
@@ -205,9 +207,11 @@ const Home = (props) => {
     setShowForm2(false);
     setOrderTypeId(2);
     setSelectedButton("button1");
+    setShippingPrice(0)
     setProduct((prevState) => ({
       ...prevState,
       orderTypeId: 2,
+      shippingPrice:0
     }));
   };
 
@@ -215,10 +219,12 @@ const Home = (props) => {
     setShowForm1(false);
     setShowForm2(true);
     setOrderTypeId(3);
+    setShippingPrice(25000)
     setSelectedButton("button2");
     setProduct((prevState) => ({
       ...prevState,
       orderTypeId: 3,
+      shippingPrice:25000
     }));
   };
   async function loadDataWard() {
@@ -1524,12 +1530,12 @@ const Home = (props) => {
                     <li style={{ fontSize: 15 }}>
                       <span>Số Tiền Giảm </span>{" "}
                       <span>
-                        {(product.usedPoint * 1000).toLocaleString("en-US")}
-                        VND
+                        {(product.usedPoint * 1000).toLocaleString("en-US")}  VND
+                       
                       </span>
                     </li>
                     <li style={{ fontSize: 15 }}>
-                      <span>Phí Giao Hàng</span> <span>25,000VND</span>
+                      <span>Phí Giao Hàng</span> <span>{shippingPrice.toLocaleString("en-US")} vnd</span>
                     </li>
                     {total && total.totalCartPrice && (
                       <li style={{ fontSize: 15 }}>

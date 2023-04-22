@@ -27,6 +27,7 @@ const DetailMedicine = () => {
   const [showPrice, setShowPrice] = useState({
     price: "",
     unitName: "",
+    priceAfterDiscount:""
   });
   const [ingredientModel, setIngredientModel] = useState([]);
   useEffect(() => {
@@ -46,6 +47,7 @@ const DetailMedicine = () => {
         ...showPrice,
         price: res.data.price,
         unitName: res.data.unitName,
+        priceAfterDiscount: res.data.priceAfterDiscount,
       });
       setDescriptionModels(res.data.descriptionModels);
       setImageUrl(res.data.imageModels);
@@ -222,7 +224,7 @@ const DetailMedicine = () => {
                         fontWeight: "500",
                       }}
                     >
-                      {product.priceAfterDiscount?.toLocaleString("en-US")} / {showPrice.unitName}
+                      {showPrice.priceAfterDiscount?.toLocaleString("en-US")} / {showPrice.unitName}
                     </h5>
                     <div>
                       {" "}
@@ -250,6 +252,7 @@ const DetailMedicine = () => {
                             ...showPrice,
                             price: product.price,
                             unitName: product.unitName,
+                            priceAfterDiscount: product.priceAfterDiscount
                           });
                           setSelectedUnitID(product.id);
                         }}
@@ -273,6 +276,7 @@ const DetailMedicine = () => {
                                   ...showPrice,
                                   price: unit.price,
                                   unitName: unit.unitName,
+                                  priceAfterDiscount: unit.priceAfterDiscount
                                 });
                                 setSelectedUnitID(unit.id);
                               }}
