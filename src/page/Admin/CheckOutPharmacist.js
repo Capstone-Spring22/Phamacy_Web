@@ -345,7 +345,7 @@ const CheckOutPharmacist = () => {
                         gridTemplateColumns: "auto auto",
                         padding: 30,
                         marginLeft: 100,
-                        height: 620,
+                        height: 670,
                       }}
                     >
                       <div className="mb-3" style={{ width: "95%" }}>
@@ -567,19 +567,7 @@ const CheckOutPharmacist = () => {
               style={{ width: 440, marginTop: -70, marginLeft: -80 }}
             >
               <div className="col-xl">
-                <div className="card mb-4" style={{ height: 700 }}>
-                  <div
-                    className="card-header d-flex justify-content-between align-items-center"
-                    style={{
-                      height: 70,
-                      backgroundColor: "white",
-                      padding: "20px 24px",
-
-                      borderColor: "#f4f4f4",
-                    }}
-                  >
-                    <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
-                  </div>
+                <div className="card mb-4" style={{ height: 740 }}>
                   <div className="card-body">
                     <div
                       style={{
@@ -588,10 +576,126 @@ const CheckOutPharmacist = () => {
                         padding: 1,
                       }}
                     >
+                      <div   style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        padding: 1,
+                        height:200
+                      }}>
+                        <div
+                          className="mb-3"
+                          style={{ width: "45%", marginRight: 20 }}
+                        >
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-fullname"
+                          >
+                            Số Điện Thoại Người Mua
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="basic-icon-default-fullname"
+                              placeholder="Số điện thoại "
+                              aria-label="Tên Người Mua"
+                              aria-describedby="basic-icon-default-fullname2"
+                              onChange={(e) => {
+                                setProduct({
+                                  ...product,
+                                  reveicerInformation: {
+                                    ...product.reveicerInformation,
+                                    phoneNumber: e.target.value,
+                                  },
+                                });
+                              }}
+                              onKeyPress={(e) => {
+                                if (e.key === "Enter") {
+                                  loadDataUserByPhone();
+                                  loadPointUserByPhone();
+                                }
+                              }}
+                            />
+                          </div>
+
+                          {point !== 0 ? (
+                            <div>
+                              <div>Điểm : {point}</div>
+                              <label
+                                className="form-label"
+                                htmlFor="basic-icon-default-fullname"
+                              >
+                                Điểm Tich Luỹ
+                              </label>
+                              <div className="input-group input-group-merge">
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  id="basic-icon-default-fullname"
+                                  placeholder="Nhập Điểm "
+                                  aria-label="Tên Sản Phẩm"
+                                  aria-describedby="basic-icon-default-fullname2"
+                                  value={
+                                    product.usedPoint === 0
+                                      ? ""
+                                      : product.usedPoint
+                                  }
+                                  onChange={(e) => {
+                                    if (e.target.value === "") {
+                                      setProduct({
+                                        ...product,
+                                        usedPoint: 0,
+                                      });
+                                    } else {
+                                      setProduct({
+                                        ...product,
+                                        usedPoint: e.target.value,
+                                      });
+                                    }
+
+                                    setCount(parseInt(count) + 1);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                        <div className="mb-3" style={{ width: "45%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="basic-icon-default-fullname"
+                          >
+                            Tên Người Mua
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="basic-icon-default-fullname"
+                              placeholder="Tên người nhận"
+                              aria-label="Tên Sản Phẩm"
+                              aria-describedby="basic-icon-default-fullname2"
+                              value={product.reveicerInformation.fullname}
+                              onChange={(e) =>
+                                setProduct({
+                                  ...product,
+                                  reveicerInformation: {
+                                    ...product.reveicerInformation,
+                                    fullname: e.target.value,
+                                  },
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+
                       <div className="cart-pharmacist-checkout">
                         {listCart.length === 0 ? (
                           <img
-                            style={{ height: 200 }}
+                            style={{ height: 300 }}
                             src="https://rtworkspace.com/wp-content/plugins/rtworkspace-ecommerce-wp-plugin/assets/img/empty-cart.png"
                           />
                         ) : (
@@ -745,149 +849,72 @@ const CheckOutPharmacist = () => {
                         )}
                       </div>
 
-                      <div
-                        className="mb-3"
-                        style={{ width: "45%", marginRight: 20 }}
-                      >
+                      <div className="mb-3" style={{ width: "45%" }}>
                         <label
                           className="form-label"
                           htmlFor="basic-icon-default-fullname"
+                          style={{ fontSize: 15 }}
                         >
-                          Số Điện Thoại
+                          Tạm Tính
                         </label>
+                      </div>
+                      <div className="mb-3" style={{ width: "45%" }}>
                         <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            className="form-control"
+                          <div
+                            style={{ marginLeft: "auto" }}
                             id="basic-icon-default-fullname"
-                            placeholder="Số điện thoại"
-                            aria-label="Tên Người Mua"
+                            placeholder="Tên người nhận"
+                            aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
-                            onChange={(e) => {
-                              setProduct({
-                                ...product,
-                                reveicerInformation: {
-                                  ...product.reveicerInformation,
-                                  phoneNumber: e.target.value,
-                                },
-                              });
-                            }}
-                          />
-                        </div>
-                        <div
-                          className="button-tim"
-                          onClick={() => {
-                            loadDataUserByPhone();
-                            loadPointUserByPhone();
-                          }}
-                        >
-                          Tìm
-                        </div>
-
-                        {point !== 0 ? (
-                          <div>
-                            <div>Điểm : {point}</div>
-                            <label
-                              className="form-label"
-                              htmlFor="basic-icon-default-fullname"
-                            >
-                              Điểm Tich Luỹ
-                            </label>
-                            <div className="input-group input-group-merge">
-                              <input
-                                type="text"
-                                className="form-control"
-                                id="basic-icon-default-fullname"
-                                placeholder="Nhập Điểm "
-                                aria-label="Tên Sản Phẩm"
-                                aria-describedby="basic-icon-default-fullname2"
-                                value={product.usedPoint}
-                                onChange={(e) => {
-                                  if (e.target.value === "") {
-                                    setProduct({
-                                      ...product,
-                                      usedPoint: 0,
-                                    });
-                                  } else {
-                                    setProduct({
-                                      ...product,
-                                      usedPoint: e.target.value,
-                                    });
-                                  }
-
-                                  setCount(parseInt(count) + 1);
-                                }}
-                              />
-                            </div>
+                          >
+                            {product.subTotalPrice}
                           </div>
-                        ) : (
-                          <div></div>
-                        )}
-                      </div>
-                      <div className="mb-3" style={{ width: "45%" }}>
-                        <label
-                          className="form-label"
-                          htmlFor="basic-icon-default-fullname"
-                        >
-                          Tên
-                        </label>
-                        <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="basic-icon-default-fullname"
-                            placeholder="Tên người nhận"
-                            aria-label="Tên Sản Phẩm"
-                            aria-describedby="basic-icon-default-fullname2"
-                            value={product.reveicerInformation.fullname}
-                            onChange={(e) =>
-                              setProduct({
-                                ...product,
-                                reveicerInformation: {
-                                  ...product.reveicerInformation,
-                                  fullname: e.target.value,
-                                },
-                              })
-                            }
-                          />
                         </div>
                       </div>
                       <div className="mb-3" style={{ width: "45%" }}>
                         <label
                           className="form-label"
                           htmlFor="basic-icon-default-fullname"
+                          style={{ fontSize: 15 }}
                         >
-                          Giá trước giảm giá
+                          Số Tiền Giảm
                         </label>
+                      </div>
+                      <div className="mb-3" style={{ width: "45%" }}>
                         <div className="input-group input-group-merge">
-                          <input
+                          <div
                             type="text"
-                            className="form-control"
+                            style={{ marginLeft: "auto", fontSize: 15 }}
                             id="basic-icon-default-fullname"
                             placeholder="Tên người nhận"
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
-                            value={product.subTotalPrice}
-                          />
+                          >
+                            {product?.usedPoint * 1000}
+                          </div>
                         </div>
                       </div>
                       <div className="mb-3" style={{ width: "45%" }}>
                         <label
                           className="form-label"
                           htmlFor="basic-icon-default-fullname"
+                          style={{ fontSize: 15 }}
                         >
-                          Giá sau giảm giá
+                          Tổng Giá
                         </label>
+                      </div>
+                      <div className="mb-3" style={{ width: "45%" }}>
                         <div className="input-group input-group-merge">
-                          <input
+                          <div
                             type="text"
-                            className="form-control"
+                            style={{ marginLeft: "auto", fontSize: 15 }}
                             id="basic-icon-default-fullname"
                             placeholder="Tên người nhận"
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
-                            value={product.totalPrice}
-                          />
+                          >
+                            {product.totalPrice}
+                          </div>
                         </div>
                       </div>
                       <a
@@ -895,7 +922,7 @@ const CheckOutPharmacist = () => {
                         onClick={Checkout}
                         style={{
                           height: 40,
-                          width: 200,
+                          width: 900,
                           fontSize: 13,
                           paddingTop: 10,
 
