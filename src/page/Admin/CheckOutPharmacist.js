@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import React from "react";
 import Swal from "sweetalert2";
+import { toast, Toaster } from "react-hot-toast";
 
 import SideBar from "../sidebar/SideBarPharmacist";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -156,6 +157,9 @@ const CheckOutPharmacist = () => {
         //     return item;
         //   });
         // });
+        toast.error("Đã có sản phẩm trong giỏ hàng");
+      }else if(drug1?.productInventoryModel?.quantity === 0){
+        toast.error("Sản phẩm không còn hàng");
       } else {
         listCart.push({
           productId: drug1.id,
@@ -166,6 +170,7 @@ const CheckOutPharmacist = () => {
           discountPrice: drug1.priceAfterDiscount,
           productPrefer: drug1.productUnitReferences,
           name: drug1.name,
+          unitId: drug1.productUnitReferences[0].unitLevel,
         });
         setListCart([...listCart]);
       }
@@ -254,19 +259,26 @@ const CheckOutPharmacist = () => {
     );
   }
 
-  function updateProductID(productId, newQuantity, newPrice) {
+  function updateProductID(productId, newQuantity, newPrice, unitId1) {
+    console.log("display", unitId1);
+    let equalID = true;
     setListCart((prevState) =>
       prevState.map((item) => {
-        if (item.productId === productId) {
+        if (newQuantity === item.productId) {
+          setListCart([...listCart]);
+          equalID = false;
+        } else if (item.productId === productId && equalID) {
           return {
             ...item,
             productId: newQuantity,
             discountPrice: newPrice,
+            unitId: unitId1,
           };
         }
         return item;
       })
     );
+
   }
 
   useEffect(() => {
@@ -453,7 +465,17 @@ const CheckOutPharmacist = () => {
                                           <div>Tên Sản Phẩm</div>
                                           <div> {e.name}</div>
                                         </div>
-                                        <div style={{marginLeft:10,color:"#EB455F"}}>{e.productInventoryModel.siteInventoryModel.message}</div>
+                                        <div
+                                          style={{
+                                            marginLeft: 10,
+                                            color: "#EB455F",
+                                          }}
+                                        >
+                                          {
+                                            e.productInventoryModel
+                                              .siteInventoryModel.message
+                                          }
+                                        </div>
                                       </div>
 
                                       <div style={{ width: 380 }}>
@@ -466,10 +488,11 @@ const CheckOutPharmacist = () => {
                                       <div style={{ width: 380 }}>
                                         <div>Giá</div>
                                         <div>
-                                          {e.priceAfterDiscount.toLocaleString(
+                                          {e.productUnitReferences[0]?.priceAfterDiscount?.toLocaleString(
                                             "en-US"
                                           )}{" "}
-                                          đ / {e.productInventoryModel.unitName}
+                                          đ /{" "}
+                                          {e.productUnitReferences[0]?.unitName}
                                         </div>
                                       </div>
                                     </div>
@@ -484,6 +507,7 @@ const CheckOutPharmacist = () => {
                 </div>
               </div>
             </div>
+            <Toaster toastOptions={{ duration: 4000 }} />
             {/* <div
               className="row "
               style={{ width: 900, marginTop: -30, marginLeft: 25 }}
@@ -966,7 +990,7 @@ const CheckOutPharmacist = () => {
                                 aria-label="Tên Sản Phẩm"
                                 aria-describedby="basic-icon-default-fullname2"
                               >
-                                {product.subTotalPrice.toLocaleString("en-US")}
+                                {product.subTotalPrice.toLocaleString("en-US")} đ
                               </div>
                             </div>
                           </div>
@@ -990,7 +1014,7 @@ const CheckOutPharmacist = () => {
                                 aria-label="Tên Sản Phẩm"
                                 aria-describedby="basic-icon-default-fullname2"
                               >
-                                {product?.usedPoint * 1000}
+                                {(product?.usedPoint * 1000).toLocaleString("en-US")} đ
                               </div>
                             </div>
                           </div>
@@ -1014,7 +1038,7 @@ const CheckOutPharmacist = () => {
                                 aria-label="Tên Sản Phẩm"
                                 aria-describedby="basic-icon-default-fullname2"
                               >
-                                {product.totalPrice.toLocaleString("en-US")}
+                                {product.totalPrice.toLocaleString("en-US")} đ
                               </div>
                             </div>
                           </div>
@@ -1154,6 +1178,7 @@ const CheckOutPharmacist = () => {
                                               marginLeft: 10,
                                               border: "none",
                                             }}
+                                            value={product?.productPrefer[product.unitId]?.unitId}
                                             onChange={(e) => {
                                               setCount(parseInt(count) + 1);
                                               updateProductID(
@@ -1161,7 +1186,10 @@ const CheckOutPharmacist = () => {
                                                 e.target.value,
                                                 e.target.options[
                                                   e.target.selectedIndex
-                                                ].getAttribute("quantity")
+                                                ].getAttribute("quantity"),
+                                                e.target.options[
+                                                  e.target.selectedIndex
+                                                ].getAttribute("unitId")
                                               );
                                             }}
                                           >
@@ -1171,6 +1199,7 @@ const CheckOutPharmacist = () => {
                                                   <option
                                                     key={unit.id}
                                                     value={unit.id}
+                                                    unitId={unit.unitLevel}
                                                     quantity={
                                                       unit.priceAfterDiscount
                                                     }
@@ -1252,7 +1281,7 @@ const CheckOutPharmacist = () => {
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
                           >
-                            {product.subTotalPrice.toLocaleString("en-US")}
+                            {product.subTotalPrice.toLocaleString("en-US")} đ
                           </div>
                         </div>
                       </div>
@@ -1275,7 +1304,7 @@ const CheckOutPharmacist = () => {
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
                           >
-                            {product?.usedPoint * 1000}
+                            {(product?.usedPoint * 1000).toLocaleString("en-US")} đ
                           </div>
                         </div>
                       </div>
@@ -1298,7 +1327,7 @@ const CheckOutPharmacist = () => {
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
                           >
-                            {product.totalPrice.toLocaleString("en-US")}
+                            {product.totalPrice.toLocaleString("en-US")} đ
                           </div>
                         </div>
                       </div>
