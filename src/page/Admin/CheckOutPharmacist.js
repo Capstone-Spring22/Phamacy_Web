@@ -14,6 +14,8 @@ const CheckOutPharmacist = () => {
   const [listCart, setListCart] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
+  const [unit, setUnit] = useState([]);
+
   const [point, setPoint] = useState(0);
   const [count, setCount] = useState(2);
   const [valueSearch, setvalueSearch] = useState("");
@@ -51,6 +53,14 @@ const CheckOutPharmacist = () => {
           setDrug(res.data.items);
         }
       }
+    }
+  }
+  async function loadDataUnit() {
+    const path = `Unit?isCountable=true&pageIndex=1&pageItems=111`;
+    const res = await getDataByPath(path, "", "");
+    console.log("display unit", res.data.items);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setUnit(res.data.items);
     }
   }
   async function Checkout() {
@@ -158,7 +168,7 @@ const CheckOutPharmacist = () => {
         //   });
         // });
         toast.error("Đã có sản phẩm trong giỏ hàng");
-      }else if(drug1?.productInventoryModel?.quantity === 0){
+      } else if (drug1?.productInventoryModel?.quantity === 0) {
         toast.error("Sản phẩm không còn hàng");
       } else {
         listCart.push({
@@ -168,9 +178,9 @@ const CheckOutPharmacist = () => {
           quantity: 1,
           originalPrice: drug1.price,
           discountPrice: drug1.priceAfterDiscount,
-          productPrefer: drug1.productUnitReferences,
+
           name: drug1.name,
-          unitId: drug1.productUnitReferences[0].unitLevel,
+          unitId: drug1.unitId,
         });
         setListCart([...listCart]);
       }
@@ -216,6 +226,7 @@ const CheckOutPharmacist = () => {
   }
   useEffect(() => {
     loadOrderId();
+    loadDataUnit();
   }, []);
   useEffect(() => {
     loadDataMedicineDefault();
@@ -259,26 +270,27 @@ const CheckOutPharmacist = () => {
     );
   }
 
-  function updateProductID(productId, newQuantity, newPrice, unitId1) {
-    console.log("display", unitId1);
+  function updateProductID(productId, newID, newPrice, unitId1) {
+    console.log("display", productId, newID, newPrice, unitId1);
     let equalID = true;
-    setListCart((prevState) =>
+    setDrug((prevState) =>
       prevState.map((item) => {
-        if (newQuantity === item.productId) {
-          setListCart([...listCart]);
+        if (newID === item.id) {
           equalID = false;
-        } else if (item.productId === productId && equalID) {
+        } else if (item.id === productId && equalID) {
+          const updatedProductUnitReferences = [...item.productUnitReferences];
+
           return {
             ...item,
-            productId: newQuantity,
-            discountPrice: newPrice,
+            id: newID,
+            priceAfterDiscount: parseInt(newPrice),
             unitId: unitId1,
+            productUnitReferences: updatedProductUnitReferences,
           };
         }
         return item;
       })
     );
-
   }
 
   useEffect(() => {
@@ -439,20 +451,16 @@ const CheckOutPharmacist = () => {
                             style={{ marginLeft: -110 }}
                           >
                             {drug &&
-                              drug.map((e) => {
+                              drug.map((product) => {
                                 return (
                                   <>
                                     {" "}
                                     <div
-                                      key={e.id}
+                                      key={product.id}
                                       className="product-cart-p"
-                                      onClick={() => {
-                                        addToCart(e.id);
-                                        setCount(parseInt(count) + 1);
-                                      }}
                                     >
                                       <img
-                                        src={e.imageModel.imageURL}
+                                        src={product.imageModel.imageURL}
                                         style={{
                                           height: 70,
                                           width: 60,
@@ -461,9 +469,15 @@ const CheckOutPharmacist = () => {
                                         }}
                                       />
                                       <div>
-                                        <div className="name-product-pharmacist">
+                                        <div
+                                          onClick={() => {
+                                            addToCart(product.id);
+                                            setCount(parseInt(count) + 1);
+                                          }}
+                                          className="name-product-pharmacist"
+                                        >
                                           <div>Tên Sản Phẩm</div>
-                                          <div> {e.name}</div>
+                                          <div> {product.name}</div>
                                         </div>
                                         <div
                                           style={{
@@ -472,7 +486,7 @@ const CheckOutPharmacist = () => {
                                           }}
                                         >
                                           {
-                                            e.productInventoryModel
+                                            product.productInventoryModel
                                               .siteInventoryModel.message
                                           }
                                         </div>
@@ -481,18 +495,62 @@ const CheckOutPharmacist = () => {
                                       <div style={{ width: 380 }}>
                                         <div>Số Lượng Tồn Kho:</div>
                                         <div>
-                                          {e.productInventoryModel?.quantity}{" "}
-                                          {e.productInventoryModel?.unitName}
+                                          {
+                                            product.productInventoryModel
+                                              ?.quantity
+                                          }{" "}
+                                          {
+                                            product.productInventoryModel
+                                              ?.unitName
+                                          }
                                         </div>
                                       </div>
                                       <div style={{ width: 380 }}>
                                         <div>Giá</div>
+
                                         <div>
-                                          {e.productUnitReferences[0]?.priceAfterDiscount?.toLocaleString(
+                                          {product.priceAfterDiscount?.toLocaleString(
                                             "en-US"
                                           )}{" "}
                                           đ /{" "}
-                                          {e.productUnitReferences[0]?.unitName}
+                                          <select
+                                            style={{
+                                              height: 30,
+                                              marginLeft: 10,
+                                              border: "none",
+                                            }}
+                                            value={product?.productUnitReferences?.find((item)=>item.id === product.id).id}
+                                            onChange={(e) => {
+                                              setCount(parseInt(count) + 1);
+                                              updateProductID(
+                                                product.id,
+                                                e.target.value,
+                                                e.target.options[
+                                                  e.target.selectedIndex
+                                                ].getAttribute("quantity"),
+                                                e.target.options[
+                                                  e.target.selectedIndex
+                                                ].getAttribute("unitId")
+                                              );
+                                            }}
+                                          >
+                                            {product.productUnitReferences.map(
+                                              (unit) => {
+                                                return (
+                                                  <option
+                                                    key={unit.id}
+                                                    value={unit.id}
+                                                    unitId={unit.unitId}
+                                                    quantity={
+                                                      unit.priceAfterDiscount
+                                                    }
+                                                  >
+                                                    {unit.unitName}
+                                                  </option>
+                                                );
+                                              }
+                                            )}
+                                          </select>
                                         </div>
                                       </div>
                                     </div>
@@ -990,7 +1048,8 @@ const CheckOutPharmacist = () => {
                                 aria-label="Tên Sản Phẩm"
                                 aria-describedby="basic-icon-default-fullname2"
                               >
-                                {product.subTotalPrice.toLocaleString("en-US")} đ
+                                {product.subTotalPrice.toLocaleString("en-US")}{" "}
+                                đ
                               </div>
                             </div>
                           </div>
@@ -1014,7 +1073,10 @@ const CheckOutPharmacist = () => {
                                 aria-label="Tên Sản Phẩm"
                                 aria-describedby="basic-icon-default-fullname2"
                               >
-                                {(product?.usedPoint * 1000).toLocaleString("en-US")} đ
+                                {(product?.usedPoint * 1000).toLocaleString(
+                                  "en-US"
+                                )}{" "}
+                                đ
                               </div>
                             </div>
                           </div>
@@ -1172,28 +1234,33 @@ const CheckOutPharmacist = () => {
                                           >
                                             +
                                           </button>
-                                          <select
+                                          <div
                                             style={{
                                               height: 30,
                                               marginLeft: 10,
                                               border: "none",
                                             }}
-                                            value={product?.productPrefer[product.unitId]?.unitId}
-                                            onChange={(e) => {
-                                              setCount(parseInt(count) + 1);
-                                              updateProductID(
-                                                product.productId,
-                                                e.target.value,
-                                                e.target.options[
-                                                  e.target.selectedIndex
-                                                ].getAttribute("quantity"),
-                                                e.target.options[
-                                                  e.target.selectedIndex
-                                                ].getAttribute("unitId")
-                                              );
-                                            }}
+                                            // onChange={(e) => {
+                                            //   setCount(parseInt(count) + 1);
+                                            //   updateProductID(
+                                            //     product.productId,
+                                            //     e.target.value,
+                                            //     e.target.options[
+                                            //       e.target.selectedIndex
+                                            //     ].getAttribute("quantity"),
+                                            //     e.target.options[
+                                            //       e.target.selectedIndex
+                                            //     ].getAttribute("unitId")
+                                            //   );
+                                            // }}
                                           >
-                                            {product.productPrefer.map(
+                                            {
+                                              unit.find(
+                                                (item) =>
+                                                  item.id === product.unitId
+                                              ).unitName
+                                            }
+                                            {/* {product.productPrefer.map(
                                               (unit) => {
                                                 return (
                                                   <option
@@ -1208,8 +1275,8 @@ const CheckOutPharmacist = () => {
                                                   </option>
                                                 );
                                               }
-                                            )}
-                                          </select>
+                                            )} */}
+                                          </div>
                                           <div
                                             style={{
                                               height: 30,
@@ -1304,7 +1371,10 @@ const CheckOutPharmacist = () => {
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
                           >
-                            {(product?.usedPoint * 1000).toLocaleString("en-US")} đ
+                            {(product?.usedPoint * 1000).toLocaleString(
+                              "en-US"
+                            )}{" "}
+                            đ
                           </div>
                         </div>
                       </div>
