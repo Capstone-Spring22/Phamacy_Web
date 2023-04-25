@@ -8,9 +8,10 @@ import "../../assets/css/core.css";
 import { getDataByPath, createDataByPath } from "../../services/data.service";
 
 import Select from "react-select";
+import { useHistory } from "react-router-dom";
 const NewDiscount = () => {
   const [unitCount, setUnitCount] = useState(1);
-
+  let history = useHistory();
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(100);
   const [totalRecord, setTotalRecord] = useState([]);
@@ -18,8 +19,8 @@ const NewDiscount = () => {
   const [product, setProduct] = useState({
     title: "",
     reason: "",
-    discountPercent: "",
-    discountMoney: "",
+    discountPercent: null,
+    discountMoney: null,
     startDate: "",
     endDate: "",
     products: [
@@ -45,6 +46,7 @@ const NewDiscount = () => {
         if (res && res.status === 201) {
           Swal.fire("Create Success", "", "success");
           // window.location.reload();
+          history.push("/ProductDiscount");
         }
       }
     }
@@ -483,6 +485,7 @@ const NewDiscount = () => {
                           </div>
                           <hr />
                         </div>
+                        
                       );
                     }
                   )}

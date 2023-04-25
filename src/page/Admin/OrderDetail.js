@@ -429,30 +429,25 @@ const OrderDetail = () => {
               aria-label="Tên Sản Phẩm"
               aria-describedby="basic-icon-default-fullname2"
             >
-              Cập nhật
+              Thành Công
             </div>
           </div>
 
-          <a
-            href="#my-dialog2"
-            onClick={() => {
-              setIsOpen2(true);
-            }}
-            className="button-28"
+    
+          <div
             style={{
               height: 40,
               width: 250,
               fontSize: 13,
               paddingTop: 10,
-
+              border: "none",
               marginTop: "20px",
               marginBottom: -20,
-              backgroundColor: "#82AAE3",
-              color: "white",
+              color: "red",
             }}
           >
-            Cập nhật trạng thái
-          </a>
+            Đơn Hàng Đã Giao Cho Khách Và Thanh Toán Thành Công
+          </div>
         </div>
       </>
     );

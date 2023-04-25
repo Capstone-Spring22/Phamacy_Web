@@ -7,6 +7,7 @@ import SideBar from "../sidebar/SideBarPharmacist";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
 import { getDataByPath, createDataByPath } from "../../services/data.service";
+import { useHistory } from "react-router-dom";
 
 const CheckOutPharmacist = () => {
   const [activeItem, setActiveItem] = useState("CheckOutPharmacist");
@@ -15,7 +16,7 @@ const CheckOutPharmacist = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [unit, setUnit] = useState([]);
-
+  let history = useHistory();
   const [point, setPoint] = useState(0);
   const [count, setCount] = useState(2);
   const [valueSearch, setvalueSearch] = useState("");
@@ -74,7 +75,8 @@ const CheckOutPharmacist = () => {
         console.log("display du lieu", data);
         if (res && res.status === 200) {
           Swal.fire("Create Success", "", "success");
-          // window.location.reload();
+          setListCart([]);
+          history.push("/Order");
         }
       }
     }
@@ -424,7 +426,7 @@ const CheckOutPharmacist = () => {
               style={{ marginTop: 10, marginLeft: -50 }}
             >
               <div className="col-xl">
-                <div className="" style={{ backgroundColor: "transparent" }}>
+                <div className="" style={{ backgroundColor: "transparent",marginLeft:20,marginTop:20 }}>
                   {valueSearch === "" ? (
                     <h5>Sản Phẩm Đề Xuất:</h5>
                   ) : (
@@ -436,7 +438,8 @@ const CheckOutPharmacist = () => {
                         display: "grid",
                         gridTemplateColumns: "auto auto",
                         padding: 30,
-                        marginLeft: 100,
+                        marginLeft: 70,
+                        marginTop:-20,
                         height: 670,
                       }}
                     >
@@ -519,7 +522,11 @@ const CheckOutPharmacist = () => {
                                               marginLeft: 10,
                                               border: "none",
                                             }}
-                                            value={product?.productUnitReferences?.find((item)=>item.id === product.id).id}
+                                            value={
+                                              product?.productUnitReferences?.find(
+                                                (item) => item.id === product.id
+                                              ).id
+                                            }
                                             onChange={(e) => {
                                               setCount(parseInt(count) + 1);
                                               updateProductID(
@@ -1105,7 +1112,23 @@ const CheckOutPharmacist = () => {
                             </div>
                           </div>
                         </div>
-                        <a
+                        {moneyReceived < product.totalPrice?(<>  <a
+                          className="button-28"
+             
+                          style={{
+                            height: 40,
+                            width: 500,
+                            fontSize: 13,
+                            paddingTop: 10,
+
+                            marginTop: "10px",
+
+                            backgroundColor: "grey",
+                            color: "white",
+                          }}
+                        >
+                          Thanh Toán
+                        </a></>):(<>  <a
                           className="button-28"
                           onClick={Checkout}
                           style={{
@@ -1121,7 +1144,8 @@ const CheckOutPharmacist = () => {
                           }}
                         >
                           Thanh Toán
-                        </a>
+                        </a></>)}
+                      
                       </div>
                     </div>
                   </div>
@@ -1138,13 +1162,13 @@ const CheckOutPharmacist = () => {
                     <div
                       className="card-header d-flex justify-content-between align-items-center"
                       style={{
-                        height: 60,
+                        height: 50,
                         backgroundColor: "white",
-
+                        marginBottom: 20,
                         borderColor: "#f4f4f4",
                       }}
                     >
-                      <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
+                      <h5 className="mb-0">Tạo Đơn Tại Chỗ</h5>
                     </div>
                     <div
                       style={{
@@ -1401,6 +1425,7 @@ const CheckOutPharmacist = () => {
                           </div>
                         </div>
                       </div>
+                     
                       <a
                         className="button-28"
                         href="#my-dialog"

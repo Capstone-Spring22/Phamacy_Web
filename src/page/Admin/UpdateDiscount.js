@@ -34,7 +34,7 @@ const UpdateDiscount = () => {
       const accessToken = localStorage.getItem("accessToken");
       const path = `ProductDiscount/${myId}`;
       const res = await getDataByPath(path, accessToken, "");
-      console.log("res discount", res);
+      console.log("res discount", res.data);
       if (res !== null && res !== undefined && res.status === 200) {
         setProduct(res.data);
         setUnitCount(res.data.products.length);
@@ -432,8 +432,8 @@ const UpdateDiscount = () => {
                                             Sản phẩm
                                           </label>
                                           <Select
-                                            value={e.productId}
-                                            onChange={(selectedOption) => {
+                                            inputValue={e.productName}
+                                            onInputChange={(selectedOption) => {
                                               const drugObj = drug.find(
                                                 (d) =>
                                                   d.id === selectedOption.value
