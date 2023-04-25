@@ -24,6 +24,7 @@ const CheckOutPharmacist = () => {
   const [moneyReceived, setMoneyReceived] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const [pointErrorMessage, setPointErrorMessage] = useState("");
+  const [minUnit, setMinUnit] = useState([]);
   async function loadDataMedicineDefault() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -34,7 +35,18 @@ const CheckOutPharmacist = () => {
         setDrug(res.data.items);
       }
     }
+  } async function loadDataMinUnit(productId,quantity) {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `ProductImport/Message?ProductId=${productId}&Quantity=${quantity}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("minUnit", res.data);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setMinUnit(res.data);
+      }
+    }
   }
+
   async function loadDataMedicine(search) {
     if (search === "") {
       if (localStorage && localStorage.getItem("accessToken")) {
@@ -426,7 +438,14 @@ const CheckOutPharmacist = () => {
               style={{ marginTop: 10, marginLeft: -50 }}
             >
               <div className="col-xl">
-                <div className="" style={{ backgroundColor: "transparent",marginLeft:20,marginTop:20 }}>
+                <div
+                  className=""
+                  style={{
+                    backgroundColor: "transparent",
+                    marginLeft: 20,
+                    marginTop: 20,
+                  }}
+                >
                   {valueSearch === "" ? (
                     <h5>Sản Phẩm Đề Xuất:</h5>
                   ) : (
@@ -439,7 +458,7 @@ const CheckOutPharmacist = () => {
                         gridTemplateColumns: "auto auto",
                         padding: 30,
                         marginLeft: 70,
-                        marginTop:-20,
+                        marginTop: -20,
                         height: 670,
                       }}
                     >
@@ -482,32 +501,59 @@ const CheckOutPharmacist = () => {
                                           <div>Tên Sản Phẩm</div>
                                           <div> {product.name}</div>
                                         </div>
-                                        <div
-                                          style={{
-                                            marginLeft: 10,
-                                            color: "#EB455F",
-                                          }}
-                                        >
-                                          {
-                                            product.productInventoryModel
-                                              .siteInventoryModel.message
-                                          }
-                                        </div>
+                                        {product.productInventoryModel
+                                          .siteInventoryModel.totalQuantity ===
+                                          0 ||
+                                        (product.productInventoryModel
+                                          .siteInventoryModel.totalQuantity ===
+                                          product.productInventoryModel
+                                            .siteInventoryModel
+                                            .totalQuantityForFirst &&
+                                          product.productInventoryModel.siteInventoryModel.message.includes(
+                                            product.productInventoryModel.siteInventoryModel.totalQuantityForFirst.toString()
+                                          )) ? (
+                                          <></>
+                                        ) : (
+                                          <div
+                                            style={{
+                                              marginLeft: 10,
+                                              color: "#EB455F",
+                                            }}
+                                          >
+                                            {
+                                              product.productInventoryModel
+                                                .siteInventoryModel.message
+                                            }
+                                          </div>
+                                        )}
                                       </div>
+                                      {product.productInventoryModel
+                                        .siteInventoryModel.totalQuantity ===
+                                      0 ? (
+                                        <>
+                                          {" "}
+                                          <div style={{ width: 380 }}>
+                                            <div style={{ color: 'red '}}> SẢN PHẨM ĐÃ</div>
+                                            <div style={{ color: 'red '}}> HẾT HÀNG</div>
+                                          
+                                          </div>
+                                        </>
+                                      ) : (
+                                        <div style={{ width: 380 }}>
+                                          <div>Số Lượng Tồn Kho:</div>
+                                          <div>
+                                            {
+                                              product.productInventoryModel
+                                                ?.quantity
+                                            }{" "}
+                                            {
+                                              product.productInventoryModel
+                                                ?.unitName
+                                            }
+                                          </div>
+                                        </div>
+                                      )}
 
-                                      <div style={{ width: 380 }}>
-                                        <div>Số Lượng Tồn Kho:</div>
-                                        <div>
-                                          {
-                                            product.productInventoryModel
-                                              ?.quantity
-                                          }{" "}
-                                          {
-                                            product.productInventoryModel
-                                              ?.unitName
-                                          }
-                                        </div>
-                                      </div>
                                       <div style={{ width: 380 }}>
                                         <div>Giá</div>
 
@@ -519,7 +565,7 @@ const CheckOutPharmacist = () => {
                                           <select
                                             style={{
                                               height: 30,
-                                              marginLeft: 10,
+                                              marginLeft: 0,
                                               border: "none",
                                             }}
                                             value={
@@ -1112,40 +1158,48 @@ const CheckOutPharmacist = () => {
                             </div>
                           </div>
                         </div>
-                        {moneyReceived < product.totalPrice?(<>  <a
-                          className="button-28"
-             
-                          style={{
-                            height: 40,
-                            width: 500,
-                            fontSize: 13,
-                            paddingTop: 10,
+                        {moneyReceived < product.totalPrice ? (
+                          <>
+                            {" "}
+                            <a
+                              className="button-28"
+                              style={{
+                                height: 40,
+                                width: 500,
+                                fontSize: 13,
+                                paddingTop: 10,
 
-                            marginTop: "10px",
+                                marginTop: "10px",
 
-                            backgroundColor: "grey",
-                            color: "white",
-                          }}
-                        >
-                          Thanh Toán
-                        </a></>):(<>  <a
-                          className="button-28"
-                          onClick={Checkout}
-                          style={{
-                            height: 40,
-                            width: 500,
-                            fontSize: 13,
-                            paddingTop: 10,
+                                backgroundColor: "grey",
+                                color: "white",
+                              }}
+                            >
+                              Thanh Toán
+                            </a>
+                          </>
+                        ) : (
+                          <>
+                            {" "}
+                            <a
+                              className="button-28"
+                              onClick={Checkout}
+                              style={{
+                                height: 40,
+                                width: 500,
+                                fontSize: 13,
+                                paddingTop: 10,
 
-                            marginTop: "10px",
+                                marginTop: "10px",
 
-                            backgroundColor: "#82AAE3",
-                            color: "white",
-                          }}
-                        >
-                          Thanh Toán
-                        </a></>)}
-                      
+                                backgroundColor: "#82AAE3",
+                                color: "white",
+                              }}
+                            >
+                              Thanh Toán
+                            </a>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1261,7 +1315,8 @@ const CheckOutPharmacist = () => {
                                           <div
                                             style={{
                                               height: 30,
-                                              marginLeft: 10,
+                                              marginLeft: 20,
+                                              marginTop:10,
                                               border: "none",
                                             }}
                                             // onChange={(e) => {
@@ -1301,12 +1356,19 @@ const CheckOutPharmacist = () => {
                                               }
                                             )} */}
                                           </div>
+                                          <strong  style={{
+                                              height: 30,
+                                              marginLeft: 10,
+                                              border: "none",
+                                           
+                                              marginTop: 10,
+                                            }}>Giá:  </strong>
                                           <div
                                             style={{
                                               height: 30,
                                               marginLeft: 10,
                                               border: "none",
-                                              marginTop: 5,
+                                              marginTop: 10,
                                             }}
                                           >
                                             {product?.discountPrice?.toLocaleString(
@@ -1425,7 +1487,7 @@ const CheckOutPharmacist = () => {
                           </div>
                         </div>
                       </div>
-                     
+{}
                       <a
                         className="button-28"
                         href="#my-dialog"
