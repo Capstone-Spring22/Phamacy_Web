@@ -24,7 +24,14 @@ const CheckOutPharmacist = () => {
   const [moneyReceived, setMoneyReceived] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
   const [pointErrorMessage, setPointErrorMessage] = useState("");
-  const [minUnit, setMinUnit] = useState([]);
+  const [isError, setIsError] = useState(false);
+  const [minUnit, setMinUnit] = useState([
+    {
+      productParentId: "",
+      minUnitId: "",
+      quantityAfterConvert: "",
+    },
+  ]);
   async function loadDataMedicineDefault() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -35,17 +42,58 @@ const CheckOutPharmacist = () => {
         setDrug(res.data.items);
       }
     }
-  } async function loadDataMinUnit(productId,quantity) {
+  }
+  async function loadDataMinUnit(productId, quantity) {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
       const path = `ProductImport/Message?ProductId=${productId}&Quantity=${quantity}`;
       const res = await getDataByPath(path, accessToken, "");
-      console.log("minUnit", res.data);
+
       if (res !== null && res !== undefined && res.status === 200) {
-        setMinUnit(res.data);
+        const checkProduct = minUnit?.find(
+          (item) => item?.productParentId === productId
+        );
+        if (checkProduct?.productParentId === productId) {
+          setMinUnit((prevState) =>
+            prevState.map((item) => {
+              if (item?.productParentId === productId) {
+                return {
+                  ...item,
+                  quantityAfterConvert: parseInt(res.data.quantityAfterConvert),
+                };
+              }
+              return item;
+            })
+          );
+        } else if (!checkProduct) {
+          setMinUnit([
+            ...minUnit,
+            {
+              productParentId: productId,
+              minUnitId: res.data.productIdAfterConvert,
+              quantityAfterConvert: res.data.quantityAfterConvert,
+            },
+          ]);
+        }
       }
     }
   }
+  const productQuantities = minUnit.reduce((accumulator, product) => {
+    const index = accumulator.findIndex(
+      (item) => item.minUnitId === product.minUnitId
+    );
+    if (index !== -1) {
+      accumulator[index].productParentId.push(product);
+      accumulator[index].quantityAfterConvert1 += product.quantityAfterConvert;
+    } else {
+      accumulator.push({
+        productParentId: [product],
+        minUnitId: product.minUnitId,
+        quantityAfterConvert1: product.quantityAfterConvert,
+      });
+    }
+    return accumulator;
+  }, []);
 
   async function loadDataMedicine(search) {
     if (search === "") {
@@ -533,9 +581,14 @@ const CheckOutPharmacist = () => {
                                         <>
                                           {" "}
                                           <div style={{ width: 380 }}>
-                                            <div style={{ color: 'red '}}> SẢN PHẨM ĐÃ</div>
-                                            <div style={{ color: 'red '}}> HẾT HÀNG</div>
-                                          
+                                            <div style={{ color: "red " }}>
+                                              {" "}
+                                              SẢN PHẨM ĐÃ
+                                            </div>
+                                            <div style={{ color: "red " }}>
+                                              {" "}
+                                              HẾT HÀNG
+                                            </div>
                                           </div>
                                         </>
                                       ) : (
@@ -1255,7 +1308,7 @@ const CheckOutPharmacist = () => {
                                       }}
                                     />
                                     <div
-                                      key={product.id}
+                                      key={product.productId}
                                       style={{ width: 400 }}
                                     >
                                       <div className="name-product-pharmacist2">
@@ -1267,6 +1320,10 @@ const CheckOutPharmacist = () => {
                                             onClick={() => {
                                               if (product.quantity > 1) {
                                                 setCount(parseInt(count) + 1);
+                                                loadDataMinUnit(
+                                                  product.productId,
+                                                  product.quantity - 1
+                                                );
                                                 updateQuantity(
                                                   product.productId,
                                                   product.quantity - 1
@@ -1293,6 +1350,10 @@ const CheckOutPharmacist = () => {
                                                 e.target.value = 1;
                                               } else {
                                                 setCount(parseInt(count) + 1);
+                                                loadDataMinUnit(
+                                                  product.productId,
+                                                  value
+                                                );
                                                 updateQuantity(
                                                   product.productId,
                                                   value
@@ -1304,6 +1365,10 @@ const CheckOutPharmacist = () => {
                                             className="button-plus"
                                             onClick={() => {
                                               setCount(parseInt(count) + 1);
+                                              loadDataMinUnit(
+                                                product.productId,
+                                                product.quantity + 1
+                                              );
                                               updateQuantity(
                                                 product.productId,
                                                 product.quantity + 1
@@ -1316,7 +1381,7 @@ const CheckOutPharmacist = () => {
                                             style={{
                                               height: 30,
                                               marginLeft: 20,
-                                              marginTop:10,
+                                              marginTop: 10,
                                               border: "none",
                                             }}
                                             // onChange={(e) => {
@@ -1356,13 +1421,17 @@ const CheckOutPharmacist = () => {
                                               }
                                             )} */}
                                           </div>
-                                          <strong  style={{
+                                          <strong
+                                            style={{
                                               height: 30,
                                               marginLeft: 10,
                                               border: "none",
-                                           
+
                                               marginTop: 10,
-                                            }}>Giá:  </strong>
+                                            }}
+                                          >
+                                            Giá:{" "}
+                                          </strong>
                                           <div
                                             style={{
                                               height: 30,
@@ -1378,18 +1447,44 @@ const CheckOutPharmacist = () => {
                                           </div>
                                         </div>
                                       </div>
+
+                                      {parseInt(
+                                        productQuantities.find((item) =>
+                                          item.productParentId.find(
+                                            (childItem) =>
+                                              childItem.productParentId ===
+                                              product.productId
+                                          )
+                                        )?.quantityAfterConvert1
+                                      ) >
+                                      parseInt(
+                                        product.productInventoryModel
+                                      ) ? (
+                                        <>
+                                          <div style={{ color: "red" }}>
+                                            Sản phẩm này quá số lượng tồn kho
+                                          </div>
+                                        </>
+                                      ) : (
+                                        <div></div>
+                                      )}
                                     </div>
 
                                     <button
                                       style={{
                                         height: 30,
-
                                         backgroundColor: "white",
                                         border: "1px solid white",
                                         color: "red",
                                       }}
                                       onClick={() => {
                                         setCount(parseInt(count) + 1);
+                                        const lisminUnit = minUnit.filter(
+                                          (item) =>
+                                            item.productParentId !==
+                                            product.productId
+                                        );
+                                        setMinUnit(lisminUnit);
                                         const newList = listCart.filter(
                                           (item) =>
                                             item.productId !== product.productId
@@ -1487,28 +1582,52 @@ const CheckOutPharmacist = () => {
                           </div>
                         </div>
                       </div>
-{}
-                      <a
-                        className="button-28"
-                        href="#my-dialog"
-                        onClick={() => {
-                          setIsOpen(true);
-                        }}
-                        // onClick={Checkout}
-                        style={{
-                          height: 40,
-                          width: 900,
-                          fontSize: 13,
-                          paddingTop: 10,
 
-                          marginTop: "10px",
-                          marginBottom: -20,
-                          backgroundColor: "#82AAE3",
-                          color: "white",
-                        }}
-                      >
-                        Thanh Toán
-                      </a>
+                      {isError ? (
+                        <a
+                          className="button-28"
+                          // href="#my-dialog"
+                          // onClick={() => {
+                          //   setIsOpen(true);
+                          // }}
+                          // onClick={Checkout}
+                          style={{
+                            height: 40,
+                            width: 900,
+                            fontSize: 13,
+                            paddingTop: 10,
+                            backgroundColor: "grey",
+                            marginTop: "10px",
+                            marginBottom: -20,
+                            backgroundColor: "#82AAE3",
+                            color: "white",
+                          }}
+                        >
+                          Thanh Toán
+                        </a>
+                      ) : (
+                        <a
+                          className="button-28"
+                          href="#my-dialog"
+                          onClick={() => {
+                            setIsOpen(true);
+                          }}
+                          // onClick={Checkout}
+                          style={{
+                            height: 40,
+                            width: 900,
+                            fontSize: 13,
+                            paddingTop: 10,
+
+                            marginTop: "10px",
+                            marginBottom: -20,
+                            backgroundColor: "#82AAE3",
+                            color: "white",
+                          }}
+                        >
+                          Thanh Toán
+                        </a>
+                      )}
                     </div>
                     {/* <button onClick={hiennew}>Hiện</button> */}
                   </div>
