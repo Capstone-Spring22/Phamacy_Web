@@ -33,7 +33,7 @@ const VNPay = (props) => {
     pharmacistId: null,
     subTotalPrice: productCheckOut.subTotalPrice,
     discountPrice: productCheckOut.discountPrice,
-    shippingPrice: 0,
+    shippingPrice: productCheckOut.shippingPrice,
     totalPrice: productCheckOut.totalPrice,
     usedPoint: productCheckOut.usedPoint,
     payType: productCheckOut.payType,
@@ -48,6 +48,7 @@ const VNPay = (props) => {
     },
     orderPickUp: productCheckOut.orderPickUp,
   });
+
   async function handleRemoveCart() {
     const res = await axios.delete(
       `https://betterhealthapi.azurewebsites.net/api/v1/Cart/${cartID1}`
@@ -55,6 +56,7 @@ const VNPay = (props) => {
     if (res !== null && res !== undefined && res.status === 200) {
     }
   }
+  
   async function Checkout() {
     if (localStorage && localStorage.getItem("accessTokenUser")) {
       const accessToken = localStorage.getItem("accessTokenUser");
@@ -83,7 +85,55 @@ const VNPay = (props) => {
       }
     }
   }
-
+  const [city, setCity] = useState([]);
+  const [ward, setWard] = useState([]);
+  const [districs, setDistrics] = useState([]);
+  async function loadDataCity() {
+    const path = `Address/City/${product.reveicerInformation.cityId}`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setCity(res.data);
+    }
+  }
+  async function loadDataDistrics() {
+    const path = `Address/District/${product.reveicerInformation.districtId}`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setDistrics(res.data);
+    }
+  }
+  async function loadDataWard() {
+    const path = `Address/ward/${product.reveicerInformation.wardId}`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setWard(res.data);
+    }
+  }
+  useEffect(() => {
+    loadDataCity();
+    loadDataDistrics()
+    loadDataWard()
+  }, []);
+ 
+  const [site, setSite] = useState(null);
+  async function loadDataSite() {
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
+      const path = `Site?pageIndex=1&pageItems=10`;
+      console.log("display2", getDataByPath);
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("display31321", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setSite(res.data.items);
+      }
+    }
+  }
+  useEffect(() => {
+    loadDataSite();
+  }, []);
+  const sites = site?.find((sc) => sc.id === product.siteId);
+  const fullyAddressSite = sites ? sites.fullyAddress : "";
+  const siteName = sites ? sites.siteName : "";
   useEffect(() => {
     if (productCheckOut) {
       console.log(productCheckOut.orderId);
@@ -191,42 +241,65 @@ const VNPay = (props) => {
                           {product.reveicerInformation.email}
                         </div>
                       </div>
+                      {productCheckOut.orderTypeId === 2 ? (
+                        <>
+                          <div className="col-12 mb-3">
+                            <label htmlFor="street_address">
+                              Tên Chi Nhánh<span>*</span>
+                            </label>
+                            <div name="city" id="basic-icon-default-email">
+                              {siteName}
+                            </div>
+                          </div>
+                          <div className="col-12 mb-3">
+                            <label htmlFor="street_address">
+                              Địa Chỉ Chi Nhánh<span>*</span>
+                            </label>
+                            <div name="city" id="basic-icon-default-email">
+                              {fullyAddressSite}
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="col-12 mb-3">
+                            <label htmlFor="street_address">
+                              Thành phố <span>*</span>
+                            </label>
+                            <div name="city" id="basic-icon-default-email">
+                              {city?.cityName}
+                            </div>
+                          </div>
 
-                      <div className="col-12 mb-3">
-                        <label htmlFor="street_address">
-                          Thành phố <span>*</span>
-                        </label>
-                        <div name="city" id="basic-icon-default-email">
-                          {product.reveicerInformation.cityId}
-                        </div>
-                      </div>
+                          <div className="col-12 mb-3">
+                            <label htmlFor="postcode">
+                              Quận/Huyện <span>*</span>
+                            </label>
 
-                      <div className="col-12 mb-3">
-                        <label htmlFor="postcode">
-                          Quận/Huyện <span>*</span>
-                        </label>
+                            <div id="basic-icon-default-email">
+                              {districs?.districtName}
+                            </div>
+                          </div>
+                          <div className="col-12 mb-3">
+                            <label htmlFor="city">
+                              Phường <span>*</span>
+                            </label>
 
-                        <div id="basic-icon-default-email">
-                          {product.reveicerInformation.districtId}
-                        </div>
-                      </div>
-                      <div className="col-12 mb-3">
-                        <label htmlFor="city">
-                          Phường <span>*</span>
-                        </label>
+                            <div id="basic-icon-default-email">
+                              {ward?.wardName}
+                            </div>
+                          </div>
+                          <div className="col-12 mb-3">
+                            <label htmlFor="state">
+                              Địa chỉ cụ thể <span>*</span>
+                            </label>
+                            <div type="text" id="state" defaultValue="">
+                              {product.reveicerInformation.homeAddress}
+                            </div>
+                          </div>
+                        </>
+                      )}
 
-                        <div id="basic-icon-default-email">
-                          {product.reveicerInformation.wardId}
-                        </div>
-                      </div>
-                      <div className="col-12 mb-3">
-                        <label htmlFor="state">
-                          Địa chỉ cụ thể <span>*</span>
-                        </label>
-                        <div type="text" id="state" defaultValue="">
-                          {product.reveicerInformation.homeAddress}
-                        </div>
-                      </div>
                       <div className="col-12 mb-3">
                         <label htmlFor="street_address">
                           Ghi Chú <span>*</span>
@@ -259,15 +332,26 @@ const VNPay = (props) => {
                     style={{ padding: 0, fontSize: 20 }}
                   >
                     <li style={{ fontSize: 15 }}>
-                      <span>Subtotal</span> <span>{product.subTotalPrice}</span>
+                      <span>Subtotal</span>{" "}
+                      <span>
+                        {product.subTotalPrice.toLocaleString("en-US")}
+                      </span>
                     </li>
 
                     <li style={{ fontSize: 15 }}>
-                      <span>Phí Giao Hàng</span> <span>Free</span>
+                      {product.orderTypeId === 2 ? (
+                        <span>Phí Phát Sinh</span>
+                      ) : (
+                        <span>Phí Giao Hàng</span>
+                      )}
+                      <span>
+                        {product.shippingPrice.toLocaleString("en-US")}
+                      </span>
                     </li>
 
                     <li style={{ fontSize: 15 }}>
-                      <span>Tạm Tính</span> <span>{product.totalPrice}</span>
+                      <span>Tạm Tính</span>{" "}
+                      <span>{product.totalPrice.toLocaleString("en-US")}</span>
                     </li>
                   </ul>
 

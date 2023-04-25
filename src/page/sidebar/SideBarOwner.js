@@ -75,6 +75,7 @@ const Sidebar = ({ activeItem }) => {
             a.preventDefault();
             view(myId);
           }}
+          style={{cursor:"pointer"}}
         >
           {user.imageUrl ? (
             <img className="header-img" src={user.imageUrl} />

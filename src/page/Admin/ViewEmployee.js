@@ -366,7 +366,7 @@ const ViewEmployee = () => {
                         height: 200,
                         width: 200,
                         objectFit: "cover",
-                        marginLeft: 20,
+                        marginLeft: 400,
                         marginTop: 10,
                       }}
                       src={employees.imageUrl}

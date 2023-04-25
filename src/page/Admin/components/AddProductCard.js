@@ -97,6 +97,7 @@ export default function AddProductCard({
               sản phẩm
             </label>
             <Select
+              placeholder="Chọn Sản Phẩm "
               onChange={(selectedOption) => {
                 setSelectedOption(selectedOption.value);
                 handleSelectProduct(selectedOption.value);
@@ -107,8 +108,12 @@ export default function AddProductCard({
                   }))
                 );
               }}
+              noOptionsMessage={({ inputValue }) =>
+                inputValue ? options : "Đang Tải Sản Phẩm..."
+              }
               options={options}
             />
+            <div className="form-text"> Chọn sản phẩm để nhập hàng</div>
           </div>
           <div className="mb-3" style={{ width: "20%", marginRight: 20 }}>
             <label className="form-label" htmlFor="basic-icon-default-phone">
@@ -117,6 +122,7 @@ export default function AddProductCard({
 
             {options2 && (
               <Select
+                placeholder="Chọn Đơn Vị"
                 onChange={(selectedOption) => {
                   setProduct((product) => ({
                     ...product,
@@ -130,10 +136,18 @@ export default function AddProductCard({
                     ],
                   }));
                 }}
+                noOptionsMessage={({ inputValue }) =>
+                  inputValue ? options2 : "Vui Lòng Chọn Sản Phẩm"
+                }
                 options={options2}
               />
             )}
+            <div className="form-text">
+              {" "}
+              Vui lòng chọn sản phẩm trước khi chọn đơn vị
+            </div>
           </div>
+
           <div className="mb-3" style={{ width: "20%", marginRight: 20 }}>
             <label className="form-label" htmlFor={`unitId${index}`}>
               Số lượng
@@ -141,7 +155,7 @@ export default function AddProductCard({
             <div className="input-group input-group-merge">
               {isBatches ? (
                 <input
-                  type="text"
+                  type="number"
                   id={`quantitative${index}`}
                   className="form-control"
                   placeholder="Số Lượng"
@@ -152,7 +166,7 @@ export default function AddProductCard({
                 />
               ) : (
                 <input
-                  type="text"
+                  type="number"
                   id={`quantitative${index}`}
                   className="form-control"
                   placeholder="Số Lượng"
@@ -160,22 +174,50 @@ export default function AddProductCard({
                   aria-describedby={`quantitative${index}2`}
                   value={product?.productImportDetails[index - 1]?.quantity}
                   onChange={(e) => {
-                    setProduct((product) => ({
-                      ...product,
-                      productImportDetails: [
-                        ...product.productImportDetails.slice(0, index - 1),
-                        {
-                          ...product.productImportDetails[index - 1],
-                          quantity: e.target.value,
-                        },
-                        ...product.productImportDetails.slice(index),
-                      ],
-                    }));
                     setcountPrice((countprice) => parseInt(countprice) + 1);
+                    const value = parseInt(e.target.value);
+                    if (!value) {
+                      setProduct((product) => ({
+                        ...product,
+                        productImportDetails: [
+                          ...product.productImportDetails.slice(0, index - 1),
+                          {
+                            ...product.productImportDetails[index - 1],
+                            quantity: 0,
+                          },
+                          ...product.productImportDetails.slice(index),
+                        ],
+                      }));
+                    } else if (value > 0) {
+                      setProduct((product) => ({
+                        ...product,
+                        productImportDetails: [
+                          ...product.productImportDetails.slice(0, index - 1),
+                          {
+                            ...product.productImportDetails[index - 1],
+                            quantity: e.target.value,
+                          },
+                          ...product.productImportDetails.slice(index),
+                        ],
+                      }));
+                    } else {
+                      setProduct((product) => ({
+                        ...product,
+                        productImportDetails: [
+                          ...product.productImportDetails.slice(0, index - 1),
+                          {
+                            ...product.productImportDetails[index - 1],
+                            quantity: 0,
+                          },
+                          ...product.productImportDetails.slice(index),
+                        ],
+                      }));
+                    }
                   }}
                 />
               )}
             </div>
+            <div className="form-text"> Số lượng phải là số lớn hơn 0</div>
           </div>
           <div className="mb-3" style={{ width: "30%", marginRight: 20 }}>
             <label className="form-label" htmlFor={`unitId${index}`}>
@@ -183,30 +225,61 @@ export default function AddProductCard({
             </label>
             <div className="input-group input-group-merge">
               <input
-                type="text"
+                type="number"
                 id={`sellQuantity${index}`}
                 className="form-control"
                 placeholder="Giá nhập"
                 aria-label="Unit Id"
+                value={product?.productImportDetails[index - 1]?.importPrice}
                 aria-describedby={`sellQuantity${index}2`}
                 onChange={(e) => {
-                  setProduct((product) => ({
-                    ...product,
-                    productImportDetails: [
-                      ...product.productImportDetails.slice(0, index - 1),
-                      {
-                        ...product.productImportDetails[index - 1],
-                        importPrice: parseInt(e.target.value),
-                      },
-                      ...product.productImportDetails.slice(index),
-                    ],
-                  }));
                   setcountPrice((countprice) => parseInt(countprice) + 1);
+                  const value = parseInt(e.target.value);
+                  if (!value) {
+                    setProduct((product) => ({
+                      ...product,
+                      productImportDetails: [
+                        ...product.productImportDetails.slice(0, index - 1),
+                        {
+                          ...product.productImportDetails[index - 1],
+                          importPrice: 0,
+                        },
+                        ...product.productImportDetails.slice(index),
+                      ],
+                    }));
+                  } else if (value > 0) {
+                    setProduct((product) => ({
+                      ...product,
+                      productImportDetails: [
+                        ...product.productImportDetails.slice(0, index - 1),
+                        {
+                          ...product.productImportDetails[index - 1],
+                          importPrice: parseInt(e.target.value),
+                        },
+                        ...product.productImportDetails.slice(index),
+                      ],
+                    }));
+                  } else {
+                    setProduct((product) => ({
+                      ...product,
+                      productImportDetails: [
+                        ...product.productImportDetails.slice(0, index - 1),
+                        {
+                          ...product.productImportDetails[index - 1],
+                          importPrice: 0,
+                        },
+                        ...product.productImportDetails.slice(index),
+                      ],
+                    }));
+                  }
                 }}
               />
             </div>
+            <div className="form-text">
+              Giá của sản phẩm nhập phải là số lớn hơn 0
+            </div>
           </div>
-      
+
           {selectedOption && isBatches && (
             <div className="productimport-border">
               {selectedOption &&
@@ -264,6 +337,9 @@ export default function AddProductCard({
                               }}
                             />
                           </div>
+                          <div className="form-text">
+                          Chọn ngày sản xuất của sản phẩm trong lô hàng
+                          </div>
                         </div>
                         <div
                           className="mb-3"
@@ -314,6 +390,9 @@ export default function AddProductCard({
                               }}
                             />
                           </div>
+                          <div className="form-text">
+                            Chọn hạn sử dụng của sản phẩm trong lô hàng
+                          </div>
                         </div>
 
                         <div
@@ -328,7 +407,7 @@ export default function AddProductCard({
                           </label>
                           <div className="input-group input-group-merge">
                             <input
-                              type="text"
+                              type="number"
                               id="basic-icon-default-email"
                               className="form-control"
                               placeholder="Số Lượng Sản Phẩm Lô"
@@ -345,7 +424,9 @@ export default function AddProductCard({
                             />
                           </div>
 
-                          <div className="form-text"></div>
+                          <div className="form-text">
+                            Số lượng sản phẩm lô phải là số lớn hơn 0
+                          </div>
                         </div>
                       </div>
                     </React.Fragment>
@@ -353,7 +434,13 @@ export default function AddProductCard({
                 )}
             </div>
           )}
-              {message&&<div style={{marginTop:20,fontStyle: "oblique",color:"#E96479"}}>{message}</div>}
+          {message && (
+            <div
+              style={{ marginTop: 20, fontStyle: "oblique", color: "#E96479" }}
+            >
+              {message}
+            </div>
+          )}
           {selectedOption && isBatches && (
             <button
               className="button-batches"

@@ -50,7 +50,7 @@ const Sidebar = ({ activeItem }) => {
         className="layout-menu menu-vertical menu bg-menu-theme"
         style={{ backgroundColor: "#ffffff", position: "fixed", height: 1000 }}
       >
-        <div className="app-brand demo" style={{ marginLeft: -30 }}>
+        <div className="app-brand demo" style={{ marginLeft: -30,cursor:"pointer" }}>
           <Link to="/DashBoardAdmin" className="app-brand-link" style={{ marginTop: 40 }}>
             <img src={logo} style={{ marginRight: 60 }} />
           </Link>
@@ -66,6 +66,7 @@ const Sidebar = ({ activeItem }) => {
             a.preventDefault();
             view(myId);
           }}
+          style={{cursor:"pointer"}}
         >
           {user.imageUrl ? (
             <img className="header-img" src={user.imageUrl} />

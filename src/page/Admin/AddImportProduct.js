@@ -212,27 +212,12 @@ const AddImportProduct = () => {
     // }
 
     if (!note.trim()) {
-      Swal.fire("Note Can't Be Empty", "", "question");
+      Swal.fire("Ghi chú không được rỗng", "", "question");
       return false;
     }
 
     if (!totalProductPrice) {
-      Swal.fire("Total Product Price Can't Be Empty", "", "question");
-      return false;
-    }
-
-    if (!taxPrice) {
-      Swal.fire("Tax Price Can't Be Empty", "", "question");
-      return false;
-    }
-
-    if (!totalShippingFee) {
-      Swal.fire("Total Shipping Fee Can't Be Empty", "", "question");
-      return false;
-    }
-
-    if (!totalPrice) {
-      Swal.fire("Total Price Can't Be Empty", "", "question");
+      Swal.fire("Vui Lòng Nhập Số Lượng Cho Sản Phẩm Nhập", "", "question");
       return false;
     }
 
@@ -542,6 +527,7 @@ const AddImportProduct = () => {
                             // }
                           />
                         </div>
+                        <div className="form-text">Tổng giá sản phẩm bằng số lượng nhân giá nhập</div>
                       </div>
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
@@ -555,17 +541,31 @@ const AddImportProduct = () => {
                             type="number"
                             name="city"
                             placeholder="Thuế"
-                            defaultValue={0}
+                            value={product.taxPrice}
                             id="basic-icon-default-email"
                             className="form-control"
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                taxPrice: e.target.value,
-                              }))
-                            }
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value);
+                              if (!value) {
+                                setProduct((prevState) => ({
+                                  ...prevState,
+                                  taxPrice: 0,
+                                }));
+                              } else if (value > 0) {
+                                setProduct((prevState) => ({
+                                  ...prevState,
+                                  taxPrice: e.target.value,
+                                }));
+                              } else {
+                                setProduct((prevState) => ({
+                                  ...prevState,
+                                  taxPrice: 0,
+                                }));
+                              }
+                            }}
                           />
                         </div>
+                        <div className="form-text">Thuê phải lớn hơn hoặc bằng 0 </div>
                       </div>
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
@@ -582,14 +582,29 @@ const AddImportProduct = () => {
                             placeholder="Phí ship"
                             id="basic-icon-default-email"
                             className="form-control"
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                totalShippingFee: e.target.value,
-                              }))
-                            }
+                            value={product.totalShippingFee}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value);
+                              if (!value) {
+                                setProduct((prevState) => ({
+                                  ...prevState,
+                                  totalShippingFee: 0,
+                                }));
+                              } else if (value > 0) {
+                                setProduct((prevState) => ({
+                                  ...prevState,
+                                  totalShippingFee: e.target.value,
+                                }));
+                              } else {
+                                setProduct((prevState) => ({
+                                  ...prevState,
+                                  totalShippingFee: 0,
+                                }));
+                              }
+                            }}
                           />
                         </div>
+                        <div className="form-text">Phí ship phải lớn hơn hoặc bằng 0 </div>
                       </div>
 
                       <div className="mb-3" style={{ width: "95%" }}>
@@ -616,7 +631,9 @@ const AddImportProduct = () => {
                             //   }))
                             // }
                           />
+                           
                         </div>
+                        <div className="form-text">Tổng giá bằng tổng sản phẩm cộng thuế cộng phí ship </div>
                       </div>
                     </div>
                     <div style={{ display: "flex" }}>

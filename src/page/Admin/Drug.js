@@ -24,7 +24,6 @@ const Drug = () => {
     console.log("check", res);
     if (res !== null && res !== undefined && res.status === 200) {
       setSubCategory(res.data.items);
-  
     }
   }
   useEffect(() => {
@@ -62,9 +61,9 @@ const Drug = () => {
         setDrug(res.data.items);
         setTotalRecord(res.data.totalRecord);
         console.log("display", currentPage);
+        setIsLoading(false);
       }
     }
-    setIsLoading(false);
   }
   const [activeItem, setActiveItem] = useState("Drug");
   useEffect(() => {
@@ -122,7 +121,6 @@ const Drug = () => {
                         </div>
                       </div>
                       {/* /Search */}
-                      
                     </div>
                   </nav>
 
@@ -225,7 +223,7 @@ const Drug = () => {
                                   >
                                     Giá
                                   </th>
-                                  
+
                                   <th
                                     style={{
                                       backgroundColor: "#f6f9fc",
@@ -258,10 +256,14 @@ const Drug = () => {
                               </thead>
                               <tbody className="table-border-bottom-0">
                                 {drug &&
-                                  drug.length >0  &&
+                                  drug.length > 0 &&
                                   drug.map((e) => {
-                                    const subCategorys = subCategory.find((sc) => sc.id === e.subCategoryId);
-                                    const subCategoryName = subCategorys ? subCategorys.subCategoryName : "";
+                                    const subCategorys = subCategory.find(
+                                      (sc) => sc.id === e.subCategoryId
+                                    );
+                                    const subCategoryName = subCategorys
+                                      ? subCategorys.subCategoryName
+                                      : "";
                                     return (
                                       <tr key={e.id}>
                                         <td>
@@ -283,12 +285,11 @@ const Drug = () => {
                                         >
                                           &nbsp; &nbsp;{e.name}
                                         </td>
-                                        <td>{e.price.toLocaleString("en-US")} đ</td>
-                                        <td>{subCategoryName}</td>
                                         <td>
-                                         
-                                          {e.userTargetString}
+                                          {e.price.toLocaleString("en-US")} đ
                                         </td>
+                                        <td>{subCategoryName}</td>
+                                        <td>{e.userTargetString}</td>
 
                                         <td>
                                           <a
@@ -321,7 +322,6 @@ const Drug = () => {
                               </tbody>
                             </table>
                             <ReactPaginate
-                          
                               className="pagination "
                               breakLabel="..."
                               nextLabel=">"

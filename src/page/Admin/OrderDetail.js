@@ -43,6 +43,13 @@ const OrderDetail = () => {
       }
     }
   }
+  const checkValidation = () => {
+    if (reason.trim().length < 10) {
+      Swal.fire("Lý do huỷ phải có ít nhất 10 kí tự", "", "question");
+      return false;
+    }
+    return true;
+  };
   async function loadDataSite() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -223,6 +230,7 @@ const OrderDetail = () => {
   async function cancelOrder() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
+      if (checkValidation()) {
       const deviceId = await axios
         .get("https://api.ipify.org/?format=json")
         .then((res) => res.data.ip);
@@ -241,10 +249,27 @@ const OrderDetail = () => {
         loadDataOrderById();
       } else {
         Swal.fire(`${res?.errors?.Reason[0]}`, "", "error");
-      }
+      }}
     }
   }
+  async function handleCancelOrder() {
+    const confirmed = await Swal.fire({
+      title: "Bạn có chắc chắn muốn hủy đơn hàng?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Không",
+      footer:
+      "Lưu ý: Việc hủy đơn chỉ nên thực hiện khi bạn gặp trở ngại giao hàng cho khách hàng!",
 
+    });
+  
+    if (confirmed.isConfirmed) {
+      cancelOrder();
+    }
+  }
   const date = new Date(OrderDetail.createdDate);
 
   const createDateVN = date.toLocaleString("vi-VN", {
@@ -344,7 +369,7 @@ const OrderDetail = () => {
 
               marginTop: "20px",
               marginBottom: -20,
-              backgroundColor: "#82AAE3",
+              backgroundColor: "#E74646",
               color: "white",
             }}
           >
@@ -1004,16 +1029,17 @@ const OrderDetail = () => {
                           </label>
                           <div className="input-group input-group-merge">
                             <textarea
-                              style={{ height: 200 }}
+                              style={{ height: 100 }}
                               type="text"
                               className="form-control"
                               id="basic-icon-default-fullname"
-                              placeholder="Viết Mô Tả "
+                              placeholder="Viết lý do hủy ( trên 10 kí tự )"
                               aria-label="John Doe"
                               aria-describedby="basic-icon-default-fullname2"
                               onChange={(e) => setReason(e.target.value)}
                             />
                           </div>
+                          <div className="form-text"> Lưu ý việc hủy đơn chỉ nên thực hiện khi bạn gặp trở ngại giao hàng cho khách hàng</div>
                         </div>
                       </div>
 
@@ -1023,7 +1049,7 @@ const OrderDetail = () => {
                           className="button-28"
                           onClick={(e) => {
                             e.preventDefault();
-                            cancelOrder();
+                            handleCancelOrder();
                           }}
                           style={{
                             height: 30,

@@ -45,8 +45,8 @@ const ProfileAdmin = () => {
 
   let history = useHistory();
   const genders = [
-    { name: "Nam", value: 0 },
-    { name: "Nữ", value: 1 },
+    { name: "Nam", value: 1 },
+    { name: "Nữ", value: 0 },
   ];
   const [fullnameErrorMessage, setFullnameErrorMessage] = useState("");
   const [usernameErrorMessage, setUsernameErrorMessage] = useState("");
@@ -826,10 +826,10 @@ const ProfileAdmin = () => {
                           </label>
                           <div className="input-group input-group-merge">
                             <input
-                              type="text"
+                              type="password"
                               className="form-control"
                               id="basic-icon-default-fullname"
-                              placeholder="Tên Đầy Đủ"
+                              placeholder="Mật Khẩu cũ"
                               aria-label="John Doe"
                               aria-describedby="basic-icon-default-fullname2"
                               onChange={(e) => {
@@ -850,10 +850,10 @@ const ProfileAdmin = () => {
                           </label>
                           <div className="input-group input-group-merge">
                             <input
-                              type="text"
+                              type="password"
                               id="basic-icon-default-company"
                               className="form-control"
-                              placeholder="Tên Tài Khoản"
+                              placeholder="Mật Khẩu Mới"
                               aria-label="ACME Inc."
                               aria-describedby="basic-icon-default-company2"
                               onChange={(e) => {
@@ -874,10 +874,10 @@ const ProfileAdmin = () => {
                           </label>
                           <div className="input-group input-group-merge">
                             <input
-                              type="text"
+                              type="password"
                               id="basic-icon-default-email"
                               className="form-control"
-                              placeholder="Số điện thoại"
+                              placeholder="Xác Nhận Mật Khẩu"
                               aria-label="Phone Number"
                               aria-describedby="basic-icon-default-email2"
                               onChange={(e) => {
@@ -968,6 +968,7 @@ const ProfileAdmin = () => {
 
                               <a
                               style={{marginTop:5}}
+                              onClick={()=>{setIsOpen2(true)}}
                                 className="btn btn-outline-primary"
                                 href="#my-dialog2"
                               >
@@ -986,7 +987,7 @@ const ProfileAdmin = () => {
                         <div className="card-body">
                           <div className="row">
                             <div className="col-sm-3">
-                              <h6 className="mb-0">Full Name</h6>
+                              <h6 className="mb-0">Tên Đẩy Đủ</h6>
                             </div>
                             <div className="col-sm-9 text-secondary">
                               {employees.fullname}
@@ -1013,7 +1014,7 @@ const ProfileAdmin = () => {
                           <hr />
                           <div className="row">
                             <div className="col-sm-3">
-                              <h6 className="mb-0">Số Điện Thoài</h6>
+                              <h6 className="mb-0">Số Điện Thoại</h6>
                             </div>
                             <div className="col-sm-9 text-secondary">
                               {employees.phoneNo}
@@ -1043,7 +1044,7 @@ const ProfileAdmin = () => {
                           <hr />
                           <div className="row">
                             <div className="col-sm-3">
-                              <h6 className="mb-0">code</h6>
+                              <h6 className="mb-0">Mã Nhân Viên</h6>
                             </div>
                             <div className="col-sm-9 text-secondary">
                               {employees.code}
@@ -1065,6 +1066,7 @@ const ProfileAdmin = () => {
                               <a
                                 className=" button-28"
                                 href="#my-dialog"
+                                onClick={()=>{setIsOpen(true)}}
                                 style={{
                                   backgroundColor: "#11cdef",
                                   color: "#FFFFFF",

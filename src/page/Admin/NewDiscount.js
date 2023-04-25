@@ -12,7 +12,7 @@ const NewDiscount = () => {
   const [unitCount, setUnitCount] = useState(1);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(7);
+  const [perPage, setPerPage] = useState(100);
   const [totalRecord, setTotalRecord] = useState([]);
   const [drug, setDrug] = useState([]);
   const [product, setProduct] = useState({

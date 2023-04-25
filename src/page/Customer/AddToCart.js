@@ -404,8 +404,8 @@ const AddToCart = () => {
                       ) : (
                         <div>
                           <img
-                          style={{height:470,width:800}}
-                            src="https://www.adasglobal.com/img/empty-cart.png"
+                          style={{height:470,width:800,objectFit:"cover"}}
+                            src="https://polytronofficial.com/assets/images/empty-cart.png"
                             alt="Empty cart"
                           />
                         </div>

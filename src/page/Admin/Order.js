@@ -47,7 +47,25 @@ const Order = () => {
       }
     }
   }
+  const [user, setUser] = useState([]);
+  async function loadDataUserByID() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
 
+      console.log("localStorage", localStorage);
+      const path = `User/${localStorage.userID}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("res", res.data.username);
+      console.log("user", user);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setUser(res.data);
+      }
+    }
+  }
+  const myId = localStorage.getItem("userID");
+  useEffect(() => {
+    loadDataUserByID();
+  }, []);
   const [activeItem, setActiveItem] = useState("Order");
   useEffect(() => {
     loadDataOrder2(acceptable);
@@ -88,8 +106,13 @@ const Order = () => {
                       aria-label="Search..."
                     />
                   </div>
+
                 </div>
+                <div style={{marginLeft:470}}>   <div >Xin Chào, <strong>{user.fullname}</strong>.</div>
+                <div >Hiện bạn đang làm việc tại chi nhánh: <strong>{user.siteName}</strong> </div></div>
+             
               </div>
+             
             </nav>
 
             {/* / Navbar */}

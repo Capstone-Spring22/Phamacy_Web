@@ -46,6 +46,24 @@ const ViewOrderDetail = () => {
       }
     }
   }
+  async function handleCancelOrder() {
+    const confirmed = await Swal.fire({
+      title: "Bạn có chắc chắn muốn hủy đơn hàng?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Không",
+      footer:
+      "Lưu ý: Hành động này sẽ không thể hoàn tác. Bạn chắc chắn muốn tiếp tục?",
+
+    });
+  
+    if (confirmed.isConfirmed) {
+      cancelOrder();
+    }
+  }
   async function updateNote() {
     if (localStorage && localStorage.getItem("accessTokenUser")) {
       const accessToken = localStorage.getItem("accessTokenUser");
@@ -60,9 +78,17 @@ const ViewOrderDetail = () => {
       }
     }
   }
+  const checkValidation = () => {
+    if (reason.trim().length < 10) {
+      Swal.fire("Lý do huỷ phải có ít nhất 10 kí tự", "", "question");
+      return false;
+    }
+    return true;
+  };
   async function cancelOrder() {
     if (localStorage && localStorage.getItem("accessTokenUser")) {
       const accessToken = localStorage.getItem("accessTokenUser");
+      if (checkValidation()) {
       const deviceId = await axios
         .get("https://api.ipify.org/?format=json")
         .then((res) => res.data.ip);
@@ -82,7 +108,7 @@ const ViewOrderDetail = () => {
       } else {
         Swal.fire(`${res?.errors?.Reason[0]}`, "", "error");
       }
-    }
+    }}
   }
   const handleNoteID = (id) => {
     setNodeUpdate([{ ...noteUpdate, orderDetailId: id }]);
@@ -186,7 +212,7 @@ const ViewOrderDetail = () => {
                           className="button-28"
                           onClick={(e) => {
                             e.preventDefault();
-                            cancelOrder();
+                            handleCancelOrder();
                           }}
                           style={{
                             height: 30,

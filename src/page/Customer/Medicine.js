@@ -5,6 +5,7 @@ import { getDataByPath, deleteDataByPath } from "../../services/data.service";
 import Header from "../Header/Header";
 import { ListProduct } from "../Data";
 import { SimpleDropdown } from "react-js-dropdavn";
+import Footer from "./Footer";
 const Medicine = () => {
   let history = useHistory();
   const { categoryId } = useParams();
@@ -42,6 +43,7 @@ const Medicine = () => {
       setDrug(res.data.items);
       setTotalRecord(res.data.totalRecord);
       console.log("display", currentPage);
+      setIsLoading(false);
     }
   }
   async function loadDataMedicinebycategoryID(categoryID) {
@@ -52,6 +54,7 @@ const Medicine = () => {
       setDrug(res.data.items);
       setTotalRecord(res.data.totalRecord);
       console.log("display", currentPage);
+      setIsLoading(false);
     }
   }
   async function loadDataCategory2() {
@@ -74,7 +77,7 @@ const Medicine = () => {
   }, []);
 
   return (
-    <>
+    <div>
       <Header />
       <div className="site-wrap">
         <div id="wrapper">
@@ -241,237 +244,139 @@ const Medicine = () => {
                     className="flex-w flex-l-m filter-tope-group m-tb-10"
                     style={{ marginBottom: 50 }}
                   >
-                    <button
-                      className="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1"
-                      data-filter="*"
+                    <div
                       style={{
-                        border: "none",
-                        marginRight: 30,
-                        fontSize: "20px",
-                        fontFamily: "Poppins-Regular",
-                        backgroundColor: "white",
-                      }}
-                    >
-                      Tất cả sản phẩm
-                    </button>
-                    {category &&
-                      category.length &&
-                      category.map((result) => {
-                        return (
-                          <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              loadDataMedicinebycategoryID(result.id);
-                            }}
-                            className="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-                            data-filter=".women"
-                            style={{
-                              border: "none",
-                              marginRight: 30,
-                              fontSize: "20px",
-                              fontFamily: "Poppins-Regular",
-                              backgroundColor: "white",
-                            }}
-                          >
-                            {result.categoryName}
-                          </button>
-                        );
-                      })}
-
-                    <label
-                      className="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-                      htmlFor="toggle"
-                      style={{
-                        marginLeft: 400,
+                        width: 1400,
+                        display: "flex",
+                        flexWrap: "wrap",
+                        marginBottom: 50,
                         cursor: "pointer",
-                        fontSize: "20px",
                       }}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="bi bi-filter"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
-                      </svg>
-                      &nbsp; Filter
-                    </label>
-                    <nav className="nav1">
-                      <input id="toggle" type="checkbox" defaultChecked />
-                      <button
-                        className="button-16"
-                        style={{ margin: 10, display: "none" }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          class="bi bi-filter"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
-                        </svg>
-                        &nbsp; Filter
-                      </button>
-
-                      <div
-                        style={{
-                          height: 250,
-                          width: 1200,
-                          backgroundColor: "#f9f9f9",
-                          marginRight: 1000,
-                          marginTop: 30,
-                        }}
-                      >
-                        <div className="col-12 col-md-8 col-lg-12">
-                          <div className="shop_grid_product_area">
-                            <div className="row">
-                              <div
-                                className="col-12 col-sm-6 col-lg-3 single_gallery_item wow fadeInUpBig"
-                                data-wow-delay="0.2s"
-                              >
-                                {/* Product Image */}
-
-                                {/* Product Description */}
-                                <div className="product-description">
-                                  <h4 className="product-price">Thương hiệu</h4>
-                                  <a>Abbott</a>
-                                  <br />
-                                  <a>Anlene</a>
-                                  <br />
-                                  <a>Dinh Dưỡng Việt</a>
-                                  <br />
-                                  <a>Fonterra Brands</a>
-                                  <br />
-                                  <a>Abbott</a>
-                                  <br />
-                                  <a>Anlene</a>
-                                  <br />
-                                </div>
-                              </div>
-                              <div
-                                className="col-12 col-sm-6 col-lg-3 single_gallery_item wow fadeInUpBig"
-                                data-wow-delay="0.2s"
-                              >
-                                {/* Product Image */}
-
-                                {/* Product Description */}
-                                <div className="product-description">
-                                  <h4 className="product-price">Chỉ định</h4>
-                                  <a>10000-50000</a>
-                                  <br />
-                                  <a>10000-50000</a>
-                                  <br />
-                                  <a>10000-50000</a>
-                                  <br />
-                                  <a>10000-50000</a>
-                                  <br />
-                                  {/* Add to Cart */}
-                                </div>
-                              </div>
-
-                              <div
-                                className="col-12 col-sm-6 col-lg-3 single_gallery_item wow fadeInUpBig"
-                                data-wow-delay="0.2s"
-                              >
-                                {/* Product Image */}
-
-                                {/* Product Description */}
-                                <div className="product-description">
-                                  <h4 className="product-price">Đối tượng</h4>
-                                  <a>Tất cả</a>
-                                  <br />
-                                  <a>Khoáng Chất</a>
-                                  <br />
-                                  <a>Taurine</a>
-                                  <br />
-                                  <a>Vitamin Tổng Hợp</a>
-                                  <br />
-                                  <a>Taurine</a>
-                                  <br />
-                                  <a>Vitamin Tổng Hợp</a>
-                                  <br />
-
-                                  {/* Add to Cart */}
-                                </div>
-                              </div>
-                              <div
-                                className="col-12 col-sm-6 col-lg-3 single_gallery_item wow fadeInUpBig"
-                                data-wow-delay="0.2s"
-                              >
-                                {/* Product Image */}
-
-                                {/* Product Description */}
-                                <div className="product-description">
-                                  <h4 className="product-price">Giá</h4>
-                                  <p>đá</p>
-                                  {/* Add to Cart */}
+                      {category &&
+                        category.length &&
+                        category.map((result) => {
+                          return (
+                            <div
+                              onClick={(e) => {
+                                e.preventDefault();
+                                loadDataMedicinebycategoryID(result.id);
+                              }}
+                              style={{
+                                border: "none",
+                                marginRight: 30,
+                                fontSize: "16px",
+                                fontFamily: "Poppins-Regular",
+                              }}
+                              className="category-home"
+                            >
+                              <div style={{ display: "flex" }}>
+                                <img
+                                  src={result.imageUrl}
+                                  style={{
+                                    height: 40,
+                                    width: 40,
+                                    marginRight: 10,
+                                  }}
+                                />
+                                <div>
+                                  <div
+                                    style={{
+                                      fontSize: "18px",
+                                    }}
+                                  >
+                                    {result.categoryName}
+                                  </div>
+                                  <div>{result.noOfProducts} Sản Phẩm</div>
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          );
+                        })}
+                    </div>
+                    {isLoading ? (
+                      <div style={{ height: 300 }}>
+                        <div className="loading" style={{ marginTop: 170 }}>
+                          <div className="pill"></div>
+                          <div className="loading-text">Đang Tải...</div>
                         </div>
                       </div>
-                    </nav>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <div className="container " style={{ display: "flex",flexWrap: "wrap" }}>
-                {drug &&
-                  drug.length > 0 &&
-                  drug.map((item, index) => {
-                    return (
-                      <Link
-                        className="product-card"
-                        style={{width: "190px"}}
-                        key={item.id}
-                        to={`/ViewDetail/${item.id}`}
+                    ) : (
+                      <div
+                        className="container "
+                        style={{ display: "flex", flexWrap: "wrap" }}
                       >
-                        <img
-                          src={item.imageModel.imageURL}
-                          className="product-img-new"
-                          alt="Product Image"
-                        />
-                        <div className="product-info">
-                          {" "}
-                          <h2 className="product-name">{item.name}</h2>
-                          <div style={{ display: "flex" }}>
-                            <p className="product-price">
-                              {" "}
-                              {item.priceAfterDiscount.toLocaleString(
-                                "en-US"
-                              )}{" "}
-                              đ /{item.productUnitReferences[0].unitName}
-                            </p>
+                        {drug.length > 0 ? (
+                          <>
+                            {drug &&
+                              drug.length &&
+                              drug.map((item, index) => {
+                                return (
+                                  <Link
+                                    className="product-card"
+                                    style={{ width: "190px" }}
+                                    key={item.id}
+                                    to={`/ViewDetail/${item.id}`}
+                                  >
+                                    <img
+                                      src={item.imageModel.imageURL}
+                                      className="product-img-new"
+                                      alt="Product Image"
+                                    />
+                                    <div className="product-info">
+                                      {" "}
+                                      <h2 className="product-name">
+                                        {item.name}
+                                      </h2>
+                                      <div style={{ display: "flex" }}>
+                                        <p className="product-price">
+                                          {" "}
+                                          {item.priceAfterDiscount.toLocaleString(
+                                            "en-US"
+                                          )}{" "}
+                                          đ /
+                                          {
+                                            item.productUnitReferences[0]
+                                              .unitName
+                                          }
+                                        </p>
+                                      </div>
+                                      <p>
+                                        {" "}
+                                        {item.price ===
+                                        item.priceAfterDiscount ? (
+                                          ""
+                                        ) : (
+                                          <del>{item.price} đ</del>
+                                        )}
+                                      </p>
+                                    </div>
+                                  </Link>
+                                );
+                              })}
+                          </>
+                        ) : (
+                          <div style={{ height: 300 }}>
+                            
+                              <div className="loading-text">
+                                <img src="https://cdn-icons-png.flaticon.com/512/1106/1106992.png"/>
+                                Không Có Sản Phẩm Của Danh Mục Này
+                              </div>
+                       
                           </div>
-                          <p>
-                            {" "}
-                            {item.price === item.priceAfterDiscount ? (
-                              ""
-                            ) : (
-                              <del>{item.price} đ</del>
-                            )}
-                          </p>
-                        </div>
-                      </Link>
-                    );
-                  })}
-              </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           </section>
-
+          <Footer />
           {/* ****** Footer Area End ****** */}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 export default Medicine;

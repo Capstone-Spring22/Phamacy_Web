@@ -10,7 +10,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 const DetailMedicine = () => {
   const { productId } = useParams();
-
+  const [isLoading, setIsLoading] = useState(false);
   const detailId = localStorage.getItem("detailId");
   const [product, setProduct] = useState([]);
   const [descriptionModels, setDescriptionModels] = useState([]);
@@ -27,7 +27,7 @@ const DetailMedicine = () => {
   const [showPrice, setShowPrice] = useState({
     price: "",
     unitName: "",
-    priceAfterDiscount:""
+    priceAfterDiscount: "",
   });
   const [ingredientModel, setIngredientModel] = useState([]);
   useEffect(() => {
@@ -82,6 +82,7 @@ const DetailMedicine = () => {
   async function addToCart() {
     if (localStorage && localStorage.getItem("accessTokenUser")) {
       const accessToken = localStorage.getItem("accessTokenUser");
+      setIsLoading(true);
       const deviceId = await axios
         .get("https://api.ipify.org/?format=json")
         .then((res) => res.data.ip);
@@ -102,7 +103,6 @@ const DetailMedicine = () => {
 
       if (res && res.status === 200) {
         toast.success("Đã Thêm Vào Giở Hàng");
-        // window.location.reload();
       }
     } else {
       const deviceId = await axios
@@ -124,9 +124,9 @@ const DetailMedicine = () => {
       console.log("Product data:", product);
       if (res && res.status === 200) {
         toast.success("Đã Thêm Vào Giở Hàng");
-        // window.location.reload();
       }
     }
+    setIsLoading(false);
   }
   const handleSelect = (selectedIndex, e) => {
     setSelectedImageIndex(selectedIndex);
@@ -224,11 +224,12 @@ const DetailMedicine = () => {
                         fontWeight: "500",
                       }}
                     >
-                      {showPrice.priceAfterDiscount?.toLocaleString("en-US")} đ / {showPrice.unitName}
+                      {showPrice.priceAfterDiscount?.toLocaleString("en-US")} đ
+                      / {showPrice.unitName}
                     </h5>
                     <div>
                       {showPrice.price === showPrice.priceAfterDiscount ? (
-                        <br/>
+                        <br />
                       ) : (
                         <del>{showPrice.price?.toLocaleString("en-US")} đ</del>
                       )}
@@ -251,7 +252,7 @@ const DetailMedicine = () => {
                             ...showPrice,
                             price: product.price,
                             unitName: product.unitName,
-                            priceAfterDiscount: product.priceAfterDiscount
+                            priceAfterDiscount: product.priceAfterDiscount,
                           });
                           setSelectedUnitID(product.id);
                         }}
@@ -275,7 +276,7 @@ const DetailMedicine = () => {
                                   ...showPrice,
                                   price: unit.price,
                                   unitName: unit.unitName,
-                                  priceAfterDiscount: unit.priceAfterDiscount
+                                  priceAfterDiscount: unit.priceAfterDiscount,
                                 });
                                 setSelectedUnitID(unit.id);
                               }}
@@ -365,18 +366,32 @@ const DetailMedicine = () => {
                     </div>
 
                     {/* Add to Cart Form */}
+                    <div
+                      className="card-header-detail"
+                      style={{ fontSize: 15 }}
+                    >
+                      Số Lượng Mua:{" "}
+                    </div>
+                    <br />
+
                     <div className="cart clearfix mb-50 d-flex" method="post">
                       <div className="quantity">
                         <input
                           type="number"
                           className="qty-text"
                           id="qty"
-                          step={1}
-                          min={1}
-                          max={12}
                           name="quantity"
                           value={quantity}
-                          onChange={(e) => setQuantity(e.target.value)}
+                          onChange={(e) => {
+                            const value = parseInt(e.target.value);
+                            if (!value) {
+                              setQuantity(1);
+                            } else if (value > 1) {
+                              setQuantity(e.target.value);
+                            } else {
+                              setQuantity(1);
+                            }
+                          }}
                         />
                       </div>
                       {product.isPrescription === 1 ? (
@@ -417,10 +432,15 @@ const DetailMedicine = () => {
                     <div>
                       <div className="card-header-detail">Thành Phần</div>
                       <div className="card-body-content">
-                        <table className="table-ingredient" >
-                          <thead className="tb-header"  style={{borderRadius:20}} >
-                            <tr >
-                              <th style={{padding:20 }}>Thông Tin Thành Phần</th>
+                        <table className="table-ingredient">
+                          <thead
+                            className="tb-header"
+                            style={{ borderRadius: 20 }}
+                          >
+                            <tr>
+                              <th style={{ padding: 20 }}>
+                                Thông Tin Thành Phần
+                              </th>
 
                               <th>Hàm Lượng</th>
                             </tr>
@@ -431,7 +451,9 @@ const DetailMedicine = () => {
                               ingredientModel.map((e) => {
                                 return (
                                   <tr>
-                                    <td style={{padding:20}}>{e.ingredientName}</td>
+                                    <td style={{ padding: 20 }}>
+                                      {e.ingredientName}
+                                    </td>
                                     <td>
                                       {e.content}
                                       {e.unitName}
@@ -448,6 +470,18 @@ const DetailMedicine = () => {
               </div>
             </div>
           </section>
+          {isLoading ? (
+            <div style={{ height: 900 }}>
+              <div className="loading2">
+                <div className="pill"></div>
+                <div className="loading-text" style={{ color: "white" }}>
+                  Đang Cập Nhật Giỏ Hàng
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div></div>
+          )}
           {/* <<<<<<<<<<<<<<<<<<<< Single Product Details Area End >>>>>>>>>>>>>>>>>>>>>>>>> */}
           {/* ****** Quick View Modal Area Start ****** */}
           <div

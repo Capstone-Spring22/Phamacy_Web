@@ -20,7 +20,25 @@ const DashBoardManager = () => {
   const [totalRecord, setTotalRecord] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   let history = useHistory();
+  const [user, setUser] = useState([]);
+  async function loadDataUserByID() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
 
+      console.log("localStorage", localStorage);
+      const path = `User/${localStorage.userID}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("res", res.data.username);
+      console.log("user", user);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setUser(res.data);
+      }
+    }
+  }
+  const myId = localStorage.getItem("userID");
+  useEffect(() => {
+    loadDataUserByID();
+  }, []);
   const update = (myId) => {
     localStorage.setItem("id", myId);
     history.push("/UpdateImportProduct");
@@ -200,12 +218,8 @@ const DashBoardManager = () => {
                       <div className="d-flex align-items-end row">
                         <div className="col-sm-7">
                           <div className="card-body">
-                            <h5 className="card-title text-primary">Welcome</h5>
-                            <p className="mb-4">
-                              You have done <span className="fw-bold">72%</span>{" "}
-                              more sales today. Check your new badge in your
-                              profile.
-                            </p>
+                            <h5 className="card-title text-primary">Xin Chào, <strong>{user.fullname}</strong></h5>
+                            <div >Hiện bạn đang làm việc tại chi nhánh: <strong>{user.siteName}</strong> </div>
                           </div>
                         </div>
                         <div className="col-sm-5 text-center text-sm-left">

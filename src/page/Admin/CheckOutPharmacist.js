@@ -16,13 +16,16 @@ const CheckOutPharmacist = () => {
   const [point, setPoint] = useState(0);
   const [count, setCount] = useState(2);
   const [valueSearch, setvalueSearch] = useState("");
-
+  const [isOpen, setIsOpen] = useState(false);
+  const [moneyReceived, setMoneyReceived] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [pointErrorMessage, setPointErrorMessage] = useState("");
   async function loadDataMedicineDefault() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
       const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
       const res = await getDataByPath(path, accessToken, "");
-       console.log('display',res)
+      console.log("display", res);
       if (res !== null && res !== undefined && res.status === 200) {
         setDrug(res.data.items);
       }
@@ -65,7 +68,18 @@ const CheckOutPharmacist = () => {
       }
     }
   }
+  const handleMoneyReceivedChange = (event) => {
+    const value = event.target.value;
+    const money = parseFloat(value);
+    setMoneyReceived(isNaN(money) ? 0 : money);
+    setErrorMessage("");
+  };
 
+  const handleMoneyReceivedBlur = () => {
+    if (moneyReceived < product.totalPrice) {
+      setErrorMessage("Số tiền nhận phải lớn hơn hoặc bằng số tiền đơn hàng");
+    }
+  };
   const loadDataUserByPhone = async () => {
     if (checkValidation()) {
       if (localStorage && localStorage.getItem("accessToken")) {
@@ -178,7 +192,7 @@ const CheckOutPharmacist = () => {
 
     products: null,
     reveicerInformation: {
-      fullname: "",
+      fullname: "Khách vãng lai",
       phoneNumber: "",
     },
   });
@@ -222,6 +236,11 @@ const CheckOutPharmacist = () => {
     );
   }, [listCart]);
   function updateQuantity(productId, newQuantity) {
+    if (product.quantity < 1) {
+      // Nếu giá trị nhập vào nhỏ hơn 1, thông báo cho người dùng
+      alert("Số lượng phải lớn hơn hoặc bằng 1!");
+      return;
+    }
     setListCart((prevState) =>
       prevState.map((item) => {
         if (item.productId === productId) {
@@ -252,17 +271,32 @@ const CheckOutPharmacist = () => {
 
   useEffect(() => {
     if (product?.usedPoint > point) {
-      console.log("display", "lỗi quá điểm");
-    }
-    if (
+      setPointErrorMessage(
+        "Số lượng Điểm Thưởng đã nhập vượt quá số Điểm Thưởng hiện có"
+      );
+    } else if (
       parseInt(product?.usedPoint) * 1000 >
       listCart?.reduce(
         (total, curent) => total + curent.quantity * curent.discountPrice,
         0
       )
     ) {
-      console.log("display", "lỗi quá giảm giá");
-    } else {
+      setPointErrorMessage(
+        `Số Điểm tối đa được nhập là ${
+          listCart?.reduce(
+            (total, curent) => total + curent.quantity * curent.discountPrice,
+            0
+          ) / 1000
+        }`
+      );
+    } else if (
+      product?.usedPoint <= point &&
+      parseInt(product?.usedPoint) * 1000 <=
+        listCart?.reduce(
+          (total, curent) => total + curent.quantity * curent.discountPrice,
+          0
+        )
+    ) {
       setProduct({
         ...product,
         subTotalPrice: listCart?.reduce(
@@ -395,45 +429,51 @@ const CheckOutPharmacist = () => {
                             {drug &&
                               drug.map((e) => {
                                 return (
-                                  <div
-                                    key={e.id}
-                                    className="product-cart-p"
-                                    onClick={() => {
-                                      addToCart(e.id);
-                                      setCount(parseInt(count) + 1);
-                                    }}
-                                  >
-                                    <img
-                                      src={e.imageModel.imageURL}
-                                      style={{
-                                        height: 70,
-                                        width: 60,
-                                        borderRadius: 7,
-                                        objectFit: "cover",
+                                  <>
+                                    {" "}
+                                    <div
+                                      key={e.id}
+                                      className="product-cart-p"
+                                      onClick={() => {
+                                        addToCart(e.id);
+                                        setCount(parseInt(count) + 1);
                                       }}
-                                    />
-                                    <div className="name-product-pharmacist">
-                                      <div>Tên Sản Phẩm</div>
-                                      <div> {e.name}</div>
-                                    </div>
+                                    >
+                                      <img
+                                        src={e.imageModel.imageURL}
+                                        style={{
+                                          height: 70,
+                                          width: 60,
+                                          borderRadius: 7,
+                                          objectFit: "cover",
+                                        }}
+                                      />
+                                      <div>
+                                        <div className="name-product-pharmacist">
+                                          <div>Tên Sản Phẩm</div>
+                                          <div> {e.name}</div>
+                                        </div>
+                                        <div style={{marginLeft:10,color:"#EB455F"}}>{e.productInventoryModel.siteInventoryModel.message}</div>
+                                      </div>
 
-                                    <div style={{ width: 380 }}>
-                                      <div>Số Lượng Tồn Kho:</div>
-                                      <div>
-                                        {e.productInventoryModel?.quantity}{" "}
-                                        {e.productInventoryModel?.unitName}
+                                      <div style={{ width: 380 }}>
+                                        <div>Số Lượng Tồn Kho:</div>
+                                        <div>
+                                          {e.productInventoryModel?.quantity}{" "}
+                                          {e.productInventoryModel?.unitName}
+                                        </div>
+                                      </div>
+                                      <div style={{ width: 380 }}>
+                                        <div>Giá</div>
+                                        <div>
+                                          {e.priceAfterDiscount.toLocaleString(
+                                            "en-US"
+                                          )}{" "}
+                                          đ / {e.productInventoryModel.unitName}
+                                        </div>
                                       </div>
                                     </div>
-                                    <div style={{ width: 380 }}>
-                                      <div>Giá</div>
-                                      <div>
-                                        {e.priceAfterDiscount.toLocaleString(
-                                          "en-US"
-                                        )}{" "}
-                                        đ / {e.productInventoryModel.unitName}
-                                      </div>
-                                    </div>
-                                  </div>
+                                  </>
                                 );
                               })}
                           </div>
@@ -597,6 +637,412 @@ const CheckOutPharmacist = () => {
               </div>
             </div> */}
             <div
+              className={`dialog overlay ${isOpen ? "" : "hidden"}`}
+              id="my-dialog"
+            >
+              <a href="#" className="overlay-close" />
+
+              <div className="row " style={{ width: 560 }}>
+                <div className="col-xl">
+                  <div className="card mb-4">
+                    <div
+                      className="card-header d-flex justify-content-between align-items-center"
+                      style={{
+                        height: 70,
+                        backgroundColor: "white",
+
+                        marginLeft: 170,
+                        borderColor: "#f4f4f4",
+                      }}
+                    >
+                      <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
+                    </div>
+                    <div className="card-body">
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          padding: 1,
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            width: 500,
+                            padding: 1,
+                            height: 200,
+                          }}
+                        >
+                          <div
+                            className="mb-3"
+                            style={{
+                              width: "47%",
+                              height: 10,
+                              marginRight: 20,
+                            }}
+                          >
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-fullname"
+                            >
+                              Số Điện Thoại Người Mua
+                            </label>
+                            <div style={{ display: "flex" }}>
+                              {" "}
+                              <div className="input-group input-group-merge">
+                                <input
+                                  style={{ marginRight: 0 }}
+                                  type="text"
+                                  className="form-control"
+                                  id="basic-icon-default-fullname"
+                                  placeholder="Số điện thoại "
+                                  aria-label="Tên Người Mua"
+                                  aria-describedby="basic-icon-default-fullname2"
+                                  onChange={(e) => {
+                                    setProduct({
+                                      ...product,
+                                      reveicerInformation: {
+                                        ...product.reveicerInformation,
+                                        phoneNumber: e.target.value,
+                                      },
+                                    });
+                                  }}
+                                  onKeyPress={(e) => {
+                                    if (e.key === "Enter") {
+                                      loadDataUserByPhone();
+                                      loadPointUserByPhone();
+                                    }
+                                  }}
+                                />
+                              </div>
+                              <button
+                                onClick={(e) => {
+                                  loadDataUserByPhone();
+                                  loadPointUserByPhone();
+                                }}
+                                className="button-28"
+                                style={{
+                                  height: 36,
+                                  width: 50,
+                                  marginLeft: 10,
+
+                                  backgroundColor: "#82AAE3",
+                                  color: "white",
+                                }}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  fill="currentColor"
+                                  class="bi bi-search"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+
+                          <div
+                            className="mb-3"
+                            style={{ width: "45%", height: 10 }}
+                          >
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-fullname"
+                            >
+                              Tên Người Mua
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <input
+                                type="text"
+                                className="form-control"
+                                id="basic-icon-default-fullname"
+                                placeholder="Tên người mua"
+                                aria-label="Tên Sản Phẩm"
+                                aria-describedby="basic-icon-default-fullname2"
+                                value={product.reveicerInformation.fullname}
+                                onChange={(e) =>
+                                  setProduct({
+                                    ...product,
+                                    reveicerInformation: {
+                                      ...product.reveicerInformation,
+                                      fullname: e.target.value,
+                                    },
+                                  })
+                                }
+                              />
+                            </div>
+                          </div>
+                          <div
+                            className="mb-3"
+                            style={{ width: "45%", height: 10 }}
+                          >
+                            {point !== 0 ? (
+                              <div>
+                                <div>Điểm : {point}</div>
+                                <label
+                                  className="form-label"
+                                  htmlFor="basic-icon-default-fullname"
+                                >
+                                  Điểm Cần Sử Dụng
+                                </label>
+                                <div className="input-group input-group-merge">
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    id="basic-icon-default-fullname"
+                                    placeholder="Nhập Điểm "
+                                    aria-label="Tên Sản Phẩm"
+                                    aria-describedby="basic-icon-default-fullname2"
+                                    value={
+                                      product.usedPoint === 0
+                                        ? 0
+                                        : product.usedPoint
+                                    }
+                                    onChange={(e) => {
+                                      if (e.target.value === "") {
+                                        setProduct({
+                                          ...product,
+                                          usedPoint: 0,
+                                        });
+                                      } else if (e.target.value > point) {
+                                        setPointErrorMessage(
+                                          "Số lượng Điểm Thưởng đã nhập vượt quá số Điểm Thưởng hiện có"
+                                        );
+                                      } else if (
+                                        parseInt(e.target.value) * 1000 >
+                                        listCart?.reduce(
+                                          (total, curent) =>
+                                            total +
+                                            curent.quantity *
+                                              curent.discountPrice,
+                                          0
+                                        )
+                                      ) {
+                                        setPointErrorMessage(
+                                          `Số Điểm tối đa được nhập là ${
+                                            listCart?.reduce(
+                                              (total, curent) =>
+                                                total +
+                                                curent.quantity *
+                                                  curent.discountPrice,
+                                              0
+                                            ) / 1000
+                                          }`
+                                        );
+                                      } else if (
+                                        e.target.value <= point &&
+                                        parseInt(e.target.value) * 1000 <=
+                                          listCart?.reduce(
+                                            (total, curent) =>
+                                              total +
+                                              curent.quantity *
+                                                curent.discountPrice,
+                                            0
+                                          )
+                                      ) {
+                                        setProduct({
+                                          ...product,
+                                          usedPoint: e.target.value,
+                                        });
+                                        setPointErrorMessage("");
+                                      } else {
+                                        setProduct({
+                                          ...product,
+                                          usedPoint: 0,
+                                        });
+                                      }
+
+                                      setCount(parseInt(count) + 1);
+                                    }}
+                                  />
+                                </div>
+                                <div className="form-text">
+                                  Số điểm không được nhập quá số tiền: 1 điểm =
+                                  1.000 đ
+                                </div>
+                              </div>
+                            ) : (
+                              <div></div>
+                            )}
+                          </div>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            width: 500,
+                            padding: 1,
+                            height: 100,
+                            marginTop: 70,
+                          }}
+                        >
+                          <div
+                            className="mb-3"
+                            style={{
+                              width: "45%",
+                              height: 10,
+                              marginRight: 30,
+                            }}
+                          >
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-fullname"
+                            >
+                              Số Tiền Nhận
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <input
+                                type="text"
+                                className="form-control"
+                                id="basic-icon-default-fullname"
+                                placeholder="Số Tiền Nhận"
+                                aria-label="Tên Sản Phẩm"
+                                aria-describedby="basic-icon-default-fullname2"
+                                value={moneyReceived}
+                                onChange={handleMoneyReceivedChange}
+                                onBlur={handleMoneyReceivedBlur}
+                              />
+                            </div>
+                          </div>
+                          <div
+                            className="mb-3"
+                            style={{ width: "45%", height: 10 }}
+                          >
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-fullname"
+                            >
+                              Tiền Thối Cho Khách Hàng
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <input
+                                type="text"
+                                disabled
+                                className="form-control"
+                                id="basic-icon-default-fullname"
+                                placeholder="Tiền Thối "
+                                aria-label="Tên Sản Phẩm"
+                                aria-describedby="basic-icon-default-fullname2"
+                                value={Math.max(
+                                  moneyReceived - product.totalPrice,
+                                  0
+                                )}
+                              />
+                            </div>
+                            {errorMessage && (
+                              <div style={{ color: "red" }}>{errorMessage}</div>
+                            )}
+                          </div>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            width: 500,
+                            padding: 1,
+                            height: 150,
+                            marginTop: 70,
+                          }}
+                        >
+                          <div className="mb-3" style={{ width: "45%" }}>
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-fullname"
+                              style={{ fontSize: 15 }}
+                            >
+                              Tạm Tính
+                            </label>
+                          </div>
+                          <div className="mb-3" style={{ width: "45%" }}>
+                            <div className="input-group input-group-merge">
+                              <div
+                                style={{ marginLeft: "auto" }}
+                                id="basic-icon-default-fullname"
+                                placeholder="Tên người nhận"
+                                aria-label="Tên Sản Phẩm"
+                                aria-describedby="basic-icon-default-fullname2"
+                              >
+                                {product.subTotalPrice.toLocaleString("en-US")}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mb-3" style={{ width: "45%" }}>
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-fullname"
+                              style={{ fontSize: 15 }}
+                            >
+                              Số Tiền Giảm
+                            </label>
+                          </div>
+                          <div className="mb-3" style={{ width: "45%" }}>
+                            <div className="input-group input-group-merge">
+                              <div
+                                type="text"
+                                style={{ marginLeft: "auto", fontSize: 15 }}
+                                id="basic-icon-default-fullname"
+                                placeholder="Tên người nhận"
+                                aria-label="Tên Sản Phẩm"
+                                aria-describedby="basic-icon-default-fullname2"
+                              >
+                                {product?.usedPoint * 1000}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mb-3" style={{ width: "45%" }}>
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-fullname"
+                              style={{ fontSize: 15 }}
+                            >
+                              Tổng Giá
+                            </label>
+                          </div>
+                          <div className="mb-3" style={{ width: "45%" }}>
+                            <div className="input-group input-group-merge">
+                              <div
+                                type="text"
+                                style={{ marginLeft: "auto", fontSize: 15 }}
+                                id="basic-icon-default-fullname"
+                                placeholder="Tên người nhận"
+                                aria-label="Tên Sản Phẩm"
+                                aria-describedby="basic-icon-default-fullname2"
+                              >
+                                {product.totalPrice.toLocaleString("en-US")}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <a
+                          className="button-28"
+                          onClick={Checkout}
+                          style={{
+                            height: 40,
+                            width: 500,
+                            fontSize: 13,
+                            paddingTop: 10,
+
+                            marginTop: "10px",
+
+                            backgroundColor: "#82AAE3",
+                            color: "white",
+                          }}
+                        >
+                          Thanh Toán
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
               className="row "
               style={{ width: 440, marginTop: -70, marginLeft: -80 }}
             >
@@ -604,135 +1050,29 @@ const CheckOutPharmacist = () => {
                 <div className="card mb-4" style={{ height: 740 }}>
                   <div className="card-body">
                     <div
+                      className="card-header d-flex justify-content-between align-items-center"
+                      style={{
+                        height: 60,
+                        backgroundColor: "white",
+
+                        borderColor: "#f4f4f4",
+                      }}
+                    >
+                      <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
+                    </div>
+                    <div
                       style={{
                         display: "flex",
                         flexWrap: "wrap",
                         padding: 1,
                       }}
                     >
-                      <div
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          padding: 1,
-                          height: 200,
-                        }}
-                      >
-                        <div
-                          className="mb-3"
-                          style={{ width: "45%", marginRight: 20 }}
-                        >
-                          <label
-                            className="form-label"
-                            htmlFor="basic-icon-default-fullname"
-                          >
-                            Số Điện Thoại Người Mua
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              className="form-control"
-                              id="basic-icon-default-fullname"
-                              placeholder="Số điện thoại "
-                              aria-label="Tên Người Mua"
-                              aria-describedby="basic-icon-default-fullname2"
-                              onChange={(e) => {
-                                setProduct({
-                                  ...product,
-                                  reveicerInformation: {
-                                    ...product.reveicerInformation,
-                                    phoneNumber: e.target.value,
-                                  },
-                                });
-                              }}
-                              onKeyPress={(e) => {
-                                if (e.key === "Enter") {
-                                  loadDataUserByPhone();
-                                  loadPointUserByPhone();
-                                }
-                              }}
-                            />
-                          </div>
-
-                          {point !== 0 ? (
-                            <div>
-                              <div>Điểm : {point}</div>
-                              <label
-                                className="form-label"
-                                htmlFor="basic-icon-default-fullname"
-                              >
-                                Điểm Tich Luỹ
-                              </label>
-                              <div className="input-group input-group-merge">
-                                <input
-                                  type="number"
-                                  className="form-control"
-                                  id="basic-icon-default-fullname"
-                                  placeholder="Nhập Điểm "
-                                  aria-label="Tên Sản Phẩm"
-                                  aria-describedby="basic-icon-default-fullname2"
-                                  value={
-                                    product.usedPoint === 0
-                                      ? ""
-                                      : product.usedPoint
-                                  }
-                                  onChange={(e) => {
-                                    if (e.target.value === "") {
-                                      setProduct({
-                                        ...product,
-                                        usedPoint: 0,
-                                      });
-                                    } else {
-                                      setProduct({
-                                        ...product,
-                                        usedPoint: e.target.value,
-                                      });
-                                    }
-
-                                    setCount(parseInt(count) + 1);
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          ) : (
-                            <div></div>
-                          )}
-                        </div>
-                        <div className="mb-3" style={{ width: "45%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="basic-icon-default-fullname"
-                          >
-                            Tên Người Mua
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              className="form-control"
-                              id="basic-icon-default-fullname"
-                              placeholder="Tên người nhận"
-                              aria-label="Tên Sản Phẩm"
-                              aria-describedby="basic-icon-default-fullname2"
-                              value={product.reveicerInformation.fullname}
-                              onChange={(e) =>
-                                setProduct({
-                                  ...product,
-                                  reveicerInformation: {
-                                    ...product.reveicerInformation,
-                                    fullname: e.target.value,
-                                  },
-                                })
-                              }
-                            />
-                          </div>
-                        </div>
-                      </div>
-
+                      <div>Giỏ Hàng Của Khách</div>
                       <div className="cart-pharmacist-checkout">
                         {listCart.length === 0 ? (
                           <img
-                            style={{ height: 300 }}
-                            src="https://rtworkspace.com/wp-content/plugins/rtworkspace-ecommerce-wp-plugin/assets/img/empty-cart.png"
+                            style={{ objectFit: "cover", height: 300 }}
+                            src="https://hazzyweekend.com/static/d7b42f8124510bb7b518c690908f8978/6db19/empty_cart.png"
                           />
                         ) : (
                           <>
@@ -761,11 +1101,13 @@ const CheckOutPharmacist = () => {
                                           <button
                                             className="button-minus"
                                             onClick={() => {
-                                              setCount(parseInt(count) + 1);
-                                              updateQuantity(
-                                                product.productId,
-                                                product.quantity - 1
-                                              );
+                                              if (product.quantity > 1) {
+                                                setCount(parseInt(count) + 1);
+                                                updateQuantity(
+                                                  product.productId,
+                                                  product.quantity - 1
+                                                );
+                                              }
                                             }}
                                           >
                                             -
@@ -778,15 +1120,22 @@ const CheckOutPharmacist = () => {
                                               marginTop: 5,
                                             }}
                                             className="input-quantity-pharma"
-                                            value={product.quantity}
+                                            value={product.quantity || 1}
                                             onChange={(e) => {
-                                              setCount(parseInt(count) + 1);
-                                              updateQuantity(
-                                                product.productId,
+                                              const value = parseInt(
                                                 e.target.value
                                               );
+                                              if (!value) {
+                                                e.target.value = 1;
+                                              } else {
+                                                setCount(parseInt(count) + 1);
+                                                updateQuantity(
+                                                  product.productId,
+                                                  value
+                                                );
+                                              }
                                             }}
-                                          ></input>{" "}
+                                          ></input>
                                           <button
                                             className="button-plus"
                                             onClick={() => {
@@ -903,7 +1252,7 @@ const CheckOutPharmacist = () => {
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
                           >
-                            {product.subTotalPrice}
+                            {product.subTotalPrice.toLocaleString("en-US")}
                           </div>
                         </div>
                       </div>
@@ -949,13 +1298,17 @@ const CheckOutPharmacist = () => {
                             aria-label="Tên Sản Phẩm"
                             aria-describedby="basic-icon-default-fullname2"
                           >
-                            {product.totalPrice}
+                            {product.totalPrice.toLocaleString("en-US")}
                           </div>
                         </div>
                       </div>
                       <a
                         className="button-28"
-                        onClick={Checkout}
+                        href="#my-dialog"
+                        onClick={() => {
+                          setIsOpen(true);
+                        }}
+                        // onClick={Checkout}
                         style={{
                           height: 40,
                           width: 900,

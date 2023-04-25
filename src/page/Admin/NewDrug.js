@@ -185,7 +185,6 @@ const NewDrug = () => {
     value: e.id,
   }));
   async function createNewProducts() {
-    
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
       if (checkValidationProduct()) {
@@ -286,7 +285,7 @@ const NewDrug = () => {
       Swal.fire("ID nhà sản xuất không được để trống", "", "question");
       return false;
     }
-    let prevPrice = -1; 
+    let prevPrice = -1;
     for (const detail of productDetailModel) {
       if (!detail.unitId.trim()) {
         Swal.fire("ID đơn vị không được để trống", "", "question");
@@ -297,16 +296,20 @@ const NewDrug = () => {
         Swal.fire("Giá không được để trống", "", "question");
         return false;
       }
-     
+
       const price = parseFloat(detail.price);
       if (detail.unitLevel > 1 && price > prevPrice) {
-        Swal.fire("Giá đơn vị cấp dưới không được cao hơn cấp trên", "", "question");
+        Swal.fire(
+          "Giá đơn vị cấp dưới không được cao hơn cấp trên",
+          "",
+          "question"
+        );
         return false;
       }
-    
+
       prevPrice = price;
     }
-   
+
     const {
       effect,
       instruction,
@@ -957,13 +960,17 @@ const NewDrug = () => {
                                       );
                                     })}
                                 </select>
+                              
                               </div>
+                              <div className="form-text">
+                            <div>Quy Định Nhập Đơn vị: Chọn đơn vị theo thứ tự từ lớn tới bé</div>
+                         
+                            <div> Ví Dụ: Hộp &#8594; Vỉ &#8594; Viên </div>
+                          </div>
                               <div
                                 className="form-text"
                                 style={{ color: "red" }}
-                              >
-                                
-                              </div>
+                              ></div>
                             </div>
                             <div
                               className="mb-3"
@@ -1070,26 +1077,69 @@ const NewDrug = () => {
                                   placeholder="Giá Của Sản Phẩm"
                                   aria-label="Unit Id"
                                   aria-describedby={`price${index}2`}
-                                  onChange={(e) =>
-                                    setProduct({
-                                      ...product,
-                                      productDetailModel: [
-                                        ...product.productDetailModel.slice(
-                                          0,
-                                          index - 1
-                                        ),
-                                        {
-                                          ...product.productDetailModel[
+                                  value={product?.productDetailModel[index-1]?.price}
+                                  onChange={(e) => {
+                                    const value = parseInt(e.target.value);
+                                    if (!value) {
+                                      setProduct({
+                                        ...product,
+                                        productDetailModel: [
+                                          ...product.productDetailModel.slice(
+                                            0,
                                             index - 1
-                                          ],
-                                          price: e.target.value,
-                                        },
-                                        ...product.productDetailModel.slice(
-                                          index
-                                        ),
-                                      ],
-                                    })
-                                  }
+                                          ),
+                                          {
+                                            ...product.productDetailModel[
+                                              index - 1
+                                            ],
+                                            price: 0,
+                                          },
+                                          ...product.productDetailModel.slice(
+                                            index
+                                          ),
+                                        ],
+                                      })
+                                    } else if (value > 0) {
+                                      setProduct({
+                                        ...product,
+                                        productDetailModel: [
+                                          ...product.productDetailModel.slice(
+                                            0,
+                                            index - 1
+                                          ),
+                                          {
+                                            ...product.productDetailModel[
+                                              index - 1
+                                            ],
+                                            price: e.target.value,
+                                          },
+                                          ...product.productDetailModel.slice(
+                                            index
+                                          ),
+                                        ],
+                                      })
+                                    } else {
+                                      setProduct({
+                                        ...product,
+                                        productDetailModel: [
+                                          ...product.productDetailModel.slice(
+                                            0,
+                                            index - 1
+                                          ),
+                                          {
+                                            ...product.productDetailModel[
+                                              index - 1
+                                            ],
+                                            price: 0,
+                                          },
+                                          ...product.productDetailModel.slice(
+                                            index
+                                          ),
+                                        ],
+                                      })
+                                    }
+                                  }}
+                                 
                                 />
                               </div>
                             </div>
@@ -1408,21 +1458,19 @@ const NewDrug = () => {
                                 </select>
                               </div>
                             </div>
-                         
                           </div>
                           <button
-  style={{ marginLeft: 10 }}
-  onClick={() => handleDeleteIngredient(index)}
->
-  Xóa
-</button>
-
+                            style={{ marginLeft: 10 }}
+                            onClick={() => handleDeleteIngredient(index)}
+                          >
+                            Xóa
+                          </button>
                         </div>
                         <hr />
                       </div>
                     )
                   )}
-               
+
                   <button
                     style={{
                       height: 50,
@@ -1451,7 +1499,7 @@ const NewDrug = () => {
                         d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
                       />
                     </svg>
-                   Thêm Nguyên Liệu
+                    Thêm Nguyên Liệu
                   </button>
                 </div>
               </div>

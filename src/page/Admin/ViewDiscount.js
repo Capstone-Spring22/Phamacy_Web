@@ -32,10 +32,10 @@ const ViewDiscount = () => {
       const accessToken = localStorage.getItem("accessToken");
       const path = `ProductDiscount/${myId}`;
       const res = await getDataByPath(path, accessToken, "");
-
+      console.log("res.data", res.data);
       if (res !== null && res !== undefined && res.status === 200) {
         setProduct(res.data);
-        setUnitCount(res.data.products.length);
+    
       }
     }
   }
@@ -226,7 +226,7 @@ const ViewDiscount = () => {
                         </div>
                       </div>
                       <div className="mb-3" style={{ width: "95%" }}>
-                        {product.discountMoney === 0  ? (
+                        {product.discountMoney === 0 ? (
                           <div>
                             <label
                               className="form-label"
@@ -256,7 +256,7 @@ const ViewDiscount = () => {
                             </div>
                           </div>
                         ) : (
-                            <div>
+                          <div>
                             <label
                               className="form-label"
                               htmlFor="basic-icon-default-phone"
@@ -283,7 +283,7 @@ const ViewDiscount = () => {
                                 }
                               />
                             </div>
-                          </div> 
+                          </div>
                         )}
                       </div>
 

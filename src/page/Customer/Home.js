@@ -675,9 +675,12 @@ const Home = () => {
                     );
                   })}
               </div>
-              <Link to="/medicine" className="button-redirect"> Xem Thêm</Link>
+              <Link  to="/medicine" className="button-redirect"> Xem Thêm</Link>
+              
             </div>
+            
           </section>
+        
         </div>
         <div className="form-product-new-blue">
           {" "}

@@ -25,13 +25,13 @@ const Sidebar = ({ activeItem }) => {
     }
   }
   const myId = localStorage.getItem("userID");
+  useEffect(() => {
+    loadDataUserByID();
+  }, []);
   const view = (myId) => {
     localStorage.setItem("userID", myId);
     navigate.push("/ProfileManager");
   };
-  useEffect(() => {
-    loadDataUserByID();
-  }, []);
   const handleLogout = async () => {
     try {
       navigate.push("/LoginAdmin");
@@ -66,6 +66,7 @@ const Sidebar = ({ activeItem }) => {
             a.preventDefault();
             view(myId);
           }}
+          style={{cursor:"pointer"}}
         >
           {user.imageUrl ? (
             <img className="header-img" src={user.imageUrl} />

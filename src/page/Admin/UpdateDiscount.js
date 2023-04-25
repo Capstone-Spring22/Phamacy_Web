@@ -8,16 +8,17 @@ import "../../assets/css/core.css";
 import { getDataByPath, updateDataByPath } from "../../services/data.service";
 import ReactPaginate from "react-paginate";
 import { useHistory } from "react-router-dom";
+import Select from "react-select";
 
 const UpdateDiscount = () => {
   const myId = localStorage.getItem("id");
-
+  const [drug, setDrug] = useState([]);
   const [unitCount, setUnitCount] = useState(1);
   let history = useHistory();
   const [productIngredient, setProductIngredient] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(7);
+  const [perPage, setPerPage] = useState(100);
   const [product, setProduct] = useState({
     id: "",
     title: "",
@@ -48,7 +49,22 @@ const UpdateDiscount = () => {
       setProductIngredient(res.data.items);
     }
   }
+  async function loadDataDrug() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      const path = `Product?pageIndex=${currentPage}&pageItems=${perPage}`;
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("display", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setDrug(res.data.items);
 
+        console.log("display", res.data.items);
+      }
+    }
+  }
+  useEffect(() => {
+    loadDataDrug();
+  }, []);
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -67,6 +83,17 @@ const UpdateDiscount = () => {
       }
     }
   }
+  const options = drug.map((e) => ({
+    label: e.name,
+    value: e.id,
+  }));
+  const [price, setPrice] = useState(null);
+  const getPriceById = (id) => {
+    const selectedDrug = drug.find((e) => e.id === id);
+    return selectedDrug ? selectedDrug.price : null;
+  };
+
+  const [selectedOption, setSelectedOption] = useState(null);
 
   const checkValidation = () => {
     // if (id.trim() === "") {
@@ -348,6 +375,141 @@ const UpdateDiscount = () => {
                       Lưu
                     </button>
                   </div>
+                </div>
+              </div>
+            </div>
+            <div
+              className="row "
+              style={{ width: 1200, marginTop: 60, marginLeft: 25 }}
+            >
+              <div className="col-xl">
+                <div className="card mb-4">
+                  <div
+                    className="card-header d-flex justify-content-between align-items-center"
+                    style={{
+                      height: 70,
+                      backgroundColor: "white",
+                      padding: "20px 24px",
+                      borderColor: "#f4f4f4",
+                    }}
+                  >
+                    <h5 className="mb-0">Thêm Sản phẩm </h5>
+                  </div>{" "}
+                  {Array.from({ length: unitCount }, (_, i) => i + 1).map(
+                    (index) => {
+                      return (
+                        <div className="card-body" style={{ marginLeft: -30 }}>
+                          <div key={index}>
+                            <div
+                              style={{
+                                display: "flex",
+                                marginLeft: 100,
+                                padding: 30,
+                                flexWrap: "wrap",
+                              }}
+                            >
+                              <div
+                                className="mb-3"
+                                style={{ width: "30%", marginRight: 20 }}
+                              >
+                                {/* {selectedOption && (
+                                  <div>
+                                    <p>Price: {price}</p>
+                                    <p>Giá Giảm {price - product.discountMoney}</p>
+                                  </div>
+                                )} */}
+                                {product?.eventProductDiscounts &&
+                                  product?.eventProductDiscounts.length &&
+                                  product?.eventProductDiscounts.map(
+                                    (e, index) => {
+                                      return (
+                                        <>
+                                          {" "}
+                                          <label
+                                            className="form-label"
+                                            htmlFor="basic-icon-default-phone"
+                                          >
+                                            Sản phẩm
+                                          </label>
+                                          <Select
+                                            value={e.productId}
+                                            onChange={(selectedOption) => {
+                                              const drugObj = drug.find(
+                                                (d) =>
+                                                  d.id === selectedOption.value
+                                              );
+                                              const price = drugObj
+                                                ? drugObj.price
+                                                : 0;
+                                              setSelectedOption(selectedOption);
+                                              setPrice(
+                                                getPriceById(
+                                                  selectedOption.value
+                                                )
+                                              );
+                                              setProduct({
+                                                ...product,
+                                                products: [
+                                                  ...product.products.slice(
+                                                    0,
+                                                    index - 1
+                                                  ),
+                                                  {
+                                                    ...product.products[
+                                                      index - 1
+                                                    ],
+                                                    productId:
+                                                      selectedOption.value,
+                                                  },
+                                                  ...product.products.slice(
+                                                    index
+                                                  ),
+                                                ],
+                                              });
+                                            }}
+                                            options={options}
+                                          />
+                                        </>
+                                      );
+                                    }
+                                  )}
+                              </div>
+                            </div>
+                          </div>
+                          <hr />
+                        </div>
+                      );
+                    }
+                  )}
+                  <button
+                    className="button-28"
+                    style={{
+                      height: 50,
+                      width: 200,
+                      fontSize: 13,
+                      paddingTop: 1,
+                      marginLeft: "44%",
+                      marginBottom: "20px",
+                      backgroundColor: "#fff",
+                    }}
+                    onClick={handleAddUnit}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-plus-lg"
+                      viewBox="0 0 16 16"
+                      style={{ marginRight: 10 }}
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
+                      />
+                    </svg>{" "}
+                    Thêm Sản phẩm
+                  </button>
                 </div>
               </div>
             </div>

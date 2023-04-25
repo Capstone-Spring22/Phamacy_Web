@@ -46,6 +46,8 @@ const Home = (props) => {
   const { checkoutSite, setCheckoutSite } = useState([]);
   const [checkSite, setCheckSite] = useState([]);
   const [gender, setGender] = useState(null);
+  const [dateSelected, setDateSelected] = useState(false);
+  const [timeSelected, setTimeSelected] = useState(false);
   const {
     drug,
     total,
@@ -112,33 +114,34 @@ const Home = (props) => {
       Swal.fire("Vui lòng nhập thông tin thời gian lấy hàng", "", "question");
       return false;
     }
-  
+
     return true;
   };
   const [errorMessage, setErrorMessage] = useState("");
 
-
-
   const handleCount = () => {
     const deduction = pointUse * 1000;
     const newSubTotal = total.subTotalPrice - deduction;
-    
+
     if (deduction > total.subTotalPrice) {
       setErrorMessage(
         `Số Điểm Tối Đa Bạn Được Nhập Là ${total.subTotalPrice / 1000}`
       );
       deduction = total.subTotalPrice;
-    }else{
+    } else {
       const newTotalPrice = newSubTotal + shippingPrice;
-    setProduct((prevState) => ({
-      ...prevState,
-      usedPoint: pointUse,
-      totalPrice: newTotalPrice,
-      discountPrice:deduction,
-    }));
-    setErrorMessage(`Bạn Đã Nhập ${deduction / 1000} tương đương với ${deduction}`);
+      setProduct((prevState) => ({
+        ...prevState,
+        usedPoint: pointUse,
+        totalPrice: newTotalPrice,
+        discountPrice: deduction,
+      }));
+      setErrorMessage(
+        `Bạn Đã Nhập ${
+          deduction / 1000
+        } tương đương với ${deduction.toLocaleString("en-US")} đ`
+      );
     }
-    
   };
 
   async function loadDataCity() {
@@ -180,7 +183,7 @@ const Home = (props) => {
       const accessToken = localStorage.getItem("accessTokenUser");
       const path = `Customer/${localStorage.getItem("id")}`;
       const res = await getDataByPath(path, accessToken, "");
-       console.log('showPrice',shippingPrice)
+      console.log("showPrice", shippingPrice);
       console.log("res.data.customerAddressList", res.data.customerAddressList);
       if (res !== null && res !== undefined && res.status === 200) {
         setListAddress(res.data.customerAddressList);
@@ -209,11 +212,11 @@ const Home = (props) => {
     setShowForm2(false);
     setOrderTypeId(2);
     setSelectedButton("button1");
-    setShippingPrice(0)
+    setShippingPrice(0);
     setProduct((prevState) => ({
       ...prevState,
       orderTypeId: 2,
-      shippingPrice:0,
+      shippingPrice: 0,
       totalPrice: cartData.total.totalCartPrice,
     }));
   };
@@ -222,13 +225,13 @@ const Home = (props) => {
     setShowForm1(false);
     setShowForm2(true);
     setOrderTypeId(3);
-    setShippingPrice(25000)
+    setShippingPrice(25000);
     setSelectedButton("button2");
     setProduct((prevState) => ({
       ...prevState,
       orderTypeId: 3,
-      shippingPrice:25000,
-      totalPrice: product.totalPrice +25000,
+      shippingPrice: 25000,
+      totalPrice: product.totalPrice + 25000,
     }));
   };
   async function loadDataWard() {
@@ -247,7 +250,6 @@ const Home = (props) => {
     CheckoutSiteObjectQuantity &&
     CheckoutSiteObjectQuantity.length &&
     CheckoutSiteObjectQuantity.map((product) => product.quantity).join(";");
-
 
   async function CheckoutSiteget() {
     const path = `Order/PickUp/Site?ProductId=${productIds}&Quantity=${quantitys}&CityId=${cityID}`;
@@ -320,7 +322,7 @@ const Home = (props) => {
         const currentUrl = `${window.location.origin}/VNpay`;
         const url =
           await axios.get(`https://betterhealthapi.azurewebsites.net/api/v1/VNPay?Amount=${
-            cartData.total.totalCartPrice
+            product.totalPrice
           }&OrderId=${orderID}&IpAddress=${localStorage.getItem(
             "deviceId"
           )}&UrlCallBack=${encodeURIComponent(currentUrl)}
@@ -370,6 +372,29 @@ const Home = (props) => {
       }
     }
   };
+  const [site, setSite] = useState(0);
+  async function loadDataSite() {
+    if (localStorage && localStorage.getItem("accessTokenUser")) {
+      const accessToken = localStorage.getItem("accessTokenUser");
+      const path = `Site?IsDelivery=true&DistrictID=${product.reveicerInformation.districtId}&pageIndex=1&pageItems=20`;
+      console.log("display2", getDataByPath);
+      const res = await getDataByPath(path, accessToken, "");
+      console.log("display31321", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setSite(res.data.totalRecord);
+        if(res.data.totalRecord === 0){
+          Swal.fire("Địa chỉ của bạn vẫn chưa được hệ thống hỗ trợ giao hàng, vui lòng quay lại sau ", "", "question");
+        }
+      }
+    }
+  }
+  useEffect(() => {
+    if(product.reveicerInformation.districtId !== null){
+      loadDataSite();
+    }
+  
+  }, [product.reveicerInformation.districtId]);
+
   const handleApplyUserPoint = async () => {
     const res = await axios.post(
       "https://betterhealthapi.azurewebsites.net/api/v1/Cart/ApplyCustomerPoint",
@@ -732,7 +757,7 @@ const Home = (props) => {
                                 );
                               })
                             ) : (
-                              <p>No site info found.</p>
+                              <p>Không Tìm Thấy Chi Nhánh Phù Họp</p>
                             )}
                           </div>{" "}
                         </div>
@@ -742,6 +767,7 @@ const Home = (props) => {
                           </label>
                           <textarea
                             type="text"
+                            placeholder="Ghi Chú (Không Bắt Buộc)"
                             className="form-control mb-3"
                             id="street_address"
                             style={{
@@ -773,6 +799,7 @@ const Home = (props) => {
                               borderRadius: 5,
                             }}
                             onChange={(e) => {
+                              setDateSelected(true);
                               handleDate(e);
                               setProduct({
                                 ...product,
@@ -784,6 +811,11 @@ const Home = (props) => {
                             }}
                             value={dateTime}
                           >
+                            {!dateSelected && (
+                              <option value="" style={{ color: "#8899b8" }}>
+                                Chọn Ngày Nhận
+                              </option>
+                            )}
                             {date &&
                               date.length &&
                               date.map((e, index) => {
@@ -796,6 +828,9 @@ const Home = (props) => {
                                 );
                               })}
                           </select>
+                          <div className="form-text">
+                            Vui lòng chọn ngày nhận khi đặt đơn lấy tại cửa hàng
+                          </div>
                         </div>
 
                         <div className="col-md-6 mb-3">
@@ -812,6 +847,7 @@ const Home = (props) => {
                               borderRadius: 5,
                             }}
                             onChange={(e) => {
+                              setTimeSelected(true);
                               handleDistrict(e);
                               setProduct({
                                 ...product,
@@ -822,6 +858,11 @@ const Home = (props) => {
                               });
                             }}
                           >
+                            {!timeSelected && (
+                              <option value="" style={{ color: "#8899b8" }}>
+                                Chọn Giờ Nhận
+                              </option>
+                            )}
                             {time &&
                               time.length &&
                               time.map((e, index) => {
@@ -834,6 +875,10 @@ const Home = (props) => {
                                 );
                               })}
                           </select>
+                          <div className="form-text">
+                            Vui lòng chọn ngày nhận trước khi chọn thời gian
+                            nhận
+                          </div>
                         </div>
                       </div>
                     </form>
@@ -1524,7 +1569,7 @@ const Home = (props) => {
                   >
                     {total && total.subTotalPrice && (
                       <li style={{ fontSize: 15 }}>
-                        <span>Tổng Giá</span>{" "}
+                        <span>Tạm Tính</span>{" "}
                         <span>
                           {total.subTotalPrice.toLocaleString("en-US")}
                           VND
@@ -1534,16 +1579,18 @@ const Home = (props) => {
                     <li style={{ fontSize: 15 }}>
                       <span>Số Tiền Giảm </span>{" "}
                       <span>
-                        {(product.usedPoint * 1000).toLocaleString("en-US")}  VND
-                       
+                        {(product.usedPoint * 1000).toLocaleString("en-US")} VND
                       </span>
                     </li>
+                 
                     <li style={{ fontSize: 15 }}>
-                      <span>Phí Giao Hàng</span> <span>{shippingPrice.toLocaleString("en-US")} vnd</span>
+                      {orderTypeId===2?( <span>Phí Phát Sinh</span>):(<span>Phí Giao Hàng</span>)}
+                     
+                      <span>{shippingPrice.toLocaleString("en-US")} vnd</span>
                     </li>
                     {total && total.totalCartPrice && (
                       <li style={{ fontSize: 15 }}>
-                        <span>Tạm Tính</span>{" "}
+                        <span>Thành Tiền</span>{" "}
                         <span>
                           {(
                             total.totalCartPrice -
@@ -1555,8 +1602,127 @@ const Home = (props) => {
                       </li>
                     )}
                   </ul>
+                  {id && point > 0 ? (
+                    <div className="payment-cart">
+                      <label for="credit-card">
+                        <label htmlFor="state">
+                          Điểm Thưởng
+                          <span> Số điểm Còn Lại Của Bạn Là {point}</span>
+                        </label>
+                        <div style={{ display: "flex", marginTop: 20 }}>
+                          <input
+                            type="number"
+                            style={{
+                              border: "1px solid #e4e7eb",
+                              backgroundColor: "white",
+                              borderRadius: 5,
+                            }}
+                            placeholder="Nhập Điểm Thưởng"
+                            className="form-control"
+                            id="state"
+                            max={total.subTotalPrice / 1000}
+                            value={pointUse}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value);
+                              if (!value) {
+                                setPointUse(0);
+                                setProduct((prevState) => ({
+                                  ...prevState,
+                                  usedPoint: 0,
+                                }));
+                              } else if (value > 0) {
+                                setPointUse(e.target.value);
+                                setProduct((prevState) => ({
+                                  ...prevState,
+                                  usedPoint: 0,
+                                }));
+                              } else {
+                                setPointUse(0);
+                                setProduct((prevState) => ({
+                                  ...prevState,
+                                  usedPoint: 0,
+                                }));
+                              }
+                            }}
+                          />
 
-                  {product.payType === "" ? (
+                          <button
+                            className="button-point"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleCount(pointUse);
+                            }}
+                          >
+                            Áp dụng
+                          </button>
+                        </div>
+                        {errorMessage && (
+                          <p style={{ color: "red" }}>{errorMessage}</p>
+                        )}
+                      </label>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                  <div
+                    className="payment-cart"
+                    onClick={() =>
+                      document.getElementById("credit-card").click()
+                    }
+                  >
+                    <label for="credit-card">
+                      <input
+                        type="radio"
+                        id="credit-card"
+                        name="payment"
+                        value="credit-card"
+                        style={{ marginRight: 10 }}
+                        onClick={() => {
+                          setProduct((prevState) => ({
+                            ...prevState,
+                            payType: 1,
+                          }));
+                        }}
+                      />
+                      <img
+                        style={{ height: 50, width: 50, marginRight: 10 }}
+                        src="https://png.pngtree.com/png-vector/20191028/ourlarge/pngtree-cash-in-hand-icon-cartoon-style-png-image_1893442.jpg"
+                      />
+                      Thanh Toán Tiền Mặt Khi Nhận Hàng
+                    </label>
+                  </div>
+                  {product.totalPrice < 10000 && product.orderTypeId === 2 ? (
+                    <div></div>
+                  ) : (
+                    <div
+                      className="payment-cart"
+                      onClick={() =>
+                        document.getElementById("credit-card1").click()
+                      }
+                    >
+                      <label for="credit-card1">
+                        <input
+                          type="radio"
+                          id="credit-card1"
+                          name="payment"
+                          value="credit-card"
+                          style={{ marginRight: 10 }}
+                          onClick={() => {
+                            setProduct((prevState) => ({
+                              ...prevState,
+                              payType: 2,
+                            }));
+                          }}
+                        />
+                        <img
+                          style={{ height: 50, width: 50, marginRight: 10 }}
+                          src="https://inkythuatso.com/uploads/images/2021/12/vnpay-logo-inkythuatso-01-13-16-26-42.jpg"
+                        />
+                        Thanh Toán Bằng VNPay
+                      </label>
+                    </div>
+                  )}
+                  {product.payType === "" || site === 0? (
                     <a
                       style={{
                         height: 50,
@@ -1588,108 +1754,6 @@ const Home = (props) => {
                     </a>
                   )}
                 </div>
-                <div className="checkout-payment">
-                  <div
-                    className="payment-cart"
-                    onClick={() =>
-                      document.getElementById("credit-card").click()
-                    }
-                  >
-                    <label for="credit-card">
-                      <input
-                        type="radio"
-                        id="credit-card"
-                        name="payment"
-                        value="credit-card"
-                        style={{ marginRight: 10 }}
-                        onClick={() => {
-                          setProduct((prevState) => ({
-                            ...prevState,
-                            payType: 1,
-                          }));
-                        }}
-                      />
-                      <img
-                        style={{ height: 50, width: 50, marginRight: 10 }}
-                        src="https://png.pngtree.com/png-vector/20191028/ourlarge/pngtree-cash-in-hand-icon-cartoon-style-png-image_1893442.jpg"
-                      />
-                      Thanh Toán Tiền Mặt Khi Nhận Hàng
-                    </label>
-                  </div>
-                  {product.totalPrice < 10000 && product.orderTypeId === 2 ? <div></div> :<div
-                    className="payment-cart"
-                    onClick={() =>
-                      document.getElementById("credit-card1").click()
-                    }
-                  >
-                    <label for="credit-card1">
-                      <input
-                        type="radio"
-                        id="credit-card1"
-                        name="payment"
-                        value="credit-card"
-                        style={{ marginRight: 10 }}
-                        onClick={() => {
-                          setProduct((prevState) => ({
-                            ...prevState,
-                            payType: 2,
-                          }));
-                        }}
-                      />
-                      <img
-                        style={{ height: 50, width: 50, marginRight: 10 }}
-                        src="https://inkythuatso.com/uploads/images/2021/12/vnpay-logo-inkythuatso-01-13-16-26-42.jpg"
-                      />
-                      Thanh Toán Bằng VNPay
-                    </label>
-                  </div>}
-                </div>
-                {id && point > 0 ? (
-                  <div className="checkout-payment">
-                    <div className="payment-cart">
-                      <label for="credit-card">
-                        <label htmlFor="state">
-                          Điểm Thưởng
-                          <span> Số điểm Còn Lại Của Bạn Là {point}</span>
-                        </label>
-                        <div style={{ display: "flex" ,marginTop:20}}>
-                          <input
-                            type="number"
-                            style={{
-                              border: "1px solid #e4e7eb",
-                              backgroundColor: "white",
-                              borderRadius: 5,
-                            }}
-                            placeholder="Nhập Điểm Thưởng"
-                            className="form-control"
-                            id="state"
-                            max={total.subTotalPrice / 1000}
-                            onChange={(e) => {
-                              setPointUse(e.target.value);
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                usedPoint: 0,
-                              }));
-                            }}
-                          />
-                        
-                          <button
-                            className="button-point"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleCount(pointUse);
-                            }}
-                          >
-                            Áp dụng
-                          </button>
-                        </div>
-                        {errorMessage && <p style={{color:"red"}}>{errorMessage}</p>}
-                      </label>
-                    </div>
-                  </div>
-                ) : (
-                  <></>
-                )}
               </div>
             </div>
           </div>

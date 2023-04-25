@@ -3894,7 +3894,17 @@ ul.project_files li a i {
   right: 0;
   bottom: 0;
   left: 0;
- 
+  opacity: .75;
+  filter: alpha(opacity=75);
+  z-index: 20140628;
+}
+.loading2 {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   opacity: .75;
   filter: alpha(opacity=75);
   z-index: 20140628;
@@ -5440,12 +5450,30 @@ h2 {
   .dialog.overlay.hidden {
     display: none;
   }
+  
   .loading {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
+   
+  }
+  .loading2 {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    opacity: 0.5;
+    background-color: #000;
+  
+    overflow: hidden;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
   }
   
   .loading-spinner {
