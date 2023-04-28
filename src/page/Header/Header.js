@@ -23,7 +23,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       
-      localStorage.removeItem("accessToken");
+      localStorage.removeItem("accessTokenUser");
       localStorage.removeItem("userName");
       localStorage.removeItem("email");
       localStorage.removeItem("phoneNo");

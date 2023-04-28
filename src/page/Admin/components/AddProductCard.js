@@ -14,7 +14,10 @@ export default function AddProductCard({
   setcountPrice,
   handleDeleteUnit,
 }) {
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState({
+    value: "",
+    label: "",
+  });
   const [currentNumBatches, setCurrentNumBatches] = useState(0);
   const [isBatches, setIsBatches] = useState(false);
   const [options2, setOptions2] = useState([]);
@@ -32,6 +35,7 @@ export default function AddProductCard({
 
   const handleSelectProduct = (productId) => {
     const isBatch = drug.find((item) => item.id === productId).isBatches;
+
     setIsBatches(isBatch);
     setCurrentNumBatches(
       product.productImportDetails[index - 1]?.productBatches?.length || 0
@@ -101,9 +105,11 @@ export default function AddProductCard({
             </label>
             <Select
               placeholder="Chọn Sản Phẩm "
-          
+              // value={options?.find(
+              //   (option) => option?.label === selectedOption.label
+              // )}
               onChange={(selectedOption) => {
-                setSelectedOption(selectedOption.value);
+                setSelectedOption(selectedOption);
                 handleSelectProduct(selectedOption.value);
                 setOptions2(
                   selectedOption.unit.map((e) => ({
@@ -126,8 +132,11 @@ export default function AddProductCard({
 
             {options2 && (
               <Select
-          
                 placeholder="Chọn Đơn Vị"
+                // value={options2?.find(
+                //   (option) =>
+                //     option?.value === product?.productImportDetails[index - 1]?.productId
+                // )}
                 onChange={(selectedOption) => {
                   setProduct((product) => ({
                     ...product,

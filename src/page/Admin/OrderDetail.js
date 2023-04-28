@@ -9,7 +9,7 @@ import { getDataByPath, updateDataByPath } from "../../services/data.service";
 
 import axios from "axios";
 const OrderDetail = () => {
-  const myId = localStorage.getItem("id");
+  const myId = localStorage.getItem("orderIdPharmacist");
   const [OrderDetail, setOrderDetail] = useState([]);
   const [ProductDetail, setProductDetail] = useState([]);
   const [orderContactInfo, setOrderContactInfo] = useState([]);
@@ -18,9 +18,13 @@ const OrderDetail = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
   const [isOpen4, setIsOpen4] = useState(false);
+  const [isOpen5, setIsOpen5] = useState(false);
   const [orderStatus, setOrderStatus] = useState([]);
   const [reason, setReason] = useState("");
   const [note, setNote] = useState([]);
+  const [moneyReceived, setMoneyReceived] = useState(0);
+  const [error, setError] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
   const [noteId, setNoteId] = useState("");
   const [description, setDescription] = useState("");
   const [site, setSite] = useState(null);
@@ -89,18 +93,16 @@ const OrderDetail = () => {
     }
   }
   const handleNoteID = (id) => {
-     console.log('display',id)
-    const productInorder = ProductDetail?.find(
-      (product) => product.id === id
-    );
-     console.log('display',productInorder)
-     setNodeUpdate((prevNote) => [
+    console.log("display", id);
+    const productInorder = ProductDetail?.find((product) => product.id === id);
+    console.log("display", productInorder);
+    setNodeUpdate((prevNote) => [
       {
         orderDetailId: productInorder.id,
-        note: productInorder.productNoteFromPharmacist
+        note: productInorder.productNoteFromPharmacist,
       },
-    ])
-   
+    ]);
+
     setIsOpen(true);
   };
   const [activeItem, setActiveItem] = useState("Order");
@@ -143,6 +145,7 @@ const OrderDetail = () => {
       }
     }
   }
+
   async function updateStatusOrder() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -183,6 +186,26 @@ const OrderDetail = () => {
       }
     }
   }
+  async function updateStatusOrderComplete() {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+
+      const data = {
+        orderId: OrderDetail.id,
+        orderStatusId: 4,
+        description: "Đơn Hàng Đã Hoàn Thành",
+      };
+      const path = `Order/ExecuteOrder`;
+      console.log("res", data);
+      const res = await updateDataByPath(path, accessToken, data);
+      console.log("res", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setIsOpen5(false);
+        Swal.fire("Cập Nhật Trạng Thái Thành Công", "", "success");
+        loadDataOrderById();
+      }
+    }
+  }
   async function updateStatusOrderGo() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -203,7 +226,18 @@ const OrderDetail = () => {
       }
     }
   }
+  const handleMoneyReceivedChange = (event) => {
+    const value = event.target.value;
+    const money = parseFloat(value);
+    setMoneyReceived(isNaN(money) ? 0 : money);
+    setErrorMessage("");
+  };
 
+  const handleMoneyReceivedBlur = () => {
+    if (moneyReceived < OrderDetail?.totalPrice) {
+      setErrorMessage("Số tiền nhận phải lớn hơn hoặc bằng số tiền đơn hàng");
+    }
+  };
   async function rejectOrder() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -231,25 +265,26 @@ const OrderDetail = () => {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
       if (checkValidation()) {
-      const deviceId = await axios
-        .get("https://api.ipify.org/?format=json")
-        .then((res) => res.data.ip);
-      const data = {
-        orderId: OrderDetail.id,
-        reason: reason,
-        ipAddress: deviceId,
-      };
-      console.log("data", data);
-      const path = `Order/CancelOrder`;
-      const res = await updateDataByPath(path, accessToken, data);
-      console.log("res1212", res);
-      if (res !== null && res !== undefined && res.status === 200) {
-        setIsOpen4(false);
-        Swal.fire("Huỷ Thành Công", "", "success");
-        loadDataOrderById();
-      } else {
-        Swal.fire(`${res?.errors?.Reason[0]}`, "", "error");
-      }}
+        const deviceId = await axios
+          .get("https://api.ipify.org/?format=json")
+          .then((res) => res.data.ip);
+        const data = {
+          orderId: OrderDetail.id,
+          reason: reason,
+          ipAddress: deviceId,
+        };
+        console.log("data", data);
+        const path = `Order/CancelOrder`;
+        const res = await updateDataByPath(path, accessToken, data);
+        console.log("res1212", res);
+        if (res !== null && res !== undefined && res.status === 200) {
+          setIsOpen4(false);
+          Swal.fire("Huỷ Thành Công", "", "success");
+          loadDataOrderById();
+        } else {
+          Swal.fire(`${res?.errors?.Reason[0]}`, "", "error");
+        }
+      }
     }
   }
   async function handleCancelOrder() {
@@ -262,10 +297,9 @@ const OrderDetail = () => {
       confirmButtonText: "Đồng ý",
       cancelButtonText: "Không",
       footer:
-      "Lưu ý: Việc hủy đơn chỉ nên thực hiện khi bạn gặp trở ngại giao hàng cho khách hàng!",
-
+        "Lưu ý: Việc hủy đơn chỉ nên thực hiện khi bạn gặp trở ngại giao hàng cho khách hàng!",
     });
-  
+
     if (confirmed.isConfirmed) {
       cancelOrder();
     }
@@ -318,7 +352,9 @@ const OrderDetail = () => {
   } else if (
     OrderDetail.pharmacistId === localStorage.getItem("userID") &&
     OrderDetail.orderStatusName !== "Đơn hàng đã hủy" &&
-    OrderDetail.orderStatusName !== "Bán hàng thành công"
+    OrderDetail.orderStatusName !== "Bán hàng thành công" &&
+    OrderDetail.orderStatusName !== "Đã chuẩn bị hàng xong" &&
+    OrderDetail.orderStatusName !== "Khách hàng nhận hàng thành công"
   ) {
     OrderStatus = (
       <>
@@ -416,7 +452,7 @@ const OrderDetail = () => {
     );
   } else if (
     OrderDetail.pharmacistId === localStorage.getItem("userID") &&
-    OrderDetail.orderStatusName === "Bán hàng thành công"
+    (OrderDetail.orderStatusName === "Bán hàng thành công" || OrderDetail.orderStatusName === "Khách hàng nhận hàng thành công")
   ) {
     OrderStatus = (
       <>
@@ -433,7 +469,6 @@ const OrderDetail = () => {
             </div>
           </div>
 
-    
           <div
             style={{
               height: 40,
@@ -448,6 +483,69 @@ const OrderDetail = () => {
           >
             Đơn Hàng Đã Giao Cho Khách Và Thanh Toán Thành Công
           </div>
+        </div>
+      </>
+    );
+  } else if (
+    OrderDetail.pharmacistId === localStorage.getItem("userID") &&
+    OrderDetail.orderStatusName === "Đã chuẩn bị hàng xong" &&
+    OrderDetail.orderTypeId === 2
+  ) {
+    OrderStatus = (
+      <>
+        <div className="mb-3" style={{ width: "95%" }}>
+          <div className="input-group input-group-merge">
+            <div
+              type="text"
+              id="basic-icon-default-fullname"
+              placeholder="Tên Sản Phẩm"
+              aria-label="Tên Sản Phẩm"
+              aria-describedby="basic-icon-default-fullname2"
+            >
+              Cập nhật
+            </div>
+          </div>
+
+          <a
+            href="#my-dialog5"
+            onClick={() => {
+              setIsOpen5(true);
+            }}
+            className="button-28"
+            style={{
+              height: 40,
+              width: 250,
+              fontSize: 13,
+              paddingTop: 10,
+
+              marginTop: "20px",
+              marginBottom: -20,
+              backgroundColor: "#82AAE3",
+              color: "white",
+            }}
+          >
+            Hoàn Thành Đơn Hàng
+          </a>
+          <a
+            href="#my-dialog4"
+            onClick={() => {
+              setIsOpen4(true);
+            }}
+            className="button-28"
+            style={{
+              height: 40,
+              width: 250,
+              fontSize: 13,
+              paddingTop: 10,
+
+              marginTop: "20px",
+              marginBottom: -20,
+              backgroundColor: "#E74646",
+              color: "white",
+            }}
+          >
+            Huỷ đơn hàng
+          </a>
         </div>
       </>
     );
@@ -482,7 +580,7 @@ const OrderDetail = () => {
               color: "white",
             }}
           >
-            Đơn hàng đã được xác nhận bởi thằng khác
+            Đơn hàng đã được xác nhận bởi người khác
           </a>
         </div>
       </>
@@ -506,7 +604,172 @@ const OrderDetail = () => {
 
         <div className="layout-page" style={{ backgroundColor: "#f4f6fb" }}>
           {/* Navbar */}
+          <div
+            className={`dialog overlay ${isOpen5 ? "" : "hidden"}`}
+            id="my-dialog5"
+          >
+            <a href="#" className="overlay-close" />
 
+            <div className="row " style={{ width: 700 }}>
+              <div className="col-xl">
+                <div className="card mb-4">
+                  <div
+                    className="card-header d-flex justify-content-between align-items-center"
+                    style={{
+                      height: 70,
+                      backgroundColor: "white",
+
+                      marginLeft: 230,
+                      borderColor: "#f4f4f4",
+                    }}
+                  >
+                    <h5 className="mb-0">Hoàn Thành Đơn Hàng</h5>
+                  </div>
+                  <div className="card-body">
+                    <form>
+                      <div
+                        style={{
+                          display: "grid",
+
+                          padding: 30,
+                        }}
+                      >
+                        <div
+                          className="mb-3"
+                          style={{ width: "95%", display: "flex" }}
+                        >
+                          <label
+                            style={{
+                              paddingTop:2,
+                              width: 400,
+                              fontSize:15
+                            }}
+                            className="form-label"
+                            htmlFor="basic-icon-default-phone"
+                          >
+                            Phương thức thanh toán :
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <div>{OrderDetail?.paymentMethod}</div>
+                          </div>
+                        </div>
+                        <div
+                          className="mb-3"
+                          style={{ width: "95%", display: "flex" }}
+                        >
+                          <label
+                            style={{
+                              paddingTop:2,
+                              width: 400,
+                              fontSize:15
+                            }}
+                            className="form-label"
+                            htmlFor="basic-icon-default-phone"
+                          >
+                            Số tiền cần thanh toán :
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <div>{OrderDetail?.paymentMethodId === 1 ? <>{OrderDetail?.totalPrice.toLocaleString("en-US") } đ</>:"0 đ"}</div>
+                          </div>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            width: 500,
+                            padding: 1,
+                            height: 100,
+                            marginTop: 70,
+                          }}
+                        >
+                          <div
+                            className="mb-3"
+                            style={{
+                              width: "45%",
+                              height: 10,
+                              marginRight: 30,
+                            }}
+                          >
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-fullname"
+                            >
+                              Số Tiền Nhận
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <input
+                                type="text"
+                                className="form-control"
+                                id="basic-icon-default-fullname"
+                                placeholder="Số Tiền Nhận"
+                                aria-label="Tên Sản Phẩm"
+                                aria-describedby="basic-icon-default-fullname2"
+                                value={moneyReceived}
+                                onChange={handleMoneyReceivedChange}
+                                onBlur={handleMoneyReceivedBlur}
+                              />
+                            </div>
+                          </div>
+                          <div
+                            className="mb-3"
+                            style={{ width: "45%", height: 10 }}
+                          >
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-fullname"
+                            >
+                              Tiền Thối Cho Khách Hàng
+                            </label>
+                            <div className="input-group input-group-merge">
+                              <input
+                                type="text"
+                                disabled
+                                className="form-control"
+                                id="basic-icon-default-fullname"
+                                placeholder="Tiền Thối "
+                                aria-label="Tên Sản Phẩm"
+                                aria-describedby="basic-icon-default-fullname2"
+                                value={Math.max(
+                                  moneyReceived - OrderDetail.totalPrice,
+                                  0
+                                ).toLocaleString("en-US")}
+                              />
+                            </div>
+                            {/* {errorMessage && (
+                              <div style={{ color: "red" }}>{errorMessage}</div>
+                            )} */}
+                          </div>
+                        </div>
+                      </div>
+                      
+                        <div style={{ display: "flex" }}>
+                          <button
+                            type="submit"
+                            className="button-28"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              updateStatusOrderComplete();
+                            }}
+                            style={{
+                              height: 30,
+                              width: 400,
+                              fontSize: 13,
+                              marginLeft: "15%",
+
+                              backgroundColor: "#82AAE3",
+                              color: "white",
+                            }}
+                          >
+                            Xác Nhận Hoàn Thành Đơn Hàng
+                          </button>
+                        </div>
+                     
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div
             className={`dialog overlay ${isOpen2 ? "" : "hidden"}`}
             id="my-dialog2"
@@ -858,6 +1121,9 @@ const OrderDetail = () => {
                   </div>
                 </div>
               </div>
+            ) : OrderDetail.orderStatusName === "Đã chuẩn bị hàng xong" &&
+              OrderDetail.orderTypeId === 2 ? (
+              <div></div>
             ) : (
               <div></div>
             )}
@@ -1034,7 +1300,11 @@ const OrderDetail = () => {
                               onChange={(e) => setReason(e.target.value)}
                             />
                           </div>
-                          <div className="form-text"> Lưu ý việc hủy đơn chỉ nên thực hiện khi bạn gặp trở ngại giao hàng cho khách hàng</div>
+                          <div className="form-text">
+                            {" "}
+                            Lưu ý việc hủy đơn chỉ nên thực hiện khi bạn gặp trở
+                            ngại giao hàng cho khách hàng
+                          </div>
                         </div>
                       </div>
 
@@ -1113,9 +1383,7 @@ const OrderDetail = () => {
                               placeholder="Viết Mô Tả "
                               aria-label="John Doe"
                               aria-describedby="basic-icon-default-fullname2"
-                              value={
-                                 noteUpdate[0].note
-                              }
+                              value={noteUpdate[0].note}
                               onChange={(e) =>
                                 setNodeUpdate((prevNote) => [
                                   {
@@ -1343,6 +1611,26 @@ const OrderDetail = () => {
                             đ
                           </td>
                         </tr>
+                        {OrderDetail.orderTypeId === 3 ? (
+                          <tr style={{ border: "1px solid white" }}>
+                            <td style={{ fontSize: 15, fontWeight: 500 }}>
+                              &nbsp; &nbsp;Phí Giao Hàng
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td style={{ fontSize: 15, fontWeight: 500 }}>
+                              {OrderDetail?.orderDelivery?.shippingFee?.toLocaleString(
+                                "en-US"
+                              )}{" "}
+                              đ
+                            </td>
+                          </tr>
+                        ) : (
+                          <></>
+                        )}
                         <tr style={{ border: "1px solid white", width: 100 }}>
                           <td
                             style={{
@@ -1638,38 +1926,42 @@ const OrderDetail = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="basic-icon-default-phone"
-                          >
-                            Số điện Thoại Người mua
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <div
-                              type="text"
-                              id="basic-icon-default-fullname"
-                              placeholder="Tên Sản Phẩm"
-                              aria-label="Tên Sản Phẩm"
-                              aria-describedby="basic-icon-default-fullname2"
+                        {orderContactInfo.phoneNumber === "" ? (
+                          <div></div>
+                        ) : (
+                          <div className="mb-3" style={{ width: "95%" }}>
+                            <label
+                              className="form-label"
+                              htmlFor="basic-icon-default-phone"
                             >
-                              <tel>{orderContactInfo.phoneNumber}</tel>
-                            </div>
-                            {OrderDetail.orderTypeName === "Bán tại chỗ" ? (
+                              Số điện Thoại Người mua
+                            </label>
+                            <div className="input-group input-group-merge">
                               <div
-                                className="form-text"
-                                style={{ color: "red" }}
-                              ></div>
-                            ) : (
-                              <div
-                                className="form-text"
-                                style={{ color: "red" }}
+                                type="text"
+                                id="basic-icon-default-fullname"
+                                placeholder="Tên Sản Phẩm"
+                                aria-label="Tên Sản Phẩm"
+                                aria-describedby="basic-icon-default-fullname2"
                               >
-                                Gọi Khách Hàng Xác Nhận Lại
+                                <tel>{orderContactInfo.phoneNumber}</tel>
                               </div>
-                            )}
+                              {OrderDetail.orderTypeName === "Bán tại chỗ" ? (
+                                <div
+                                  className="form-text"
+                                  style={{ color: "red" }}
+                                ></div>
+                              ) : (
+                                <div
+                                  className="form-text"
+                                  style={{ color: "red" }}
+                                >
+                                  Gọi Khách Hàng Xác Nhận Lại
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
+                        )}
                         <div>
                           {OrderDetail.orderTypeName === "Bán tại chỗ" ? (
                             <div></div>

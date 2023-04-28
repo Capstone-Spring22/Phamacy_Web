@@ -55,7 +55,7 @@ const Drug = () => {
       const res = await updateDataByPath(path, accessToken, data);
       if (res !== null && res !== undefined && res.status === 200) {
         setCountUs(parseInt(countUs) + 1);
-        Swal.fire("Update successfully!", "", "success");
+        Swal.fire("Duyệt Thành Công!", "", "success");
       } else if (res && res.status === 400) {
         Swal.fire("Đã Xác Nhận Không Thể Sửa", "Không Thể Sửa", "error");
       }

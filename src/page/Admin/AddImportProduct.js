@@ -99,7 +99,7 @@ const AddImportProduct = () => {
         console.log("Check res", res);
         console.log("display du lieu", data);
         if (res && res.status === 201) {
-          Swal.fire("Create Success", "", "success");
+          Swal.fire("Lưu Nháp Thành Công", "", "success");
           // window.location.reload();
           history.push("/ImportProduct");
         }
@@ -116,7 +116,7 @@ const AddImportProduct = () => {
         console.log("Check res", res);
         console.log("display du lieu", data);
         if (res && res.status === 201) {
-          Swal.fire("Create Success", "", "success");
+          Swal.fire("Nhập Hàng Thành Công", "", "success");
           // window.location.reload();
         }
       }

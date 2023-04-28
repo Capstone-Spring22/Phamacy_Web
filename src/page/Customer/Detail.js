@@ -394,7 +394,7 @@ const DetailMedicine = () => {
                           }}
                         />
                       </div>
-                      {product.isPrescription === 1 ? (
+                      {product.isPrescription === 1 || product.isPrescription === true ? (
                         <button
                           value={5}
                           className="btn cart-submit d-block"

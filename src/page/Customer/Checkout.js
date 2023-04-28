@@ -252,7 +252,7 @@ const Home = (props) => {
     CheckoutSiteObjectQuantity.map((product) => product.quantity).join(";");
 
   async function CheckoutSiteget() {
-    const path = `Order/PickUp/Site?ProductId=${productIds}&Quantity=${quantitys}&CityId=${cityID}`;
+    const path = `Order/PickUp/Site?ProductId=${productIds}&Quantity=${quantitys}&CityId=${cityID}&DistrictId=${districtID}`;
     const res = await getDataByPath(path, "", "");
     console.log("res", res.data.totalSite);
     console.log("productId", CheckoutSiteObjectProduct);
@@ -266,7 +266,10 @@ const Home = (props) => {
   }
   useEffect(() => {
     CheckoutSiteget();
-  }, [cityID]);
+    if(districtID !== null){
+      loadDataSite();
+    }
+  }, [cityID,districtID]);
   const handleDate = (event) => {
     event.preventDefault();
     const dateTime = event.target.value;
@@ -313,7 +316,7 @@ const Home = (props) => {
         console.log("Check res", res);
         console.log("display du lieu", data);
         if (res && res.status === 200) {
-          Swal.fire("Create Success", "", "success");
+          Swal.fire("Thanh Toán Thành Công", "", "success");
           handleRemoveCart();
           update(orderID);
           // window.location.reload();
@@ -376,7 +379,7 @@ const Home = (props) => {
   async function loadDataSite() {
     if (localStorage && localStorage.getItem("accessTokenUser")) {
       const accessToken = localStorage.getItem("accessTokenUser");
-      const path = `Site?IsDelivery=true&DistrictID=${product.reveicerInformation.districtId}&pageIndex=1&pageItems=20`;
+      const path = `Site?IsDelivery=true&DistrictID=${districtID}&pageIndex=1&pageItems=20`;
       console.log("display2", getDataByPath);
       const res = await getDataByPath(path, accessToken, "");
       console.log("display31321", res);
@@ -388,12 +391,12 @@ const Home = (props) => {
       }
     }
   }
-  useEffect(() => {
-    if(product.reveicerInformation.districtId !== null){
-      loadDataSite();
-    }
+  // useEffect(() => {
+  //   if(product.reveicerInformation.districtId !== null){
+  //     loadDataSite();
+  //   }
   
-  }, [product.reveicerInformation.districtId]);
+  // }, [product.reveicerInformation.districtId]);
 
   const handleApplyUserPoint = async () => {
     const res = await axios.post(
@@ -848,7 +851,6 @@ const Home = (props) => {
                             }}
                             onChange={(e) => {
                               setTimeSelected(true);
-                              handleDistrict(e);
                               setProduct({
                                 ...product,
                                 orderPickUp: {

@@ -399,28 +399,27 @@ const NewDrug = () => {
     if (index > 0) {
       const newProductDetailModel = [...product.productDetailModel];
       newProductDetailModel.splice(index, 1);
-    
+
       // Update the unitLevel values of the remaining units
-      const updatedProductDetailModel = newProductDetailModel.map((unit, i) => ({
-        ...unit,
-        unitLevel: i + 1,
-      }));
-    
+      const updatedProductDetailModel = newProductDetailModel.map(
+        (unit, i) => ({
+          ...unit,
+          unitLevel: i + 1,
+        })
+      );
+
       setProduct({
         ...product,
         productDetailModel: updatedProductDetailModel,
       });
-    
+
       setUnitCount(unitCount - 1);
-    
+
       const newSelectedUnits = [...selectedUnits];
       newSelectedUnits.splice(index, 1);
       setSelectedUnits(newSelectedUnits);
     }
   };
-  
-  
-  
 
   const options = productIngredient.map((e) => ({
     label: e.ingredientName,
@@ -428,11 +427,11 @@ const NewDrug = () => {
   }));
   const handleDeleteIngredient = (index) => {
     const newIngredientModel = [...product.descriptionModel.ingredientModel];
-  
+
     // Check if there is more than one ingredient before deleting
     if (newIngredientModel.length > 1) {
       newIngredientModel.splice(index, 1);
-  
+
       setProduct({
         ...product,
         descriptionModel: {
@@ -440,11 +439,11 @@ const NewDrug = () => {
           ingredientModel: newIngredientModel,
         },
       });
-  
+
       setIngredientCount(ingredientCount - 1);
     }
   };
-  
+
   const handleAddUnit = () => {
     setProduct({
       ...product,
@@ -468,6 +467,17 @@ const NewDrug = () => {
       imageModel: [...product.imageModel, { imageURL: "", isFirstImage: null }],
     });
     setImageInputCount(imageInputCount + 1);
+  };
+  const handleDeleteImage = (index) => {
+    const newImageModel = [...product.imageModel];
+    if (newImageModel.length > 1 && !newImageModel[index]?.isFirstImage) {
+      newImageModel.splice(index, 1);
+      setProduct({
+        ...product,
+        imageModel: newImageModel,
+      });
+      setImageInputCount(imageInputCount - 1);
+    }
   };
 
   return (
@@ -1305,7 +1315,9 @@ const NewDrug = () => {
                       </div>
                     )
                   )}
-                  <div style={{color: 'red',marginLeft:520,marginBottom:20}}>
+                  <div
+                    style={{ color: "red", marginLeft: 520, marginBottom: 20 }}
+                  >
                     {product.productDetailModel.map((detail, index) => (
                       <span>
                         {detail.quantitative} {selectedUnits[index]}
@@ -1656,6 +1668,7 @@ const NewDrug = () => {
                                   </form>
                                 </div>
                               </div>
+
                               <div
                                 className="mb-3"
                                 style={{
@@ -1692,6 +1705,12 @@ const NewDrug = () => {
                                   </button>
                                 </div>
                               </div>
+                              <button
+                                style={{ marginLeft: 10 }}
+                                onClick={() => handleDeleteImage(index - 1)}
+                              >
+                                Xóa
+                              </button>
                             </div>
                           ))}
                         </div>

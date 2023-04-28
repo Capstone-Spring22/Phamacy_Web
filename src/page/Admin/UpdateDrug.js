@@ -116,7 +116,7 @@ const UpdateDrug = () => {
     setProductIngredientID(productIngredientID);
   };
   async function loadDataUnit2() {
-    const path = `Unit?pageIndex=1&pageItems=100`;
+    const path = `Unit?isCountable=false&pageIndex=1&pageItems=111`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setUnit2(res.data.items);
@@ -273,6 +273,24 @@ const UpdateDrug = () => {
     });
     setIngredientCount(ingredientCount + 1);
   };
+  const handleDeleteIngredient = (index) => {
+    const newIngredientModel = [...product.descriptionModel.ingredientModel];
+
+    // Check if there is more than one ingredient before deleting
+    if (newIngredientModel.length > 1) {
+      newIngredientModel.splice(index, 1);
+
+      setProduct({
+        ...product,
+        descriptionModel: {
+          ...product.descriptionModel,
+          ingredientModel: newIngredientModel,
+        },
+      });
+
+      setIngredientCount(ingredientCount - 1);
+    }
+  };
   const handleAddUnit = () => {
     setProduct({
       ...product,
@@ -295,14 +313,23 @@ const UpdateDrug = () => {
   const handleAddImage = () => {
     setProduct({
       ...product,
-      productDetailModel: [
-        ...product.productDetailModel,
-        {
-          imageURL: [{ imageURL: "", isFirstImage: 0 }],
-        },
+      imageModels: [
+        ...product.imageModels,
+        { id: "", imageURL: "", isFirstImage: null },
       ],
     });
     setImageInputCount(imageInputCount + 1);
+  };
+  const handleDeleteImage = (index) => {
+    const newImageModel = [...product.imageModels];
+    if (newImageModel.length > 1 && !newImageModel[index]?.isFirstImage) {
+      newImageModel.splice(index, 1);
+      setProduct({
+        ...product,
+        imageModels: newImageModel,
+      });
+      setImageInputCount(imageInputCount - 1);
+    }
   };
 
   return (
@@ -571,7 +598,6 @@ const UpdateDrug = () => {
 
                     <div className="col-md"></div>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -1053,7 +1079,7 @@ const UpdateDrug = () => {
                                     ],
                                   })
                                 }
-                                disabled={index === 1} 
+                                disabled={index === 1}
                                 defaultValue="option2"
                                 style={{
                                   height: 20,
@@ -1201,6 +1227,7 @@ const UpdateDrug = () => {
                               </select>
                             </div>
                           </div>
+
                           <div
                             className="mb-3"
                             style={{ width: "30%", marginRight: 20 }}
@@ -1309,6 +1336,12 @@ const UpdateDrug = () => {
                               </select>
                             </div>
                           </div>
+                          <button
+                            style={{ marginLeft: 10 }}
+                            onClick={() => handleDeleteIngredient(index - 1)}
+                          >
+                            Xóa
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -1436,15 +1469,52 @@ const UpdateDrug = () => {
                                 }}
                               >
                                 {product.imageModels[index - 1].isFirstImage
-                                  ? "First Image"
-                                  : "Set as First"}
+                                  ? "Hình Đại Diện"
+                                  : "Chọn Làm Hình Đại Diện"}
                               </button>
                             </div>
+                            <button
+                              style={{ marginLeft: 10 }}
+                              onClick={() => handleDeleteImage(index - 1)}
+                            >
+                              Xóa
+                            </button>
                           </div>
                         </div>
                       ))}
                     </div>
-                  </div> <button
+                    <button
+                      style={{
+                        height: 50,
+                        width: 200,
+                        fontSize: 13,
+                        paddingTop: 1,
+                        marginLeft: "44%",
+                        marginBottom: "20px",
+                        backgroundColor: "#fff",
+                      }}
+                      className="button-28"
+                      onClick={handleAddImage}
+                    >
+                      {" "}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-plus-lg"
+                        viewBox="0 0 16 16"
+                        style={{ marginRight: 10 }}
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
+                        />
+                      </svg>
+                      thêm ảnh
+                    </button>
+                  </div>{" "}
+                  <button
                     type="submit"
                     className="button-28"
                     onClick={(e) => {
@@ -1453,21 +1523,19 @@ const UpdateDrug = () => {
                     }}
                     style={{
                       height: 35,
-                        width: 100,
-                        fontSize: 13,
-                        paddingTop: 1,
-                        marginLeft: "90%",
-                        marginTop: "-40px",
-                        backgroundColor: "#82AAE3",
-                        color: "white",
-                        marginBottom: 30,
+                      width: 100,
+                      fontSize: 13,
+                      paddingTop: 1,
+                      marginLeft: "90%",
+                      marginTop: "-40px",
+                      backgroundColor: "#82AAE3",
+                      color: "white",
+                      marginBottom: 30,
                     }}
                   >
                     Lưu
                   </button>
                 </div>
-                
-               
               </div>
             </div>
           </div>

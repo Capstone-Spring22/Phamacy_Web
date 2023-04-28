@@ -316,19 +316,58 @@ const ViewImportProduct = () => {
                                     aria-describedby={`quantitative${index}2`}
                                   >
                                     {drug?.find(
-                                      (sc) =>
-                                        sc.id ===
-                                        product?.productImportDetails[index - 1]
-                                          ?.productId
-                                    )?.name
-                                      ? drug?.find(
+                                        (sc) =>
+                                        sc.productUnitReferences?.find((item)=>item.id ===
+                                        product?.productImportDetails[
+                                          index - 1
+                                        ]?.productId) 
+                                      )?.name
+                                        ?  drug?.find(
                                           (sc) =>
-                                            sc.id ===
-                                            product?.productImportDetails[
-                                              index - 1
-                                            ]?.productId
+                                          sc.productUnitReferences?.find((item)=>item.id ===
+                                          product?.productImportDetails[
+                                            index - 1
+                                          ]?.productId) 
                                         )?.name
-                                      : "Đang Tải ..."}
+                                        : "Đang Tải ..."}
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                className="mb-3"
+                                style={{ width: "30%", marginRight: 20 }}
+                              >
+                                <label
+                                  className="form-label"
+                                  htmlFor={`unitId${index}`}
+                                >
+                                  Đơn vị Sản Phẩm
+                                </label>
+                                <div className="input-group input-group-merge">
+                                  <div
+                                    type="text"
+                                    readOnly
+                                    id={`quantitative${index}`}
+                                    aria-label="Unit Id"
+                                    aria-describedby={`quantitative${index}2`}
+                                  >
+                                    {drug?.find(
+                                        (sc) =>
+                                        sc.productUnitReferences?.find((item)=>item.id ===
+                                        product?.productImportDetails[
+                                          index - 1
+                                        ]?.productId)
+                                      )
+                                        ?  drug?.find(
+                                          (sc) =>
+                                          sc.productUnitReferences?.find((item)=>item.id ===
+                                          product?.productImportDetails[
+                                            index - 1
+                                          ]?.productId)
+                                        )?.productUnitReferences.find((item)=>item.id === product?.productImportDetails[
+                                          index - 1
+                                        ]?.productId)?.unitName
+                                        : "Đang Tải ..."}
                                   </div>
                                 </div>
                               </div>

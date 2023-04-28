@@ -3,12 +3,17 @@ import Swal from "sweetalert2";
 import SideBar from "../sidebar/SideBarManager";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import "../../assets/css/core.css";
-import { createDataByPath, getDataByPath, updateDataByPath } from "../../services/data.service";
+import {
+  createDataByPath,
+  getDataByPath,
+  updateDataByPath,
+} from "../../services/data.service";
+import { useHistory } from "react-router-dom";
 
 const UpdateImportProduct = () => {
   const myId = localStorage.getItem("id");
   const [unitCount, setUnitCount] = useState(1);
-
+  let history = useHistory();
   const [manufactuner, setManufactuner] = useState([]);
   const [productIngredient, setProductIngredient] = useState([]);
 
@@ -62,15 +67,14 @@ const UpdateImportProduct = () => {
   async function createNewProductsRelease() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-        const data = { ...product, isReleased: true };
-        const path = "ProductImport";
-        const res = await createDataByPath(path, accessToken, data);
-        console.log("Check res", res);
-        console.log("display du lieu", data);
-        if (res && res.status === 201) {
-          Swal.fire("Create Success", "", "success");
-          // window.location.reload();
-        
+      const data = { ...product, isReleased: true };
+      const path = "ProductImport";
+      const res = await updateDataByPath(path, accessToken, data);
+      console.log("Check res", res);
+      console.log("display du lieu", data);
+      if (res && res.status === 200) {
+        Swal.fire("Cập Nhật Thành Công", "", "success");
+        history.push("/ImportProduct");
       }
     }
   }
@@ -204,7 +208,7 @@ const UpdateImportProduct = () => {
         console.log("Check res", res);
         console.log("display du lieu", data);
         if (res && res.status === 200) {
-          Swal.fire("Update Success", "", "success");
+          Swal.fire("Lưu Nháp Thành Công", "", "success");
           // window.location.reload();
         } else {
           Swal.fire("Đã Được Xác Nhận Không Được Sửaa", "You failed!", "error");
@@ -332,18 +336,58 @@ const UpdateImportProduct = () => {
                                     value={
                                       drug?.find(
                                         (sc) =>
-                                          sc.id ===
+                                        sc.productUnitReferences?.find((item)=>item.id ===
+                                        product?.productImportDetails[
+                                          index - 1
+                                        ]?.productId) 
+                                      )?.name
+                                        ?  drug?.find(
+                                          (sc) =>
+                                          sc.productUnitReferences?.find((item)=>item.id ===
                                           product?.productImportDetails[
                                             index - 1
-                                          ]?.productId
-                                      )?.name
-                                        ? drug?.find(
-                                            (sc) =>
-                                              sc.id ===
-                                              product?.productImportDetails[
-                                                index - 1
-                                              ]?.productId
-                                          )?.name
+                                          ]?.productId) 
+                                        )?.name
+                                        : "Đang Tải ..."
+                                    }
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                className="mb-3"
+                                style={{ width: "30%", marginRight: 20 }}
+                              >
+                                <label
+                                  className="form-label"
+                                  htmlFor={`unitId${index}`}
+                                >
+                                  Đơn vị sản phẩm
+                                </label>
+                                <div className="input-group input-group-merge">
+                                  <input
+                                    type="text"
+                                    readOnly
+                                    id={`quantitative${index}`}
+                                    className="form-control"
+                                    aria-label="Unit Id"
+                                    aria-describedby={`quantitative${index}2`}
+                                    value={
+                                      drug?.find(
+                                        (sc) =>
+                                        sc.productUnitReferences?.find((item)=>item.id ===
+                                        product?.productImportDetails[
+                                          index - 1
+                                        ]?.productId)
+                                      )
+                                        ?  drug?.find(
+                                          (sc) =>
+                                          sc.productUnitReferences?.find((item)=>item.id ===
+                                          product?.productImportDetails[
+                                            index - 1
+                                          ]?.productId)
+                                        )?.productUnitReferences.find((item)=>item.id === product?.productImportDetails[
+                                          index - 1
+                                        ]?.productId)?.unitName
                                         : "Đang Tải ..."
                                     }
                                   />
@@ -520,23 +564,37 @@ const UpdateImportProduct = () => {
                                                       index - 1
                                                     ),
                                                     {
-                                                      ...product.productImportDetails[index - 1],
+                                                      ...product
+                                                        .productImportDetails[
+                                                        index - 1
+                                                      ],
                                                       productBatches: [
                                                         ...product.productImportDetails[
                                                           index - 1
-                                                        ].productBatches.slice(0, batchIndex - 1),
+                                                        ].productBatches.slice(
+                                                          0,
+                                                          batchIndex - 1
+                                                        ),
                                                         {
-                                                          ...product.productImportDetails[
+                                                          ...product
+                                                            .productImportDetails[
                                                             index - 1
-                                                          ].productBatches[batchIndex - 1],
-                                                          manufactureDate: e.target.value,
+                                                          ].productBatches[
+                                                            batchIndex - 1
+                                                          ],
+                                                          manufactureDate:
+                                                            e.target.value,
                                                         },
                                                         ...product.productImportDetails[
                                                           index - 1
-                                                        ].productBatches.slice(batchIndex),
+                                                        ].productBatches.slice(
+                                                          batchIndex
+                                                        ),
                                                       ],
                                                     },
-                                                    ...product.productImportDetails.slice(index),
+                                                    ...product.productImportDetails.slice(
+                                                      index
+                                                    ),
                                                   ],
                                                 }));
                                               }}
@@ -603,23 +661,37 @@ const UpdateImportProduct = () => {
                                                       index - 1
                                                     ),
                                                     {
-                                                      ...product.productImportDetails[index - 1],
+                                                      ...product
+                                                        .productImportDetails[
+                                                        index - 1
+                                                      ],
                                                       productBatches: [
                                                         ...product.productImportDetails[
                                                           index - 1
-                                                        ].productBatches.slice(0, batchIndex - 1),
+                                                        ].productBatches.slice(
+                                                          0,
+                                                          batchIndex - 1
+                                                        ),
                                                         {
-                                                          ...product.productImportDetails[
+                                                          ...product
+                                                            .productImportDetails[
                                                             index - 1
-                                                          ].productBatches[batchIndex - 1],
-                                                          expireDate: e.target.value,
+                                                          ].productBatches[
+                                                            batchIndex - 1
+                                                          ],
+                                                          expireDate:
+                                                            e.target.value,
                                                         },
                                                         ...product.productImportDetails[
                                                           index - 1
-                                                        ].productBatches.slice(batchIndex),
+                                                        ].productBatches.slice(
+                                                          batchIndex
+                                                        ),
                                                       ],
                                                     },
-                                                    ...product.productImportDetails.slice(index),
+                                                    ...product.productImportDetails.slice(
+                                                      index
+                                                    ),
                                                   ],
                                                 }));
                                               }}
@@ -663,32 +735,52 @@ const UpdateImportProduct = () => {
                                                 setProduct({
                                                   ...product,
                                                   productImportDetails: [
-                                                    ...product.productImportDetails.slice(0, index - 1),
+                                                    ...product.productImportDetails.slice(
+                                                      0,
+                                                      index - 1
+                                                    ),
                                                     {
-                                                      ...product.productImportDetails[index - 1],
+                                                      ...product
+                                                        .productImportDetails[
+                                                        index - 1
+                                                      ],
                                                       productBatches: [
-                                                        ...product.productImportDetails[index - 1].productBatches.slice(
+                                                        ...product.productImportDetails[
+                                                          index - 1
+                                                        ].productBatches.slice(
                                                           0,
                                                           batchIndex - 1
                                                         ),
                                                         {
-                                                          ...product.productImportDetails[index - 1].productBatches[
+                                                          ...product
+                                                            .productImportDetails[
+                                                            index - 1
+                                                          ].productBatches[
                                                             batchIndex - 1
                                                           ],
-                                                          quantity: parseInt(e.target.value),
+                                                          quantity: parseInt(
+                                                            e.target.value
+                                                          ),
                                                         },
-                                                        ...product.productImportDetails[index - 1].productBatches.slice(
+                                                        ...product.productImportDetails[
+                                                          index - 1
+                                                        ].productBatches.slice(
                                                           batchIndex
                                                         ),
                                                       ],
-                                                      quantity: product.productImportDetails[
-                                                        index - 1
-                                                      ].productBatches.reduce(
-                                                        (total, curent) => total + curent.quantity,
-                                                        0
-                                                      ),
+                                                      quantity:
+                                                        product.productImportDetails[
+                                                          index - 1
+                                                        ].productBatches.reduce(
+                                                          (total, curent) =>
+                                                            total +
+                                                            curent.quantity,
+                                                          0
+                                                        ),
                                                     },
-                                                    ...product.productImportDetails.slice(index),
+                                                    ...product.productImportDetails.slice(
+                                                      index
+                                                    ),
                                                   ],
                                                 });
                                               }}
@@ -867,47 +959,47 @@ const UpdateImportProduct = () => {
                       <div></div>
                     ) : (
                       <div style={{ display: "flex" }}>
-                      <button
-                        type="submit"
-                        className="button-28"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          createNewProducts();
-                        }}
-                        style={{
-                          height: 35,
-                          width: 100,
-                          fontSize: 13,
-                          paddingTop: 1,
-                          marginLeft: "78%",
-                          marginTop: "20px",
-                          backgroundColor: "#DD5353",
-                          color: "white",
-                        }}
-                      >
-                        Lưu Nháp
-                      </button>
-                      <button
-                      type="submit"
-                      className="button-28"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        createNewProductsRelease();
-                      }}
-                      style={{
-                        height: 35,
-                        width: 100,
-                        fontSize: 13,
-                        paddingTop: 1,
-                        marginLeft: "2%",
-                        marginTop: "20px",
-                        backgroundColor: "#82AAE3",
-                        color: "white",
-                      }}
-                    >
-                      Duyệt
-                    </button>
-                    </div>
+                        <button
+                          type="submit"
+                          className="button-28"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            createNewProducts();
+                          }}
+                          style={{
+                            height: 35,
+                            width: 100,
+                            fontSize: 13,
+                            paddingTop: 1,
+                            marginLeft: "78%",
+                            marginTop: "20px",
+                            backgroundColor: "#DD5353",
+                            color: "white",
+                          }}
+                        >
+                          Lưu Nháp
+                        </button>
+                        <button
+                          type="submit"
+                          className="button-28"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            createNewProductsRelease();
+                          }}
+                          style={{
+                            height: 35,
+                            width: 100,
+                            fontSize: 13,
+                            paddingTop: 1,
+                            marginLeft: "2%",
+                            marginTop: "20px",
+                            backgroundColor: "#82AAE3",
+                            color: "white",
+                          }}
+                        >
+                          Duyệt
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>

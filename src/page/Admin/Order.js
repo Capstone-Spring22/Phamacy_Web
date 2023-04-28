@@ -15,7 +15,7 @@ const Order = () => {
 
   let history = useHistory();
   const update = (myId) => {
-    localStorage.setItem("id", myId);
+    localStorage.setItem("orderIdPharmacist", myId);
     history.push("/OrderDetail");
   };
   const NotAcceptable = [
