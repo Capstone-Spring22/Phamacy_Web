@@ -12,12 +12,14 @@ export default function AddProductCard({
   setCountQuantity,
   drug,
   setcountPrice,
+  handleDeleteUnit,
 }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const [currentNumBatches, setCurrentNumBatches] = useState(0);
   const [isBatches, setIsBatches] = useState(false);
   const [options2, setOptions2] = useState([]);
   const [message, setMessage] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const getMessageAPI = async (productid, quantity) => {
     if (productid && quantity > 0) {
       const res = await axios.get(
@@ -27,6 +29,7 @@ export default function AddProductCard({
       console.log("display", res.data.templateMessage);
     }
   };
+
   const handleSelectProduct = (productId) => {
     const isBatch = drug.find((item) => item.id === productId).isBatches;
     setIsBatches(isBatch);
@@ -98,6 +101,7 @@ export default function AddProductCard({
             </label>
             <Select
               placeholder="Chọn Sản Phẩm "
+          
               onChange={(selectedOption) => {
                 setSelectedOption(selectedOption.value);
                 handleSelectProduct(selectedOption.value);
@@ -122,6 +126,7 @@ export default function AddProductCard({
 
             {options2 && (
               <Select
+          
                 placeholder="Chọn Đơn Vị"
                 onChange={(selectedOption) => {
                   setProduct((product) => ({
@@ -338,7 +343,7 @@ export default function AddProductCard({
                             />
                           </div>
                           <div className="form-text">
-                          Chọn ngày sản xuất của sản phẩm trong lô hàng
+                            Chọn ngày sản xuất của sản phẩm trong lô hàng
                           </div>
                         </div>
                         <div
@@ -471,6 +476,12 @@ export default function AddProductCard({
             </button>
           )}
         </div>
+        <button
+          style={{ marginLeft: 10 }}
+          onClick={() => handleDeleteUnit(index - 1)}
+        >
+          Xóa
+        </button>
       </div>
       <hr />
     </div>

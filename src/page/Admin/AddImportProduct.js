@@ -338,6 +338,21 @@ const AddImportProduct = () => {
     });
     setUnitCount(unitCount + 1);
   };
+  const handleDeleteUnit = (index) => {
+    const newProductImportDetails = [...product.productImportDetails];
+
+    if (newProductImportDetails.length > 1) {
+      newProductImportDetails.splice(index, 1);
+
+      setProduct({
+        ...product,
+        productImportDetails: newProductImportDetails,
+      });
+
+      setUnitCount(unitCount - 1);
+    }
+  };
+
   const [activeItem, setActiveItem] = useState("ImportProduct");
 
   return (
@@ -413,6 +428,7 @@ const AddImportProduct = () => {
                           index={index}
                           handleAddQuantityBatch={handleAddQuantityBatch}
                           setIndexUnit={setIndexUnit}
+                          handleDeleteUnit={handleDeleteUnit}
                           setCountQuantity={setCountQuantity}
                           drug={drug}
                           setcountPrice={setcountPrice}
@@ -527,7 +543,9 @@ const AddImportProduct = () => {
                             // }
                           />
                         </div>
-                        <div className="form-text">Tổng giá sản phẩm bằng số lượng nhân giá nhập</div>
+                        <div className="form-text">
+                          Tổng giá sản phẩm bằng số lượng nhân giá nhập
+                        </div>
                       </div>
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
@@ -565,7 +583,9 @@ const AddImportProduct = () => {
                             }}
                           />
                         </div>
-                        <div className="form-text">Thuê phải lớn hơn hoặc bằng 0 </div>
+                        <div className="form-text">
+                          Thuê phải lớn hơn hoặc bằng 0{" "}
+                        </div>
                       </div>
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
@@ -604,7 +624,9 @@ const AddImportProduct = () => {
                             }}
                           />
                         </div>
-                        <div className="form-text">Phí ship phải lớn hơn hoặc bằng 0 </div>
+                        <div className="form-text">
+                          Phí ship phải lớn hơn hoặc bằng 0{" "}
+                        </div>
                       </div>
 
                       <div className="mb-3" style={{ width: "95%" }}>
@@ -631,9 +653,10 @@ const AddImportProduct = () => {
                             //   }))
                             // }
                           />
-                           
                         </div>
-                        <div className="form-text">Tổng giá bằng tổng sản phẩm cộng thuế cộng phí ship </div>
+                        <div className="form-text">
+                          Tổng giá bằng tổng sản phẩm cộng thuế cộng phí ship{" "}
+                        </div>
                       </div>
                     </div>
                     <div style={{ display: "flex" }}>

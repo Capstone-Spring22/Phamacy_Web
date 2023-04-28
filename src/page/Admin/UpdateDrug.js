@@ -1209,14 +1209,14 @@ const UpdateDrug = () => {
                               className="form-label"
                               htmlFor={`content${index}`}
                             >
-                              content
+                              Hàm Lượng
                             </label>
                             <div className="input-group input-group-merge">
                               <input
                                 type="text"
                                 id={`content${index}`}
                                 className="form-control"
-                                placeholder="Phone Number"
+                                placeholder="Hàm Lượng"
                                 aria-label="Phone Number"
                                 aria-describedby={`content${index}2`}
                                 value={
@@ -1259,7 +1259,7 @@ const UpdateDrug = () => {
                               className="form-label"
                               htmlFor={`unitId${index}`}
                             >
-                              unitId
+                              Đơn Vị
                             </label>
                             <div className="input-group input-group-merge">
                               <select

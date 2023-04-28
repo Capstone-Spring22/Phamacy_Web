@@ -428,7 +428,7 @@ const DetailMedicine = () => {
                     </div>
                   </div>
 
-                  <div className="detail-card" style={{ marginTop: -90 }}>
+                  <div className="detail-card" style={{ marginTop: -80 }}>
                     <div>
                       <div className="card-header-detail">Thành Phần</div>
                       <div className="card-body-content">
@@ -463,6 +463,36 @@ const DetailMedicine = () => {
                               })}
                           </tbody>
                         </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="detail-card" style={{ marginTop: -80 }}>
+                    <div>
+                      <div className="card-header-detail">
+                       Liều Dùng
+                      </div>
+                      <div className="card-body-content">
+                        {descriptionModels.instruction}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="detail-card" style={{ marginTop: -80 }}>
+                    <div>
+                      <div className="card-header-detail">
+                       Tác Dụng Phụ
+                      </div>
+                      <div className="card-body-content">
+                        {descriptionModels.sideEffect}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="detail-card" style={{ marginTop: -80 }}>
+                    <div>
+                      <div className="card-header-detail">
+                       Bảo Quản
+                      </div>
+                      <div className="card-body-content">
+                        {descriptionModels.preserve}
                       </div>
                     </div>
                   </div>

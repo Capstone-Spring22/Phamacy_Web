@@ -432,8 +432,13 @@ const UpdateDiscount = () => {
                                             Sản phẩm
                                           </label>
                                           <Select
-                                            inputValue={e.productName}
-                                            onInputChange={(selectedOption) => {
+                                          
+                                            value={options.find(
+                                              (option) =>
+                                                option.value ===
+                                                e.productId
+                                            )}
+                                            onChange={(selectedOption) => {
                                               const drugObj = drug.find(
                                                 (d) =>
                                                   d.id === selectedOption.value

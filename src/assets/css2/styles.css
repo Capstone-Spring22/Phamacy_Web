@@ -5475,7 +5475,18 @@ h2 {
     bottom: 0;
     left: 0;
   }
-  
+  .footer-home1{
+    width: 600px;
+border-radius:10px;
+    background-color:white;
+    margin-left:125px
+  }
+  .footer-home2{
+    width: 600px;
+    border-radius:10px;
+    background-color:white;
+    margin-left:50px
+  }
   .loading-spinner {
     width: 300px;
     height: 300px;

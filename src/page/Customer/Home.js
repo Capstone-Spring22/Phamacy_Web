@@ -632,14 +632,17 @@ const Home = () => {
               </div>
               <br />
 
-              <div className="container " style={{ display: "flex",flexWrap: "wrap" }}>
+              <div
+                className="container "
+                style={{ display: "flex", flexWrap: "wrap" }}
+              >
                 {drug &&
                   drug.length > 0 &&
                   drug.map((item, index) => {
                     return (
                       <Link
                         className="product-card"
-                        style={{width: "190px"}}
+                        style={{ width: "190px" }}
                         key={item.id}
                         to={`/ViewDetail/${item.id}`}
                       >
@@ -665,9 +668,7 @@ const Home = () => {
                             {item.price === item.priceAfterDiscount ? (
                               ""
                             ) : (
-                              <del>{item.price.toLocaleString(
-                                "en-US"
-                              )} đ</del>
+                              <del>{item.price.toLocaleString("en-US")} đ</del>
                             )}
                           </p>
                         </div>
@@ -675,12 +676,12 @@ const Home = () => {
                     );
                   })}
               </div>
-              <Link  to="/medicine" className="button-redirect"> Xem Thêm</Link>
-              
+              <Link to="/medicine" className="button-redirect">
+                {" "}
+                Xem Thêm
+              </Link>
             </div>
-            
           </section>
-        
         </div>
         <div className="form-product-new-blue">
           {" "}
@@ -751,9 +752,7 @@ const Home = () => {
                             {item.price === item.priceAfterDiscount ? (
                               ""
                             ) : (
-                              <del>{item.price.toLocaleString(
-                                "en-US"
-                              )} đ</del>
+                              <del>{item.price.toLocaleString("en-US")} đ</del>
                             )}
                           </p>
                         </div>
@@ -762,85 +761,24 @@ const Home = () => {
                   })}
               </div>
             </div>
+            <div style={{display: "flex"}}>
+              
+              <div className="footer-home1"><img
+                className="d-block w-100"
+                src="https://cdn.nhathuoclongchau.com.vn/unsafe/717x211/https://cms-prod.s3-sgn09.fptcloud.com/Desktop_Artboard_5_2x_f9370314e8.png"
+                style={{ height: 165, borderRadius: 10 }}
+                alt="Third slide"
+              /></div>
+              <div className="footer-home2"><img
+                className="d-block w-100"
+                src="https://cdn.nhathuoclongchau.com.vn/unsafe/717x211/https://cms-prod.s3-sgn09.fptcloud.com/photo_2_2023_04_19_11_07_11_8384755e7d.jpg"
+                style={{ height: 165, borderRadius: 10 }}
+                alt="Third slide"
+              /></div>
+            </div>
           </section>
         </div>
-        <section class="new_arrivals_area section_padding_100_0 clearfix">
-          <div className="container">
-            <div className="row">
-              <div className="title-section text-center col-12">
-                <h2 className="text-uppercase">Popular Medicine</h2>
-              </div>
-            </div>
-            <br />
-            <br />
-            <br />
 
-            <div className="container ">
-              <div className="row karl-new-arrivals ">
-                {drug &&
-                  drug.length > 0 &&
-                  drug.map((item, index) => {
-                    return (
-                      <div
-                        className=" col-md-2 single_gallery_item women wow fadeInUpBig "
-                        data-wow-delay="0.2s"
-                      >
-                        {/* Product Image */}
-                        <Link
-                          to={`/ViewDetail/${item.id}`}
-                          className="product-img"
-                          style={{ borderRadius: 5 }}
-                          // onClick={() => {
-                          //   viewDetail(item.id);
-                          // }}
-                        >
-                          <img
-                            src={item.imageModel.imageURL}
-                            alt=""
-                            style={{ objectFit: "cover", height: 250 }}
-                          />
-                          <div className="product-quicview">
-                            <a
-                              href="#"
-                              data-toggle="modal"
-                              data-target="#quickview"
-                            >
-                              <BsPlus style={{ marginBottom: 10 }} />
-                            </a>
-                          </div>
-                        </Link>
-
-                        {/* Product Description */}
-                        <div className="product-description">
-                          <p style={{ height: 90, color: "#334155" }}>
-                            {item.name}
-                          </p>
-                          <h4
-                            className="product-price"
-                            style={{ color: "#82aae3" }}
-                          >
-                            {" "}
-                            {item.priceAfterDiscount.toLocaleString("en-US")} đ
-                            / {item.productUnitReferences[0].unitName}
-                            <td>
-                              {item.price === item.priceAfterDiscount ? (
-                                ""
-                              ) : (
-                                <del>{item.price.toLocaleString(
-                                  "en-US"
-                                )} đ</del>
-                              )}
-                            </td>
-                          </h4>
-                          {/* Add to Cart */}
-                        </div>
-                      </div>
-                    );
-                  })}
-              </div>
-            </div>
-          </div>
-        </section>
         <Footer />
       </div>
     </>

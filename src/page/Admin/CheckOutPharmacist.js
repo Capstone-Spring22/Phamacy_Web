@@ -22,6 +22,7 @@ const CheckOutPharmacist = () => {
   const [valueSearch, setvalueSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [moneyReceived, setMoneyReceived] = useState(0);
+  const [error, setError] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [pointErrorMessage, setPointErrorMessage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -240,7 +241,6 @@ const CheckOutPharmacist = () => {
           quantity: 1,
           originalPrice: drug1.price,
           discountPrice: drug1.priceAfterDiscount,
-
           name: drug1.name,
           unitId: drug1.unitId,
         });
@@ -542,6 +542,7 @@ const CheckOutPharmacist = () => {
                                         <div
                                           onClick={() => {
                                             addToCart(product.id);
+                                            loadDataMinUnit(product.id, 1);
                                             setCount(parseInt(count) + 1);
                                           }}
                                           className="name-product-pharmacist"
@@ -1259,6 +1260,7 @@ const CheckOutPharmacist = () => {
                 </div>
               </div>
             </div>
+            
             <div
               className="row "
               style={{ width: 440, marginTop: -70, marginLeft: -80 }}
@@ -1461,11 +1463,14 @@ const CheckOutPharmacist = () => {
                                         product.productInventoryModel
                                       ) ? (
                                         <>
+                                       
                                           <div style={{ color: "red" }}>
                                             Sản phẩm này quá số lượng tồn kho
                                           </div>
+
                                         </>
                                       ) : (
+                                       
                                         <div></div>
                                       )}
                                     </div>
@@ -1583,7 +1588,7 @@ const CheckOutPharmacist = () => {
                         </div>
                       </div>
 
-                      {isError ? (
+                      {isError && {} ? (
                         <a
                           className="button-28"
                           // href="#my-dialog"

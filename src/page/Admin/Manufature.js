@@ -447,7 +447,12 @@ const Manufacturer = () => {
                                           Xuất xứ
                                         </label>
                                         <Select
-                                          inputValue={manufacturer.countryName}
+                                   
+                                          value={options.find(
+                                            (option) =>
+                                              option.value ===
+                                              manufacturer.countryId
+                                          )}
                                           onChange={(selectedOption) => {
                                             setManufacturer({
                                               ...manufacturer,

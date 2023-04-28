@@ -30,6 +30,9 @@ const NewDrug = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(100);
   const resDataRef = useRef(null);
+  const [selectedUnits, setSelectedUnits] = useState([]);
+  const [selectedQuantity, setSelectedQuantity] = useState([]);
+
   const [subCategory, setSubCategory] = useState([]);
   const [subCategoryID, setSubCategoryID] = useState("");
   const [changeImg, setChangeImg] = useState("");
@@ -180,14 +183,11 @@ const NewDrug = () => {
         );
       });
   }
-  const options = productIngredient.map((e) => ({
-    label: e.ingredientName,
-    value: e.id,
-  }));
+
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      if (checkValidationProduct()) {
+      if (checkValidation()) {
         const selectedImageIndex = product.imageModel.findIndex(
           (image) => image.isFirstImage !== null
         );
@@ -201,16 +201,14 @@ const NewDrug = () => {
         };
         const path = "Product";
         const res = await createDataByPath(path, accessToken, data);
-        console.log("Check res", res);
+        console.log("Check res", res.data);
         console.log("display acc", accessToken);
-        console.log("display", data);
+        console.log("display dữ liệu", data);
         console.log("res", changeImg);
         if (res && res.status === 201) {
           Swal.fire("Thêm Sản Phẩm Thành Công", "", "success");
           history.push("/Drug");
           // window.location.reload();
-        } else {
-          Swal.fire(res.data.duplicateBarCode, "", "error");
         }
       }
     }
@@ -397,18 +395,56 @@ const NewDrug = () => {
     });
     setIngredientCount(ingredientCount + 1);
   };
+  const handleDeleteUnit = (index) => {
+    if (index > 0) {
+      const newProductDetailModel = [...product.productDetailModel];
+      newProductDetailModel.splice(index, 1);
+    
+      // Update the unitLevel values of the remaining units
+      const updatedProductDetailModel = newProductDetailModel.map((unit, i) => ({
+        ...unit,
+        unitLevel: i + 1,
+      }));
+    
+      setProduct({
+        ...product,
+        productDetailModel: updatedProductDetailModel,
+      });
+    
+      setUnitCount(unitCount - 1);
+    
+      const newSelectedUnits = [...selectedUnits];
+      newSelectedUnits.splice(index, 1);
+      setSelectedUnits(newSelectedUnits);
+    }
+  };
+  
+  
+  
+
+  const options = productIngredient.map((e) => ({
+    label: e.ingredientName,
+    value: e.id,
+  }));
   const handleDeleteIngredient = (index) => {
     const newIngredientModel = [...product.descriptionModel.ingredientModel];
-    newIngredientModel.splice(index, 1);
-    setProduct({
-      ...product,
-      descriptionModel: {
-        ...product.descriptionModel,
-        ingredientModel: newIngredientModel,
-      },
-    });
-    setIngredientCount(ingredientCount - 1);
+  
+    // Check if there is more than one ingredient before deleting
+    if (newIngredientModel.length > 1) {
+      newIngredientModel.splice(index, 1);
+  
+      setProduct({
+        ...product,
+        descriptionModel: {
+          ...product.descriptionModel,
+          ingredientModel: newIngredientModel,
+        },
+      });
+  
+      setIngredientCount(ingredientCount - 1);
+    }
   };
+  
   const handleAddUnit = () => {
     setProduct({
       ...product,
@@ -924,6 +960,12 @@ const NewDrug = () => {
                                     product.productDetailModel[index - 1].unitId
                                   }
                                   onChange={(e) => {
+                                    const selectedUnit = unit.find(
+                                      (u) => u.id === e.target.value
+                                    );
+                                    const unitName = selectedUnit
+                                      ? selectedUnit.unitName
+                                      : "";
                                     setProduct({
                                       ...product,
                                       productDetailModel: [
@@ -943,6 +985,9 @@ const NewDrug = () => {
                                         ),
                                       ],
                                     });
+                                    const newSelectedUnits = [...selectedUnits];
+                                    newSelectedUnits[index - 1] = unitName;
+                                    setSelectedUnits(newSelectedUnits);
                                   }}
                                 >
                                   {!unitSelected && (
@@ -960,13 +1005,15 @@ const NewDrug = () => {
                                       );
                                     })}
                                 </select>
-                              
                               </div>
                               <div className="form-text">
-                            <div>Quy Định Nhập Đơn vị: Chọn đơn vị theo thứ tự từ lớn tới bé</div>
-                         
-                            <div> Ví Dụ: Hộp &#8594; Vỉ &#8594; Viên </div>
-                          </div>
+                                <div>
+                                  Quy Định Nhập Đơn vị: Chọn đơn vị theo thứ tự
+                                  từ lớn tới bé
+                                </div>
+
+                                <div> Ví Dụ: Hộp &#8594; Vỉ &#8594; Viên </div>
+                              </div>
                               <div
                                 className="form-text"
                                 style={{ color: "red" }}
@@ -1059,6 +1106,7 @@ const NewDrug = () => {
                                 />
                               </div>
                             </div> */}
+
                             <div
                               className="mb-3"
                               style={{ width: "20%", marginRight: 20 }}
@@ -1077,7 +1125,10 @@ const NewDrug = () => {
                                   placeholder="Giá Của Sản Phẩm"
                                   aria-label="Unit Id"
                                   aria-describedby={`price${index}2`}
-                                  value={product?.productDetailModel[index-1]?.price}
+                                  value={
+                                    product?.productDetailModel[index - 1]
+                                      ?.price
+                                  }
                                   onChange={(e) => {
                                     const value = parseInt(e.target.value);
                                     if (!value) {
@@ -1098,7 +1149,7 @@ const NewDrug = () => {
                                             index
                                           ),
                                         ],
-                                      })
+                                      });
                                     } else if (value > 0) {
                                       setProduct({
                                         ...product,
@@ -1117,7 +1168,7 @@ const NewDrug = () => {
                                             index
                                           ),
                                         ],
-                                      })
+                                      });
                                     } else {
                                       setProduct({
                                         ...product,
@@ -1136,10 +1187,9 @@ const NewDrug = () => {
                                             index
                                           ),
                                         ],
-                                      })
+                                      });
                                     }
                                   }}
-                                 
                                 />
                               </div>
                             </div>
@@ -1161,6 +1211,10 @@ const NewDrug = () => {
                                   placeholder="Mã BarCode"
                                   aria-label="Unit Id"
                                   aria-describedby={`barCode${index}2`}
+                                  value={
+                                    product?.productDetailModel[index - 1]
+                                      ?.barCode || ""
+                                  }
                                   onChange={(e) =>
                                     setProduct({
                                       ...product,
@@ -1239,11 +1293,28 @@ const NewDrug = () => {
                               </div>
                             </div>
                           </div>
+
+                          <button
+                            style={{ marginLeft: 10 }}
+                            onClick={() => handleDeleteUnit(index - 1)}
+                          >
+                            Xóa
+                          </button>
                         </div>
                         <hr />
                       </div>
                     )
                   )}
+                  <div style={{color: 'red',marginLeft:520,marginBottom:20}}>
+                    {product.productDetailModel.map((detail, index) => (
+                      <span>
+                        {detail.quantitative} {selectedUnits[index]}
+                        {index !== product.productDetailModel.length - 1
+                          ? " x "
+                          : ""}
+                      </span>
+                    ))}
+                  </div>
                   <button
                     className="button-28"
                     style={{
@@ -1321,11 +1392,13 @@ const NewDrug = () => {
                                 TÊN NGUYÊN LIỆU
                               </label>
                               <Creatable
-                                label={
-                                  product.descriptionModel.ingredientModel[
-                                    index - 1
-                                  ].ingredientId
-                                }
+                                value={options.find(
+                                  (option) =>
+                                    option.value ===
+                                    product?.descriptionModel?.ingredientModel[
+                                      index - 1
+                                    ]?.ingredientId
+                                )}
                                 onCreateOption={(input) => {
                                   createNewIngredient(input);
                                 }}
@@ -1373,6 +1446,11 @@ const NewDrug = () => {
                                   className="form-control"
                                   placeholder="DUNG TÍCH"
                                   aria-label="Phone Number"
+                                  value={
+                                    product.descriptionModel.ingredientModel[
+                                      index - 1
+                                    ].content
+                                  }
                                   aria-describedby={`content${index}2`}
                                   onChange={(e) =>
                                     setProduct({
@@ -1461,7 +1539,7 @@ const NewDrug = () => {
                           </div>
                           <button
                             style={{ marginLeft: 10 }}
-                            onClick={() => handleDeleteIngredient(index)}
+                            onClick={() => handleDeleteIngredient(index - 1)}
                           >
                             Xóa
                           </button>

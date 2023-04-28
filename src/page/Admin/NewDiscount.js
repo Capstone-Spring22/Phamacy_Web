@@ -16,6 +16,8 @@ const NewDiscount = () => {
   const [perPage, setPerPage] = useState(100);
   const [totalRecord, setTotalRecord] = useState([]);
   const [drug, setDrug] = useState([]);
+  const [discountError, setDiscountError] = useState("");
+  const [discountMoneyError, setDiscountMoneyError] = useState("");
   const [product, setProduct] = useState({
     title: "",
     reason: "",
@@ -80,12 +82,15 @@ const NewDiscount = () => {
       Swal.fire("Không Được Giảm Quá 50%", "", "question");
       return false;
     }
-
+    if (!product.discountMoney && !product.discountPercent) {
+      Swal.fire("Vui lòng nhập thông tin giảm giá", "", "question");
+      return false;
+    }
     if (product.discountMoney > productPrice * 0.5) {
       Swal.fire("Giá giảm không được cao hơn 50% giá sản phẩm", "", "question");
       return false;
     }
-
+    
     const startDate = new Date(product.startDate);
     const endDate = new Date(product.endDate);
 
@@ -125,6 +130,17 @@ const NewDiscount = () => {
     label: e.name,
     value: e.id,
   }));
+  const handleDeleteProduct = (index) => {
+    const newProducts = [...product.products];
+    newProducts.splice(index, 1);
+
+    setProduct({
+      ...product,
+      products: newProducts,
+    });
+
+    setUnitCount(unitCount - 1);
+  };
   const handleAddUnit = () => {
     setProduct({
       ...product,
@@ -246,7 +262,7 @@ const NewDiscount = () => {
                           />
                         </div>
                       </div>
-                      <div className="mb-3" style={{ width: "100%" }}>
+                      <div className="mb-3" style={{ width: "95%" }}>
                         <label
                           className="form-label"
                           htmlFor="basic-icon-default-company"
@@ -298,14 +314,43 @@ const NewDiscount = () => {
                               placeholder="Giảm giá (%)"
                               id="discount-percent"
                               className="form-control"
-                              onChange={(e) =>
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                const discountPercent = parseInt(
+                                  product.discountPercent
+                                );
+                                const productId = product.products[0].productId;
+                                const productPrice = getPriceById(productId);
+
+                                if (
+                                  discountType === "percent" &&
+                                  (value < 0 || value > 50)
+                                ) {
+                                  setDiscountError(
+                                    "Giảm giá phải nằm trong khoảng từ 0 đến 50"
+                                  );
+                                } else if (
+                                  discountType === "money" &&
+                                  value > productPrice * 0.5
+                                ) {
+                                  setDiscountError(
+                                    "Số tiền giảm không được cao hơn 50% giá sản phẩm"
+                                  );
+                                } else {
+                                  setDiscountError("");
+                                }
                                 setProduct((prevState) => ({
                                   ...prevState,
-                                  discountPercent: e.target.value,
-                                }))
-                              }
+                                  discountPercent: value,
+                                }));
+                              }}
                             />
                           </div>
+                          {discountError && (
+                           <div className="form-text" style={{ color: "red"}} >
+                              {discountError}
+                            </div>
+                          )}
                         </div>
                       )}
 
@@ -324,14 +369,40 @@ const NewDiscount = () => {
                               placeholder="Số tiền giảm"
                               id="discount-money"
                               className="form-control"
-                              onChange={(e) =>
+                              onChange={(e) => {
+                                const discountPercent = parseInt(
+                                  product.discountPercent
+                                );
+                                const productId = product.products[0].productId;
+                                const productPrice = getPriceById(productId);
+
+                                const value = e.target.value;
                                 setProduct((prevState) => ({
                                   ...prevState,
-                                  discountMoney: e.target.value,
-                                }))
-                              }
+                                  discountMoney: value,
+                                }));
+
+                                const parsedValue = parseInt(value);
+                                if (isNaN(parsedValue) || parsedValue < 0) {
+                                  setDiscountMoneyError("");
+                                } else if (
+                                  parsedValue >= 0 &&
+                                  parsedValue > productPrice * 0.5
+                                ) {
+                                  setDiscountMoneyError(
+                                    "Số tiền giảm không được cao hơn 50% giá sản phẩm."
+                                  );
+                                } else {
+                                  setDiscountMoneyError("");
+                                }
+                              }}
                             />
                           </div>
+                          {discountMoneyError && (
+                            <div className="form-text" style={{ color: "red"}} >
+                              {discountMoneyError}
+                            </div>
+                          )}
                         </div>
                       )}
 
@@ -424,7 +495,7 @@ const NewDiscount = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Thêm Sản phẩm </h5>
+                    <h5 className="mb-0">Thêm Sản phẩm Để Giảm Giá </h5>
                   </div>{" "}
                   {Array.from({ length: unitCount }, (_, i) => i + 1).map(
                     (index) => {
@@ -446,7 +517,9 @@ const NewDiscount = () => {
                                 {selectedOption && (
                                   <div>
                                     <p>Price: {price}</p>
-                                    <p>Giá Giảm {price - product.discountMoney}</p>
+                                    <p>
+                                      Giá Giảm {price - product.discountMoney}
+                                    </p>
                                   </div>
                                 )}
                                 <label
@@ -457,6 +530,11 @@ const NewDiscount = () => {
                                 </label>
 
                                 <Select
+                                  value={options.find(
+                                    (option) =>
+                                      option.value ===
+                                      product?.products[index - 1]?.productId
+                                  )}
                                   onChange={(selectedOption) => {
                                     const drugObj = drug.find(
                                       (d) => d.id === selectedOption.value
@@ -482,10 +560,15 @@ const NewDiscount = () => {
                                 />
                               </div>
                             </div>
+                            <button
+                              style={{ marginLeft: 10 }}
+                              onClick={() => handleDeleteProduct(index - 1)}
+                            >
+                              Xóa
+                            </button>
                           </div>
                           <hr />
                         </div>
-                        
                       );
                     }
                   )}
