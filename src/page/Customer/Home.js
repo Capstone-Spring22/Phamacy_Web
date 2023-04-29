@@ -427,7 +427,7 @@ const Home = () => {
             <Carousel.Item interval={2000}>
               <img
                 className="d-block w-100"
-                src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1678849856-VRaS-hang-nhat-t3.png"
+                src="https://i.ibb.co/zbQTqwK/afcce38f-e575-4983-be5e-edd0689692af-Banner-Destop-cb5af066c4.webp"
                 style={{ height: 260, borderRadius: 10 }}
                 alt="First slide"
               />
@@ -436,14 +436,14 @@ const Home = () => {
               <img
                 className="d-block w-100 "
                 style={{ height: 260, borderRadius: 10 }}
-                src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1677150972-hsMN-cam-cum.png"
+                src="https://i.ibb.co/gVSF4Hq/0637cb52-79f1-40aa-bcb8-9f8d807e386f-Top-Banner-PC-1600x460-17c6151029.webp"
                 alt="Second slide"
               />
             </Carousel.Item>
             <Carousel.Item interval={8000}>
               <img
                 className="d-block w-100"
-                src="https://cdn.nhathuoclongchau.com.vn/unsafe/fit-in/1600x400/filters:quality(100):fill(white)/https://nhathuoclongchau.com.vn/upload/slide/1679725085-Ha7S-phong-benh-sot-xuat-huyet.png"
+                src="https://i.ibb.co/HthzMp0/09546f57-fcb7-4a3e-a79f-86632ba9d886-Topbanner-PC-1600x460-dba40afefe.webp"
                 style={{ height: 260, borderRadius: 10 }}
                 alt="Third slide"
               />
@@ -453,7 +453,7 @@ const Home = () => {
             <div className="carousel-left">
               <img
                 className="d-block w-100"
-                src="https://data-service.pharmacity.io/pmc-ecm-webapp-config-api/production/banner/392x134-1681377061965.png"
+                src="https://i.ibb.co/2FC0gPW/4fe34bd8-3b0a-436a-b1b3-159b9ad73c76pharmacity-1.png"
                 style={{ height: 125, borderRadius: 10 }}
                 alt="Third slide"
               />
@@ -461,7 +461,7 @@ const Home = () => {
             <div className="carousel-left-2">
               <img
                 className="d-block w-100"
-                src="https://cdn.tgdd.vn/2023/03/banner/Banner-slide---CS-Ca-Nhan---Selsun---592x182-592x182.png"
+                src="https://i.ibb.co/ws0jx4y/0471ed13-8053-4ce2-8ef1-680863c15742pharmacity-2.png"
                 style={{ height: 125, borderRadius: 10 }}
                 alt="Third slide"
               />
