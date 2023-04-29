@@ -106,14 +106,26 @@ const Home = (props) => {
     { name: "FeMale", value: 1 },
   ];
   const checkValidation = () => {
-    if (product.usedPoint > point) {
-      alert("Số lượng Điểm Thưởng đã nhập vượt quá số Điểm Thưởng hiện có");
+    if(!product.reveicerInformation.fullname || !product.reveicerInformation.email || !product.reveicerInformation.phoneNumber){
+      Swal.fire("Vui lòng Điền Đầy Đủ Thông Tin Cá Nhân", "", "question");
       return false;
+    }
+    if(!product.siteId  && product.orderTypeId === 2){
+      Swal.fire("Vui lòng Chọn Cửa Hàng Muốn Nhận Hàng", "", "question");
+      return false;
+    
     }
     if (product.orderTypeId === 2 && !product.orderPickUp) {
       Swal.fire("Vui lòng nhập thông tin thời gian lấy hàng", "", "question");
       return false;
     }
+    if (product.usedPoint > point) {
+      alert("Số lượng Điểm Thưởng đã nhập vượt quá số Điểm Thưởng hiện có");
+      return false;
+    }
+   
+ 
+  
 
     return true;
   };
@@ -266,9 +278,6 @@ const Home = (props) => {
   }
   useEffect(() => {
     CheckoutSiteget();
-    if(districtID !== null){
-      loadDataSite();
-    }
   }, [cityID,districtID]);
   const handleDate = (event) => {
     event.preventDefault();
@@ -379,7 +388,7 @@ const Home = (props) => {
   async function loadDataSite() {
     if (localStorage && localStorage.getItem("accessTokenUser")) {
       const accessToken = localStorage.getItem("accessTokenUser");
-      const path = `Site?IsDelivery=true&DistrictID=${districtID}&pageIndex=1&pageItems=20`;
+      const path = `Site?IsDelivery=true&DistrictID=${product.reveicerInformation.districtId}&pageIndex=1&pageItems=20`;
       console.log("display2", getDataByPath);
       const res = await getDataByPath(path, accessToken, "");
       console.log("display31321", res);
@@ -391,12 +400,12 @@ const Home = (props) => {
       }
     }
   }
-  // useEffect(() => {
-  //   if(product.reveicerInformation.districtId !== null){
-  //     loadDataSite();
-  //   }
+  useEffect(() => {
+    if(product.reveicerInformation.districtId !== null){
+      loadDataSite();
+    }
   
-  // }, [product.reveicerInformation.districtId]);
+  }, [product.reveicerInformation.districtId]);
 
   const handleApplyUserPoint = async () => {
     const res = await axios.post(
@@ -851,6 +860,7 @@ const Home = (props) => {
                             }}
                             onChange={(e) => {
                               setTimeSelected(true);
+                             
                               setProduct({
                                 ...product,
                                 orderPickUp: {
@@ -1724,7 +1734,7 @@ const Home = (props) => {
                       </label>
                     </div>
                   )}
-                  {product.payType === "" || site === 0? (
+                  {product.payType === "" || (site === 0 &&  product.orderTypeId === 3 ) ? (
                     <a
                       style={{
                         height: 50,
