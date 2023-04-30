@@ -24,7 +24,7 @@ const AddToCart = () => {
   const [cartID, setCartID] = useState("");
 
   async function loadDataMedicine() {
-    if (localStorage && localStorage.getItem("accessTokenUser")) {
+    if (localStorage) {
       const accessToken = localStorage.getItem("accessTokenUser");
       console.log("display cartID", deviceId);
       const path = `Cart/${deviceId}`;
@@ -34,7 +34,6 @@ const AddToCart = () => {
         setDrug(res.data.items);
         setTotal(res.data);
         setCartID(res.data.cartId);
-
         console.log("res.data", res.data);
       }
     }

@@ -13,6 +13,7 @@ const CheckOutPharmacist = () => {
   const [activeItem, setActiveItem] = useState("CheckOutPharmacist");
   const [drug, setDrug] = useState(null);
   const [listCart, setListCart] = useState([]);
+  const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [unit, setUnit] = useState([]);
@@ -23,6 +24,7 @@ const CheckOutPharmacist = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [moneyReceived, setMoneyReceived] = useState(0);
   const [error, setError] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [pointErrorMessage, setPointErrorMessage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -35,6 +37,7 @@ const CheckOutPharmacist = () => {
   ]);
   async function loadDataMedicineDefault() {
     if (localStorage && localStorage.getItem("accessToken")) {
+      setIsLoading(true);
       const accessToken = localStorage.getItem("accessToken");
       const path = `Product?isSellFirstLevel=true&pageIndex=${currentPage}&pageItems=${perPage}`;
       const res = await getDataByPath(path, accessToken, "");
@@ -42,6 +45,7 @@ const CheckOutPharmacist = () => {
       if (res !== null && res !== undefined && res.status === 200) {
         setDrug(res.data.items);
       }
+      setIsLoading(false);
     }
   }
   async function loadDataMinUnit(productId, quantity) {
@@ -97,6 +101,7 @@ const CheckOutPharmacist = () => {
   }, []);
 
   async function loadDataMedicine(search) {
+    setIsLoading(true);
     if (search === "") {
       if (localStorage && localStorage.getItem("accessToken")) {
         const accessToken = localStorage.getItem("accessToken");
@@ -116,6 +121,7 @@ const CheckOutPharmacist = () => {
         }
       }
     }
+    setIsLoading(false);
   }
   async function loadDataUnit() {
     const path = `Unit?isCountable=true&pageIndex=1&pageItems=111`;
@@ -302,15 +308,15 @@ const CheckOutPharmacist = () => {
   useEffect(() => {
     setNewArrayOfObjects(
       listCart &&
-        listCart.length &&
-        listCart.map(
-          ({ productId, quantity, originalPrice, discountPrice }) => ({
-            productId: productId,
-            quantity: quantity,
-            originalPrice: originalPrice,
-            discountPrice: discountPrice,
-          })
-        )
+      listCart.length &&
+      listCart.map(
+        ({ productId, quantity, originalPrice, discountPrice }) => ({
+          productId: productId,
+          quantity: quantity,
+          originalPrice: originalPrice,
+          discountPrice: discountPrice,
+        })
+      )
     );
   }, [listCart]);
   function updateQuantity(productId, newQuantity) {
@@ -368,20 +374,19 @@ const CheckOutPharmacist = () => {
       )
     ) {
       setPointErrorMessage(
-        `Số Điểm tối đa được nhập là ${
-          listCart?.reduce(
-            (total, curent) => total + curent.quantity * curent.discountPrice,
-            0
-          ) / 1000
+        `Số Điểm tối đa được nhập là ${listCart?.reduce(
+          (total, curent) => total + curent.quantity * curent.discountPrice,
+          0
+        ) / 1000
         }`
       );
     } else if (
       product?.usedPoint <= point &&
       parseInt(product?.usedPoint) * 1000 <=
-        listCart?.reduce(
-          (total, curent) => total + curent.quantity * curent.discountPrice,
-          0
-        )
+      listCart?.reduce(
+        (total, curent) => total + curent.quantity * curent.discountPrice,
+        0
+      )
     ) {
       setProduct({
         ...product,
@@ -399,6 +404,15 @@ const CheckOutPharmacist = () => {
       });
     }
   }, [count]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadDataMedicine(searchValue);
+      setvalueSearch(searchValue);
+    }, 1500)
+
+    return () => clearTimeout(timer)
+  }, [searchValue])
 
   return (
     <div className="layout-wrapper layout-content-navbar">
@@ -428,14 +442,14 @@ const CheckOutPharmacist = () => {
               <div className="navbar-nav align-items-center">
                 <div className="nav-item d-flex align-items-center">
                   <i className="bx bx-search fs-4 lh-0" />
+
                   <input
                     type="text"
                     className="form-control border-0 shadow-none"
                     placeholder="Search..."
                     aria-label="Search..."
                     onChange={(e) => {
-                      loadDataMedicine(e.target.value);
-                      setvalueSearch(e.target.value);
+                      setSearchValue(e.target.value);
                     }}
                   />
                 </div>
@@ -499,176 +513,185 @@ const CheckOutPharmacist = () => {
                   ) : (
                     <h5>Kết Quả Tra Cứu:</h5>
                   )}
-                  <div className="card-body scroll-p">
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "auto auto",
-                        padding: 30,
-                        marginLeft: 70,
-                        marginTop: -20,
-                        height: 670,
-                      }}
-                    >
-                      <div className="mb-3" style={{ width: "95%" }}>
-                        <div className="input-group input-group-merge ">
-                          <div
-                            type="text"
-                            id="basic-icon-default-fullname"
-                            placeholder="Tên Sản Phẩm"
-                            aria-label="Tên Sản Phẩm"
-                            aria-describedby="basic-icon-default-fullname2"
-                            style={{ marginLeft: -110 }}
-                          >
-                            {drug &&
-                              drug.map((product) => {
-                                return (
-                                  <>
-                                    {" "}
-                                    <div
-                                      key={product.id}
-                                      className="product-cart-p"
-                                    >
-                                      <img
-                                        src={product.imageModel.imageURL}
-                                        style={{
-                                          height: 70,
-                                          width: 60,
-                                          borderRadius: 7,
-                                          objectFit: "cover",
-                                        }}
-                                      />
-                                      <div>
-                                        <div
-                                          onClick={() => {
-                                            addToCart(product.id);
-                                            loadDataMinUnit(product.id, 1);
-                                            setCount(parseInt(count) + 1);
+                  {isLoading ? (
+                    <div style={{ height: 200 }}>
+                      <div className="loading" style={{}}>
+                        <div className="pill"></div>
+                        <div className="loading-text">Đang Tải Sản Phẩm...</div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="card-body scroll-p">
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "auto auto",
+                          padding: 30,
+                          marginLeft: 70,
+                          marginTop: -20,
+                          height: 670,
+                        }}
+                      >
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <div className="input-group input-group-merge ">
+                            <div
+                              type="text"
+                              id="basic-icon-default-fullname"
+                              placeholder="Tên Sản Phẩm"
+                              aria-label="Tên Sản Phẩm"
+                              aria-describedby="basic-icon-default-fullname2"
+                              style={{ marginLeft: -110 }}
+                            >
+                              {drug &&
+                                drug.map((product) => {
+                                  return (
+                                    <>
+                                      {" "}
+                                      <div
+                                        key={product.id}
+                                        className="product-cart-p"
+                                      >
+                                        <img
+                                          src={product.imageModel.imageURL}
+                                          style={{
+                                            height: 70,
+                                            width: 60,
+                                            borderRadius: 7,
+                                            objectFit: "cover",
                                           }}
-                                          className="name-product-pharmacist"
-                                        >
-                                          <div>Tên Sản Phẩm</div>
-                                          <div> {product.name}</div>
+                                        />
+                                        <div>
+                                          <div
+                                            onClick={() => {
+                                              addToCart(product.id);
+                                              loadDataMinUnit(product.id, 1);
+                                              setCount(parseInt(count) + 1);
+                                            }}
+                                            className="name-product-pharmacist"
+                                          >
+                                            <div>Tên Sản Phẩm</div>
+                                            <div> {product.name}</div>
+                                          </div>
+                                          {product.productInventoryModel
+                                            .siteInventoryModel.totalQuantity ===
+                                            0 ||
+                                            (product.productInventoryModel
+                                              .siteInventoryModel.totalQuantity ===
+                                              product.productInventoryModel
+                                                .siteInventoryModel
+                                                .totalQuantityForFirst &&
+                                              product.productInventoryModel.siteInventoryModel.message.includes(
+                                                product.productInventoryModel.siteInventoryModel.totalQuantityForFirst.toString()
+                                              )) ? (
+                                            <></>
+                                          ) : (
+                                            <div
+                                              style={{
+                                                marginLeft: 10,
+                                                color: "#EB455F",
+                                              }}
+                                            >
+                                              {
+                                                product.productInventoryModel
+                                                  .siteInventoryModel.message
+                                              }
+                                            </div>
+                                          )}
                                         </div>
                                         {product.productInventoryModel
                                           .siteInventoryModel.totalQuantity ===
-                                          0 ||
-                                        (product.productInventoryModel
-                                          .siteInventoryModel.totalQuantity ===
-                                          product.productInventoryModel
-                                            .siteInventoryModel
-                                            .totalQuantityForFirst &&
-                                          product.productInventoryModel.siteInventoryModel.message.includes(
-                                            product.productInventoryModel.siteInventoryModel.totalQuantityForFirst.toString()
-                                          )) ? (
-                                          <></>
-                                        ) : (
-                                          <div
-                                            style={{
-                                              marginLeft: 10,
-                                              color: "#EB455F",
-                                            }}
-                                          >
-                                            {
-                                              product.productInventoryModel
-                                                .siteInventoryModel.message
-                                            }
-                                          </div>
-                                        )}
-                                      </div>
-                                      {product.productInventoryModel
-                                        .siteInventoryModel.totalQuantity ===
-                                      0 ? (
-                                        <>
-                                          {" "}
-                                          <div style={{ width: 380 }}>
-                                            <div style={{ color: "red " }}>
-                                              {" "}
+                                          0 ? (
+                                          <>
+                                            {" "}
+                                            <div style={{ width: 380 }}>
+                                              <div style={{ color: "red " }}>
+                                                {" "}
                                               SẢN PHẨM ĐÃ
                                             </div>
-                                            <div style={{ color: "red " }}>
-                                              {" "}
+                                              <div style={{ color: "red " }}>
+                                                {" "}
                                               HẾT HÀNG
                                             </div>
-                                          </div>
-                                        </>
-                                      ) : (
-                                        <div style={{ width: 380 }}>
-                                          <div>Số Lượng Tồn Kho:</div>
-                                          <div>
-                                            {
-                                              product.productInventoryModel
-                                                ?.quantity
-                                            }{" "}
-                                            {
-                                              product.productInventoryModel
-                                                ?.unitName
-                                            }
-                                          </div>
-                                        </div>
-                                      )}
-
-                                      <div style={{ width: 380 }}>
-                                        <div>Giá</div>
-
-                                        <div>
-                                          {product.priceAfterDiscount?.toLocaleString(
-                                            "en-US"
-                                          )}{" "}
-                                          đ /{" "}
-                                          <select
-                                            style={{
-                                              height: 30,
-                                              marginLeft: 0,
-                                              border: "none",
-                                            }}
-                                            value={
-                                              product?.productUnitReferences?.find(
-                                                (item) => item.id === product.id
-                                              ).id
-                                            }
-                                            onChange={(e) => {
-                                              setCount(parseInt(count) + 1);
-                                              updateProductID(
-                                                product.id,
-                                                e.target.value,
-                                                e.target.options[
-                                                  e.target.selectedIndex
-                                                ].getAttribute("quantity"),
-                                                e.target.options[
-                                                  e.target.selectedIndex
-                                                ].getAttribute("unitId")
-                                              );
-                                            }}
-                                          >
-                                            {product.productUnitReferences.map(
-                                              (unit) => {
-                                                return (
-                                                  <option
-                                                    key={unit.id}
-                                                    value={unit.id}
-                                                    unitId={unit.unitId}
-                                                    quantity={
-                                                      unit.priceAfterDiscount
-                                                    }
-                                                  >
-                                                    {unit.unitName}
-                                                  </option>
-                                                );
+                                            </div>
+                                          </>
+                                        ) : (
+                                          <div style={{ width: 380 }}>
+                                            <div>Số Lượng Tồn Kho:</div>
+                                            <div>
+                                              {
+                                                product.productInventoryModel
+                                                  ?.quantity
+                                              }{" "}
+                                              {
+                                                product.productInventoryModel
+                                                  ?.unitName
                                               }
-                                            )}
-                                          </select>
+                                            </div>
+                                          </div>
+                                        )}
+
+                                        <div style={{ width: 380 }}>
+                                          <div>Giá</div>
+
+                                          <div>
+                                            {product.priceAfterDiscount?.toLocaleString(
+                                              "en-US"
+                                            )}{" "}
+                                          đ /{" "}
+                                            <select
+                                              style={{
+                                                height: 30,
+                                                marginLeft: 0,
+                                                border: "none",
+                                              }}
+                                              value={
+                                                product?.productUnitReferences?.find(
+                                                  (item) => item.id === product.id
+                                                ).id
+                                              }
+                                              onChange={(e) => {
+                                                setCount(parseInt(count) + 1);
+                                                updateProductID(
+                                                  product.id,
+                                                  e.target.value,
+                                                  e.target.options[
+                                                    e.target.selectedIndex
+                                                  ].getAttribute("quantity"),
+                                                  e.target.options[
+                                                    e.target.selectedIndex
+                                                  ].getAttribute("unitId")
+                                                );
+                                              }}
+                                            >
+                                              {product.productUnitReferences.map(
+                                                (unit) => {
+                                                  return (
+                                                    <option
+                                                      key={unit.id}
+                                                      value={unit.id}
+                                                      unitId={unit.unitId}
+                                                      quantity={
+                                                        unit.priceAfterDiscount
+                                                      }
+                                                    >
+                                                      {unit.unitName}
+                                                    </option>
+                                                  );
+                                                }
+                                              )}
+                                            </select>
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  </>
-                                );
-                              })}
+                                    </>
+                                  );
+                                })}
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -1007,31 +1030,30 @@ const CheckOutPharmacist = () => {
                                           (total, curent) =>
                                             total +
                                             curent.quantity *
-                                              curent.discountPrice,
+                                            curent.discountPrice,
                                           0
                                         )
                                       ) {
                                         setPointErrorMessage(
-                                          `Số Điểm tối đa được nhập là ${
-                                            listCart?.reduce(
-                                              (total, curent) =>
-                                                total +
-                                                curent.quantity *
-                                                  curent.discountPrice,
-                                              0
-                                            ) / 1000
+                                          `Số Điểm tối đa được nhập là ${listCart?.reduce(
+                                            (total, curent) =>
+                                              total +
+                                              curent.quantity *
+                                              curent.discountPrice,
+                                            0
+                                          ) / 1000
                                           }`
                                         );
                                       } else if (
                                         e.target.value <= point &&
                                         parseInt(e.target.value) * 1000 <=
-                                          listCart?.reduce(
-                                            (total, curent) =>
-                                              total +
-                                              curent.quantity *
-                                                curent.discountPrice,
-                                            0
-                                          )
+                                        listCart?.reduce(
+                                          (total, curent) =>
+                                            total +
+                                            curent.quantity *
+                                            curent.discountPrice,
+                                          0
+                                        )
                                       ) {
                                         setProduct({
                                           ...product,
@@ -1260,7 +1282,7 @@ const CheckOutPharmacist = () => {
                 </div>
               </div>
             </div>
-            
+
             <div
               className="row "
               style={{ width: 440, marginTop: -70, marginLeft: -80 }}
@@ -1386,19 +1408,19 @@ const CheckOutPharmacist = () => {
                                               marginTop: 10,
                                               border: "none",
                                             }}
-                                            // onChange={(e) => {
-                                            //   setCount(parseInt(count) + 1);
-                                            //   updateProductID(
-                                            //     product.productId,
-                                            //     e.target.value,
-                                            //     e.target.options[
-                                            //       e.target.selectedIndex
-                                            //     ].getAttribute("quantity"),
-                                            //     e.target.options[
-                                            //       e.target.selectedIndex
-                                            //     ].getAttribute("unitId")
-                                            //   );
-                                            // }}
+                                          // onChange={(e) => {
+                                          //   setCount(parseInt(count) + 1);
+                                          //   updateProductID(
+                                          //     product.productId,
+                                          //     e.target.value,
+                                          //     e.target.options[
+                                          //       e.target.selectedIndex
+                                          //     ].getAttribute("quantity"),
+                                          //     e.target.options[
+                                          //       e.target.selectedIndex
+                                          //     ].getAttribute("unitId")
+                                          //   );
+                                          // }}
                                           >
                                             {
                                               unit.find(
@@ -1459,18 +1481,18 @@ const CheckOutPharmacist = () => {
                                           )
                                         )?.quantityAfterConvert1
                                       ) >
-                                      parseInt(
-                                        product.productInventoryModel
-                                      ) ? (
+                                        parseInt(
+                                          product.productInventoryModel
+                                        ) ? (
                                         <>
-                                       
+
                                           <div style={{ color: "red" }}>
                                             Sản phẩm này quá số lượng tồn kho
                                           </div>
 
                                         </>
                                       ) : (
-                                       
+
                                         <div></div>
                                       )}
                                     </div>

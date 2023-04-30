@@ -105,6 +105,7 @@ const DetailMedicine = () => {
         toast.success("Đã Thêm Vào Giở Hàng");
       }
     } else {
+      setIsLoading(true);
       const deviceId = await axios
         .get("https://api.ipify.org/?format=json")
         .then((res) => res.data.ip);
@@ -504,7 +505,7 @@ const DetailMedicine = () => {
             <div style={{ height: 900 }}>
               <div className="loading2">
                 <div className="pill"></div>
-                <div className="loading-text" style={{ color: "white" }}>
+                <div className="loading-text" style={{ color: "whitesmoke" }}>
                   Đang Cập Nhật Giỏ Hàng
                 </div>
               </div>
