@@ -105,6 +105,7 @@ const DetailMedicine = () => {
         toast.success("Đã Thêm Vào Giở Hàng");
       }
     } else {
+      setIsLoading(true);
       const deviceId = await axios
         .get("https://api.ipify.org/?format=json")
         .then((res) => res.data.ip);
