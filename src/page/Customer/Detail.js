@@ -505,7 +505,7 @@ const DetailMedicine = () => {
             <div style={{ height: 900 }}>
               <div className="loading2">
                 <div className="pill"></div>
-                <div className="loading-text" style={{ color: "white" }}>
+                <div className="loading-text" style={{ color: "whitesmoke" }}>
                   Đang Cập Nhật Giỏ Hàng
                 </div>
               </div>
