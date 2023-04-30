@@ -485,12 +485,6 @@ export default function AddProductCard({
             </button>
           )}
         </div>
-        <button
-          style={{ marginLeft: 10 }}
-          onClick={() => handleDeleteUnit(index - 1)}
-        >
-          Xóa
-        </button>
       </div>
       <hr />
     </div>

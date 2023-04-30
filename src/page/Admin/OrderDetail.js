@@ -452,7 +452,8 @@ const OrderDetail = () => {
     );
   } else if (
     OrderDetail.pharmacistId === localStorage.getItem("userID") &&
-    (OrderDetail.orderStatusName === "Bán hàng thành công" || OrderDetail.orderStatusName === "Khách hàng nhận hàng thành công")
+    (OrderDetail.orderStatusName === "Bán hàng thành công" ||
+      OrderDetail.orderStatusName === "Khách hàng nhận hàng thành công")
   ) {
     OrderStatus = (
       <>
@@ -640,9 +641,68 @@ const OrderDetail = () => {
                         >
                           <label
                             style={{
-                              paddingTop:2,
+                              paddingTop: 2,
                               width: 400,
-                              fontSize:15
+                              fontSize: 15,
+                            }}
+                            className="form-label"
+                            htmlFor="basic-icon-default-phone"
+                          >
+                            Tên Người Mua :
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <div>{OrderDetail?.orderContactInfo?.fullname}</div>
+                          </div>
+                        </div>
+                        <div
+                          className="mb-3"
+                          style={{ width: "95%", display: "flex" }}
+                        >
+                          <label
+                            style={{
+                              paddingTop: 2,
+                              width: 400,
+                              fontSize: 15,
+                            }}
+                            className="form-label"
+                            htmlFor="basic-icon-default-phone"
+                          >
+                            Số Điện Thoại Người Mua :
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <div>
+                              {OrderDetail?.orderContactInfo?.phoneNumber}
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          className="mb-3"
+                          style={{ width: "95%", display: "flex" }}
+                        >
+                          <label
+                            style={{
+                              paddingTop: 2,
+                              width: 400,
+                              fontSize: 15,
+                            }}
+                            className="form-label"
+                            htmlFor="basic-icon-default-phone"
+                          >
+                            Email Người Mua :
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <div>{OrderDetail?.orderContactInfo?.email}</div>
+                          </div>
+                        </div>
+                        <div
+                          className="mb-3"
+                          style={{ width: "95%", display: "flex" }}
+                        >
+                          <label
+                            style={{
+                              paddingTop: 2,
+                              width: 400,
+                              fontSize: 15,
                             }}
                             className="form-label"
                             htmlFor="basic-icon-default-phone"
@@ -659,9 +719,9 @@ const OrderDetail = () => {
                         >
                           <label
                             style={{
-                              paddingTop:2,
+                              paddingTop: 2,
                               width: 400,
-                              fontSize:15
+                              fontSize: 15,
                             }}
                             className="form-label"
                             htmlFor="basic-icon-default-phone"
@@ -669,7 +729,18 @@ const OrderDetail = () => {
                             Số tiền cần thanh toán :
                           </label>
                           <div className="input-group input-group-merge">
-                            <div>{OrderDetail?.paymentMethodId === 1 ? <>{OrderDetail?.totalPrice.toLocaleString("en-US") } đ</>:"0 đ"}</div>
+                            <div>
+                              {OrderDetail?.paymentMethodId === 1 ? (
+                                <>
+                                  {OrderDetail?.totalPrice.toLocaleString(
+                                    "en-US"
+                                  )}{" "}
+                                  đ
+                                </>
+                              ) : (
+                                "0 đ"
+                              )}
+                            </div>
                           </div>
                         </div>
                         <div
@@ -741,29 +812,51 @@ const OrderDetail = () => {
                           </div>
                         </div>
                       </div>
-                      
-                        <div style={{ display: "flex" }}>
-                          <button
-                            type="submit"
-                            className="button-28"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              updateStatusOrderComplete();
-                            }}
-                            style={{
-                              height: 30,
-                              width: 400,
-                              fontSize: 13,
-                              marginLeft: "15%",
 
-                              backgroundColor: "#82AAE3",
-                              color: "white",
-                            }}
-                          >
-                            Xác Nhận Hoàn Thành Đơn Hàng
-                          </button>
-                        </div>
-                     
+                      <div style={{ display: "flex" }}>
+                        {moneyReceived < OrderDetail.totalPrice ? (
+                          <>
+                            {" "}
+                            <button
+                              type="submit"
+                              className="button-28"
+                            
+                              style={{
+                                height: 50,
+                                width: 700,
+                                fontSize: 13,
+
+                                backgroundColor: "grey",
+                                color: "white",
+                              }}
+                            >
+                              Xác Nhận Hoàn Thành Đơn Hàng
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            {" "}
+                            <button
+                              type="submit"
+                              className="button-28"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                updateStatusOrderComplete();
+                              }}
+                              style={{
+                                height: 50,
+                                width: 700,
+                                fontSize: 13,
+
+                                backgroundColor: "#82AAE3",
+                                color: "white",
+                              }}
+                            >
+                              Xác Nhận Hoàn Thành Đơn Hàng
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </form>
                   </div>
                 </div>
@@ -1946,7 +2039,7 @@ const OrderDetail = () => {
                               >
                                 <tel>{orderContactInfo.phoneNumber}</tel>
                               </div>
-                              {OrderDetail.orderTypeName === "Bán tại chỗ" ? (
+                              {OrderDetail.orderTypeName === "Bán tại chỗ"||OrderDetail.orderStatusName==="Khách hàng nhận hàng thành công" ? (
                                 <div
                                   className="form-text"
                                   style={{ color: "red" }}

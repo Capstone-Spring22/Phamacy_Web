@@ -1337,7 +1337,19 @@ const UpdateDrug = () => {
                             </div>
                           </div>
                           <button
-                            style={{ marginLeft: 10 }}
+                            style={{
+                              height: 30,
+                              width: 100,
+                              fontSize: 13,
+                              paddingTop: 1,
+                              marginLeft: "0%",
+                              marginTop: 10,
+                              marginBottom: "10px",
+                              backgroundColor: "#fff",
+                              border: "1px solid #ED2B2A",
+                              color:"#ED2B2A"
+                            }}
+                            className="button-28"
                             onClick={() => handleDeleteIngredient(index - 1)}
                           >
                             Xóa
@@ -1474,11 +1486,23 @@ const UpdateDrug = () => {
                               </button>
                             </div>
                             <button
-                              style={{ marginLeft: 10 }}
-                              onClick={() => handleDeleteImage(index - 1)}
-                            >
-                              Xóa
-                            </button>
+                                     style={{
+                                      height: 30,
+                                      width: 200,
+                                      fontSize: 13,
+                                      paddingTop: 1,
+                                      marginLeft: "1%",
+                                      marginTop: 10,
+                                      marginBottom: "10px",
+                                      backgroundColor: "#fff",
+                                      border: "1px solid #ED2B2A",
+                                      color:"#ED2B2A"
+                                    }}
+                                    className="button-28"
+                                onClick={() => handleDeleteImage(index - 1)}
+                              >
+                                Xóa
+                              </button>
                           </div>
                         </div>
                       ))}

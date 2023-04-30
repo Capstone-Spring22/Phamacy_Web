@@ -187,17 +187,7 @@ const Manufacturer = () => {
                 id="navbar-collapse"
               >
                 {/* Search */}
-                <div className="navbar-nav align-items-center">
-                  <div className="nav-item d-flex align-items-center">
-                    <i className="bx bx-search fs-4 lh-0" />
-                    <input
-                      type="text"
-                      className="form-control border-0 shadow-none"
-                      placeholder="Search..."
-                      aria-label="Search..."
-                    />
-                  </div>
-                </div>
+               
                 {/* /Search */}
               </div>
             </nav>
@@ -496,10 +486,10 @@ const Manufacturer = () => {
                     <hr />
                     <div style={{ marginLeft: 20 }}>
                       <div>
-                        Search:
+                        Tìm Kiếm:
                         <input
                           className="input-search-table"
-                          placeholder="Search Name ..."
+                          placeholder="Tìm Kiếm Theo Têm..."
                           onChange={(e) => {
                             loadDataCategory(e.target.value);
                           }}
@@ -542,7 +532,7 @@ const Manufacturer = () => {
                                 color: "#bfc8d3",
                               }}
                             >
-                              Actions
+                              Cập Nhật
                             </th>
                           </tr>
                         </thead>
