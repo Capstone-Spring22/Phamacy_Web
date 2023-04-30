@@ -469,7 +469,7 @@ const Home = () => {
           </div>
         </div>
 
-        <button onClick={handleChatToggle} className="button-open-chat">
+        {/* <button onClick={handleChatToggle} className="button-open-chat">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="30"
@@ -554,7 +554,7 @@ const Home = () => {
               </div>
             </div>
           </form>
-        )}
+        )} */}
         <div className="site-section">
           <div className="container">
             <div className="title-section text-center col-12">
@@ -727,6 +727,7 @@ const Home = () => {
                     return (
                       <Link
                         className="product-card"
+                        style={{ width: "190px" }}
                         key={item.id}
                         to={`/ViewDetail/${item.id}`}
                       >

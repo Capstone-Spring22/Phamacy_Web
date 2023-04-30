@@ -124,7 +124,7 @@ const NewDrug = () => {
   }
 
   async function loadDataUnit2() {
-    const path = `Unit?isCountable=false&pageIndex=1&pageItems=111`;
+    const path = `Unit?pageIndex=1&pageItems=111`;
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
       setUnit2(res.data.items);
@@ -1305,7 +1305,18 @@ const NewDrug = () => {
                           </div>
 
                           <button
-                            style={{ marginLeft: 10 }}
+                            style={{
+                              height: 30,
+                              width: 100,
+                              fontSize: 13,
+                              paddingTop: 1,
+                              marginLeft: "11%",
+                              border: "1px solid #ED2B2A",
+                              color:"#ED2B2A",
+                              marginBottom: "20px",
+                              backgroundColor: "#fff",
+                            }}
+                            className="button-28"
                             onClick={() => handleDeleteUnit(index - 1)}
                           >
                             Xóa
@@ -1550,7 +1561,19 @@ const NewDrug = () => {
                             </div>
                           </div>
                           <button
-                            style={{ marginLeft: 10 }}
+                            style={{
+                              height: 30,
+                              width: 100,
+                              fontSize: 13,
+                              paddingTop: 1,
+                              marginLeft: "11%",
+                              marginTop: 10,
+                              marginBottom: "10px",
+                              backgroundColor: "#fff",
+                              border: "1px solid #ED2B2A",
+                              color:"#ED2B2A"
+                            }}
+                            className="button-28"
                             onClick={() => handleDeleteIngredient(index - 1)}
                           >
                             Xóa
@@ -1706,7 +1729,19 @@ const NewDrug = () => {
                                 </div>
                               </div>
                               <button
-                                style={{ marginLeft: 10 }}
+                                     style={{
+                                      height: 30,
+                                      width: 200,
+                                      fontSize: 13,
+                                      paddingTop: 1,
+                                      marginLeft: "14%",
+                                      marginTop: 10,
+                                      marginBottom: "10px",
+                                      backgroundColor: "#fff",
+                                      border: "1px solid #ED2B2A",
+                                      color:"#ED2B2A"
+                                    }}
+                                    className="button-28"
                                 onClick={() => handleDeleteImage(index - 1)}
                               >
                                 Xóa

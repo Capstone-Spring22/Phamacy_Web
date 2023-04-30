@@ -527,10 +527,10 @@ const MainCategory = () => {
                     <hr />
                     <div style={{ marginLeft: 20 }}>
                       <div>
-                        Search:
+                        Tìm Kiếm:
                         <input
                           className="input-search-table"
-                          placeholder="Search Name ..."
+                          placeholder="Tìm Kiếm Theo Tên ..."
                           onChange={(e) => {
                             loadDataCategory(e.target.value);
                           }}
