@@ -398,6 +398,17 @@ const Home = (props) => {
           Swal.fire("Địa chỉ của bạn vẫn chưa được hệ thống hỗ trợ giao hàng, vui lòng quay lại sau ", "", "question");
         }
       }
+    }else{
+      const path = `Site?IsDelivery=true&DistrictID=${product.reveicerInformation.districtId}&pageIndex=1&pageItems=20`;
+      console.log("display2", getDataByPath);
+      const res = await getDataByPath(path, "", "");
+      console.log("display31321", res);
+      if (res !== null && res !== undefined && res.status === 200) {
+        setSite(res.data.totalRecord);
+        if(res.data.totalRecord === 0){
+          Swal.fire("Địa chỉ của bạn vẫn chưa được hệ thống hỗ trợ giao hàng, vui lòng quay lại sau ", "", "question");
+        }
+      }
     }
   }
   useEffect(() => {

@@ -814,7 +814,7 @@ const OrderDetail = () => {
                       </div>
 
                       <div style={{ display: "flex" }}>
-                        {moneyReceived < OrderDetail.totalPrice ? (
+                        {(OrderDetail.paymentMethod !== "Thanh toán VN Pay" && moneyReceived < OrderDetail.totalPrice) ? (
                           <>
                             {" "}
                             <button
