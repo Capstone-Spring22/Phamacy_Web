@@ -19,7 +19,13 @@ export default function UpdateProductCard({
     label: "",
   });
   const [currentNumBatches, setCurrentNumBatches] = useState(0);
-  const [isBatches, setIsBatches] = useState(false);
+  const [isBatches, setIsBatches] = useState(drug.find((x) => 
+  x.productUnitReferences.find((y) => 
+    y.id === product?.productImportDetails[
+      index - 1
+    ]?.productId
+  )
+)?.isBatches);
   const [options2, setOptions2] = useState(
     options?.find((x) =>
       x.unit.find(
@@ -71,6 +77,9 @@ export default function UpdateProductCard({
           ...product.productImportDetails.slice(0, index - 1),
           {
             ...product.productImportDetails[index - 1],
+            productId: "",
+            quantity: 0,
+            importPrice: 0,
             productBatches: null,
           },
           ...product.productImportDetails.slice(index),
@@ -81,8 +90,12 @@ export default function UpdateProductCard({
         ...product,
         productImportDetails: [
           ...product.productImportDetails.slice(0, index - 1),
+
           {
             ...product.productImportDetails[index - 1],
+            productId: "",
+            quantity: 0,
+            importPrice: 0,
             productBatches: [
               {
                 quantity: 0,
@@ -162,11 +175,20 @@ export default function UpdateProductCard({
                   {options3 && (
                     <Select
                       placeholder="Chọn Đơn Vị"
-                      value={options3?.find(
-                        (option) =>
-                          option?.value ===
-                          product?.productImportDetails[index - 1]?.productId
-                      )}
+                      value={
+                        options3?.find(
+                          (option) =>
+                            option?.value ===
+                            product?.productImportDetails[index - 1]?.productId
+                        )
+                          ? options3?.find(
+                              (option) =>
+                                option?.value ===
+                                product?.productImportDetails[index - 1]
+                                  ?.productId
+                            )
+                          : ""
+                      }
                       onChange={(selectedOption) => {
                         setProduct((product) => ({
                           ...product,
@@ -180,9 +202,9 @@ export default function UpdateProductCard({
                           ],
                         }));
                       }}
-                      // noOptionsMessage={({ inputValue }) =>
-                      //     inputValue ? options2 : "Vui Lòng Chọn Sản Phẩm"
-                      // }
+                      noOptionsMessage={({ inputValue }) =>
+                        inputValue ? options2 : "Vui Lòng Chọn Sản Phẩm"
+                      }
                       options={options3}
                     />
                   )}

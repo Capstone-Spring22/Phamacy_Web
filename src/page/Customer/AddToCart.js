@@ -100,6 +100,29 @@ const AddToCart = () => {
         loadDataMedicine();
         // window.location.reload();
       }
+    }else{
+      const data = {
+        deviceId: deviceId,
+        item: {
+          productId: productId,
+          quantity: quantity,
+        },
+      };
+      console.log("display data", data);
+      const config = {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      };
+      const path = "Cart";
+      const res = await createDataByPath(path, "", data);
+      console.log("API response:", res);
+
+      if (res && res.status === 200) {
+        toast.success("đã cập nhật");
+        loadDataMedicine();
+        // window.location.reload();
+      }
     }
   }
   async function handleRemoveCart(productId) {
