@@ -8,15 +8,18 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import "../../assets/css/core.css";
 import { getDataByPath, createDataByPath } from "../../services/data.service";
 import { useHistory } from "react-router-dom";
+import { Document, Page, pdfjs } from "react-pdf";
 
+import { Modal } from "antd";
 const CheckOutPharmacist = () => {
   const [activeItem, setActiveItem] = useState("CheckOutPharmacist");
   const [drug, setDrug] = useState(null);
   const [listCart, setListCart] = useState([]);
-  const [searchValue, setSearchValue] = useState('')
+  const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [unit, setUnit] = useState([]);
+  const [pdfUrl, setPdfUrl] = useState([]);
   let history = useHistory();
   const [point, setPoint] = useState(0);
   const [count, setCount] = useState(2);
@@ -28,6 +31,7 @@ const CheckOutPharmacist = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [pointErrorMessage, setPointErrorMessage] = useState("");
   const [isError, setIsError] = useState(false);
+  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
   const [minUnit, setMinUnit] = useState([
     {
       productParentId: "",
@@ -48,6 +52,21 @@ const CheckOutPharmacist = () => {
       setIsLoading(false);
     }
   }
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // Define a state variable to store the number of pages in the PDF file
+  const [numPages, setNumPages] = useState(null);
+
+  // Define a function to handle opening the modal
+  const handleOpenModal = () => {
+    setIsModalVisible(true);
+  };
+
+  // Define a function to handle closing the modal
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
+
   async function loadDataMinUnit(productId, quantity) {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -141,13 +160,33 @@ const CheckOutPharmacist = () => {
         console.log("Check res", res);
         console.log("display du lieu", data);
         if (res && res.status === 200) {
-          Swal.fire("Create Success", "", "success");
+          Swal.fire({
+            title: "Create Success",
+            text: "Bạn có muốn in hóa đơn không?",
+            icon: "success",
+            showCancelButton: true,
+            confirmButtonText: "Có",
+            cancelButtonText: "Trở Về",
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const path = `Invoice/${product.orderId}`;
+              const res1 = await getDataByPath(path, accessToken, "");
+              if (res1 !== null && res1 !== undefined && res1.status === 200) {
+                setPdfUrl(res1.data);
+                console.log("res.data", res1.data);
+                handleOpenModal();
+              }
+            } else {
+              history.push("/Order");
+            }
+          });
+
           setListCart([]);
-          history.push("/Order");
         }
       }
     }
   }
+
   const handleMoneyReceivedChange = (event) => {
     const value = event.target.value;
     const money = parseFloat(value);
@@ -308,15 +347,15 @@ const CheckOutPharmacist = () => {
   useEffect(() => {
     setNewArrayOfObjects(
       listCart &&
-      listCart.length &&
-      listCart.map(
-        ({ productId, quantity, originalPrice, discountPrice }) => ({
-          productId: productId,
-          quantity: quantity,
-          originalPrice: originalPrice,
-          discountPrice: discountPrice,
-        })
-      )
+        listCart.length &&
+        listCart.map(
+          ({ productId, quantity, originalPrice, discountPrice }) => ({
+            productId: productId,
+            quantity: quantity,
+            originalPrice: originalPrice,
+            discountPrice: discountPrice,
+          })
+        )
     );
   }, [listCart]);
   function updateQuantity(productId, newQuantity) {
@@ -374,19 +413,20 @@ const CheckOutPharmacist = () => {
       )
     ) {
       setPointErrorMessage(
-        `Số Điểm tối đa được nhập là ${listCart?.reduce(
-          (total, curent) => total + curent.quantity * curent.discountPrice,
-          0
-        ) / 1000
+        `Số Điểm tối đa được nhập là ${
+          listCart?.reduce(
+            (total, curent) => total + curent.quantity * curent.discountPrice,
+            0
+          ) / 1000
         }`
       );
     } else if (
       product?.usedPoint <= point &&
       parseInt(product?.usedPoint) * 1000 <=
-      listCart?.reduce(
-        (total, curent) => total + curent.quantity * curent.discountPrice,
-        0
-      )
+        listCart?.reduce(
+          (total, curent) => total + curent.quantity * curent.discountPrice,
+          0
+        )
     ) {
       setProduct({
         ...product,
@@ -409,10 +449,10 @@ const CheckOutPharmacist = () => {
     const timer = setTimeout(() => {
       loadDataMedicine(searchValue);
       setvalueSearch(searchValue);
-    }, 1500)
+    }, 1500);
 
-    return () => clearTimeout(timer)
-  }, [searchValue])
+    return () => clearTimeout(timer);
+  }, [searchValue]);
 
   return (
     <div className="layout-wrapper layout-content-navbar">
@@ -458,9 +498,29 @@ const CheckOutPharmacist = () => {
               {/* /Search */}
             </div>
           </nav>
+          <Modal
+            title="PDF Preview"
+            visible={isModalVisible}
+            onCancel={handleCloseModal}
+            footer={null}
+            width={650}
+           
+          >
+            <Document
+              file={pdfUrl}
+              onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+              renderMode="canvas"
+            >
+              {Array.from(new Array(numPages), (el, index) => (
+                <Page
+                  key={`page_${index + 1}`}
+                  pageNumber={index + 1}
+                  canvasContext={null}
+                />
+              ))}
+            </Document>
+          </Modal>
 
-          {/* / Navbar */}
-          {/* Content wrapper */}
           <div style={{ display: "flex", flexWrap: "wrap", marginLeft: 180 }}>
             {/* <div className="search-result">
               {drug.map((e) => {
@@ -573,16 +633,17 @@ const CheckOutPharmacist = () => {
                                             <div> {product.name}</div>
                                           </div>
                                           {product.productInventoryModel
-                                            .siteInventoryModel.totalQuantity ===
-                                            0 ||
-                                            (product.productInventoryModel
-                                              .siteInventoryModel.totalQuantity ===
-                                              product.productInventoryModel
-                                                .siteInventoryModel
-                                                .totalQuantityForFirst &&
-                                              product.productInventoryModel.siteInventoryModel.message.includes(
-                                                product.productInventoryModel.siteInventoryModel.totalQuantityForFirst.toString()
-                                              )) ? (
+                                            .siteInventoryModel
+                                            .totalQuantity === 0 ||
+                                          (product.productInventoryModel
+                                            .siteInventoryModel
+                                            .totalQuantity ===
+                                            product.productInventoryModel
+                                              .siteInventoryModel
+                                              .totalQuantityForFirst &&
+                                            product.productInventoryModel.siteInventoryModel.message.includes(
+                                              product.productInventoryModel.siteInventoryModel.totalQuantityForFirst.toString()
+                                            )) ? (
                                             <></>
                                           ) : (
                                             <div
@@ -600,18 +661,18 @@ const CheckOutPharmacist = () => {
                                         </div>
                                         {product.productInventoryModel
                                           .siteInventoryModel.totalQuantity ===
-                                          0 ? (
+                                        0 ? (
                                           <>
                                             {" "}
                                             <div style={{ width: 380 }}>
                                               <div style={{ color: "red " }}>
                                                 {" "}
-                                              SẢN PHẨM ĐÃ
-                                            </div>
+                                                SẢN PHẨM ĐÃ
+                                              </div>
                                               <div style={{ color: "red " }}>
                                                 {" "}
-                                              HẾT HÀNG
-                                            </div>
+                                                HẾT HÀNG
+                                              </div>
                                             </div>
                                           </>
                                         ) : (
@@ -637,7 +698,7 @@ const CheckOutPharmacist = () => {
                                             {product.priceAfterDiscount?.toLocaleString(
                                               "en-US"
                                             )}{" "}
-                                          đ /{" "}
+                                            đ /{" "}
                                             <select
                                               style={{
                                                 height: 30,
@@ -646,7 +707,8 @@ const CheckOutPharmacist = () => {
                                               }}
                                               value={
                                                 product?.productUnitReferences?.find(
-                                                  (item) => item.id === product.id
+                                                  (item) =>
+                                                    item.id === product.id
                                                 ).id
                                               }
                                               onChange={(e) => {
@@ -1030,30 +1092,31 @@ const CheckOutPharmacist = () => {
                                           (total, curent) =>
                                             total +
                                             curent.quantity *
-                                            curent.discountPrice,
+                                              curent.discountPrice,
                                           0
                                         )
                                       ) {
                                         setPointErrorMessage(
-                                          `Số Điểm tối đa được nhập là ${listCart?.reduce(
-                                            (total, curent) =>
-                                              total +
-                                              curent.quantity *
-                                              curent.discountPrice,
-                                            0
-                                          ) / 1000
+                                          `Số Điểm tối đa được nhập là ${
+                                            listCart?.reduce(
+                                              (total, curent) =>
+                                                total +
+                                                curent.quantity *
+                                                  curent.discountPrice,
+                                              0
+                                            ) / 1000
                                           }`
                                         );
                                       } else if (
                                         e.target.value <= point &&
                                         parseInt(e.target.value) * 1000 <=
-                                        listCart?.reduce(
-                                          (total, curent) =>
-                                            total +
-                                            curent.quantity *
-                                            curent.discountPrice,
-                                          0
-                                        )
+                                          listCart?.reduce(
+                                            (total, curent) =>
+                                              total +
+                                              curent.quantity *
+                                                curent.discountPrice,
+                                            0
+                                          )
                                       ) {
                                         setProduct({
                                           ...product,
@@ -1408,19 +1471,19 @@ const CheckOutPharmacist = () => {
                                               marginTop: 10,
                                               border: "none",
                                             }}
-                                          // onChange={(e) => {
-                                          //   setCount(parseInt(count) + 1);
-                                          //   updateProductID(
-                                          //     product.productId,
-                                          //     e.target.value,
-                                          //     e.target.options[
-                                          //       e.target.selectedIndex
-                                          //     ].getAttribute("quantity"),
-                                          //     e.target.options[
-                                          //       e.target.selectedIndex
-                                          //     ].getAttribute("unitId")
-                                          //   );
-                                          // }}
+                                            // onChange={(e) => {
+                                            //   setCount(parseInt(count) + 1);
+                                            //   updateProductID(
+                                            //     product.productId,
+                                            //     e.target.value,
+                                            //     e.target.options[
+                                            //       e.target.selectedIndex
+                                            //     ].getAttribute("quantity"),
+                                            //     e.target.options[
+                                            //       e.target.selectedIndex
+                                            //     ].getAttribute("unitId")
+                                            //   );
+                                            // }}
                                           >
                                             {
                                               unit.find(
@@ -1481,18 +1544,15 @@ const CheckOutPharmacist = () => {
                                           )
                                         )?.quantityAfterConvert1
                                       ) >
-                                        parseInt(
-                                          product.productInventoryModel
-                                        ) ? (
+                                      parseInt(
+                                        product.productInventoryModel
+                                      ) ? (
                                         <>
-
                                           <div style={{ color: "red" }}>
                                             Sản phẩm này quá số lượng tồn kho
                                           </div>
-
                                         </>
                                       ) : (
-
                                         <div></div>
                                       )}
                                     </div>

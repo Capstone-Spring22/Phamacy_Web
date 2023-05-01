@@ -4884,6 +4884,9 @@ border: 1px solid #888;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.react-pdf__Page__canvas + div {
+  display: none;
+}
 .name-product-pharmacist2 {
   width: 230px;
   margin-right: 25px;
