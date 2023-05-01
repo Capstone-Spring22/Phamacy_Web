@@ -122,9 +122,9 @@ const LoginAdmin = () => {
                     </Link>
                   </div>
                   {/* /Logo */}
-                  <h4 className="mb-2">Welcome to BetterHealth! 👋</h4>
+                  <h4 className="mb-2">Chào Mừng Đến BetterHealth! 👋</h4>
                   <p className="mb-4">
-                    Please sign-in to your account and start the adventure
+                  xin hãy đăng nhập
                   </p>
                   {error && (
                     <div className="error" style={{ color: "red" }}>
@@ -140,14 +140,14 @@ const LoginAdmin = () => {
                   >
                     <div className="mb-3">
                       <label htmlFor="email" className="form-label">
-                        Email or Username
+                        Tên tài khoản
                       </label>
                       <input
                         type="text"
                         className="form-control"
                         id="email"
                         name="email-username"
-                        placeholder="Enter your email or username"
+                        placeholder="Nhập Tên Tài Khoản"
                         autofocus=""
                         onChange={(e) => setUsername(e.target.value)}
                       />
@@ -155,10 +155,10 @@ const LoginAdmin = () => {
                     <div className="mb-3 form-password-toggle">
                       <div className="d-flex justify-content-between">
                         <label className="form-label" htmlFor="password">
-                          Password
+                          Mật Khẩu
                         </label>
                         <a href="auth-forgot-password-basic.html">
-                          <small>Forgot Password?</small>
+                          <small></small>
                         </a>
                       </div>
                       <div className="input-group input-group-merge">
@@ -201,7 +201,7 @@ const LoginAdmin = () => {
                           loginWithUsernamePassword(username, password)
                         }
                       >
-                        Sign in
+                        Đăng Nhập
                       </button>
                     </div>
                   </form>
