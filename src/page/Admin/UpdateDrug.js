@@ -1101,7 +1101,20 @@ const UpdateDrug = () => {
                       </div>
                     )
                   )}
-
+                  <div
+                    style={{ color: "red", marginLeft: 220, marginBottom: 20 }}
+                  >
+                    Sản phẩm này đang có giá trị quy đổi:{" "}
+                    {product.productDetailModel.map((detail, index) => (
+                      <span>
+                        {detail.quantitative} {unit.find((sc) => sc.id === detail.unitId)?.unitName}
+                        {index !== product.productDetailModel.length - 1
+                          ? " x "
+                          : ""}
+                      </span>
+                    ))}
+                  </div>
+               
                   {/* <button
                     className="button-28"
                     style={{
@@ -1177,7 +1190,7 @@ const UpdateDrug = () => {
                               className="form-label"
                               htmlFor={`unitId${index}`}
                             >
-                              Tên thành phần
+                              Tên nguyên liệu
                             </label>
                             <div className="input-group input-group-merge">
                               <select
@@ -1347,7 +1360,7 @@ const UpdateDrug = () => {
                               marginBottom: "10px",
                               backgroundColor: "#fff",
                               border: "1px solid #ED2B2A",
-                              color:"#ED2B2A"
+                              color: "#ED2B2A",
                             }}
                             className="button-28"
                             onClick={() => handleDeleteIngredient(index - 1)}
@@ -1486,23 +1499,23 @@ const UpdateDrug = () => {
                               </button>
                             </div>
                             <button
-                                     style={{
-                                      height: 30,
-                                      width: 200,
-                                      fontSize: 13,
-                                      paddingTop: 1,
-                                      marginLeft: "1%",
-                                      marginTop: 10,
-                                      marginBottom: "10px",
-                                      backgroundColor: "#fff",
-                                      border: "1px solid #ED2B2A",
-                                      color:"#ED2B2A"
-                                    }}
-                                    className="button-28"
-                                onClick={() => handleDeleteImage(index - 1)}
-                              >
-                                Xóa
-                              </button>
+                              style={{
+                                height: 30,
+                                width: 200,
+                                fontSize: 13,
+                                paddingTop: 1,
+                                marginLeft: "1%",
+                                marginTop: 10,
+                                marginBottom: "10px",
+                                backgroundColor: "#fff",
+                                border: "1px solid #ED2B2A",
+                                color: "#ED2B2A",
+                              }}
+                              className="button-28"
+                              onClick={() => handleDeleteImage(index - 1)}
+                            >
+                              Xóa
+                            </button>
                           </div>
                         </div>
                       ))}

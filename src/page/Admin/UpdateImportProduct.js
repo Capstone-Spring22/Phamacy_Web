@@ -54,7 +54,67 @@ const UpdateImportProduct = () => {
     totalPrice: 0,
     isReleased: "",
   });
+  const checkValidationImport = () => {
+    const {
+      productImportDetails,
+      note,
+      totalProductPrice,
+      taxPrice,
+      totalShippingFee,
+      totalPrice,
+    } = product;
 
+    // for (const detail of productImportDetails) {
+    //   if (!detail.productId.trim()) {
+    //     Swal.fire("Product ID Can't Be Empty", "", "question");
+    //     return false;
+    //   }
+
+      // if (!productImportDetails.quantity) {
+      //   Swal.fire("Số lượng không nhỏ hơn hoặc bằng 0", "", "question");
+      //   return false;
+      // }
+      
+      // if (!productImportDetails.importPrice) {
+      //   Swal.fire("giá không được nhỏ hơn hoặc bằng 0", "", "question");
+      //   return false;
+      // }
+
+    //   if (!detail.importPrice) {
+    //     Swal.fire("Import Price Can't Be Empty", "", "question");
+    //     return false;
+    //   }
+
+    //   for (const batch of detail?.productBatches) {
+    //     if (!batch.quantity) {
+    //       Swal.fire("Batch Quantity Can't Be Empty", "", "question");
+    //       return false;
+    //     }
+
+    //     if (!batch.manufactureDate.trim()) {
+    //       Swal.fire("Manufacture Date Can't Be Empty", "", "question");
+    //       return false;
+    //     }
+
+    //     if (!batch.expireDate.trim()) {
+    //       Swal.fire("Expire Date Can't Be Empty", "", "question");
+    //       return false;
+    //     }
+    //   }
+    // }
+
+    if (!note.trim()) {
+      Swal.fire("Ghi chú không được rỗng", "", "question");
+      return false;
+    }
+
+    if (!totalProductPrice||totalProductPrice === 0) {
+      Swal.fire("Vui Lòng Nhập Số Lượng Cho Sản Phẩm Nhập", "", "question");
+      return false;
+    }
+
+    return true;
+  };
   async function loadDataImportProductByID() {
     if (localStorage && localStorage.getItem("accessToken")) {
       setLoading2(true);
@@ -215,7 +275,7 @@ const UpdateImportProduct = () => {
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      if (checkValidation()) {
+      if (checkValidationImport()) {
         const data = product;
         const path = "ProductImport";
         const res = await updateDataByPath(path, accessToken, data);

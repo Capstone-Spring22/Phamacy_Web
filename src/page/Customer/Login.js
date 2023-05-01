@@ -200,7 +200,7 @@ const Login = () => {
                               className="mt-1 animate-spin"
                             />
                           )}
-                          submit
+                          Đăng Nhập
                         </button>
                       </div>
                     </>

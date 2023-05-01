@@ -187,7 +187,7 @@ const NewDrug = () => {
   async function createNewProducts() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
-      if (checkValidation()) {
+      if (checkValidationProduct()) {
         const selectedImageIndex = product.imageModel.findIndex(
           (image) => image.isFirstImage !== null
         );
@@ -1312,7 +1312,7 @@ const NewDrug = () => {
                               paddingTop: 1,
                               marginLeft: "11%",
                               border: "1px solid #ED2B2A",
-                              color:"#ED2B2A",
+                              color: "#ED2B2A",
                               marginBottom: "20px",
                               backgroundColor: "#fff",
                             }}
@@ -1327,8 +1327,9 @@ const NewDrug = () => {
                     )
                   )}
                   <div
-                    style={{ color: "red", marginLeft: 520, marginBottom: 20 }}
+                    style={{ color: "red", marginLeft: 220, marginBottom: 20 }}
                   >
+                    Sản phẩm này đang có giá trị quy đổi:{" "}
                     {product.productDetailModel.map((detail, index) => (
                       <span>
                         {detail.quantitative} {selectedUnits[index]}
@@ -1571,7 +1572,7 @@ const NewDrug = () => {
                               marginBottom: "10px",
                               backgroundColor: "#fff",
                               border: "1px solid #ED2B2A",
-                              color:"#ED2B2A"
+                              color: "#ED2B2A",
                             }}
                             className="button-28"
                             onClick={() => handleDeleteIngredient(index - 1)}
@@ -1729,19 +1730,19 @@ const NewDrug = () => {
                                 </div>
                               </div>
                               <button
-                                     style={{
-                                      height: 30,
-                                      width: 200,
-                                      fontSize: 13,
-                                      paddingTop: 1,
-                                      marginLeft: "14%",
-                                      marginTop: 10,
-                                      marginBottom: "10px",
-                                      backgroundColor: "#fff",
-                                      border: "1px solid #ED2B2A",
-                                      color:"#ED2B2A"
-                                    }}
-                                    className="button-28"
+                                style={{
+                                  height: 30,
+                                  width: 200,
+                                  fontSize: 13,
+                                  paddingTop: 1,
+                                  marginLeft: "14%",
+                                  marginTop: 10,
+                                  marginBottom: "10px",
+                                  backgroundColor: "#fff",
+                                  border: "1px solid #ED2B2A",
+                                  color: "#ED2B2A",
+                                }}
+                                className="button-28"
                                 onClick={() => handleDeleteImage(index - 1)}
                               >
                                 Xóa

@@ -499,26 +499,24 @@ const CheckOutPharmacist = () => {
             </div>
           </nav>
           <Modal
-            title="PDF Preview"
+            title="Hóa Đơn Khách Hàng"
             visible={isModalVisible}
             onCancel={handleCloseModal}
             footer={null}
             width={650}
-           
+            style={{ padding: 0 }}
+            bodyStyle={{ padding: 0, margin: 0 }}
           >
-            <Document
-              file={pdfUrl}
-              onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-              renderMode="canvas"
-            >
-              {Array.from(new Array(numPages), (el, index) => (
-                <Page
-                  key={`page_${index + 1}`}
-                  pageNumber={index + 1}
-                  canvasContext={null}
-                />
-              ))}
-            </Document>
+            <div style={{ overflow: "auto", height: "100%" }}>
+              <Document
+                file={pdfUrl}
+                onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+              >
+                {Array.from(new Array(numPages), (el, index) => (
+                  <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+                ))}
+              </Document>
+            </div>
           </Modal>
 
           <div style={{ display: "flex", flexWrap: "wrap", marginLeft: 180 }}>

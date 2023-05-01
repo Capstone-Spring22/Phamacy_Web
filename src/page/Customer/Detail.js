@@ -395,7 +395,8 @@ const DetailMedicine = () => {
                           }}
                         />
                       </div>
-                      {product.isPrescription === 1 || product.isPrescription === true ? (
+                      {product.isPrescription === 1 ||
+                      product.isPrescription === true ? (
                         <button
                           value={5}
                           className="btn cart-submit d-block"
@@ -469,31 +470,60 @@ const DetailMedicine = () => {
                   </div>
                   <div className="detail-card" style={{ marginTop: -80 }}>
                     <div>
-                      <div className="card-header-detail">
-                       Liều Dùng
-                      </div>
+                      <div className="card-header-detail">Liều Dùng</div>
                       <div className="card-body-content">
-                        {descriptionModels.instruction}
+                        {descriptionModels.instruction && (
+                          <div>
+                            {descriptionModels.instruction
+                              .split("\n")
+                              .map((line, index) => (
+                                <React.Fragment key={index}>
+                                  {line}
+                                  <br />
+                                </React.Fragment>
+                              ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                   <div className="detail-card" style={{ marginTop: -80 }}>
                     <div>
-                      <div className="card-header-detail">
-                       Tác Dụng Phụ
-                      </div>
+                      <div className="card-header-detail">Tác Dụng Phụ</div>
                       <div className="card-body-content">
-                        {descriptionModels.sideEffect}
+                      
+                        {descriptionModels.sideEffect && (
+                          <div>
+                             {descriptionModels.sideEffect
+                              .split("\n")
+                              .map((line, index) => (
+                                <React.Fragment key={index}>
+                                   {line}
+                                  <br />
+                                </React.Fragment>
+                              ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                   <div className="detail-card" style={{ marginTop: -80 }}>
                     <div>
-                      <div className="card-header-detail">
-                       Bảo Quản
-                      </div>
+                      <div className="card-header-detail">Bảo Quản</div>
                       <div className="card-body-content">
-                        {descriptionModels.preserve}
+                        
+                        {descriptionModels.preserve && (
+                          <div>
+                             {descriptionModels.preserve
+                              .split("\n")
+                              .map((line, index) => (
+                                <React.Fragment key={index}>
+                                   {line}
+                                  <br />
+                                </React.Fragment>
+                              ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
