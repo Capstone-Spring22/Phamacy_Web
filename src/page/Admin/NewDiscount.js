@@ -527,23 +527,35 @@ const NewDiscount = () => {
                                 </label>
 
                                 <Select
-                                  value={options.find(
+                                  value={
+                                    
+                                    options.find(
                                     (option) =>
                                       option.value ===
                                       product?.products[index - 1]?.productId
-                                  )}
+                                  )?options.find(
+                                    (option) =>
+                                      option.value ===
+                                      product?.products[index - 1]?.productId
+                                  ):""}
                                   onChange={(selectedOption) => {
                                     const drugObj = drug.find(
                                       (d) => d.id === selectedOption.value
                                     );
                                     if (drugObj.discountModel !== null) {
                                       Swal.fire("Sản phẩm này đang được giảm giá rồi, không thể giảm giá nữa.")
-                                      //cần fix chỗ này
+                                     setSelectedOption({
+                                      value: product?.products[index - 1]?.productId,
+                                      label: "",
+                                    })
                                       return;
                                     }
 
                                     if (typeof (product.products.find(x => x.productId === drugObj.id)) !== "undefined") {
-                                      //cần fix chỗ này
+                                      setSelectedOption({
+                                        value: product?.products[index - 1]?.productId,
+                                        label: "",
+                                      })
                                       return;
                                     }
 

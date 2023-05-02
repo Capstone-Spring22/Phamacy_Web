@@ -16,9 +16,11 @@ const UpdateDiscount = () => {
   const [unitCount, setUnitCount] = useState(1);
   let history = useHistory();
   const [productIngredient, setProductIngredient] = useState([]);
-
+  const [discountError, setDiscountError] = useState("");
+  const [discountMoneyError, setDiscountMoneyError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(100);
+  const [discountPercent, setDiscountPercent] = useState(0);
   const [product, setProduct] = useState({
     id: "",
     title: "",
@@ -34,14 +36,21 @@ const UpdateDiscount = () => {
       const accessToken = localStorage.getItem("accessToken");
       const path = `ProductDiscount/${myId}`;
       const res = await getDataByPath(path, accessToken, "");
-      console.log("res discount", res.data);
+      console.log("discountPercent :", discountPercent);
       if (res !== null && res !== undefined && res.status === 200) {
+        setDiscountPercent(res.data.discountPercent);
         setProduct(res.data);
         setUnitCount(res.data.products.length);
       }
     }
   }
 
+  const [discountType, setDiscountType] = useState("percent");
+
+  const discountOptions = [
+    { value: "percent", label: "Giảm giá theo %" },
+    { value: "money", label: "Giảm giá theo tiền" },
+  ];
   async function loadDataProductIngredient() {
     const path = `ProductIngredient?pageIndex=${currentPage}&pageItems=${perPage}`;
     const res = await getDataByPath(path, "", "");
@@ -49,6 +58,20 @@ const UpdateDiscount = () => {
       setProductIngredient(res.data.items);
     }
   }
+  const handleDiscountTypeChange = (selectedOption) => {
+    setDiscountType(selectedOption.value);
+    if (selectedOption.value === "percent") {
+      setProduct((prevState) => ({
+        ...prevState,
+        discountMoney: "",
+      }));
+    } else if (selectedOption.value === "money") {
+      setProduct((prevState) => ({
+        ...prevState,
+        discountPercent: "",
+      }));
+    }
+  };
   async function loadDataDrug() {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
@@ -102,6 +125,7 @@ const UpdateDiscount = () => {
     // }
     return true;
   };
+
   const handleAddUnit = () => {
     setProduct({
       ...product,
@@ -120,7 +144,7 @@ const UpdateDiscount = () => {
   }, []);
   useEffect(() => {
     loadDataImportProductByID();
-  }, []);
+  }, [discountPercent]);
 
   return (
     <div className="layout-wrapper layout-content-navbar">
@@ -223,7 +247,7 @@ const UpdateDiscount = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-company"
                         >
-                          reason
+                          lí do
                         </label>
                         <div className="input-group input-group-merge">
                           <input
@@ -243,6 +267,132 @@ const UpdateDiscount = () => {
                           />
                         </div>
                       </div>
+                      <div className="mb-3" style={{ width: "95%" }}>
+                        <label className="form-label" htmlFor="discount-type">
+                          Chọn Loại Giảm Giá
+                        </label>
+                        <Select
+                          id="discount-type"
+                          options={discountOptions}
+                          defaultValue={
+                            discountPercent === 0
+                              ? discountOptions[1]
+                              : discountOptions[0]
+                          }
+                          onChange={handleDiscountTypeChange}
+                        />
+                      </div>
+                      {discountType === "percent" && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="discount-percent"
+                          >
+                            Giảm giá (%)
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              value={product.discountPercent}
+                              name="discount-percent"
+                              placeholder="Giảm giá (%)"
+                              id="discount-percent"
+                              className="form-control"
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                const discountPercent = parseInt(
+                                  product.discountPercent
+                                );
+                                const productId = product.products[0].productId;
+                                const productPrice = getPriceById(productId);
+
+                                if (
+                                  discountType === "percent" &&
+                                  (value < 1 || value > 99)
+                                ) {
+                                  setDiscountError(
+                                    "Giảm giá phải nằm trong khoảng từ 1 đến 99%"
+                                  );
+                                } else if (
+                                  discountType === "money" &&
+                                  value > productPrice * 0.5
+                                ) {
+                                  setDiscountError(
+                                    "Số tiền giảm không được cao hơn 50% giá sản phẩm"
+                                  );
+                                } else {
+                                  setDiscountError("");
+                                }
+                                if (discountType === "percent") {
+                                  setProduct((prevState) => ({
+                                    ...prevState,
+                                    discountPercent: value,
+                                    discountMoney: null,
+                                  }));
+                                }
+                              }}
+                            />
+                          </div>
+                          {discountError && (
+                            <div className="form-text" style={{ color: "red" }}>
+                              {discountError}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {discountType === "money" && (
+                        <div className="mb-3" style={{ width: "95%" }}>
+                          <label
+                            className="form-label"
+                            htmlFor="discount-money"
+                          >
+                            Số tiền giảm
+                          </label>
+                          <div className="input-group input-group-merge">
+                            <input
+                              type="text"
+                              value={product.discountMoney}
+                              name="discount-money"
+                              placeholder="Số tiền giảm"
+                              id="discount-money"
+                              className="form-control"
+                              onChange={(e) => {
+                                const discountPercent = parseInt(
+                                  product.discountPercent
+                                );
+                                const productId = product.products[0].productId;
+                                const productPrice = getPriceById(productId);
+
+                                const value = e.target.value;
+                                setProduct((prevState) => ({
+                                  ...prevState,
+                                  discountMoney: value,
+                                }));
+
+                                const parsedValue = parseInt(value);
+                                if (isNaN(parsedValue) || parsedValue < 0) {
+                                  setDiscountMoneyError("");
+                                } else if (
+                                  parsedValue >= 0 &&
+                                  parsedValue > productPrice * 0.5
+                                ) {
+                                  setDiscountMoneyError(
+                                    "Số tiền trừ thẳng tiền không được cao hơn 50% giá sản phẩm."
+                                  );
+                                } else {
+                                  setDiscountMoneyError("");
+                                }
+                              }}
+                            />
+                          </div>
+                          {discountMoneyError && (
+                            <div className="form-text" style={{ color: "red" }}>
+                              {discountMoneyError}
+                            </div>
+                          )}
+                        </div>
+                      )}
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
                           className="form-label"
@@ -432,11 +582,9 @@ const UpdateDiscount = () => {
                                             Sản phẩm
                                           </label>
                                           <Select
-                                          
                                             value={options.find(
                                               (option) =>
-                                                option.value ===
-                                                e.productId
+                                                option.value === e.productId
                                             )}
                                             onChange={(selectedOption) => {
                                               const drugObj = drug.find(
