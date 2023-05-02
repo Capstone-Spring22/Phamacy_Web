@@ -31,6 +31,9 @@ const NewDiscount = () => {
       },
     ],
   });
+  useEffect(()=>{
+    console.log(product)
+  }, [product])
   const [discountType, setDiscountType] = useState("percent");
   const discountOptions = [
     { value: "percent", label: "Giảm giá theo %" },
@@ -535,10 +538,12 @@ const NewDiscount = () => {
                                     );
                                     if (drugObj.discountModel !== null) {
                                       Swal.fire("Sản phẩm này đang được giảm giá rồi, không thể giảm giá nữa.")
+                                      //cần fix chỗ này
                                       return;
                                     }
 
                                     if (typeof (product.products.find(x => x.productId === drugObj.id)) !== "undefined") {
+                                      //cần fix chỗ này
                                       return;
                                     }
 
@@ -567,12 +572,14 @@ const NewDiscount = () => {
                                 />
                               </div>
                               <div>
-                                {selectedOption && (
+                                {selectedOption && product.products[index-1].productId && (
                                   <div style={{ display: "flex", margin: "35px 0 0 0" }}>
-                                    <p style={{ color: "black", fontWeight: "bold", marginRight: "30px", fontSize: "20px" }}>Giá gốc: {price.toLocaleString("en-US")} đ</p>
-                                    {product.discountMoney !== null ?
-                                      (<p style={{ color: "black", fontWeight: "bold", fontSize: "20px" }}>Giá sau khi giảm: {(price - product.discountMoney).toLocaleString("en-US")} đ</p>) :
-                                      (<p style={{ color: "black", fontWeight: "bold", fontSize: "20px" }}>Giá sau khi giảm: {(price - (product.discountPercent / 100 * price)).toLocaleString("en-US")} đ</p>)
+                                    {
+                                      <p style={{ color: "black", fontWeight: "bold", marginRight: "30px", fontSize: "20px" }}>Giá gốc: {(drug.find((x) => x.id === product.products[index-1].productId)?.price)?.toLocaleString("en-US")} đ</p>
+                                    }
+                                    { product.discountMoney !== null ?
+                                      (<p style={{ color: "black", fontWeight: "bold", fontSize: "20px" }}>Giá sau khi giảm: {((drug.find((x) => x.id === product.products[index-1].productId)?.price) - product.discountMoney)?.toLocaleString("en-US")} đ</p>) :
+                                      (<p style={{ color: "black", fontWeight: "bold", fontSize: "20px" }}>Giá sau khi giảm: {((drug.find((x) => x.id === product.products[index-1].productId)?.price) - (product.discountPercent / 100 * (drug.find((x) => x.id === product.products[index-1].productId)?.price)))?.toLocaleString("en-US")} đ</p>)
                                     }
                                   </div>
                                 )}
