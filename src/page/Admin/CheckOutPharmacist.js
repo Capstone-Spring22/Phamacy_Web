@@ -11,6 +11,7 @@ import { useHistory } from "react-router-dom";
 import { Document, Page, pdfjs } from "react-pdf";
 
 import { Modal } from "antd";
+import e from "cors";
 const CheckOutPharmacist = () => {
   const [activeItem, setActiveItem] = useState("CheckOutPharmacist");
   const [drug, setDrug] = useState(null);
@@ -31,6 +32,7 @@ const CheckOutPharmacist = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [pointErrorMessage, setPointErrorMessage] = useState("");
   const [isError, setIsError] = useState(false);
+  const [isQuaSoLuong, setIsQuaSoLuong] = useState(false);
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
   const [minUnit, setMinUnit] = useState([
     {
@@ -336,6 +338,14 @@ const CheckOutPharmacist = () => {
     loadDataUnit();
   }, []);
   useEffect(() => {
+    // Update the document title using the browser API
+    if (document.querySelector(".quaSoLuong") !== null) {
+      setIsQuaSoLuong(true);
+    } else {
+      setIsQuaSoLuong(false)
+    }
+  });
+  useEffect(() => {
     loadDataMedicineDefault();
   }, []);
   useEffect(() => {
@@ -347,15 +357,15 @@ const CheckOutPharmacist = () => {
   useEffect(() => {
     setNewArrayOfObjects(
       listCart &&
-        listCart.length &&
-        listCart.map(
-          ({ productId, quantity, originalPrice, discountPrice }) => ({
-            productId: productId,
-            quantity: quantity,
-            originalPrice: originalPrice,
-            discountPrice: discountPrice,
-          })
-        )
+      listCart.length &&
+      listCart.map(
+        ({ productId, quantity, originalPrice, discountPrice }) => ({
+          productId: productId,
+          quantity: quantity,
+          originalPrice: originalPrice,
+          discountPrice: discountPrice,
+        })
+      )
     );
   }, [listCart]);
   function updateQuantity(productId, newQuantity) {
@@ -413,20 +423,19 @@ const CheckOutPharmacist = () => {
       )
     ) {
       setPointErrorMessage(
-        `Số Điểm tối đa được nhập là ${
-          listCart?.reduce(
-            (total, curent) => total + curent.quantity * curent.discountPrice,
-            0
-          ) / 1000
+        `Số Điểm tối đa được nhập là ${listCart?.reduce(
+          (total, curent) => total + curent.quantity * curent.discountPrice,
+          0
+        ) / 1000
         }`
       );
     } else if (
       product?.usedPoint <= point &&
       parseInt(product?.usedPoint) * 1000 <=
-        listCart?.reduce(
-          (total, curent) => total + curent.quantity * curent.discountPrice,
-          0
-        )
+      listCart?.reduce(
+        (total, curent) => total + curent.quantity * curent.discountPrice,
+        0
+      )
     ) {
       setProduct({
         ...product,
@@ -633,15 +642,15 @@ const CheckOutPharmacist = () => {
                                           {product.productInventoryModel
                                             .siteInventoryModel
                                             .totalQuantity === 0 ||
-                                          (product.productInventoryModel
-                                            .siteInventoryModel
-                                            .totalQuantity ===
-                                            product.productInventoryModel
+                                            (product.productInventoryModel
                                               .siteInventoryModel
-                                              .totalQuantityForFirst &&
-                                            product.productInventoryModel.siteInventoryModel.message.includes(
-                                              product.productInventoryModel.siteInventoryModel.totalQuantityForFirst.toString()
-                                            )) ? (
+                                              .totalQuantity ===
+                                              product.productInventoryModel
+                                                .siteInventoryModel
+                                                .totalQuantityForFirst &&
+                                              product.productInventoryModel.siteInventoryModel.message.includes(
+                                                product.productInventoryModel.siteInventoryModel.totalQuantityForFirst.toString()
+                                              )) ? (
                                             <></>
                                           ) : (
                                             <div
@@ -659,7 +668,7 @@ const CheckOutPharmacist = () => {
                                         </div>
                                         {product.productInventoryModel
                                           .siteInventoryModel.totalQuantity ===
-                                        0 ? (
+                                          0 ? (
                                           <>
                                             {" "}
                                             <div style={{ width: 380 }}>
@@ -1090,31 +1099,30 @@ const CheckOutPharmacist = () => {
                                           (total, curent) =>
                                             total +
                                             curent.quantity *
-                                              curent.discountPrice,
+                                            curent.discountPrice,
                                           0
                                         )
                                       ) {
                                         setPointErrorMessage(
-                                          `Số Điểm tối đa được nhập là ${
-                                            listCart?.reduce(
-                                              (total, curent) =>
-                                                total +
-                                                curent.quantity *
-                                                  curent.discountPrice,
-                                              0
-                                            ) / 1000
+                                          `Số Điểm tối đa được nhập là ${listCart?.reduce(
+                                            (total, curent) =>
+                                              total +
+                                              curent.quantity *
+                                              curent.discountPrice,
+                                            0
+                                          ) / 1000
                                           }`
                                         );
                                       } else if (
                                         e.target.value <= point &&
                                         parseInt(e.target.value) * 1000 <=
-                                          listCart?.reduce(
-                                            (total, curent) =>
-                                              total +
-                                              curent.quantity *
-                                                curent.discountPrice,
-                                            0
-                                          )
+                                        listCart?.reduce(
+                                          (total, curent) =>
+                                            total +
+                                            curent.quantity *
+                                            curent.discountPrice,
+                                          0
+                                        )
                                       ) {
                                         setProduct({
                                           ...product,
@@ -1469,19 +1477,19 @@ const CheckOutPharmacist = () => {
                                               marginTop: 10,
                                               border: "none",
                                             }}
-                                            // onChange={(e) => {
-                                            //   setCount(parseInt(count) + 1);
-                                            //   updateProductID(
-                                            //     product.productId,
-                                            //     e.target.value,
-                                            //     e.target.options[
-                                            //       e.target.selectedIndex
-                                            //     ].getAttribute("quantity"),
-                                            //     e.target.options[
-                                            //       e.target.selectedIndex
-                                            //     ].getAttribute("unitId")
-                                            //   );
-                                            // }}
+                                          // onChange={(e) => {
+                                          //   setCount(parseInt(count) + 1);
+                                          //   updateProductID(
+                                          //     product.productId,
+                                          //     e.target.value,
+                                          //     e.target.options[
+                                          //       e.target.selectedIndex
+                                          //     ].getAttribute("quantity"),
+                                          //     e.target.options[
+                                          //       e.target.selectedIndex
+                                          //     ].getAttribute("unitId")
+                                          //   );
+                                          // }}
                                           >
                                             {
                                               unit.find(
@@ -1542,11 +1550,11 @@ const CheckOutPharmacist = () => {
                                           )
                                         )?.quantityAfterConvert1
                                       ) >
-                                      parseInt(
-                                        product.productInventoryModel
-                                      ) ? (
+                                        parseInt(
+                                          product.productInventoryModel
+                                        ) ? (
                                         <>
-                                          <div style={{ color: "red" }}>
+                                          <div className="quaSoLuong" style={{ color: "red" }}>
                                             Sản phẩm này quá số lượng tồn kho
                                           </div>
                                         </>
@@ -1576,6 +1584,7 @@ const CheckOutPharmacist = () => {
                                         );
 
                                         setListCart(newList);
+
                                       }}
                                     >
                                       <svg
@@ -1668,7 +1677,7 @@ const CheckOutPharmacist = () => {
                         </div>
                       </div>
 
-                      {isError && {} ? (
+                      {(isError || isQuaSoLuong) ? (
                         <a
                           className="button-28"
                           // href="#my-dialog"
@@ -1684,7 +1693,6 @@ const CheckOutPharmacist = () => {
                             backgroundColor: "grey",
                             marginTop: "10px",
                             marginBottom: -20,
-                            backgroundColor: "#82AAE3",
                             color: "white",
                           }}
                         >
