@@ -31,9 +31,12 @@ const NewDiscount = () => {
       },
     ],
   });
-  useEffect(()=>{
-    console.log(product)
-  }, [product])
+  const [checkExistProductModel, setExistProductModel] = useState(
+    {
+      discountId: "",
+      productId: ""
+    }
+  )
   const [discountType, setDiscountType] = useState("percent");
   const discountOptions = [
     { value: "percent", label: "Giảm giá theo %" },
@@ -49,9 +52,15 @@ const NewDiscount = () => {
         console.log("Check res", res);
         console.log("display du lieu", data);
         if (res && res.status === 201) {
-          Swal.fire("Create Success", "", "success");
+          Swal.fire("Tạo chương trình giảm giá thành công", "", "success");
           // window.location.reload();
           history.push("/ProductDiscount");
+        } else if (res && res.status === 400) {
+          if (res.data.errors !== null) {
+            Swal.fire("Thêm chương trình giảm giá không thành công", "Lỗi validation", "warning");
+          } else {
+            Swal.fire("Thêm chương trình giảm giá không thành công", "Lỗi: " + res.data, "warning")
+          }
         }
       }
     }
@@ -528,28 +537,52 @@ const NewDiscount = () => {
 
                                 <Select
                                   value={
-                                    
+
                                     options.find(
-                                    (option) =>
-                                      option.value ===
-                                      product?.products[index - 1]?.productId
-                                  )?options.find(
-                                    (option) =>
-                                      option.value ===
-                                      product?.products[index - 1]?.productId
-                                  ):""}
-                                  onChange={(selectedOption) => {
+                                      (option) =>
+                                        option.value ===
+                                        product?.products[index - 1]?.productId
+                                    ) ? options.find(
+                                      (option) =>
+                                        option.value ===
+                                        product?.products[index - 1]?.productId
+                                    ) : ""}
+                                  onChange={async (selectedOption) => {
                                     const drugObj = drug.find(
                                       (d) => d.id === selectedOption.value
                                     );
                                     if (drugObj.discountModel !== null) {
-                                      Swal.fire("Sản phẩm này đang được giảm giá rồi, không thể giảm giá nữa.")
-                                     setSelectedOption({
-                                      value: product?.products[index - 1]?.productId,
-                                      label: "",
-                                    })
+                                      Swal.fire("Sản phẩm này đang được giảm giá rồi, không thể giảm giá nữa!")
+                                      setSelectedOption({
+                                        value: product?.products[index - 1]?.productId,
+                                        label: "",
+                                      })
                                       return;
                                     }
+
+                                    setExistProductModel((prevState) => ({
+                                      ...prevState,
+                                      productId: selectedOption.value,
+                                    }));
+
+                                    var checkExist = {
+                                      productId: selectedOption.value,
+                                      discountId: ""
+                                    }
+
+                                    const accessToken = localStorage.getItem("accessToken");
+
+                                    var check = await createDataByPath("ProductDiscount/CheckExistDiscountProduct", accessToken, checkExist);
+
+                                    if (check && check.status === 400) {
+                                      Swal.fire(check.data)
+                                      setSelectedOption({
+                                        value: product?.products[index - 1]?.productId,
+                                        label: "",
+                                      })
+                                      return;
+                                    }
+
 
                                     if (typeof (product.products.find(x => x.productId === drugObj.id)) !== "undefined") {
                                       setSelectedOption({
@@ -584,14 +617,14 @@ const NewDiscount = () => {
                                 />
                               </div>
                               <div>
-                                {selectedOption && product.products[index-1].productId && (
+                                {selectedOption && product.products[index - 1].productId && (
                                   <div style={{ display: "flex", margin: "35px 0 0 0" }}>
                                     {
-                                      <p style={{ color: "black", fontWeight: "bold", marginRight: "30px", fontSize: "20px" }}>Giá gốc: {(drug.find((x) => x.id === product.products[index-1].productId)?.price)?.toLocaleString("en-US")} đ</p>
+                                      <p style={{ color: "black", fontWeight: "bold", marginRight: "30px", fontSize: "20px" }}>Giá gốc: {(drug.find((x) => x.id === product.products[index - 1].productId)?.price)?.toLocaleString("en-US")} đ</p>
                                     }
                                     { product.discountMoney !== null ?
-                                      (<p style={{ color: "black", fontWeight: "bold", fontSize: "20px" }}>Giá sau khi giảm: {((drug.find((x) => x.id === product.products[index-1].productId)?.price) - product.discountMoney)?.toLocaleString("en-US")} đ</p>) :
-                                      (<p style={{ color: "black", fontWeight: "bold", fontSize: "20px" }}>Giá sau khi giảm: {((drug.find((x) => x.id === product.products[index-1].productId)?.price) - (product.discountPercent / 100 * (drug.find((x) => x.id === product.products[index-1].productId)?.price)))?.toLocaleString("en-US")} đ</p>)
+                                      (<p style={{ color: "black", fontWeight: "bold", fontSize: "20px" }}>Giá sau khi giảm: {((drug.find((x) => x.id === product.products[index - 1].productId)?.price) - product.discountMoney)?.toLocaleString("en-US")} đ</p>) :
+                                      (<p style={{ color: "black", fontWeight: "bold", fontSize: "20px" }}>Giá sau khi giảm: {((drug.find((x) => x.id === product.products[index - 1].productId)?.price) - (product.discountPercent / 100 * (drug.find((x) => x.id === product.products[index - 1].productId)?.price)))?.toLocaleString("en-US")} đ</p>)
                                     }
                                   </div>
                                 )}
