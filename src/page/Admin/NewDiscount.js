@@ -69,7 +69,6 @@ const NewDiscount = () => {
       if (res !== null && res !== undefined && res.status === 200) {
         setDrug(res.data.items);
         setTotalRecord(res.data.totalRecord);
-        console.log("display", res.data.items);
       }
     }
   }
@@ -78,8 +77,8 @@ const NewDiscount = () => {
     const productId = product.products[0].productId;
     const productPrice = getPriceById(productId);
 
-    if (discountPercent > 50) {
-      Swal.fire("Không Được Giảm Quá 50%", "", "question");
+    if (discountPercent > 99) {
+      Swal.fire("Không Được Giảm Quá 99%", "", "question");
       return false;
     }
     if (!product.discountMoney && !product.discountPercent) {
@@ -87,10 +86,10 @@ const NewDiscount = () => {
       return false;
     }
     if (product.discountMoney > productPrice * 0.5) {
-      Swal.fire("Giá giảm không được cao hơn 50% giá sản phẩm", "", "question");
+      Swal.fire("Giá trừ tiền thẳng không được cao hơn 50% giá sản phẩm", "", "question");
       return false;
     }
-    
+
     const startDate = new Date(product.startDate);
     const endDate = new Date(product.endDate);
 
@@ -101,7 +100,7 @@ const NewDiscount = () => {
 
     if (startDate > endDate) {
       Swal.fire(
-        "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu",
+        "Ngày kết thúc phải sau ngày bắt đầu",
         "",
         "question"
       );
@@ -267,14 +266,14 @@ const NewDiscount = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-company"
                         >
-                          Lí Do
+                          Mô tả
                         </label>
                         <div className="input-group input-group-merge">
                           <input
                             type="text"
                             id="basic-icon-default-company"
                             className="form-control"
-                            placeholder=" Lí Do"
+                            placeholder=" Mô tả chi tiết giảm giá"
                             aria-label="Tên Loại Con Sản Phẩm"
                             aria-describedby="basic-icon-default-company2"
                             onChange={(e) =>
@@ -324,10 +323,10 @@ const NewDiscount = () => {
 
                                 if (
                                   discountType === "percent" &&
-                                  (value < 0 || value > 50)
+                                  (value < 1 || value > 99)
                                 ) {
                                   setDiscountError(
-                                    "Giảm giá phải nằm trong khoảng từ 0 đến 50"
+                                    "Giảm giá phải nằm trong khoảng từ 1 đến 99%"
                                   );
                                 } else if (
                                   discountType === "money" &&
@@ -339,15 +338,18 @@ const NewDiscount = () => {
                                 } else {
                                   setDiscountError("");
                                 }
-                                setProduct((prevState) => ({
-                                  ...prevState,
-                                  discountPercent: value,
-                                }));
+                                if (discountType === "percent") {
+                                  setProduct((prevState) => ({
+                                    ...prevState,
+                                    discountPercent: value,
+                                    discountMoney: null
+                                  }));
+                                }
                               }}
                             />
                           </div>
                           {discountError && (
-                           <div className="form-text" style={{ color: "red"}} >
+                            <div className="form-text" style={{ color: "red" }} >
                               {discountError}
                             </div>
                           )}
@@ -390,7 +392,7 @@ const NewDiscount = () => {
                                   parsedValue > productPrice * 0.5
                                 ) {
                                   setDiscountMoneyError(
-                                    "Số tiền giảm không được cao hơn 50% giá sản phẩm."
+                                    "Số tiền trừ thẳng tiền không được cao hơn 50% giá sản phẩm."
                                   );
                                 } else {
                                   setDiscountMoneyError("");
@@ -399,7 +401,7 @@ const NewDiscount = () => {
                             />
                           </div>
                           {discountMoneyError && (
-                            <div className="form-text" style={{ color: "red"}} >
+                            <div className="form-text" style={{ color: "red" }} >
                               {discountMoneyError}
                             </div>
                           )}
@@ -495,7 +497,7 @@ const NewDiscount = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Thêm Sản phẩm Để Giảm Giá </h5>
+                    <h5 className="mb-0">Chọn Sản phẩm Có Mặt Trong Chương Trình Giảm Giá </h5>
                   </div>{" "}
                   {Array.from({ length: unitCount }, (_, i) => i + 1).map(
                     (index) => {
@@ -514,19 +516,11 @@ const NewDiscount = () => {
                                 className="mb-3"
                                 style={{ width: "30%", marginRight: 20 }}
                               >
-                                {selectedOption && (
-                                  <div>
-                                    <p>Price: {price}</p>
-                                    <p>
-                                      Giá Giảm {price - product.discountMoney}
-                                    </p>
-                                  </div>
-                                )}
                                 <label
                                   className="form-label"
                                   htmlFor="basic-icon-default-phone"
                                 >
-                                  Id sản phẩm
+                                  chọn sản phẩm giảm giá
                                 </label>
 
                                 <Select
@@ -539,6 +533,16 @@ const NewDiscount = () => {
                                     const drugObj = drug.find(
                                       (d) => d.id === selectedOption.value
                                     );
+                                    if (drugObj.discountModel !== null) {
+                                      Swal.fire("Sản phẩm này đang được giảm giá rồi, không thể giảm giá nữa.")
+                                      return;
+                                    }
+
+                                    if (typeof (product.products.find(x => x.productId === drugObj.id)) !== "undefined") {
+                                      return;
+                                    }
+
+
                                     const price = drugObj ? drugObj.price : 0;
                                     setSelectedOption(selectedOption);
                                     setPrice(
@@ -557,15 +561,32 @@ const NewDiscount = () => {
                                     });
                                   }}
                                   options={options}
+                                  noOptionsMessage={({ inputValue }) =>
+                                    inputValue ? options : "Đang Tải Sản Phẩm..."
+                                  }
                                 />
                               </div>
+                              <div>
+                                {selectedOption && (
+                                  <div style={{ display: "flex", margin: "35px 0 0 0" }}>
+                                    <p style={{ color: "black", fontWeight: "bold", marginRight: "30px", fontSize: "20px" }}>Giá gốc: {price.toLocaleString("en-US")} đ</p>
+                                    {product.discountMoney !== null ?
+                                      (<p style={{ color: "black", fontWeight: "bold", fontSize: "20px" }}>Giá sau khi giảm: {(price - product.discountMoney).toLocaleString("en-US")} đ</p>) :
+                                      (<p style={{ color: "black", fontWeight: "bold", fontSize: "20px" }}>Giá sau khi giảm: {(price - (product.discountPercent / 100 * price)).toLocaleString("en-US")} đ</p>)
+                                    }
+                                  </div>
+                                )}
+                              </div>
+                              <div>
+                                <button
+                                  style={{ margin: "30px 0 0 30px" }}
+                                  className="btn btn-danger"
+                                  onClick={() => handleDeleteProduct(index - 1)}
+                                >
+                                  Xóa
+                                </button>
+                              </div>
                             </div>
-                            <button
-                              style={{ marginLeft: 10 }}
-                              onClick={() => handleDeleteProduct(index - 1)}
-                            >
-                              Xóa
-                            </button>
                           </div>
                           <hr />
                         </div>
