@@ -123,6 +123,22 @@ const OrderDetail = () => {
     loadDataOrderById();
   }, []);
   async function confirmOrder() {
+    const confirmed = await Swal.fire({
+      title: "Bạn có chắc chắn muốn tiếp nhận đơn hàng này?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Không",
+      footer:
+        "Lưu ý: Tiếp nhận đơn hàng đồng nghĩa với việc bạn chịu trách nhiệm cho việc thi triển đơn hàng này!",
+    });
+
+    if (!confirmed.isConfirmed) {
+      return;
+    }
+
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
       const deviceId = await axios
@@ -256,8 +272,10 @@ const OrderDetail = () => {
       console.log("res", res);
       if (res !== null && res !== undefined && res.status === 200) {
         setIsOpen(false);
-        Swal.fire("Từ Chối Thành Công", "", "success");
+        Swal.fire("Đã Từ Chối Đơn Hàng", "", "success");
         loadDataOrderById();
+      } else if (res.status === 400) {
+        Swal.fire(res.data)
       }
     }
   }
@@ -322,7 +340,7 @@ const OrderDetail = () => {
               aria-label="Tên Sản Phẩm"
               aria-describedby="basic-icon-default-fullname2"
             >
-              Vui Lòng Xác Nhận Đơn Hàng
+              Vui lòng kiểm tra thông tin và xác nhận đơn hàng cho khách hàng
             </div>
           </div>
 
@@ -367,7 +385,7 @@ const OrderDetail = () => {
               aria-label="Tên Sản Phẩm"
               aria-describedby="basic-icon-default-fullname2"
             >
-              Cập nhật
+              Cập nhật trạng thái đơn hàng
             </div>
           </div>
 
@@ -466,7 +484,7 @@ const OrderDetail = () => {
               aria-label="Tên Sản Phẩm"
               aria-describedby="basic-icon-default-fullname2"
             >
-              Thành Công
+              Đơn hàng đã hoàn thành
             </div>
           </div>
 
@@ -503,7 +521,7 @@ const OrderDetail = () => {
               aria-label="Tên Sản Phẩm"
               aria-describedby="basic-icon-default-fullname2"
             >
-              Cập nhật
+              Hoàn thành đơn cho khách hàng
             </div>
           </div>
 
@@ -581,7 +599,7 @@ const OrderDetail = () => {
               color: "white",
             }}
           >
-            Đơn hàng đã được xác nhận bởi người khác
+            Đơn hàng đang được nhân viên khác thi triển
           </a>
         </div>
       </>
@@ -648,7 +666,7 @@ const OrderDetail = () => {
                             className="form-label"
                             htmlFor="basic-icon-default-phone"
                           >
-                            Tên Người Mua :
+                            Tên Khách Hàng :
                           </label>
                           <div className="input-group input-group-merge">
                             <div>{OrderDetail?.orderContactInfo?.fullname}</div>
@@ -667,7 +685,7 @@ const OrderDetail = () => {
                             className="form-label"
                             htmlFor="basic-icon-default-phone"
                           >
-                            Số Điện Thoại Người Mua :
+                            Số Điện Thoại Khách Hàng :
                           </label>
                           <div className="input-group input-group-merge">
                             <div>
@@ -688,7 +706,7 @@ const OrderDetail = () => {
                             className="form-label"
                             htmlFor="basic-icon-default-phone"
                           >
-                            Email Người Mua :
+                            Email Khách Hàng :
                           </label>
                           <div className="input-group input-group-merge">
                             <div>{OrderDetail?.orderContactInfo?.email}</div>
@@ -738,78 +756,88 @@ const OrderDetail = () => {
                                   đ
                                 </>
                               ) : (
-                                "0 đ"
+                                "0 đ (Khách hàng đã thanh toán trước)"
                               )}
                             </div>
                           </div>
                         </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            width: 500,
-                            padding: 1,
-                            height: 100,
-                            marginTop: 70,
-                          }}
-                        >
-                          <div
-                            className="mb-3"
-                            style={{
-                              width: "45%",
-                              height: 10,
-                              marginRight: 30,
-                            }}
-                          >
-                            <label
-                              className="form-label"
-                              htmlFor="basic-icon-default-fullname"
+                        {OrderDetail?.paymentMethodId === 1 ?
+                          (
+                            <div
+                              style={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                width: 500,
+                                padding: 1,
+                                height: 100,
+                                marginTop: 70,
+                              }}
                             >
-                              Số Tiền Nhận
+                              <div
+                                className="mb-3"
+                                style={{
+                                  width: "45%",
+                                  height: 10,
+                                  marginRight: 30,
+                                }}
+                              >
+                                <label
+                                  className="form-label"
+                                  htmlFor="basic-icon-default-fullname"
+                                >
+                                  Số Tiền Nhận
                             </label>
-                            <div className="input-group input-group-merge">
-                              <input
-                                type="text"
-                                className="form-control"
-                                id="basic-icon-default-fullname"
-                                placeholder="Số Tiền Nhận"
-                                aria-label="Tên Sản Phẩm"
-                                aria-describedby="basic-icon-default-fullname2"
-                                value={moneyReceived}
-                                onChange={handleMoneyReceivedChange}
-                                onBlur={handleMoneyReceivedBlur}
-                              />
-                            </div>
-                          </div>
-                          <div
-                            className="mb-3"
-                            style={{ width: "45%", height: 10 }}
-                          >
-                            <label
-                              className="form-label"
-                              htmlFor="basic-icon-default-fullname"
-                            >
-                              Tiền Thối Cho Khách Hàng
+                                <div className="input-group input-group-merge">
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    id="basic-icon-default-fullname"
+                                    placeholder="Số Tiền Nhận"
+                                    aria-label="Tên Sản Phẩm"
+                                    aria-describedby="basic-icon-default-fullname2"
+                                    value={moneyReceived}
+                                    onChange={handleMoneyReceivedChange}
+                                    onBlur={handleMoneyReceivedBlur}
+                                  />
+                                </div>
+                              </div>
+                              <div
+                                className="mb-3"
+                                style={{ width: "45%", height: 10 }}
+                              >
+                                <label
+                                  className="form-label"
+                                  htmlFor="basic-icon-default-fullname"
+                                >
+                                  Tiền Thối Cho Khách Hàng
                             </label>
-                            <div className="input-group input-group-merge">
-                              <input
-                                type="text"
-                                disabled
-                                className="form-control"
-                                id="basic-icon-default-fullname"
-                                placeholder="Tiền Thối "
-                                aria-label="Tên Sản Phẩm"
-                                aria-describedby="basic-icon-default-fullname2"
-                                value={Math.max(
-                                  moneyReceived - OrderDetail.totalPrice,
-                                  0
-                                ).toLocaleString("en-US")}
-                              />
-                            </div>
-                            {/* {errorMessage && (
+                                <div className="input-group input-group-merge">
+                                  <input
+                                    type="text"
+                                    disabled
+                                    className="form-control"
+                                    id="basic-icon-default-fullname"
+                                    placeholder="Tiền Thối "
+                                    aria-label="Tên Sản Phẩm"
+                                    aria-describedby="basic-icon-default-fullname2"
+                                    value={Math.max(
+                                      moneyReceived - OrderDetail.totalPrice,
+                                      0
+                                    ).toLocaleString("en-US")}
+                                  />
+                                </div>
+                                {/* {errorMessage && (
                               <div style={{ color: "red" }}>{errorMessage}</div>
                             )} */}
-                          </div>
+                              </div>
+                            </div>
+                          ) : (<div></div>)
+                        }
+                        <div
+                          className="mb-3"
+                          style={{ width: "95%", display: "flex" }}
+                        >
+                          <span style={{ fontSize: 17 }}>Hãy nhắc nhở khách hàng đã nhận đủ hàng trước khi ra về nhé! Vui lòng xác nhận hoàn thành đơn hàng cho khách khi đã nhận đủ hàng.</span>
                         </div>
                       </div>
 
@@ -820,7 +848,7 @@ const OrderDetail = () => {
                             <button
                               type="submit"
                               className="button-28"
-                            
+
                               style={{
                                 height: 50,
                                 width: 700,
@@ -869,21 +897,20 @@ const OrderDetail = () => {
           >
             <a href="#" className="overlay-close" />
             {OrderDetail.orderStatusName === "Đang chuẩn bị hàng" &&
-            OrderDetail.orderTypeId === 3 ? (
+              OrderDetail.orderTypeId === 3 ? (
               <div className="row " style={{ width: 900 }}>
                 <div className="col-xl">
-                  <div className="card mb-4">
+                  <div style={{overflow: "scroll"}} className="card mb-4">
                     <div
                       className="card-header d-flex justify-content-between align-items-center"
                       style={{
                         height: 70,
                         backgroundColor: "white",
-
-                        marginLeft: 230,
+                        margin: "0 auto",
                         borderColor: "#f4f4f4",
                       }}
                     >
-                      <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
+                      <h5 className="mb-0">Chuẩn Bị Đơn Hàng</h5>
                     </div>
                     <div className="card-body">
                       <form>
@@ -898,37 +925,13 @@ const OrderDetail = () => {
                             className="input-group input-group-merge"
                             style={{ width: "95%" }}
                           >
-                            <select
-                              name="city"
-                              disabled
-                              id="basic-icon-default-email"
-                              className="form-control"
-                              onChange={(e) => {
-                                setOrderDetail({
-                                  ...OrderDetail,
-                                  orderStatus: e.target.value,
-                                });
-                              }}
-                              value={7}
-                            >
-                              {orderStatus &&
-                                orderStatus.length &&
-                                orderStatus.map((e, index) => {
-                                  return (
-                                    <>
-                                      <option
-                                        key={e.orderStatusId}
-                                        value={e.orderStatusId}
-                                      >
-                                        {e.orderStatusName}
-                                      </option>
-                                    </>
-                                  );
-                                })}
-                            </select>
                           </div>
-                          <div>
-                            {" "}
+                          <div style={{height: 300, overflow: "scroll"}}>
+                            {
+                              <div>
+                                <span style={{ color: "red", fontSize: 16 }}>Đây là danh sách các sản phẩm bạn cần chuẩn bị cho đơn hàng này. Đánh dấu vào bên cạnh sản phẩm cho mỗi sản phẩm bạn đã chuẩn bị xong.</span>
+                              </div>
+                            }
                             {ProductDetail &&
                               ProductDetail.length &&
                               ProductDetail.map((e) => {
@@ -958,9 +961,10 @@ const OrderDetail = () => {
                                         {e.quantity} {e.unitName}
                                       </div>
                                     </div>
-                                    <div style={{ width: 380 }}>
-                                      <div>Xác Nhận</div>
+                                    <div style={{ width: 380, display: "flex" }}>
+                                      <div>Đã chuẩn bị xong</div>
                                       <input
+                                        style={{ margin: "0 0 43px 15px" }}
                                         type="checkbox"
                                         onChange={(event) =>
                                           handleCheckboxChange(event, e.id)
@@ -976,7 +980,7 @@ const OrderDetail = () => {
                               className="form-label"
                               htmlFor="basic-icon-default-phone"
                             >
-                              Mô Tả
+                              Ghi chú
                             </label>
                             <div className="input-group input-group-merge">
                               <textarea
@@ -984,13 +988,15 @@ const OrderDetail = () => {
                                 type="text"
                                 className="form-control"
                                 id="basic-icon-default-fullname"
-                                placeholder="Viết Mô Tả "
+                                placeholder="Ghi chú thêm của nhân viên "
                                 aria-label="John Doe"
                                 aria-describedby="basic-icon-default-fullname2"
                                 onChange={(e) =>
                                   setDescriptionStatus(e.target.value)
                                 }
                               />
+                              <span style={{ color: "red", fontSize: 15, marginTop: 10 }}>Khi đã chuẩn bị hàng xong, vui lòng bấm nút xác nhận và gọi điện đến khách hàng thông báo cho việc triển khai giao hàng nhé!</span>
+                              <span style={{ color: "red", fontSize: 15, marginTop: 10 }}>Lưu ý: Sau khi đã chuẩn bị hàng xong, vui lòng chuyển sang điện thoại để thực hiện việc giao hàng cho khách hàng</span>
                             </div>
                           </div>
                         </div>
@@ -1004,16 +1010,15 @@ const OrderDetail = () => {
                                 updateStatusOrderDeli();
                               }}
                               style={{
-                                height: 30,
-                                width: 80,
+                                margin: "0 auto",
+                                width: "auto",
+                                padding: "10px",
                                 fontSize: 13,
-                                marginLeft: 23,
-
                                 backgroundColor: "#82AAE3",
                                 color: "white",
                               }}
                             >
-                              Xác Nhận
+                              Hoàn Tất Chuẩn Bị Hàng
                             </button>
                           </div>
                         )}
@@ -1031,12 +1036,11 @@ const OrderDetail = () => {
                       style={{
                         height: 70,
                         backgroundColor: "white",
-
-                        marginLeft: 230,
+                        margin: "0 auto",
                         borderColor: "#f4f4f4",
                       }}
                     >
-                      <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
+                      <h5 className="mb-0">Cập Nhật Trạng Thái</h5>
                     </div>
                     <div className="card-body">
                       <form>
@@ -1051,9 +1055,27 @@ const OrderDetail = () => {
                             className="input-group input-group-merge"
                             style={{ width: "95%" }}
                           >
-                            Vui Lòng Chuyển Qua Điện Thoại Để Giao Hàng
+                            <div style={{margin: "0 auto", fontWeight: "bold"}}>Vui Lòng Chuyển Qua Điện Thoại Để Tiếp Tục Giao Hàng</div>
                             <img src="https://jobsgo.vn/blog/wp-content/uploads/2019/09/nhan-vien-giao-hang.png" />
                           </div>
+                          <button
+                              type="submit"
+                              className="button-28"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setIsOpen2(false)
+                              }}
+                              style={{
+                                margin: "0 auto",
+                                width: "auto",
+                                padding: "10px",
+                                fontSize: 13,
+                                backgroundColor: "#82AAE3",
+                                color: "white",
+                              }}
+                            >
+                              Quay Trở Về
+                            </button>
                         </div>
                       </form>
                     </div>
@@ -1070,12 +1092,11 @@ const OrderDetail = () => {
                       style={{
                         height: 70,
                         backgroundColor: "white",
-
-                        marginLeft: 230,
                         borderColor: "#f4f4f4",
+                        margin: "0 auto"
                       }}
                     >
-                      <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
+                      <h5 style={{ textAlign: "center" }} className="mb-0">Chuẩn Bị Đơn Hàng</h5>
                     </div>
                     <div className="card-body">
                       <form>
@@ -1090,37 +1111,12 @@ const OrderDetail = () => {
                             className="input-group input-group-merge"
                             style={{ width: "95%" }}
                           >
-                            <select
-                              name="city"
-                              disabled
-                              id="basic-icon-default-email"
-                              className="form-control"
-                              onChange={(e) => {
-                                setOrderDetail({
-                                  ...OrderDetail,
-                                  orderStatus: e.target.value,
-                                });
-                              }}
-                              value={9}
-                            >
-                              {orderStatus &&
-                                orderStatus.length &&
-                                orderStatus.map((e, index) => {
-                                  return (
-                                    <>
-                                      <option
-                                        key={e.orderStatusId}
-                                        value={e.orderStatusId}
-                                      >
-                                        {e.orderStatusName}
-                                      </option>
-                                    </>
-                                  );
-                                })}
-                            </select>
+
                           </div>
-                          <div>
-                            {" "}
+                          <div style={{height: 300, overflow: "scroll"}}>
+                            {
+                              <span style={{ color: "red", fontSize: 16 }}>Đây là danh sách các sản phẩm bạn cần chuẩn bị cho đơn hàng này. Đánh dấu vào bên cạnh sản phẩm cho mỗi sản phẩm bạn đã chuẩn bị xong.</span>
+                            }
                             {ProductDetail &&
                               ProductDetail.length &&
                               ProductDetail.map((e) => {
@@ -1150,9 +1146,10 @@ const OrderDetail = () => {
                                         {e.quantity} {e.unitName}
                                       </div>
                                     </div>
-                                    <div style={{ width: 380 }}>
-                                      <div>Xác Nhận</div>
+                                    <div style={{ width: 380, display: "flex" }}>
+                                      <div>Đã chuẩn bị xong</div>
                                       <input
+                                        style={{ margin: "0 0 43px 15px" }}
                                         type="checkbox"
                                         onChange={(event) =>
                                           handleCheckboxChange(event, e.id)
@@ -1168,21 +1165,22 @@ const OrderDetail = () => {
                               className="form-label"
                               htmlFor="basic-icon-default-phone"
                             >
-                              Mô Tả
+                              Ghi chú
                             </label>
                             <div className="input-group input-group-merge">
                               <textarea
-                                style={{ height: 100 }}
+                                style={{ height: 100, resize: "none", overflow: "hidden" }}
                                 type="text"
                                 className="form-control"
                                 id="basic-icon-default-fullname"
-                                placeholder="Viết Mô Tả "
+                                placeholder="Ghi chú thêm của nhân viên "
                                 aria-label="John Doe"
                                 aria-describedby="basic-icon-default-fullname2"
                                 onChange={(e) =>
                                   setDescriptionStatus(e.target.value)
                                 }
                               />
+                              <span style={{ color: "red", fontSize: 15, marginTop: 10 }}>Khi đã chuẩn bị hàng xong, vui lòng bấm nút xác nhận và thông báo đến khách hàng đến nhận tại cửa hàng nhé!</span>
                             </div>
                           </div>
                         </div>
@@ -1190,22 +1188,20 @@ const OrderDetail = () => {
                           <div style={{ display: "flex" }}>
                             <button
                               type="submit"
-                              className="button-28"
+                              className="btn btn-default"
                               onClick={(e) => {
                                 e.preventDefault();
                                 updateStatusOrderGo();
                               }}
                               style={{
-                                height: 30,
-                                width: 80,
-                                fontSize: 13,
-                                marginLeft: 23,
-
+                                fontSize: 15,
+                                margin: "0 auto",
                                 backgroundColor: "#82AAE3",
                                 color: "white",
+                                padding: "10px 20px"
                               }}
                             >
-                              Xác Nhận
+                              Hoàn Tất Chuẩn Bị Hàng
                             </button>
                           </div>
                         )}
@@ -1229,7 +1225,7 @@ const OrderDetail = () => {
 
             <div className="row " style={{ width: 700 }}>
               <div className="col-xl">
-                <div className="card mb-4">
+                <div style={{ overflow: "scroll" }} className="card mb-4">
                   <div
                     className="card-header d-flex justify-content-between align-items-center"
                     style={{
@@ -1240,10 +1236,128 @@ const OrderDetail = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Xác Nhận Đơn Hàng</h5>
+                    <h5 className="mb-0">Xác Thực Đơn Hàng</h5>
                   </div>
                   <div className="card-body">
-                    <form>
+                    <div style={{ margin: "10px 10px 0 40px" }}>
+                      <div style={{ margin: "0 0 10px 0" }}>
+                        <span style={{ color: "red" }}>Nhân viên lưu ý vui lòng kiểm tra kĩ thông tin khách hàng trước khi thực hiện việc xác thực đơn hàng nhé!</span>
+                      </div>
+                      <div
+                        className="mb-3"
+                        style={{ width: "95%", display: "flex" }}
+                      >
+                        <label
+                          style={{
+                            paddingTop: 2,
+                            width: 400,
+                            fontSize: 15,
+                          }}
+                          className="form-label"
+                          htmlFor="basic-icon-default-phone"
+                        >
+                          Tên Khách Hàng :
+                          </label>
+                        <div className="input-group input-group-merge">
+                          <div>{OrderDetail?.orderContactInfo?.fullname}</div>
+                        </div>
+                      </div>
+                      <div
+                        className="mb-3"
+                        style={{ width: "95%", display: "flex", marginBottom: "-10px!important" }}
+                      >
+                        <label
+                          style={{
+                            paddingTop: 2,
+                            width: 400,
+                            fontSize: 15,
+                          }}
+                          className="form-label"
+                          htmlFor="basic-icon-default-phone"
+                        >
+                          Số Điện Thoại Khách Hàng :
+                          </label>
+                        <div className="input-group input-group-merge">
+                          <div>
+                            {OrderDetail?.orderContactInfo?.phoneNumber} <br />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mb-3"
+                        style={{ width: "95%", display: "flex" }}
+                      >
+                        <span style={{ color: "red" }}>Gọi điện khách hàng để xác nhận thông tin đơn hàng khách đã đặt.</span>
+                      </div>
+                      <div
+                        className="mb-3"
+                        style={{ width: "95%", display: "flex" }}
+                      >
+                        <label
+                          style={{
+                            paddingTop: 2,
+                            width: 400,
+                            fontSize: 15,
+                          }}
+                          className="form-label"
+                          htmlFor="basic-icon-default-phone"
+                        >
+                          Email Khách Hàng :
+                          </label>
+                        <div className="input-group input-group-merge">
+                          <div>{OrderDetail?.orderContactInfo?.email}</div>
+                        </div>
+                      </div>
+                      <div
+                        className="mb-3"
+                        style={{ width: "95%", display: "flex" }}
+                      >
+                        <label
+                          style={{
+                            paddingTop: 2,
+                            width: 400,
+                            fontSize: 15,
+                          }}
+                          className="form-label"
+                          htmlFor="basic-icon-default-phone"
+                        >
+                          Phương thức thanh toán :
+                          </label>
+                        <div className="input-group input-group-merge">
+                          <div>{OrderDetail?.paymentMethod}</div>
+                        </div>
+                      </div>
+                      <div
+                        className="mb-3"
+                        style={{ width: "95%", display: "flex" }}
+                      >
+                        <label
+                          style={{
+                            paddingTop: 2,
+                            width: 400,
+                            fontSize: 15,
+                          }}
+                          className="form-label"
+                          htmlFor="basic-icon-default-phone"
+                        >
+                          Số tiền cần thanh toán :
+                          </label>
+                        <div className="input-group input-group-merge">
+                          <div>
+                            {OrderDetail?.paymentMethodId === 1 ? (
+                              <>
+                                {OrderDetail?.totalPrice.toLocaleString(
+                                  "en-US"
+                                )}{" "}
+                                  đ
+                                </>
+                            ) : (
+                              "0 đ (Khách hàng đã thanh toán trước)"
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <form style={{ marginTop: -40 }}>
                       <div
                         style={{
                           display: "grid",
@@ -1256,15 +1370,15 @@ const OrderDetail = () => {
                             className="form-label"
                             htmlFor="basic-icon-default-phone"
                           >
-                            Mô Tả
+                            Ghi chú / Lý do của nhân viên
                           </label>
                           <div className="input-group input-group-merge">
                             <textarea
-                              style={{ height: 200 }}
+                              style={{ height: 120, resize: "none" }}
                               type="text"
                               className="form-control"
                               id="basic-icon-default-fullname"
-                              placeholder="Viết Mô Tả "
+                              placeholder="Ghi chú hoặc lý do nếu nhân viên thực hiện từ chối đơn hàng "
                               aria-label="John Doe"
                               aria-describedby="basic-icon-default-fullname2"
                               onChange={(e) => setDescription(e.target.value)}
@@ -1282,17 +1396,16 @@ const OrderDetail = () => {
                               rejectOrder();
                             }}
                             style={{
-                              height: 30,
-                              width: 80,
+                              padding: "10px",
+                              width: "auto",
                               fontSize: 13,
                               paddingTop: 1,
-                              marginLeft: "35%",
-
+                              marginLeft: "29%",
                               backgroundColor: "#DF2E38",
                               color: "white",
                             }}
                           >
-                            Từ Chối
+                            Từ Chối Đơn Hàng
                           </button>
                           <button
                             type="submit"
@@ -1302,40 +1415,43 @@ const OrderDetail = () => {
                               confirmOrder();
                             }}
                             style={{
-                              height: 30,
-                              width: 80,
                               fontSize: 13,
                               marginLeft: 23,
-
+                              padding: "10px",
+                              width: "auto",
                               backgroundColor: "#82AAE3",
                               color: "white",
                             }}
                           >
-                            Xác Nhận
+                            Xác Nhận Đơn
                           </button>
                         </div>
                       ) : (
-                        <div style={{ display: "flex" }}>
-                          <button
-                            type="submit"
-                            className="button-28"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              rejectOrder();
-                            }}
-                            style={{
-                              height: 30,
-                              width: 80,
-                              fontSize: 13,
-                              paddingTop: 1,
-                              marginLeft: "40%",
-
-                              backgroundColor: "#DF2E38",
-                              color: "white",
-                            }}
-                          >
-                            Từ Chối
+                        <div>
+                          <div style={{ margin: "-20px 0 20px 0" }}>
+                            <span style={{ color: "red" }}>Chi nhánh của bạn do không đủ điều kiện để tiếp nhận đơn hàng này nên đơn hàng của bạn không thể được xác nhận. Tham khảo lý do ở mục trạng thái hành động.</span>
+                          </div>
+                          <div style={{ display: "flex" }}>
+                            <button
+                              type="submit"
+                              className="button-28"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                rejectOrder();
+                              }}
+                              style={{
+                                padding: "11px 10px 10px 10px",
+                                width: "auto",
+                                fontSize: 13,
+                                paddingTop: 1,
+                                marginLeft: "38%",
+                                backgroundColor: "#DF2E38",
+                                color: "white",
+                              }}
+                            >
+                              Từ Chối Đơn Hàng
                           </button>
+                          </div>
                         </div>
                       )}
                     </form>
@@ -1350,9 +1466,9 @@ const OrderDetail = () => {
           >
             <a href="#" className="overlay-close" />
 
-            <div className="row " style={{ width: 700 }}>
+            <div className="row" style={{ width: 700 }}>
               <div className="col-xl">
-                <div className="card mb-4">
+                <div style={{ overflow: "scroll" }} className="card mb-4">
                   <div
                     className="card-header d-flex justify-content-between align-items-center"
                     style={{
@@ -1467,7 +1583,7 @@ const OrderDetail = () => {
                             Mô Tả
                           </label>
                           <div className="input-group input-group-merge">
-                            {}
+                            { }
                             <textarea
                               style={{ height: 200 }}
                               type="text"
@@ -1907,7 +2023,7 @@ const OrderDetail = () => {
                             className="form-label"
                             htmlFor="basic-icon-default-phone"
                           >
-                            Mô Tả
+                            Ghi chú của khách hàng
                           </label>
                           <div className="input-group input-group-merge">
                             <div
@@ -1917,7 +2033,7 @@ const OrderDetail = () => {
                               aria-label="Tên Sản Phẩm"
                               aria-describedby="basic-icon-default-fullname2"
                             >
-                              {OrderDetail.note}
+                              {(OrderDetail.note || OrderDetail.note.length == 0) ? "Trống" : OrderDetail.note }
                             </div>
                           </div>
                         </div>
@@ -2039,7 +2155,7 @@ const OrderDetail = () => {
                               >
                                 <tel>{orderContactInfo.phoneNumber}</tel>
                               </div>
-                              {OrderDetail.orderTypeName === "Bán tại chỗ"||OrderDetail.orderStatusName==="Khách hàng nhận hàng thành công" ? (
+                              {OrderDetail.orderTypeName === "Bán tại chỗ" || OrderDetail.pharmacistId !== null ? (
                                 <div
                                   className="form-text"
                                   style={{ color: "red" }}
@@ -2049,7 +2165,7 @@ const OrderDetail = () => {
                                   className="form-text"
                                   style={{ color: "red" }}
                                 >
-                                  Gọi Khách Hàng Xác Nhận Lại
+                                  Gọi khách hàng trước khi xác nhận đơn hàng
                                 </div>
                               )}
                             </div>
@@ -2065,7 +2181,7 @@ const OrderDetail = () => {
                                   className="form-label"
                                   htmlFor="basic-icon-default-phone"
                                 >
-                                  Email Người mua
+                                  Email Khách Hàng
                                 </label>
                                 <div className="input-group input-group-merge">
                                   <div
@@ -2082,7 +2198,7 @@ const OrderDetail = () => {
                               </div>
                               <div className="mb-3" style={{ width: "95%" }}>
                                 {OrderDetail.orderTypeName ===
-                                "Đến lấy tại cửa hàng" ? (
+                                  "Đến lấy tại cửa hàng" ? (
                                   <div>
                                     <div>
                                       {" "}

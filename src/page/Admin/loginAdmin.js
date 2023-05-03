@@ -43,20 +43,20 @@ const LoginAdmin = () => {
           localStorage.setItem(
             "roleID",
             jwtDecode(res.data.token)[
-              "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
             ]
           );
           localStorage.setItem(
             "userID",
             jwtDecode(res.data.token)[
-              "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
             ]
           );
           const roleID =
             ("roleID",
-            jwtDecode(res.data.token)[
+              jwtDecode(res.data.token)[
               "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-            ]);
+              ]);
 
           localStorage.setItem("SiteID", jwtDecode(res.data.token).SiteID);
           const decoded = jwtDecode(res.data.token);
@@ -117,15 +117,18 @@ const LoginAdmin = () => {
                       marginTop: -60,
                     }}
                   >
-                    <Link to="/Home" className="app-brand-link">
+                    <Link to="/LoginAdmin" className="app-brand-link">
                       <img src={logo} style={{ height: 250 }} />
                     </Link>
                   </div>
                   {/* /Logo */}
-                  <h4 className="mb-2">Chào Mừng Đến BetterHealth! 👋</h4>
-                  <p className="mb-4">
-                  xin hãy đăng nhập
+                  <h5 className="mb-2">Chào Mừng Đến BetterHealth! (Nội Bộ)</h5>
+                  <p style={{ fontWeight: "bold", color: "black" }} className="mb-4">
+                    Vui lòng thực hiện đăng nhập tài khoản.
                   </p>
+                  <span style={{ color: "black" }}>
+                    Lưu ý: Nếu không phải nhân viên nội bộ, vui lòng <Link to="/Home">bấm vào đây để trở về trang chính.</Link>
+                  </span>
                   {error && (
                     <div className="error" style={{ color: "red" }}>
                       {error}
@@ -167,29 +170,10 @@ const LoginAdmin = () => {
                           id="password"
                           className="form-control"
                           name="password"
-                          placeholder="············"
+                          placeholder="Nhập mật khẩu đăng nhập"
                           aria-describedby="password"
                           onChange={(e) => setPassword(e.target.value)}
                         />
-                        <span className="input-group-text cursor-pointer">
-                          <i className="bx bx-hide" />
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mb-3">
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id="remember-me"
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="remember-me"
-                        >
-                          {" "}
-                          Remember Me{" "}
-                        </label>
                       </div>
                     </div>
                     <div className="mb-3">

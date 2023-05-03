@@ -137,7 +137,7 @@ const ViewImportProduct = () => {
             ),
             {
               ...product.productImportDetails[index - 1].productBatches[
-                batchIndex - 1
+              batchIndex - 1
               ],
               quantity: parseInt(e.target.value),
             },
@@ -316,20 +316,20 @@ const ViewImportProduct = () => {
                                     aria-describedby={`quantitative${index}2`}
                                   >
                                     {drug?.find(
-                                        (sc) =>
-                                        sc.productUnitReferences?.find((item)=>item.id ===
-                                        product?.productImportDetails[
-                                          index - 1
-                                        ]?.productId) 
-                                      )?.name
-                                        ?  drug?.find(
-                                          (sc) =>
-                                          sc.productUnitReferences?.find((item)=>item.id ===
+                                      (sc) =>
+                                        sc.productUnitReferences?.find((item) => item.id ===
                                           product?.productImportDetails[
                                             index - 1
-                                          ]?.productId) 
-                                        )?.name
-                                        : "Đang Tải ..."}
+                                          ]?.productId)
+                                    )?.name
+                                      ? drug?.find(
+                                        (sc) =>
+                                          sc.productUnitReferences?.find((item) => item.id ===
+                                            product?.productImportDetails[
+                                              index - 1
+                                            ]?.productId)
+                                      )?.name
+                                      : "Đang Tải ..."}
                                   </div>
                                 </div>
                               </div>
@@ -352,22 +352,22 @@ const ViewImportProduct = () => {
                                     aria-describedby={`quantitative${index}2`}
                                   >
                                     {drug?.find(
-                                        (sc) =>
-                                        sc.productUnitReferences?.find((item)=>item.id ===
-                                        product?.productImportDetails[
-                                          index - 1
-                                        ]?.productId)
-                                      )
-                                        ?  drug?.find(
-                                          (sc) =>
-                                          sc.productUnitReferences?.find((item)=>item.id ===
+                                      (sc) =>
+                                        sc.productUnitReferences?.find((item) => item.id ===
                                           product?.productImportDetails[
                                             index - 1
                                           ]?.productId)
-                                        )?.productUnitReferences.find((item)=>item.id === product?.productImportDetails[
-                                          index - 1
-                                        ]?.productId)?.unitName
-                                        : "Đang Tải ..."}
+                                    )
+                                      ? drug?.find(
+                                        (sc) =>
+                                          sc.productUnitReferences?.find((item) => item.id ===
+                                            product?.productImportDetails[
+                                              index - 1
+                                            ]?.productId)
+                                      )?.productUnitReferences.find((item) => item.id === product?.productImportDetails[
+                                        index - 1
+                                      ]?.productId)?.unitName
+                                      : "Đang Tải ..."}
                                   </div>
                                 </div>
                               </div>
@@ -383,9 +383,9 @@ const ViewImportProduct = () => {
                                 </label>
                                 <div className="input-group input-group-merge">
                                   <div
-                                  
+
                                   >
-                                
+
                                     {
                                       product.productImportDetails[index - 1]
                                         .quantity
@@ -401,41 +401,10 @@ const ViewImportProduct = () => {
                                   className="form-label"
                                   htmlFor={`unitId${index}`}
                                 >
-                                  Giá
+                                  Giá Nhập
                                 </label>
                                 <div className="input-group input-group-merge">
-                                  <input
-                                    type="text"
-                                    id={`sellQuantity${index}`}
-                                    className="form-control"
-                                    placeholder="Số lượng bán"
-                                    aria-label="Unit Id"
-                                    aria-describedby={`sellQuantity${index}2`}
-                                    value={
-                                      product.productImportDetails[index - 1]
-                                        .importPrice
-                                    }
-                                    onChange={(e) => {
-                                      setProduct({
-                                        ...product,
-                                        productImportDetails: [
-                                          ...product.productImportDetails.slice(
-                                            0,
-                                            index - 1
-                                          ),
-                                          {
-                                            ...product.productImportDetails[
-                                              index - 1
-                                            ],
-                                            importPrice: e.target.value,
-                                          },
-                                          ...product.productImportDetails.slice(
-                                            index
-                                          ),
-                                        ],
-                                      });
-                                    }}
-                                  />
+                                  {(product.productImportDetails[index - 1].importPrice).toLocaleString("en-US")} đ
                                 </div>
                               </div>
                               {product.productImportDetails[index - 1]
@@ -466,6 +435,7 @@ const ViewImportProduct = () => {
                                             <input
                                               type="date"
                                               id={`barCode${index}`}
+                                              disabled="true"
                                               className="form-control"
                                               placeholder="Unit Id"
                                               aria-label="Unit Id"
@@ -473,25 +443,11 @@ const ViewImportProduct = () => {
                                               value={
                                                 productBatch.manufactureDate
                                                   ? new Date(
-                                                      productBatch.manufactureDate
-                                                    )
-                                                      .toISOString()
-                                                      .slice(0, 10)
+                                                    productBatch.manufactureDate
+                                                  )
+                                                    .toISOString()
+                                                    .slice(0, 10)
                                                   : ""
-
-                                                // ? new Date(
-                                                //     product.productImportDetails[
-                                                //       index - 1
-                                                //     ].productBatches
-                                                //       .map(
-                                                //         (productBatch) =>
-                                                //           productBatch.manufactureDate
-                                                //       )
-                                                //       .join(", ")
-                                                //   )
-                                                //     .toISOString()
-                                                //     .substr(0, 10)
-                                                // : ""
                                               }
                                               onChange={(e) => {
                                                 setProduct({
@@ -504,7 +460,7 @@ const ViewImportProduct = () => {
                                                     {
                                                       ...product
                                                         .productImportDetails[
-                                                        index - 1
+                                                      index - 1
                                                       ],
                                                       productBatches: [
                                                         {
@@ -542,6 +498,7 @@ const ViewImportProduct = () => {
                                           <div className="input-group input-group-merge">
                                             <input
                                               type="date"
+                                              disabled="true"
                                               id={`price${index}`}
                                               className="form-control"
                                               placeholder="Unit Id"
@@ -550,10 +507,10 @@ const ViewImportProduct = () => {
                                               value={
                                                 productBatch.expireDate
                                                   ? new Date(
-                                                      productBatch.expireDate
-                                                    )
-                                                      .toISOString()
-                                                      .slice(0, 10)
+                                                    productBatch.expireDate
+                                                  )
+                                                    .toISOString()
+                                                    .slice(0, 10)
                                                   : ""
 
                                                 // ? new Date(
@@ -581,7 +538,7 @@ const ViewImportProduct = () => {
                                                     {
                                                       ...product
                                                         .productImportDetails[
-                                                        index - 1
+                                                      index - 1
                                                       ],
                                                       productBatches: [
                                                         {
@@ -618,52 +575,8 @@ const ViewImportProduct = () => {
                                           </label>
 
                                           <div className="input-group input-group-merge">
-                                            <input
-                                              type="text"
-                                              id="basic-icon-default-email"
-                                              className="form-control"
-                                              placeholder="Phone Number"
-                                              aria-label="Phone Number"
-                                              aria-describedby="basic-icon-default-email2"
-                                              value={productBatch.quantity}
-                                              onChange={(e) => {
-                                                setIndexUnit(index);
-                                                setCountQuantity(
-                                                  (countQuantity) =>
-                                                    countQuantity + 1
-                                                );
-                                                setProduct({
-                                                  ...product,
-                                                  productImportDetails: [
-                                                    ...product.productImportDetails.slice(
-                                                      0,
-                                                      index - 1
-                                                    ),
-                                                    {
-                                                      ...product
-                                                        .productImportDetails[
-                                                        index - 1
-                                                      ],
-                                                      productBatches: [
-                                                        {
-                                                          ...product
-                                                            .productImportDetails[
-                                                            index - 1
-                                                          ].productBatches[0],
-                                                          quantity:
-                                                            e.target.value,
-                                                        },
-                                                      ],
-                                                    },
-                                                    ...product.productImportDetails.slice(
-                                                      index
-                                                    ),
-                                                  ],
-                                                });
-                                              }}
-                                            />
+                                            {productBatch.quantity}
                                           </div>
-
                                           <div className="form-text"></div>
                                         </div>
                                       </div>
@@ -712,24 +625,10 @@ const ViewImportProduct = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-fullname"
                         >
-                          Ghi chú
+                          Ghi chú của quản lý
                         </label>
                         <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="basic-icon-default-fullname"
-                            placeholder="Ghi Chú"
-                            aria-label="Tên Sản Phẩm"
-                            aria-describedby="basic-icon-default-fullname2"
-                            value={product.note}
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                note: e.target.value,
-                              }))
-                            }
-                          />
+                          {product.note}
                         </div>
                       </div>
                       <div className="mb-3" style={{ width: "100%" }}>
@@ -737,25 +636,10 @@ const ViewImportProduct = () => {
                           className="form-label"
                           htmlFor="basic-icon-default-company"
                         >
-                          Tổng giá sản phẩm
+                          Tổng giá nhập của sản phẩm
                         </label>
                         <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            readOnly
-                            id="basic-icon-default-company"
-                            className="form-control"
-                            placeholder="Tổng Giá Sản Phẩm"
-                            aria-label="Tên Loại Con Sản Phẩm"
-                            aria-describedby="basic-icon-default-company2"
-                            value={product.totalProductPrice}
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                totalProductPrice: e.target.value,
-                              }))
-                            }
-                          />
+                          {(product.totalProductPrice).toLocaleString("en-US")} đ
                         </div>
                       </div>
                       <div className="mb-3" style={{ width: "95%" }}>
@@ -766,19 +650,7 @@ const ViewImportProduct = () => {
                           Thuế
                         </label>
                         <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            name="city"
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            value={product.taxPrice}
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                taxPrice: e.target.value,
-                              }))
-                            }
-                          />
+                          {(product.taxPrice).toLocaleString("en-US")} đ
                         </div>
                       </div>
                       <div className="mb-3" style={{ width: "95%" }}>
@@ -789,19 +661,7 @@ const ViewImportProduct = () => {
                           Phí ship
                         </label>
                         <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            name="city"
-                            id="basic-icon-default-email"
-                            className="form-control"
-                            value={product.totalShippingFee}
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                totalShippingFee: e.target.value,
-                              }))
-                            }
-                          />
+                          {(product.totalShippingFee).toLocaleString("en-US")} đ
                         </div>
                       </div>
 
@@ -813,22 +673,7 @@ const ViewImportProduct = () => {
                           Tổng giá
                         </label>
                         <div className="input-group input-group-merge">
-                          <input
-                            type="text"
-                            id="basic-icon-default-company"
-                            readOnly
-                            className="form-control"
-                            placeholder="Tổng Giá"
-                            aria-label="Công dung"
-                            aria-describedby="basic-icon-default-company2"
-                            value={product.totalPrice}
-                            onChange={(e) =>
-                              setProduct((prevState) => ({
-                                ...prevState,
-                                totalPrice: e.target.value,
-                              }))
-                            }
-                          />
+                          {(product.totalPrice).toLocaleString()} đ
                         </div>
                       </div>
                     </div>

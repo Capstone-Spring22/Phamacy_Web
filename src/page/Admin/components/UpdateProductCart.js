@@ -291,7 +291,7 @@ export default function UpdateProductCard({
           </div>
           <div className="mb-3" style={{ width: "30%", marginRight: 20 }}>
             <label className="form-label" htmlFor={`unitId${index}`}>
-              Giá nhập
+              Giá nhập (vnđ) (tính theo 1 cái)
             </label>
             <div className="input-group input-group-merge">
               <input
@@ -719,10 +719,10 @@ export default function UpdateProductCard({
 
                           <div className="input-group input-group-merge">
                             <input
-                              type="text"
+                              type="number"
                               id="basic-icon-default-email"
                               className="form-control"
-                              placeholder="Phone Number"
+                              placeholder="Số Lượng Sản Phẩm Lô"
                               aria-label="Phone Number"
                               aria-describedby="basic-icon-default-email2"
                               value={
@@ -730,6 +730,7 @@ export default function UpdateProductCard({
                                   .productBatches[batchIndex - 1].quantity
                               }
                               onChange={(e) => {
+                                handleAddQuantityBatch(index, batchIndex, e);
                                 setIndexUnit(index);
                                 setCountQuantity(
                                   (countQuantity) => countQuantity + 1

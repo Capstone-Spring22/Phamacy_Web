@@ -117,6 +117,7 @@ const AddImportProduct = () => {
         console.log("display du lieu", data);
         if (res && res.status === 201) {
           Swal.fire("Nhập Hàng Thành Công", "", "success");
+          history.push("/ImportProduct")
           // window.location.reload();
         }
       }

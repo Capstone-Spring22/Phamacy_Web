@@ -14,7 +14,7 @@ import jwtDecode from "jwt-decode";
 import { useHistory } from "react-router-dom";
 const Login = () => {
   const navigate = useHistory();
-  const [error, setError] = useState("");
+  const [errorMessageLogin, setError] = useState("");
 
   const [otp, setOtp] = useState("");
   const [ph, setPh] = useState("");
@@ -31,7 +31,7 @@ const Login = () => {
           callback: (response) => {
             onSignup();
           },
-          "expired-callback": () => {},
+          "expired-callback": () => { },
         },
         auth
       );
@@ -52,9 +52,13 @@ const Login = () => {
         setLoading(false);
         setShowOTP(true);
         toast.success("OTP sended successfully!");
+        setError("")
       })
       .catch((error) => {
         console.log(error);
+        if(error.toString().includes("auth/invalid-phone-number")){
+          setError("Số điện thoại không hợp lệ")
+        }
         setLoading(false);
       });
   }
@@ -93,6 +97,13 @@ const Login = () => {
       })
       .catch((err) => {
         console.log(err);
+        if (err.toString().includes("auth/invalid-verification-code")) {
+          setError("Sai mã OTP vui lòng thử lại")
+        }
+        if (err.toString().includes("auth/code-expired")) {
+          setError("Mã xác thực đã hết hạn, vui lòng gửi lại")
+          console.log("Hết hạn")
+        }
         setLoading(false);
       });
   }
@@ -113,28 +124,28 @@ const Login = () => {
               <div id="recaptcha-container"></div>
               {user ? (
                 <h2 className="text-center text-white font-medium text-2xl">
-          
+
                 </h2>
               ) : (
                 <div className="w-80 flex flex-col gap-4 rounded-lg p-4">
-                  <h1
+                  <h2
                     style={{ color: "#82aae3" }}
                     className="text-center leading-normal  font-medium text-3xl mb-6"
                   >
-                    Welcome to <br /> BetterHealth
-                  </h1>
-                  <br/>
-                  <br/>
+                    BetterHealth <br /> Kính Chào Quý Khách
+                  </h2>
+                  <br />
+                  <br />
                   {showOTP ? (
                     <>
                       <div style={{ width: 320, marginLeft: 200 }}>
                         <div
                           className="form-group first"
                           controlId="formBasicEmail"
-                      
+
                         >
                           <div id="sign-in-button"></div>
-                          <label htmlFor="username">Nhập OTP</label>
+                          <label htmlFor="username">Nhập OTP đã gửi đến tin nhắn của quý khách</label>
 
                           <OtpInput
                             value={otp}
@@ -143,12 +154,18 @@ const Login = () => {
                             otpType="number"
                             disabled={false}
                             autoFocus
-                            style={{height:60,paddingTop:20}}
+                            style={{ height: 60, paddingTop: 20 }}
                             className="form-control"
                           ></OtpInput>
                           <div id="recaptcha-container"></div>
                         </div>
-
+                        {
+                          errorMessageLogin && errorMessageLogin.length > 0 ? (
+                            <div style={{marginBottom: 10}}>
+                              <span style={{color: "red"}}>{errorMessageLogin}</span>
+                            </div>
+                          ) : ("")
+                        }
                         <button
                           onClick={onOTPVerify}
                           type="submit"
@@ -162,7 +179,7 @@ const Login = () => {
                               className="mt-1 animate-spin"
                             />
                           )}
-                          <span>Verify OTP</span>
+                          <span>Xác thực và đăng nhập</span>
                         </button>
                       </div>
                     </>
@@ -174,7 +191,7 @@ const Login = () => {
                           controlId="formBasicEmail"
                         >
                           <div id="sign-in-button"></div>
-                          <label htmlFor="username">Nhập Số Điện Thoại</label>
+                          <label htmlFor="username">Nhập Số Điện Thoại Đăng Nhập</label>
 
                           <PhoneInput
                             className="form-control"
@@ -186,7 +203,14 @@ const Login = () => {
                           />
                           <div id="recaptcha-container"></div>
                         </div>
-                        <br/>
+                        <br />
+                        {
+                          errorMessageLogin && errorMessageLogin.length > 0 ? (
+                            <div style={{marginBottom: 10}}>
+                              <span style={{color: "red"}}>{errorMessageLogin}</span>
+                            </div>
+                          ) : ("")
+                        }
                         <button
                           type="submit"
                           defaultValue="Log In"
@@ -200,7 +224,7 @@ const Login = () => {
                               className="mt-1 animate-spin"
                             />
                           )}
-                          Đăng Nhập
+                          Gửi mã OTP
                         </button>
                       </div>
                     </>

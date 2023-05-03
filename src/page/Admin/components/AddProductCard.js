@@ -235,7 +235,7 @@ export default function AddProductCard({
           </div>
           <div className="mb-3" style={{ width: "30%", marginRight: 20 }}>
             <label className="form-label" htmlFor={`unitId${index}`}>
-              Giá nhập
+              Giá nhập (vnđ) (tính theo 1 cái)
             </label>
             <div className="input-group input-group-merge">
               <input
@@ -323,7 +323,7 @@ export default function AddProductCard({
                                     ),
                                     {
                                       ...product.productImportDetails[
-                                        index - 1
+                                      index - 1
                                       ],
                                       productBatches: [
                                         ...product.productImportDetails[
@@ -376,7 +376,7 @@ export default function AddProductCard({
                                     ),
                                     {
                                       ...product.productImportDetails[
-                                        index - 1
+                                      index - 1
                                       ],
                                       productBatches: [
                                         ...product.productImportDetails[

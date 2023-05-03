@@ -70,15 +70,15 @@ const UpdateImportProduct = () => {
     //     return false;
     //   }
 
-      // if (!productImportDetails.quantity) {
-      //   Swal.fire("Số lượng không nhỏ hơn hoặc bằng 0", "", "question");
-      //   return false;
-      // }
-      
-      // if (!productImportDetails.importPrice) {
-      //   Swal.fire("giá không được nhỏ hơn hoặc bằng 0", "", "question");
-      //   return false;
-      // }
+    // if (!productImportDetails.quantity) {
+    //   Swal.fire("Số lượng không nhỏ hơn hoặc bằng 0", "", "question");
+    //   return false;
+    // }
+
+    // if (!productImportDetails.importPrice) {
+    //   Swal.fire("giá không được nhỏ hơn hoặc bằng 0", "", "question");
+    //   return false;
+    // }
 
     //   if (!detail.importPrice) {
     //     Swal.fire("Import Price Can't Be Empty", "", "question");
@@ -108,7 +108,7 @@ const UpdateImportProduct = () => {
       return false;
     }
 
-    if (!totalProductPrice||totalProductPrice === 0) {
+    if (!totalProductPrice || totalProductPrice === 0) {
       Swal.fire("Vui Lòng Nhập Số Lượng Cho Sản Phẩm Nhập", "", "question");
       return false;
     }
@@ -208,6 +208,41 @@ const UpdateImportProduct = () => {
     setcountPrice(parseInt(countprice) + 1);
   };
   const handleAddQuantityBatch = (index, batchIndex, e) => {
+    const value = parseInt(e.target.value);
+    if (!value) {
+      setProduct({
+        ...product,
+        productImportDetails: [
+          ...product.productImportDetails.slice(0, index - 1),
+          {
+            ...product.productImportDetails[index - 1],
+            productBatches: [
+              ...product.productImportDetails[index - 1].productBatches.slice(
+                0,
+                batchIndex - 1
+              ),
+              {
+                ...product.productImportDetails[index - 1].productBatches[
+                batchIndex - 1
+                ],
+                quantity: parseInt(e.target.value),
+              },
+              ...product.productImportDetails[index - 1].productBatches.slice(
+                batchIndex
+              ),
+            ],
+            quantity: product.productImportDetails[
+              index - 1
+            ].productBatches.reduce(
+              (total, curent) => total + curent.quantity,
+              0
+            ),
+          },
+          ...product.productImportDetails.slice(index),
+        ],
+      });
+      return;
+    }
     setProduct({
       ...product,
       productImportDetails: [
