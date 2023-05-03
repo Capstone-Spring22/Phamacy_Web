@@ -1063,12 +1063,12 @@ const CheckOutPharmacist = () => {
                           >
                             {point !== 0 ? (
                               <div>
-                                <div>Điểm : {point}</div>
+                                <div>Điểm khả dụng của khách: {point}</div>
                                 <label
                                   className="form-label"
                                   htmlFor="basic-icon-default-fullname"
                                 >
-                                  Điểm Cần Sử Dụng
+                                  Điểm Khách Muốn Sử Dụng
                                 </label>
                                 <div className="input-group input-group-merge">
                                   <input
