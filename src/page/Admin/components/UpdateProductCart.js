@@ -41,7 +41,6 @@ export default function UpdateProductCard({
 
   useEffect(() => {
     if (typeof options2 !== "undefined") {
-      console.log(options2);
       setOptions3(
         options2.map((e) => ({
           label: e.unitName,

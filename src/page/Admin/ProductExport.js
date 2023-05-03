@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-
+import Select from "react-select";
 import SideBar from "../sidebar/SideBarManager";
 import ReactPaginate from "react-paginate";
 
@@ -16,10 +16,11 @@ const ProductExport = () => {
   const [perPage, setPerPage] = useState(7);
   const [productExport, setProductExport] = useState([]);
   const [totalRecord, setTotalRecord] = useState([]);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   let history = useHistory();
   const [quantityError, setQuantityError] = useState([]);
   const siteId = localStorage.getItem("SiteID");
+  const [lastProductUnitId, setLastProductUnitId] = useState(null);
   const update = (myId) => {
     localStorage.setItem("id", myId);
 
@@ -35,6 +36,7 @@ const ProductExport = () => {
     siteInventoryId: "",
     exportQuantity: "",
   });
+  const [options, setOptions] = useState(null);
   const [quantity, setQuantity] = useState("");
   const create = () => {
     history.push("/NewDiscount");
@@ -42,23 +44,38 @@ const ProductExport = () => {
 
   async function loadDataProductExportID(id) {
     const path = `ProductExport/${id}`;
+    const accessToken = localStorage.getItem("accessToken");
     const res = await getDataByPath(path, "", "");
     if (res !== null && res !== undefined && res.status === 200) {
+      const productUnitList = await getDataByPath(`Product/Update/${res.data.productId}`, accessToken, "");
       setProductExport(res.data);
-      console.log("display 2", id);
+      console.log(productUnitList.data.productDetailModel)
+      setOptions(
+        productUnitList.data.productDetailModel.map((e) => ({
+          label: e.id,
+          value: e.id,
+        }))
+      );
+      //console.log(options)
     }
   }
   const checkValidation = () => {
     let isValid = true;
     if (!quantity.trim()) {
-      setQuantityError("Vui lòng Điềm Số Lượng");
+      setQuantityError("Vui lòng Điền Số Lượng");
       isValid = false;
+      return isValid
+    } else if (quantity <= 0) {
+      setQuantityError("Số lượng xuất hỏng không được nhỏ hơn 0.");
+      isValid = false;
+      return isValid
     } else {
       setQuantityError("");
     }
     if (quantity > productExport.quantity) {
       setQuantityError("Số Lượng Vượt Quá Số Lượng Tổng");
       isValid = false;
+      return isValid
     } else {
       setQuantityError("");
     }
@@ -169,7 +186,7 @@ const ProductExport = () => {
                                     borderColor: "#f4f4f4",
                                   }}
                                 >
-                                  <h5 className="mb-0">Hoàn Thành Đơn Hàng</h5>
+                                  <h5 className="mb-0">Xuất Hỏng Hàng Hóa</h5>
                                 </div>
                                 <div className="card-body">
                                   <form>
@@ -220,28 +237,6 @@ const ProductExport = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
                                         >
-                                          Đơn Vị :
-                                        </label>
-                                        <div className="input-group input-group-merge">
-                                          <div>{productExport?.unitName}</div>
-                                        </div>
-                                      </div>
-                                      <div
-                                        className="mb-3"
-                                        style={{
-                                          width: "95%",
-                                          display: "flex",
-                                        }}
-                                      >
-                                        <label
-                                          style={{
-                                            paddingTop: 2,
-                                            width: 400,
-                                            fontSize: 15,
-                                          }}
-                                          className="form-label"
-                                          htmlFor="basic-icon-default-phone"
-                                        >
                                           Số lượng hỏng :
                                         </label>
                                         <div className="input-group input-group-merge">
@@ -264,10 +259,38 @@ const ProductExport = () => {
                                           className="form-label"
                                           htmlFor="basic-icon-default-phone"
                                         >
-                                          Thời Gian Hết Hàng :
+                                          Đơn Vị :
                                         </label>
                                         <div className="input-group input-group-merge">
-                                          <div>{productExport?.expireDate}</div>
+                                          <div>{productExport?.unitName}</div>
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="mb-3"
+                                        style={{
+                                          width: "95%",
+                                          display: "flex",
+                                        }}
+                                      >
+                                        <label
+                                          style={{
+                                            paddingTop: 2,
+                                            width: 400,
+                                            fontSize: 15,
+                                          }}
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-phone"
+                                        >
+                                          Hạn Sử Dụng :
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <div>
+                                            {new Date(
+                                              productExport?.expireDate
+                                            ).toLocaleDateString("vi-VN", {
+                                              timeZone: "Asia/Ho_Chi_Minh",
+                                            })}
+                                          </div>
                                         </div>
                                       </div>
                                       <div
@@ -292,7 +315,16 @@ const ProductExport = () => {
                                           <div>{productExport?.status}</div>
                                         </div>
                                       </div>
-
+                                      <div>
+                                        <Select
+                                          placeholder="Chọn đơn vị sản phẩm"
+                                          options={options}
+                                          onChange={(e) => {
+                                            setLastProductUnitId(e.value)
+                                          }
+                                          }
+                                        />
+                                      </div>
                                       <div
                                         style={{
                                           display: "flex",
@@ -300,29 +332,27 @@ const ProductExport = () => {
                                           width: 600,
                                           padding: 1,
                                           height: 100,
-                                          marginTop: 70,
                                         }}
                                       >
                                         <div
                                           className="mb-3"
                                           style={{
                                             width: "100%",
-                                            height: 10,
-                                            marginRight: 30,
+                                            height: 10
                                           }}
                                         >
                                           <label
                                             className="form-label"
                                             htmlFor="basic-icon-default-fullname"
                                           >
-                                            Số Lượng Hỏng
+                                            Số Lượng Cần Xuất Hỏng
                                           </label>
                                           <div className="input-group input-group-merge">
                                             <input
-                                              type="text"
+                                              type="number"
                                               className="form-control"
                                               id="basic-icon-default-fullname"
-                                              placeholder="Nhập Số lượng"
+                                              placeholder="Nhập Số lượng Cần Xuất Hỏng"
                                               aria-label="Tên Sản Phẩm"
                                               aria-describedby="basic-icon-default-fullname2"
                                               value={quantity}
@@ -340,7 +370,6 @@ const ProductExport = () => {
                                         </div>
                                       </div>
                                     </div>
-
                                     <button
                                       type="submit"
                                       className="button-28"
@@ -391,7 +420,7 @@ const ProductExport = () => {
                                     color: "#bfc8d3",
                                   }}
                                 >
-                                  Đơn Vị
+                                  Số Lượng
                                 </th>
 
                                 <th
@@ -401,7 +430,7 @@ const ProductExport = () => {
                                     color: "#bfc8d3",
                                   }}
                                 >
-                                  Tổng SP
+                                  Đơn Vị
                                 </th>
                                 <th
                                   style={{
@@ -410,7 +439,7 @@ const ProductExport = () => {
                                     color: "#bfc8d3",
                                   }}
                                 >
-                                  Ngày Hết Hạng
+                                  Hạn Sử Dụng
                                 </th>
                                 <th
                                   style={{
@@ -419,7 +448,7 @@ const ProductExport = () => {
                                     color: "#bfc8d3",
                                   }}
                                 >
-                                  Lý Do
+                                  Trạng Thái
                                 </th>
                                 <th
                                   style={{
@@ -428,7 +457,7 @@ const ProductExport = () => {
                                     color: "#bfc8d3",
                                   }}
                                 >
-                                  Xuất Hỏng
+                                  Thao Tác
                                 </th>
                               </tr>
                             </thead>
@@ -449,8 +478,8 @@ const ProductExport = () => {
                                         &nbsp; &nbsp;{e.productName}
                                       </td>
 
-                                      <td>{e.unitName}</td>
                                       <td>{e.quantity}</td>
+                                      <td>{e.unitName}</td>
                                       <td>
                                         {new Date(
                                           e.expireDate
@@ -461,55 +490,31 @@ const ProductExport = () => {
 
                                       <td>{e.status}</td>
                                       <td>
-                                        {e.status === "Đã kết thúc" ? (
-                                          <a
-                                            class="button-81"
+                                        <a
+                                          href="#my-dialog2"
+                                        >
+                                          <button
+                                            class="btn btn-danger"
                                             role="button"
-                                            href="#my-dialog2"
+                                            style={{ width: "auto", padding: 5 }}
                                             onClick={() => {
-                                              view(e.id);
-                                            }}
-                                          >
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              width="16"
-                                              height="16"
-                                              fill="currentColor"
-                                              class="bi bi-eye"
-                                              viewBox="0 0 16 16"
-                                            >
-                                              <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
-                                              <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
-                                            </svg>
-                                          </a>
-                                        ) : (
-                                          <a
-                                            class="button-81"
-                                            role="button"
-                                            href="#my-dialog2"
-                                            onClick={() => {
+                                              setOptions(
+                                                {
+                                                  value: "",
+                                                  label: "",
+                                                }
+                                              )
                                               loadDataProductExportID(
                                                 e.siteInventoryId
                                               );
+                                              setQuantityError("");
+                                              setQuantity(0);
                                               setIsOpen(true);
                                             }}
                                           >
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              width="16"
-                                              height="16"
-                                              fill="currentColor"
-                                              class="bi bi-pencil-square"
-                                              viewBox="0 0 16 16"
-                                            >
-                                              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                              <path
-                                                fill-rule="evenodd"
-                                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-                                              />
-                                            </svg>
-                                          </a>
-                                        )}
+                                            Xuất Hỏng
+                                        </button>
+                                        </a>
                                       </td>
                                     </tr>
                                   );
