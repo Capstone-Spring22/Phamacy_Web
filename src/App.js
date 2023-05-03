@@ -51,6 +51,7 @@ import ProfileManager from "./page/Profile/ProfileManager";
 import ProfileAdmin from "./page/Profile/ProfileAdmin";
 import ViewDiscount from "./page/Admin/ViewDiscount";
 import DashBoardManager from "./page/dashboard/DashBoardManager";
+import ProductExport from "./page/Admin/ProductExport";
 function App() {
  
   return (
@@ -187,6 +188,9 @@ function App() {
           </Route>
           <Route path="/DashBoardManager">
             <DashBoardManager />
+          </Route>
+          <Route path="/ProductExport">
+            <ProductExport />
           </Route>
         </Switch>
       </BrowserRouter>
