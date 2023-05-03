@@ -45,7 +45,6 @@ const Login = () => {
     const appVerifier = window.recaptchaVerifier;
 
     const formatPh = "+" + ph;
-
     signInWithPhoneNumber(auth, formatPh, appVerifier)
       .then((confirmationResult) => {
         window.confirmationResult = confirmationResult;
@@ -55,7 +54,6 @@ const Login = () => {
         setError("")
       })
       .catch((error) => {
-        console.log(error);
         if(error.toString().includes("auth/invalid-phone-number")){
           setError("Số điện thoại không hợp lệ")
         }

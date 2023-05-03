@@ -22,9 +22,13 @@ const ProductExport = () => {
   const [quantityError, setQuantityError] = useState([]);
   const siteId = localStorage.getItem("SiteID");
   const [unit, setUnit] = useState([]);
-  const [message, setMessage] = useState("");
-  const [productId, setProductId] = useState([]);
-  const [lastProductUnitId, setLastProductUnitId] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [productModel, setProductModel] = useState({
+    productId: "",
+    quantity: 0
+  }
+  );
+  const [unitSelected, setUnitSelected] = useState(false);
   const [UnitList, setUnitList] = useState([]);
   const update = (myId) => {
     localStorage.setItem("id", myId);
@@ -52,10 +56,16 @@ const ProductExport = () => {
     loadDataUnit();
   }, []);
   const [options, setOptions] = useState(null);
-  const [quantity, setQuantity] = useState("");
+  const [quantity, setQuantity] = useState(0);
   const create = () => {
     history.push("/NewDiscount");
   };
+
+  useEffect(() => {
+    if (productModel.productId.length > 0 && productModel.quantity > 0) {
+      getMessageModel(productModel.productId, productModel.quantity);
+    }
+  }, [productModel, quantity])
 
   async function loadDataProductExportID(id) {
     const accessToken = localStorage.getItem("accessToken");
@@ -63,14 +73,12 @@ const ProductExport = () => {
     const res = await getDataByPath(path, accessToken, "");
     if (res !== null && res !== undefined && res.status === 200) {
       setProductExport(res.data);
-      
     }
   }
   async function loadProductUnitID(productId) {
     const accessToken = localStorage.getItem("accessToken");
     const path = `Product/Update/${productId}`;
     const res = await getDataByPath(path, accessToken, "");
-    console.log("res.data :", res.data.productDetailModel);
     if (res !== null && res !== undefined && res.status === 200) {
       setUnitList(res.data.productDetailModel);
     }
@@ -78,11 +86,7 @@ const ProductExport = () => {
 
   const checkValidation = () => {
     let isValid = true;
-    if (!quantity.trim()) {
-      setQuantityError("Vui lòng Điền Số Lượng");
-      isValid = false;
-      return isValid;
-    } else if (quantity <= 0) {
+    if (quantity <= 0) {
       setQuantityError("Số lượng xuất hỏng không được nhỏ hơn 0.");
       isValid = false;
       return isValid;
@@ -98,17 +102,22 @@ const ProductExport = () => {
     }
     return isValid;
   };
-  const getMessageAPI = async (productid, quantity) => {
-    if (productid && quantity > 0) {
+  const getMessageModel = async (productid, quantity1) => {
+    if (productid && quantity1 > 0) {
       const res = await axios.get(
-        `https://betterhealthapi.azurewebsites.net/api/v1/ProductImport/Message?ProductId=${productid}&Quantity=${quantity}`
+        `https://betterhealthapi.azurewebsites.net/api/v1/ProductImport/Message?ProductId=${productid}&Quantity=${quantity1}`
       );
-      setMessage(res.data.templateMessage);
-      
+      if (res && res.status === 200) {
+        setMessage(res.data);
+        setQuantity(res.data.quantityAfterConvert)
+        console.log(res.data.quantityAfterConvert)
+        console.log(quantity)
+      }
     }
   };
-  
+
   async function updateProducts() {
+    console.log(quantity)
     if (checkValidation()) {
       const data = {
         siteInventoryId: productExport.siteInventoryId,
@@ -202,7 +211,7 @@ const ProductExport = () => {
 
                           <div className="row " style={{ width: 700 }}>
                             <div className="col-xl">
-                              <div className="card mb-4">
+                              <div className="card mb-4" style={{ height: 700, marginTop: -50 }}>
                                 <div
                                   className="card-header d-flex justify-content-between align-items-center"
                                   style={{
@@ -354,13 +363,24 @@ const ProductExport = () => {
                                             name="city"
                                             id="basic-icon-default-email"
                                             className="form-control"
+                                            onChange={(e) => {
+                                              setProductModel((prevState) => ({
+                                                ...prevState,
+                                                productId: e.target.value,
+                                              }))
+                                              setUnitSelected(true)
+                                            }
+                                            }
                                           >
+                                            {!unitSelected && (
+                                              <option value="">--- Chọn Đơn Vị Xuất Hỏng </option>
+                                            )}
                                             {UnitList &&
                                               UnitList.length &&
-                                            
+
                                               UnitList.map((e, index) => {
                                                 return (
-                                                  
+
                                                   <>
                                                     <option
                                                       key={e.id}
@@ -404,17 +424,24 @@ const ProductExport = () => {
                                               placeholder="Nhập Số lượng Cần Xuất Hỏng"
                                               aria-label="Tên Sản Phẩm"
                                               aria-describedby="basic-icon-default-fullname2"
-                                              value={quantity}
+                                              value={productModel.quantity}
                                               onChange={(e) => {
                                                 setQuantity(e.target.value);
-                                              }}
+                                                setProductModel((prevState) => ({
+                                                  ...prevState,
+                                                  quantity: e.target.value,
+                                                }))
+                                              }
+                                              }
                                             />
                                           </div>
-                                          <div
-                                            className="form-text"
-                                            style={{ color: "red" }}
-                                          >
-                                            {quantityError}
+                                          <div>
+                                            {message !== null ? (<div style={{ marginBottom: 10 }}>
+                                              <span style={{ color: "red" }}>Theo dữ liệu bạn đã chọn, hệ thống sẽ xuất hỏng <span style={{ fontWeight: "bold" }}>{message.quantityAfterConvert} {message.unitAfterConvert}</span>. Vui lòng kiểm tra thông tin trước khi xác nhận xuất hỏng!</span>
+                                            </div>) : ("")}
+                                          </div>
+                                          <div>
+                                            <span style={{ color: "red" }}>{quantityError}</span>
                                           </div>
                                         </div>
                                       </div>
@@ -430,7 +457,7 @@ const ProductExport = () => {
                                         height: 50,
                                         width: 600,
                                         fontSize: 13,
-
+                                        margin: "50px 0 0 20px",
                                         backgroundColor: "#82AAE3",
                                         color: "white",
                                       }}
@@ -453,6 +480,15 @@ const ProductExport = () => {
                               }}
                             >
                               <tr>
+                                <th
+                                  style={{
+                                    backgroundColor: "#f6f9fc",
+                                    borderColor: "white",
+                                    color: "#bfc8d3",
+                                  }}
+                                >
+                                  &nbsp; &nbsp;Hình Ảnh
+                                </th>
                                 <th
                                   style={{
                                     backgroundColor: "#f6f9fc",
@@ -516,6 +552,17 @@ const ProductExport = () => {
                                 drug.map((e) => {
                                   return (
                                     <tr key={e.id}>
+                                      <td>
+                                        <img
+                                          src={e.productImage}
+                                          style={{
+                                            height: 90,
+                                            width: 70,
+                                            borderRadius: 7,
+                                            objectFit: "cover",
+                                          }}
+                                        />
+                                      </td>
                                       <td
                                         style={{
                                           width: 10,
@@ -555,6 +602,14 @@ const ProductExport = () => {
                                               setQuantityError("");
                                               setQuantity(0);
                                               setIsOpen(true);
+                                              setProductModel(
+                                                {
+                                                  productId: "",
+                                                  quantity: 0
+                                                }
+                                              )
+                                              setMessage(null);
+                                              setUnitSelected(false)
                                             }}
                                           >
                                             Xuất Hỏng
