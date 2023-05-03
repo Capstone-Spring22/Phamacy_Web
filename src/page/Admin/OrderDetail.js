@@ -2143,7 +2143,7 @@ const OrderDetail = () => {
                               className="form-label"
                               htmlFor="basic-icon-default-phone"
                             >
-                              Số điện Thoại Người mua
+                              Số điện Thoại Khách
                             </label>
                             <div className="input-group input-group-merge">
                               <div

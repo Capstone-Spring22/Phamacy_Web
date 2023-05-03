@@ -967,7 +967,7 @@ const CheckOutPharmacist = () => {
                               className="form-label"
                               htmlFor="basic-icon-default-fullname"
                             >
-                              Số Điện Thoại Người Mua
+                              Số Điện Thoại Khách
                             </label>
                             <div style={{ display: "flex" }}>
                               {" "}
