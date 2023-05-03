@@ -9,6 +9,7 @@ import "../../assets/css/core.css";
 import "../../assets/css2/dropDownAvartar.css";
 import { getDataByPath, updateDataByPath } from "../../services/data.service";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const ProductExport = () => {
   const [drug, setDrug] = useState(null);
@@ -20,7 +21,11 @@ const ProductExport = () => {
   let history = useHistory();
   const [quantityError, setQuantityError] = useState([]);
   const siteId = localStorage.getItem("SiteID");
+  const [unit, setUnit] = useState([]);
+  const [message, setMessage] = useState("");
+  const [productId, setProductId] = useState([]);
   const [lastProductUnitId, setLastProductUnitId] = useState(null);
+  const [UnitList, setUnitList] = useState([]);
   const update = (myId) => {
     localStorage.setItem("id", myId);
 
@@ -36,6 +41,16 @@ const ProductExport = () => {
     siteInventoryId: "",
     exportQuantity: "",
   });
+  async function loadDataUnit() {
+    const path = `Unit?isCountable=true&pageIndex=1&pageItems=111`;
+    const res = await getDataByPath(path, "", "");
+    if (res !== null && res !== undefined && res.status === 200) {
+      setUnit(res.data.items);
+    }
+  }
+  useEffect(() => {
+    loadDataUnit();
+  }, []);
   const [options, setOptions] = useState(null);
   const [quantity, setQuantity] = useState("");
   const create = () => {
@@ -43,44 +58,56 @@ const ProductExport = () => {
   };
 
   async function loadDataProductExportID(id) {
-    const path = `ProductExport/${id}`;
     const accessToken = localStorage.getItem("accessToken");
-    const res = await getDataByPath(path, "", "");
+    const path = `ProductExport/${id}`;
+    const res = await getDataByPath(path, accessToken, "");
     if (res !== null && res !== undefined && res.status === 200) {
-      const productUnitList = await getDataByPath(`Product/Update/${res.data.productId}`, accessToken, "");
       setProductExport(res.data);
-      console.log(productUnitList.data.productDetailModel)
-      setOptions(
-        productUnitList.data.productDetailModel.map((e) => ({
-          label: e.id,
-          value: e.id,
-        }))
-      );
-      //console.log(options)
+      
     }
   }
+  async function loadProductUnitID(productId) {
+    const accessToken = localStorage.getItem("accessToken");
+    const path = `Product/Update/${productId}`;
+    const res = await getDataByPath(path, accessToken, "");
+    console.log("res.data :", res.data.productDetailModel);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setUnitList(res.data.productDetailModel);
+    }
+  }
+
   const checkValidation = () => {
     let isValid = true;
     if (!quantity.trim()) {
       setQuantityError("Vui lòng Điền Số Lượng");
       isValid = false;
-      return isValid
+      return isValid;
     } else if (quantity <= 0) {
       setQuantityError("Số lượng xuất hỏng không được nhỏ hơn 0.");
       isValid = false;
-      return isValid
+      return isValid;
     } else {
       setQuantityError("");
     }
     if (quantity > productExport.quantity) {
       setQuantityError("Số Lượng Vượt Quá Số Lượng Tổng");
       isValid = false;
-      return isValid
+      return isValid;
     } else {
       setQuantityError("");
     }
     return isValid;
   };
+  const getMessageAPI = async (productid, quantity) => {
+    if (productid && quantity > 0) {
+      const res = await axios.get(
+        `https://betterhealthapi.azurewebsites.net/api/v1/ProductImport/Message?ProductId=${productid}&Quantity=${quantity}`
+      );
+      setMessage(res.data.templateMessage);
+      
+    }
+  };
+  
   async function updateProducts() {
     if (checkValidation()) {
       const data = {
@@ -315,15 +342,37 @@ const ProductExport = () => {
                                           <div>{productExport?.status}</div>
                                         </div>
                                       </div>
-                                      <div>
-                                        <Select
-                                          placeholder="Chọn đơn vị sản phẩm"
-                                          options={options}
-                                          onChange={(e) => {
-                                            setLastProductUnitId(e.value)
-                                          }
-                                          }
-                                        />
+                                      <div className="mb-3">
+                                        <label
+                                          className="form-label"
+                                          htmlFor="basic-icon-default-phone"
+                                        >
+                                          Đơn Vị
+                                        </label>
+                                        <div className="input-group input-group-merge">
+                                          <select
+                                            name="city"
+                                            id="basic-icon-default-email"
+                                            className="form-control"
+                                          >
+                                            {UnitList &&
+                                              UnitList.length &&
+                                            
+                                              UnitList.map((e, index) => {
+                                                return (
+                                                  
+                                                  <>
+                                                    <option
+                                                      key={e.id}
+                                                      value={e.id}
+                                                    >
+                                                      {(unit.find((sc) => sc.id === e.unitId))?.unitName}
+                                                    </option>
+                                                  </>
+                                                );
+                                              })}
+                                          </select>
+                                        </div>
                                       </div>
                                       <div
                                         style={{
@@ -338,7 +387,7 @@ const ProductExport = () => {
                                           className="mb-3"
                                           style={{
                                             width: "100%",
-                                            height: 10
+                                            height: 10,
                                           }}
                                         >
                                           <label
@@ -490,20 +539,16 @@ const ProductExport = () => {
 
                                       <td>{e.status}</td>
                                       <td>
-                                        <a
-                                          href="#my-dialog2"
-                                        >
+                                        <a href="#my-dialog2">
                                           <button
                                             class="btn btn-danger"
                                             role="button"
-                                            style={{ width: "auto", padding: 5 }}
+                                            style={{
+                                              width: "auto",
+                                              padding: 5,
+                                            }}
                                             onClick={() => {
-                                              setOptions(
-                                                {
-                                                  value: "",
-                                                  label: "",
-                                                }
-                                              )
+                                              loadProductUnitID(e.productId);
                                               loadDataProductExportID(
                                                 e.siteInventoryId
                                               );
@@ -513,7 +558,7 @@ const ProductExport = () => {
                                             }}
                                           >
                                             Xuất Hỏng
-                                        </button>
+                                          </button>
                                         </a>
                                       </td>
                                     </tr>

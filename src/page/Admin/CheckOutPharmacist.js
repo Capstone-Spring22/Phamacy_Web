@@ -465,6 +465,27 @@ const CheckOutPharmacist = () => {
 
   return (
     <div className="layout-wrapper layout-content-navbar">
+          <Modal
+           
+           visible={isModalVisible}
+           onCancel={handleCloseModal}
+         
+          
+           style={{ backgroundColor:"black" }}
+          
+         >
+    
+             <Document
+            
+               file={pdfUrl}
+               onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+             >
+               {Array.from(new Array(numPages), (el, index) => (
+                 <Page  key={`page_${index + 1}`} pageNumber={index + 1} />
+               ))}
+             </Document>
+          
+         </Modal>
       <div className="layout-container">
         <SideBar activeItem={activeItem} />
 
@@ -507,26 +528,7 @@ const CheckOutPharmacist = () => {
               {/* /Search */}
             </div>
           </nav>
-          <Modal
-            title="Hóa Đơn Khách Hàng"
-            visible={isModalVisible}
-            onCancel={handleCloseModal}
-            footer={null}
-            width={650}
-            style={{ padding: 0 }}
-            bodyStyle={{ padding: 0, margin: 0 }}
-          >
-            <div style={{ overflow: "auto", height: "100%" }}>
-              <Document
-                file={pdfUrl}
-                onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-              >
-                {Array.from(new Array(numPages), (el, index) => (
-                  <Page key={`page_${index + 1}`} pageNumber={index + 1} />
-                ))}
-              </Document>
-            </div>
-          </Modal>
+      
 
           <div style={{ display: "flex", flexWrap: "wrap", marginLeft: 180 }}>
             {/* <div className="search-result">

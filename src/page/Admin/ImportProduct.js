@@ -19,6 +19,7 @@ const Drug = () => {
   const [perPage, setPerPage] = useState(7);
   const [totalRecord, setTotalRecord] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
   let history = useHistory();
 
   const update = (myId) => {
@@ -93,9 +94,7 @@ const Drug = () => {
                       <a href="#" class="navbar-logo"></a>
                       <ul class="navbar-menu">
                         <li class="navbar-item">
-                          <a href="#" class="navbar-link">
-                            Name
-                          </a>
+                        
                         </li>
                       </ul>
                     </div>
