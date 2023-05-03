@@ -967,7 +967,7 @@ const CheckOutPharmacist = () => {
                               className="form-label"
                               htmlFor="basic-icon-default-fullname"
                             >
-                              Số Điện Thoại Người Mua
+                              Số Điện Thoại Khách
                             </label>
                             <div style={{ display: "flex" }}>
                               {" "}
@@ -1063,12 +1063,12 @@ const CheckOutPharmacist = () => {
                           >
                             {point !== 0 ? (
                               <div>
-                                <div>Điểm : {point}</div>
+                                <div>Điểm khả dụng của khách: {point}</div>
                                 <label
                                   className="form-label"
                                   htmlFor="basic-icon-default-fullname"
                                 >
-                                  Điểm Cần Sử Dụng
+                                  Điểm Khách Muốn Sử Dụng
                                 </label>
                                 <div className="input-group input-group-merge">
                                   <input
@@ -1380,10 +1380,13 @@ const CheckOutPharmacist = () => {
                       <div>Giỏ Hàng Của Khách</div>
                       <div className="cart-pharmacist-checkout">
                         {listCart.length === 0 ? (
-                          <img
-                            style={{ objectFit: "cover", height: 300 }}
-                            src="https://hazzyweekend.com/static/d7b42f8124510bb7b518c690908f8978/6db19/empty_cart.png"
-                          />
+                          <div>
+                            <img
+                              style={{ objectFit: "cover", height: 300 }}
+                              src="https://hazzyweekend.com/static/d7b42f8124510bb7b518c690908f8978/6db19/empty_cart.png"
+                            />
+                          Hiện tại khách chưa có sản phẩm trong giỏ hàng
+                          </div>
                         ) : (
                           <>
                             {listCart &&
