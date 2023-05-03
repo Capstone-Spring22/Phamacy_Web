@@ -2033,7 +2033,7 @@ const OrderDetail = () => {
                               aria-label="Tên Sản Phẩm"
                               aria-describedby="basic-icon-default-fullname2"
                             >
-                              {(OrderDetail.note || OrderDetail.note.length == 0) ? "Trống" : OrderDetail.note }
+                              {(OrderDetail.note) ? (OrderDetail.note.length > 0 ? OrderDetail.note : "Trống") : "Trống" }
                             </div>
                           </div>
                         </div>
