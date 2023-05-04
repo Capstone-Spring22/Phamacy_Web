@@ -98,10 +98,11 @@ const UpdateDiscount = () => {
         console.log("Check res", res);
         console.log("display du lieu", data);
         if (res && res.status === 200) {
-          Swal.fire("Update Success", "", "success");
+          Swal.fire("Cập Nhật Thành Công", "", "success");
           history.push("/ProductDiscount");
         } else {
-          Swal.fire("như lol đây là bản nháp", "You failed!", "error");
+          Swal.fire(res.data.variablesError, "", "error");
+          return;
         }
       }
     }
@@ -267,132 +268,7 @@ const UpdateDiscount = () => {
                           />
                         </div>
                       </div>
-                      <div className="mb-3" style={{ width: "95%" }}>
-                        <label className="form-label" htmlFor="discount-type">
-                          Chọn Loại Giảm Giá
-                        </label>
-                        <Select
-                          id="discount-type"
-                          options={discountOptions}
-                          defaultValue={
-                            discountPercent === 0
-                              ? discountOptions[1]
-                              : discountOptions[0]
-                          }
-                          onChange={handleDiscountTypeChange}
-                        />
-                      </div>
-                      {discountType === "percent" && (
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="discount-percent"
-                          >
-                            Giảm giá (%)
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              value={product.discountPercent}
-                              name="discount-percent"
-                              placeholder="Giảm giá (%)"
-                              id="discount-percent"
-                              className="form-control"
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                const discountPercent = parseInt(
-                                  product.discountPercent
-                                );
-                                const productId = product.products[0].productId;
-                                const productPrice = getPriceById(productId);
-
-                                if (
-                                  discountType === "percent" &&
-                                  (value < 1 || value > 99)
-                                ) {
-                                  setDiscountError(
-                                    "Giảm giá phải nằm trong khoảng từ 1 đến 99%"
-                                  );
-                                } else if (
-                                  discountType === "money" &&
-                                  value > productPrice * 0.5
-                                ) {
-                                  setDiscountError(
-                                    "Số tiền giảm không được cao hơn 50% giá sản phẩm"
-                                  );
-                                } else {
-                                  setDiscountError("");
-                                }
-                                if (discountType === "percent") {
-                                  setProduct((prevState) => ({
-                                    ...prevState,
-                                    discountPercent: value,
-                                    discountMoney: null,
-                                  }));
-                                }
-                              }}
-                            />
-                          </div>
-                          {discountError && (
-                            <div className="form-text" style={{ color: "red" }}>
-                              {discountError}
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {discountType === "money" && (
-                        <div className="mb-3" style={{ width: "95%" }}>
-                          <label
-                            className="form-label"
-                            htmlFor="discount-money"
-                          >
-                            Số tiền giảm
-                          </label>
-                          <div className="input-group input-group-merge">
-                            <input
-                              type="text"
-                              value={product.discountMoney}
-                              name="discount-money"
-                              placeholder="Số tiền giảm"
-                              id="discount-money"
-                              className="form-control"
-                              onChange={(e) => {
-                                const discountPercent = parseInt(
-                                  product.discountPercent
-                                );
-                                const productId = product.products[0].productId;
-                                const productPrice = getPriceById(productId);
-
-                                const value = e.target.value;
-                                setProduct((prevState) => ({
-                                  ...prevState,
-                                  discountMoney: value,
-                                }));
-
-                                const parsedValue = parseInt(value);
-                                if (isNaN(parsedValue) || parsedValue < 0) {
-                                  setDiscountMoneyError("");
-                                } else if (
-                                  parsedValue >= 0 &&
-                                  parsedValue > productPrice * 0.5
-                                ) {
-                                  setDiscountMoneyError(
-                                    "Số tiền trừ thẳng tiền không được cao hơn 50% giá sản phẩm."
-                                  );
-                                } else {
-                                  setDiscountMoneyError("");
-                                }
-                              }}
-                            />
-                          </div>
-                          {discountMoneyError && (
-                            <div className="form-text" style={{ color: "red" }}>
-                              {discountMoneyError}
-                            </div>
-                          )}
-                        </div>
-                      )}
+                    
                       <div className="mb-3" style={{ width: "95%" }}>
                         <label
                           className="form-label"
@@ -543,7 +419,7 @@ const UpdateDiscount = () => {
                       borderColor: "#f4f4f4",
                     }}
                   >
-                    <h5 className="mb-0">Thêm Sản phẩm </h5>
+                    <h5 className="mb-0">Xem Sản phẩm </h5>
                   </div>{" "}
                   {Array.from({ length: unitCount }, (_, i) => i + 1).map(
                     (index) => {
@@ -574,54 +450,120 @@ const UpdateDiscount = () => {
                                     (e, index) => {
                                       return (
                                         <>
-                                          {" "}
                                           <label
                                             className="form-label"
                                             htmlFor="basic-icon-default-phone"
                                           >
                                             Sản phẩm
                                           </label>
-                                          <Select
-                                            value={options.find(
-                                              (option) =>
-                                                option.value === e.productId
-                                            )}
-                                            onChange={(selectedOption) => {
-                                              const drugObj = drug.find(
-                                                (d) =>
-                                                  d.id === selectedOption.value
-                                              );
-                                              const price = drugObj
-                                                ? drugObj.price
-                                                : 0;
-                                              setSelectedOption(selectedOption);
-                                              setPrice(
-                                                getPriceById(
-                                                  selectedOption.value
-                                                )
-                                              );
-                                              setProduct({
-                                                ...product,
-                                                products: [
-                                                  ...product.products.slice(
-                                                    0,
-                                                    index - 1
-                                                  ),
-                                                  {
-                                                    ...product.products[
-                                                      index - 1
-                                                    ],
-                                                    productId:
-                                                      selectedOption.value,
-                                                  },
-                                                  ...product.products.slice(
-                                                    index
-                                                  ),
-                                                ],
-                                              });
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              width: 1100,
+                                              flexWrap: "wrap",
                                             }}
-                                            options={options}
-                                          />
+                                          >
+                                            <Select
+                                              value={options.find(
+                                                (option) =>
+                                                  option.value === e.productId
+                                              )}
+                                              isDisabled
+                                              onChange={(selectedOption) => {
+                                                const drugObj = drug.find(
+                                                  (d) =>
+                                                    d.id ===
+                                                    selectedOption.value
+                                                );
+                                                const price = drugObj
+                                                  ? drugObj.price
+                                                  : 0;
+                                                setSelectedOption(
+                                                  selectedOption
+                                                );
+                                                setPrice(
+                                                  getPriceById(
+                                                    selectedOption.value
+                                                  )
+                                                );
+                                                setProduct({
+                                                  ...product,
+                                                  products: [
+                                                    ...product.products.slice(
+                                                      0,
+                                                      index - 1
+                                                    ),
+                                                    {
+                                                      ...product.products[
+                                                        index - 1
+                                                      ],
+                                                      productId:
+                                                        selectedOption.value,
+                                                    },
+                                                    ...product.products.slice(
+                                                      index
+                                                    ),
+                                                  ],
+                                                });
+                                              }}
+                                              options={options}
+                                            />
+                                            <div>
+                                              <div
+                                                style={{
+                                                  display: "flex",
+                                                  margin: "0 0 0 50px",
+                                                }}
+                                              >
+                                                {
+                                                  <p
+                                                    style={{
+                                                      color: "black",
+                                                      fontWeight: "bold",
+                                                      marginRight: "30px",
+                                                      fontSize: "20px",
+                                                    }}
+                                                  >
+                                                    Giá gốc:{" "}
+                                                    {e.price.toLocaleString(
+                                                      "en-US"
+                                                    )}{" "}
+                                                    đ
+                                                  </p>
+                                                }
+                                                {product.discountMoney !==
+                                                null ? (
+                                                  <p
+                                                    style={{
+                                                      color: "black",
+                                                      fontWeight: "bold",
+                                                      fontSize: "20px",
+                                                    }}
+                                                  >
+                                                    Giá sau khi giảm:
+                                                    {e.price.toLocaleString(
+                                                      "en-US"
+                                                    )}{" "}
+                                                    đ
+                                                  </p>
+                                                ) : (
+                                                  <p
+                                                    style={{
+                                                      color: "black",
+                                                      fontWeight: "bold",
+                                                      fontSize: "20px",
+                                                    }}
+                                                  >
+                                                    Giá sau khi giảm:{" "}
+                                                    {e.price.toLocaleString(
+                                                      "en-US"
+                                                    )}{" "}
+                                                    đ
+                                                  </p>
+                                                )}
+                                              </div>
+                                            </div>
+                                          </div>
                                         </>
                                       );
                                     }
@@ -634,35 +576,7 @@ const UpdateDiscount = () => {
                       );
                     }
                   )}
-                  <button
-                    className="button-28"
-                    style={{
-                      height: 50,
-                      width: 200,
-                      fontSize: 13,
-                      paddingTop: 1,
-                      marginLeft: "44%",
-                      marginBottom: "20px",
-                      backgroundColor: "#fff",
-                    }}
-                    onClick={handleAddUnit}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      class="bi bi-plus-lg"
-                      viewBox="0 0 16 16"
-                      style={{ marginRight: 10 }}
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
-                      />
-                    </svg>{" "}
-                    Thêm Sản phẩm
-                  </button>
+               
                 </div>
               </div>
             </div>

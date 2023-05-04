@@ -47,6 +47,21 @@ const Order = () => {
       }
     }
   }
+  async function loadDataOrder1(search) {
+    if (localStorage && localStorage.getItem("accessToken")) {
+      const accessToken = localStorage.getItem("accessToken");
+      if (acceptable === true || acceptable === "") {
+        const path = `Order?OrderIdOrPhoneNo=${search}&pageIndex=${currentPage}&pageItems=${perPage}`;
+        const res = await getDataByPath(path, accessToken, "");
+        console.log("check", res);
+        if (res !== null && res !== undefined && res.status === 200) {
+          setDrug(res.data.items);
+          setTotalRecord(res.data.totalRecord);
+        }
+      } 
+    }
+  }
+ 
   const [user, setUser] = useState([]);
   async function loadDataUserByID() {
     if (localStorage && localStorage.getItem("accessToken")) {
@@ -104,6 +119,9 @@ const Order = () => {
                       className="form-control border-0 shadow-none"
                       placeholder="Search..."
                       aria-label="Search..."
+                      onChange={(e) => {
+                        loadDataOrder1(e.target.value);
+                      }}
                     />
                   </div>
 
