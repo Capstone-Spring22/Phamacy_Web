@@ -31,6 +31,8 @@ const Home = () => {
   let history = useHistory();
   const [loading, setLoading] = useState(false);
   const [drug, setDrug] = useState(null);
+  const [valueSearch, setvalueSearch] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const [drugUserTarget, setDrugUserTarget] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(6);
@@ -44,6 +46,7 @@ const Home = () => {
   const [newMessage, setNewMessage] = useState("");
   const [newMessageType, setNewMessageType] = useState("text");
   const roomId = "";
+  const [productSearch, setProductSearch] = useState([]);
   const [countUs, setCountUs] = useState("2");
   const id = localStorage.getItem("id");
   const update = (deviceId) => {
@@ -61,6 +64,16 @@ const Home = () => {
     console.log("display", res);
     if (res !== null && res !== undefined && res.status === 200) {
       setDrug(res.data.items);
+      setTotalRecord(res.data.totalRecord);
+      console.log("display", currentPage);
+    }
+  }
+  async function loadDataMedicineSearch(Search) {
+    const path = `Product?productName=${Search}&isSellFirstLevel=true&pageIndex=1&pageItems=12`;
+    const res = await getDataByPath(path, "", "");
+    console.log("display", res);
+    if (res !== null && res !== undefined && res.status === 200) {
+      setProductSearch(res.data.items);
       setTotalRecord(res.data.totalRecord);
       console.log("display", currentPage);
     }
@@ -248,7 +261,14 @@ const Home = () => {
   useEffect(() => {
     loadDataCategory2();
   }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadDataMedicineSearch(searchValue);
+      setvalueSearch(searchValue);
+    }, 1500);
 
+    return () => clearTimeout(timer);
+  }, [searchValue]);
   async function fetchChatByPharmacist() {
     setLoading(true);
     const q = query(collection(db, "chats"));
@@ -333,7 +353,13 @@ const Home = () => {
                 role="navigation"
               >
                 <div style={{ position: "relative", width: "700px" }}>
-                  <input className="search-home" placeholder="Tìm Kiếm Thuốc" />
+                  <input
+                    className="search-home"
+                    placeholder="Tìm Kiếm Thuốc"
+                    onChange={(e) => {
+                      setSearchValue(e.target.value);
+                    }}
+                  />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -353,6 +379,29 @@ const Home = () => {
                   </svg>
                 </div>
               </nav>
+              {productSearch && productSearch.length > 0&& searchValue !=="" ? (
+                <div className="search-home-user">
+                  {productSearch.map((product) => (
+                    <Link   to={`/ViewDetail/${product.id}`} key={product.id} className="product-cart-p3">
+                      <img
+                        src={product.imageModel.imageURL}
+                        style={{
+                          height: 70,
+                          width: 60,
+                          borderRadius: 7,
+                          objectFit: "cover",
+                        }}
+                      />
+                      <div>
+                        <div className="name-product-pharmacist">
+                          <div>Tên Sản Phẩm</div>
+                          <div> {product.name}</div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
             </div>
             <div className="icons" style={{ display: "flex" }}>
               {buttonHistory}
@@ -762,20 +811,23 @@ const Home = () => {
                   })}
               </div>
             </div>
-            <div style={{display: "flex"}}>
-              
-              <div className="footer-home1"><img
-                className="d-block w-100"
-                src="https://cdn.nhathuoclongchau.com.vn/unsafe/717x211/https://cms-prod.s3-sgn09.fptcloud.com/Desktop_Artboard_5_2x_f9370314e8.png"
-                style={{ height: 165, borderRadius: 10 }}
-                alt="Third slide"
-              /></div>
-              <div className="footer-home2"><img
-                className="d-block w-100"
-                src="https://cdn.nhathuoclongchau.com.vn/unsafe/717x211/https://cms-prod.s3-sgn09.fptcloud.com/photo_2_2023_04_19_11_07_11_8384755e7d.jpg"
-                style={{ height: 165, borderRadius: 10 }}
-                alt="Third slide"
-              /></div>
+            <div style={{ display: "flex" }}>
+              <div className="footer-home1">
+                <img
+                  className="d-block w-100"
+                  src="https://cdn.nhathuoclongchau.com.vn/unsafe/717x211/https://cms-prod.s3-sgn09.fptcloud.com/Desktop_Artboard_5_2x_f9370314e8.png"
+                  style={{ height: 165, borderRadius: 10 }}
+                  alt="Third slide"
+                />
+              </div>
+              <div className="footer-home2">
+                <img
+                  className="d-block w-100"
+                  src="https://cdn.nhathuoclongchau.com.vn/unsafe/717x211/https://cms-prod.s3-sgn09.fptcloud.com/photo_2_2023_04_19_11_07_11_8384755e7d.jpg"
+                  style={{ height: 165, borderRadius: 10 }}
+                  alt="Third slide"
+                />
+              </div>
             </div>
           </section>
         </div>

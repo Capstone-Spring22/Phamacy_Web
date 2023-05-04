@@ -4851,6 +4851,28 @@ border: 1px solid #888;
   display: flex;
   width: 400px;
 }
+.product-cart-p3{
+  margin-top: 20px;
+  margin-left: 20px;
+  height: auto;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: white;
+  width: 560px;
+  display: flex;
+}
+.search-home-user{
+  height: 400px;
+  width: 600px;
+  margin-top: 10px;
+  border-radius: 5px;
+  background-color: white;
+  position: absolute; 
+  z-index: 9999; 
+  overflow-x:hidden;
+            overflow-y:auto;
+}
 .button-unit {
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
