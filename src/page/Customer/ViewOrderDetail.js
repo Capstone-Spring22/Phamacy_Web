@@ -490,7 +490,7 @@ const ViewOrderDetail = () => {
               </div>
             </div>
           </div>
-          <Footer />
+          {/* <Footer /> */}
         </div>
       </>
     </div>

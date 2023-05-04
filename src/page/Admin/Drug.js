@@ -202,7 +202,7 @@ const Drug = () => {
                                       color: "#bfc8d3",
                                     }}
                                   >
-                                    &nbsp; &nbsp;Tên Sản Phẩm
+                                    Tên Sản Phẩm
                                   </th>
                                   <th
                                     style={{
@@ -273,7 +273,7 @@ const Drug = () => {
                                             textAlign: "left",
                                           }}
                                         >
-                                          &nbsp; &nbsp;{e.name}
+                                          {e.name}
                                         </td>
                                         <td>
                                           {e.price.toLocaleString("en-US")} đ

@@ -681,7 +681,7 @@ const DetailMedicine = () => {
             </div>
           </div>
 
-          <Footer />
+          {/* <Footer /> */}
           {/* ****** Quick View Modal Area End ****** */}
         </>
       </div>

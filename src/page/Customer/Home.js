@@ -379,10 +379,10 @@ const Home = () => {
                   </svg>
                 </div>
               </nav>
-              {productSearch && productSearch.length > 0&& searchValue !=="" ? (
+              {productSearch && productSearch.length > 0 && searchValue !== "" ? (
                 <div className="search-home-user">
                   {productSearch.map((product) => (
-                    <Link   to={`/ViewDetail/${product.id}`} key={product.id} className="product-cart-p3">
+                    <Link to={`/ViewDetail/${product.id}`} key={product.id} className="product-cart-p3">
                       <img
                         src={product.imageModel.imageURL}
                         style={{
@@ -724,11 +724,12 @@ const Home = () => {
                       </Link>
                     );
                   })}
+                <Link to="/medicine" className="button-redirect">
+                  Xem Thêm
+                  </Link>
+
               </div>
-              <Link to="/medicine" className="button-redirect">
-                {" "}
-                Xem Thêm
-              </Link>
+
             </div>
           </section>
         </div>
@@ -756,11 +757,10 @@ const Home = () => {
                           }
                           setActiveIndex(index);
                         }}
-                        className={` ${
-                          activeIndex === index
-                            ? "button-user-target-active"
-                            : "button-user-target"
-                        }`}
+                        className={` ${activeIndex === index
+                          ? "button-user-target-active"
+                          : "button-user-target"
+                          }`}
                         style={{ display: "flex" }}
                       >
                         {" "}
@@ -831,8 +831,8 @@ const Home = () => {
             </div>
           </section>
         </div>
-
-        <Footer />
+{/* 
+        <Footer /> */}
       </div>
     </>
   );

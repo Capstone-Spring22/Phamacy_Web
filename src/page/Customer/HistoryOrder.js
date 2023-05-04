@@ -225,7 +225,7 @@ const HistoryOrder = () => {
               <div className="content-backdrop fade" />
             </div>
           </div>
-          <Footer />
+          {/* <Footer /> */}
         </div>
       </>
     </div>

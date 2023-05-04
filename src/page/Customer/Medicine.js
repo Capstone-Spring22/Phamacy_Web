@@ -372,7 +372,7 @@ const Medicine = () => {
               </div>
             </div>
           </section>
-          <Footer />
+          {/* <Footer /> */}
           {/* ****** Footer Area End ****** */}
         </div>
       </div>

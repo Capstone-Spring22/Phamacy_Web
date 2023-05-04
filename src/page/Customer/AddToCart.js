@@ -521,7 +521,7 @@ const AddToCart = () => {
               </div>
             </div>
           </div>
-          <Footer />
+          {/* <Footer /> */}
         </div>
       </>
     </div>

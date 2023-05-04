@@ -17,9 +17,7 @@ const Footer = () => {
               
                 <h3 className="footer-heading mb-4">Về Chúng tôi</h3>
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eius
-                  quae reiciendis distinctio voluptates sed dolorum excepturi
-                  iure eaque, aut unde.
+                  BetterHealth là chuỗi cửa hàng bán lẻ chuyên cung cấp các loại dược phẩm cho khách hang
                 </p>
               </div>
             </div>
