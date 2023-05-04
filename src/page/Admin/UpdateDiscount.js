@@ -36,7 +36,7 @@ const UpdateDiscount = () => {
       const accessToken = localStorage.getItem("accessToken");
       const path = `ProductDiscount/${myId}`;
       const res = await getDataByPath(path, accessToken, "");
-      console.log("discountPercent :", discountPercent);
+      console.log("discountPercent :", res.data);
       if (res !== null && res !== undefined && res.status === 200) {
         setDiscountPercent(res.data.discountPercent);
         setProduct(res.data);
@@ -464,6 +464,7 @@ const UpdateDiscount = () => {
                                             }}
                                           >
                                             <Select
+                                            
                                               value={options.find(
                                                 (option) =>
                                                   option.value === e.productId
@@ -541,7 +542,7 @@ const UpdateDiscount = () => {
                                                     }}
                                                   >
                                                     Giá sau khi giảm:
-                                                    {e.price.toLocaleString(
+                                                    {e.priceAfterDiscount.toLocaleString(
                                                       "en-US"
                                                     )}{" "}
                                                     đ
@@ -555,7 +556,7 @@ const UpdateDiscount = () => {
                                                     }}
                                                   >
                                                     Giá sau khi giảm:{" "}
-                                                    {e.price.toLocaleString(
+                                                    {e.priceAfterDiscount.toLocaleString(
                                                       "en-US"
                                                     )}{" "}
                                                     đ

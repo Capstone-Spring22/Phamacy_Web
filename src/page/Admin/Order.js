@@ -111,13 +111,14 @@ const Order = () => {
                 id="navbar-collapse"
               >
                 {/* Search */}
-                <div className="navbar-nav align-items-center">
+                <div className="navbar-nav align-items-center" >
                   <div className="nav-item d-flex align-items-center">
                     <i className="bx bx-search fs-4 lh-0" />
                     <input
+                    style={{width:300}}
                       type="text"
                       className="form-control border-0 shadow-none"
-                      placeholder="Search..."
+                      placeholder="Tìm Kiếm Mã Đơn Hàng..."
                       aria-label="Search..."
                       onChange={(e) => {
                         loadDataOrder1(e.target.value);
@@ -265,7 +266,7 @@ const Order = () => {
                         </thead>
                         <tbody className="table-border-bottom-0">
                           {drug &&
-                            drug.length &&
+                            drug.length>0 &&
                             drug.map((e) => {
                               const date = new Date(e.createdDate);
                               const createDateVN = date.toLocaleString(
