@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import React from "react";
 import Swal from "sweetalert2";
 import { toast, Toaster } from "react-hot-toast";
@@ -9,9 +9,8 @@ import "../../assets/css/core.css";
 import { getDataByPath, createDataByPath } from "../../services/data.service";
 import { useHistory } from "react-router-dom";
 import { Document, Page, pdfjs } from "react-pdf";
+import { Modal, Button } from "antd";
 
-import { Modal } from "antd";
-import e from "cors";
 const CheckOutPharmacist = () => {
   const [activeItem, setActiveItem] = useState("CheckOutPharmacist");
   const [drug, setDrug] = useState(null);
@@ -20,15 +19,18 @@ const CheckOutPharmacist = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [unit, setUnit] = useState([]);
+  const [isPrinting, setIsPrinting] = useState(false);
   const [pdfUrl, setPdfUrl] = useState([]);
   let history = useHistory();
   const [point, setPoint] = useState(0);
   const [count, setCount] = useState(2);
   const [valueSearch, setvalueSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(false);
   const [moneyReceived, setMoneyReceived] = useState(0);
   const [error, setError] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingExport, setIsLoadingExport] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [pointErrorMessage, setPointErrorMessage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -41,6 +43,30 @@ const CheckOutPharmacist = () => {
       quantityAfterConvert: "",
     },
   ]);
+
+  // const handlePrint = useReactToPrint({
+  //   content: () => componentRef.current,
+  //   documentTitle: 'Hóa Đơn Bán Hàng',
+  //   onAfterPrint: () => alert('Print Success'),
+  //   contentCallback: (content) => {
+  //     return html2canvas(content, {
+  //       useCORS: true,
+  //       allowTaint: true,
+  //       removeContainer: true,
+  //       scale: 1,
+  //       width: 1000, // A4 width
+  //       height: 2000, // A4 height
+  //     }).then((canvas) => {
+  //       console.log(canvas.toDataURL())
+  //       return canvas.toDataURL();
+  //     });
+  //   },
+  // });
+  const handlePrint = (event) => {
+    event.preventDefault();
+    window.open(pdfUrl, "PRINT", "height=400,width=600");
+  };
+
   async function loadDataMedicineDefault() {
     if (localStorage && localStorage.getItem("accessToken")) {
       setIsLoading(true);
@@ -67,6 +93,7 @@ const CheckOutPharmacist = () => {
   // Define a function to handle closing the modal
   const handleCloseModal = () => {
     setIsModalVisible(false);
+    history.push("/Order")
   };
 
   async function loadDataMinUnit(productId, quantity) {
@@ -163,11 +190,11 @@ const CheckOutPharmacist = () => {
         console.log("display du lieu", data);
         if (res && res.status === 200) {
           Swal.fire({
-            title: "Create Success",
-            text: "Bạn có muốn in hóa đơn không?",
+            title: "Tạo Đơn Thành Công",
+            text: "Hãy nhắc nhở khách hàng nhận đầy đủ sản phẩm trước khi ra về nhé!",
             icon: "success",
             showCancelButton: true,
-            confirmButtonText: "Có",
+            confirmButtonText: "Xuất Hóa Đơn",
             cancelButtonText: "Trở Về",
           }).then(async (result) => {
             if (result.isConfirmed) {
@@ -175,7 +202,6 @@ const CheckOutPharmacist = () => {
               const res1 = await getDataByPath(path, accessToken, "");
               if (res1 !== null && res1 !== undefined && res1.status === 200) {
                 setPdfUrl(res1.data);
-                console.log("res.data", res1.data);
                 handleOpenModal();
               }
             } else {
@@ -339,7 +365,7 @@ const CheckOutPharmacist = () => {
   }, []);
   useEffect(() => {
     // Update the document title using the browser API
-    if (document.querySelector(".quaSoLuong") !== null) {
+    if (document.querySelector(".quaSoLuong") !== null || product.subTotalPrice === 0) {
       setIsQuaSoLuong(true);
     } else {
       setIsQuaSoLuong(false)
@@ -465,27 +491,23 @@ const CheckOutPharmacist = () => {
 
   return (
     <div className="layout-wrapper layout-content-navbar">
-          <Modal
-           
-           visible={isModalVisible}
-           onCancel={handleCloseModal}
-         
-          
-           style={{ backgroundColor:"black" }}
-          
-         >
-    
-             <Document
-            
-               file={pdfUrl}
-               onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-             >
-               {Array.from(new Array(numPages), (el, index) => (
-                 <Page  key={`page_${index + 1}`} pageNumber={index + 1} />
-               ))}
-             </Document>
-          
-         </Modal>
+      <div>
+        <Modal
+          visible={isModalVisible}
+          onCancel={handleCloseModal}
+          style={{ backgroundColor: "black", marginTop: -50 }}
+        >
+          <Button style={{ marginLeft: 170 }} onClick={(e) => handlePrint(e)}>Xuất Hóa Đơn</Button>
+          <Document
+            file={pdfUrl}
+            onLoadSuccess={({ numPages }) => setNumPages(1)}
+          >
+            {Array.from(new Array(1), (el, index) => (
+              <Page size="A6" key={`page_${index + 1}`} pageNumber={index + 1} />
+            ))}
+          </Document>
+        </Modal>
+      </div>
       <div className="layout-container">
         <SideBar activeItem={activeItem} />
 
@@ -528,7 +550,7 @@ const CheckOutPharmacist = () => {
               {/* /Search */}
             </div>
           </nav>
-      
+
 
           <div style={{ display: "flex", flexWrap: "wrap", marginLeft: 180 }}>
             {/* <div className="search-result">
@@ -1736,7 +1758,7 @@ const CheckOutPharmacist = () => {
         </div>
         <div className="layout-overlay layout-menu-toggle" />
       </div>
-    </div>
+    </div >
   );
 };
 export default CheckOutPharmacist;

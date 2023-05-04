@@ -18,7 +18,8 @@ const VNPay = (props) => {
     history.push("/ViewOrderDetail");
   };
   const update1 = (myId) => {
-    history.push("/home");
+    localStorage.setItem("Oderid", myId)
+    history.push("/ViewOrderDetail");
   };
   const urlParams = new URLSearchParams(window.location.search);
   const vnp_PayDate = urlParams.get("vnp_PayDate");
@@ -56,7 +57,7 @@ const VNPay = (props) => {
     if (res !== null && res !== undefined && res.status === 200) {
     }
   }
-  
+
   async function Checkout() {
     if (localStorage && localStorage.getItem("accessTokenUser")) {
       const accessToken = localStorage.getItem("accessTokenUser");
@@ -67,7 +68,7 @@ const VNPay = (props) => {
       console.log("Check res", res);
       console.log("display du lieu", data);
       if (res && res.status === 200) {
-        Swal.fire("Create Success", "", "success");
+        Swal.fire("Đặt Hàng Thành Công", "", "success");
         handleRemoveCart();
         update(productCheckOut.orderId);
       }
@@ -79,9 +80,9 @@ const VNPay = (props) => {
       console.log("Check res", res);
       console.log("display du lieu", data);
       if (res && res.status === 200) {
-        Swal.fire("Create Success", "", "success");
+        Swal.fire("Đặt Hàng Thành Công", "", "success");
         handleRemoveCart();
-        update1(productCheckOut.orderId);
+        update1(product.orderId);
       }
     }
   }
@@ -114,7 +115,13 @@ const VNPay = (props) => {
     loadDataDistrics()
     loadDataWard()
   }, []);
- 
+
+  useEffect(() => {
+    if (vnp_PayDate != null && vnp_TransactionNo !== null) {
+      console.log("Chạy")
+      Checkout();
+    }
+  })
   const [site, setSite] = useState(null);
   async function loadDataSite() {
     if (localStorage && localStorage.getItem("accessTokenUser")) {
@@ -144,240 +151,11 @@ const VNPay = (props) => {
   }, []);
   return (
     <>
-      <Header />
-      <div class="bg-light py-3">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-12 mb-0">
-              <a
-                href="/Home"
-                style={{ textDecoration: "none", color: "black" }}
-              >
-                Home
-              </a>{" "}
-              <span class="mx-2 mb-0">/</span>{" "}
-              <a href="/ViewCart" class="text-black">
-                Cart
-              </a>
-              <span class="mx-2 mb-0">/</span>{" "}
-              <strong class="text-black">Check Out</strong>
-            </div>
-          </div>
+      <div>
+        <div className="loading">
+          <div className="pill"></div>
+          <div className="loading-text">Hệ thống đang xử lý thanh toán, vui lòng chờ trong giây lát...</div>
         </div>
-      </div>
-      <div className="site-wrap">
-        <div className="checkout_area section_padding_100">
-          <div className="container">
-            <div className="row">
-              <div
-                className="col-12 col-md-6"
-                style={{
-                  backgroundColor: "white",
-                  boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",
-                  borderRadius: 10,
-                  paddingBottom: 50,
-                  width: 750,
-                  padding: 50,
-                }}
-              >
-                <div
-                  style={{
-                    backgroundColor: "white",
-
-                    borderRadius: 10,
-                    paddingBottom: 50,
-                    width: 650,
-                    padding: 50,
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="180"
-                    height="180"
-                    fill="currentColor"
-                    class="bi bi-check-circle"
-                    viewBox="0 0 16 16"
-                    style={{
-                      color: "#9dca5c",
-                      borderColor: "#9dca5c",
-                      marginLeft: 150,
-                    }}
-                  >
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                    <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
-                  </svg>
-                </div>
-                <div className="vn-pay-success">
-                  Thanh Toán VNPay Thành Công
-                </div>
-                <br />
-                <hr></hr>
-                <div className="checkout_details_area mt-50 clearfix">
-                  <div className="cart-page-heading">
-                    <h5>Xem Lại Thông Tin</h5>
-                  </div>
-
-                  <form action="#" method="post">
-                    <div className="row">
-                      <div className="col-md-6 mb-3">
-                        <label htmlFor="first_name">
-                          Tên Đầy Đủ <span>*</span>
-                        </label>
-                        <div id="full_name" defaultValue="" required="">
-                          {product.reveicerInformation.fullname}
-                        </div>
-                      </div>
-                      <div className="col-md-6 mb-3">
-                        <label htmlFor="last_name">
-                          Số điện thoại <span>*</span>
-                        </label>
-                        <div type="text" id="sdt" defaultValue="" required="">
-                          {product.reveicerInformation.phoneNumber}
-                        </div>
-                      </div>
-                      <div className="col-12 mb-3">
-                        <label htmlFor="company">Email</label>
-                        <div type="text" id="company" defaultValue="">
-                          {product.reveicerInformation.email}
-                        </div>
-                      </div>
-                      {productCheckOut.orderTypeId === 2 ? (
-                        <>
-                          <div className="col-12 mb-3">
-                            <label htmlFor="street_address">
-                              Tên Chi Nhánh<span>*</span>
-                            </label>
-                            <div name="city" id="basic-icon-default-email">
-                              {siteName}
-                            </div>
-                          </div>
-                          <div className="col-12 mb-3">
-                            <label htmlFor="street_address">
-                              Địa Chỉ Chi Nhánh<span>*</span>
-                            </label>
-                            <div name="city" id="basic-icon-default-email">
-                              {fullyAddressSite}
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="col-12 mb-3">
-                            <label htmlFor="street_address">
-                              Thành phố <span>*</span>
-                            </label>
-                            <div name="city" id="basic-icon-default-email">
-                              {city?.cityName}
-                            </div>
-                          </div>
-
-                          <div className="col-12 mb-3">
-                            <label htmlFor="postcode">
-                              Quận/Huyện <span>*</span>
-                            </label>
-
-                            <div id="basic-icon-default-email">
-                              {districs?.districtName}
-                            </div>
-                          </div>
-                          <div className="col-12 mb-3">
-                            <label htmlFor="city">
-                              Phường <span>*</span>
-                            </label>
-
-                            <div id="basic-icon-default-email">
-                              {ward?.wardName}
-                            </div>
-                          </div>
-                          <div className="col-12 mb-3">
-                            <label htmlFor="state">
-                              Địa chỉ cụ thể <span>*</span>
-                            </label>
-                            <div type="text" id="state" defaultValue="">
-                              {product.reveicerInformation.homeAddress}
-                            </div>
-                          </div>
-                        </>
-                      )}
-
-                      <div className="col-12 mb-3">
-                        <label htmlFor="street_address">
-                          Ghi Chú <span>*</span>
-                        </label>
-                        <div type="text" id="street_address">
-                          {product.note}
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-
-              <div className="col-12 col-md-6 col-lg-5 ml-lg-auto">
-                <div
-                  className="order-details-confirmation"
-                  style={{
-                    boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",
-                    border: "none",
-                    borderRadius: 10,
-                  }}
-                >
-                  <div className="cart-page-heading">
-                    <h5>Thanh Toán</h5>
-                    <p>Thông tin</p>
-                  </div>
-
-                  <ul
-                    className="order-details-form "
-                    style={{ padding: 0, fontSize: 20 }}
-                  >
-                    <li style={{ fontSize: 15 }}>
-                      <span>Subtotal</span>{" "}
-                      <span>
-                        {product.subTotalPrice.toLocaleString("en-US")}
-                      </span>
-                    </li>
-
-                    <li style={{ fontSize: 15 }}>
-                      {product.orderTypeId === 2 ? (
-                        <span>Phí Phát Sinh</span>
-                      ) : (
-                        <span>Phí Giao Hàng</span>
-                      )}
-                      <span>
-                        {product.shippingPrice.toLocaleString("en-US")}
-                      </span>
-                    </li>
-
-                    <li style={{ fontSize: 15 }}>
-                      <span>Tạm Tính</span>{" "}
-                      <span>{product.totalPrice.toLocaleString("en-US")}</span>
-                    </li>
-                  </ul>
-
-                  <a
-                    onClick={(e) => {
-                      e.preventDefault();
-                      Checkout();
-                    }}
-                    style={{
-                      height: 50,
-                      backgroundColor: "#82AAE3",
-                      color: "white",
-                      paddingTop: 13,
-                      fontSize: 17,
-                    }}
-                    className="button-28"
-                  >
-                    Xác Nhận
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <Footer />
       </div>
     </>
   );

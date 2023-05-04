@@ -31,7 +31,7 @@ const ViewOrderDetail = () => {
   ]);
   const [descriptionStatus, setDescriptionStatus] = useState("");
   async function loadDataOrderById() {
-    if (localStorage && localStorage.getItem("accessTokenUser")) {
+    if (localStorage) {
       const accessToken = localStorage.getItem("accessTokenUser");
       const path = `Order/${myId}`;
       const res = await getDataByPath(path, accessToken, "");
@@ -86,7 +86,7 @@ const ViewOrderDetail = () => {
     return true;
   };
   async function cancelOrder() {
-    if (localStorage && localStorage.getItem("accessTokenUser")) {
+    if (localStorage) {
       const accessToken = localStorage.getItem("accessTokenUser");
       if (checkValidation()) {
       const deviceId = await axios
