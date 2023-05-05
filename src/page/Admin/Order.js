@@ -12,7 +12,9 @@ const Order = () => {
   const [perPage, setPerPage] = useState(7);
   const [totalRecord, setTotalRecord] = useState([]);
   const [acceptable, setAcceptable] = useState("");
+  const [searchValue, setSearchValue] = useState("");
 
+  
   let history = useHistory();
   const update = (myId) => {
     localStorage.setItem("orderIdPharmacist", myId);
@@ -29,7 +31,8 @@ const Order = () => {
     if (localStorage && localStorage.getItem("accessToken")) {
       const accessToken = localStorage.getItem("accessToken");
       if (acceptable === true || acceptable === "") {
-        const path = `Order?NotAcceptable=${acceptable}&&pageIndex=${currentPage}&pageItems=${perPage}`;
+        
+        const path = `Order?NotAcceptable=${acceptable}&&pageIndex=${currentPage}&pageItems=${perPage}&OrderIdOrPhoneNo=${searchValue}`;
         const res = await getDataByPath(path, accessToken, "");
         console.log("check", res);
         if (res !== null && res !== undefined && res.status === 200) {
@@ -37,7 +40,7 @@ const Order = () => {
           setTotalRecord(res.data.totalRecord);
         }
       } else if (acceptable === false) {
-        const path = `Order?NotAcceptable=${acceptable}&ShowOnlyPharmacist=true&isCompleted=false&pageIndex=${currentPage}&pageItems=${perPage}`;
+        const path = `Order?NotAcceptable=${acceptable}&ShowOnlyPharmacist=true&isCompleted=false&pageIndex=${currentPage}&pageItems=${perPage}&OrderIdOrPhoneNo=${searchValue}`;
         const res = await getDataByPath(path, accessToken, "");
         console.log("check", res);
         if (res !== null && res !== undefined && res.status === 200) {
@@ -86,6 +89,15 @@ const Order = () => {
     loadDataOrder2(acceptable);
   }, [acceptable, currentPage, perPage]);
 
+  useEffect(() => {
+    console.log("Alo")
+    const timer = setTimeout(() => {
+      loadDataOrder2(acceptable)
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [searchValue]);
+
   return (
     <>
       <div className="layout-wrapper layout-content-navbar">
@@ -118,10 +130,10 @@ const Order = () => {
                     style={{width:300}}
                       type="text"
                       className="form-control border-0 shadow-none"
-                      placeholder="Tìm Kiếm Mã Đơn Hàng..."
+                      placeholder="Tìm Kiếm Mã Đơn Hàng, Số điện thoại khách hàng..."
                       aria-label="Search..."
                       onChange={(e) => {
-                        loadDataOrder1(e.target.value);
+                        setSearchValue(e.target.value);
                       }}
                     />
                   </div>
